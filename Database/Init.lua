@@ -1,6 +1,14 @@
 local _, ns = ...;
 
-if (ns.db) then return end
+do -- Constants
+    ns.LEVEL_TRANSLATION = "Рівень"
+    ns.PAGE_TRANSLATION = "Сторінка"
+    ns.LEADER_TRANSLATION = "Лідер"
+end
 
-local db = {}
-ns.db = db
+do
+    if (ns._db) then return end
+
+    local db = {}
+    ns._db = db
+end
