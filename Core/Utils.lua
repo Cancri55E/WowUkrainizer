@@ -2,6 +2,7 @@ local _, ns = ...;
 
 do
     if (ns.Utils) then return end
+
     local utils = {}
     ns.Utils = utils
 
@@ -24,8 +25,4 @@ do
         end
         return math.fmod(counter, 4294967291) -- 2^32 - 5: Prime (and different from the prime in the loop)
     end
-end
-
-do
-
 end
