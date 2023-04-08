@@ -25,4 +25,10 @@ do
         end
         return math.fmod(counter, 4294967291) -- 2^32 - 5: Prime (and different from the prime in the loop)
     end
+
+    function utils.UpdateFont(fontString, newFontFile)
+        local fontFile, height, flags = fontString:GetFont()
+        if (fontFile == newFontFile) then return end
+        fontString:SetFont(newFontFile, height, flags)
+    end
 end

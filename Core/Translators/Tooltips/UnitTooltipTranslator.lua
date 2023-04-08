@@ -1,10 +1,14 @@
 local _, ns = ...;
 
-local GetUnitName = ns.DbContext.Creatures.GetUnitName
-local GetUnitSubnameWithFallback = ns.DbContext.Creatures.GetUnitSubnameWithFallback
-local GetUnitTypeWithFallback = ns.DbContext.Creatures.GetUnitTypeWithFallback
-local GetUnitRankWithFallback = ns.DbContext.Creatures.GetUnitRankWithFallback
-local GetUnitFractionWithFallback = ns.DbContext.Creatures.GetUnitFractionWithFallback
+local GetUnitNameWithFallback = ns.DbContext.Units.GetUnitNameWithFallback
+local GetUnitSubnameWithFallback = ns.DbContext.Units.GetUnitSubnameWithFallback
+local GetUnitTypeWithFallback = ns.DbContext.Units.GetUnitTypeWithFallback
+local GetUnitRankWithFallback = ns.DbContext.Units.GetUnitRankWithFallback
+local GetUnitFractionWithFallback = ns.DbContext.Units.GetUnitFractionWithFallback
+
+
+local morpheusFont = "Interface\\AddOns\\WoWUkrainify\\assets\\Morpheus_UA.ttf"
+local frixqtFont = "Interface\\AddOns\\WoWUkrainify\\assets\\FRIZQT_UA.ttf"
 
 local translator = {
     static = {
@@ -71,11 +75,11 @@ local function parseUnitTooltip(unitTooltipLines)
     return unitTooltip
 end
 
-local function getLocalizedUnitTooltip(unitId, unitTooltipLines)
+local function getLocalizedUnitTooltip(unitTooltipLines)
     local parsedTooltip = parseUnitTooltip(unitTooltipLines)
     if (not parsedTooltip.name or not parsedTooltip.levelData) then return end
 
-    local name = GetUnitName(tonumber(unitId)) or parsedTooltip.name
+    local name = GetUnitNameWithFallback(parsedTooltip.name)
     local levelData = {
         index = parsedTooltip.levelData.index,
         value = string.format("%s %s %s %s",
@@ -116,14 +120,15 @@ local function unitTooltipCallback(tooltip, tooltipLineData)
     local unitKind, _, _, _, _, unitId, _ = strsplit("-", tooltipLineData.guid)
 
     if (unitKind == "Creature" or unitKind == "Vehicle") then
-        local localizedTooltip = getLocalizedUnitTooltip(unitId, tooltipLineData.lines)
+        local localizedTooltip = getLocalizedUnitTooltip(tooltipLineData.lines)
         if (localizedTooltip) then
             local tooltipLines = {}
             for i = 1, tooltip:NumLines() do
-                tooltipLines[#tooltipLines + 1] = _G["GameTooltipTextLeft" .. i]
+                local line = _G["GameTooltipTextLeft" .. i]
+                tooltipLines[#tooltipLines + 1] = line
+                ns.Utils.UpdateFont(line, frixqtFont)
             end
 
-            --lines[1]:SetFont("Fonts\\FRIZQT__.TTF", 18)
             local r, g, b = tooltipLines[1]:GetTextColor()
             tooltipLines[1]:SetText(localizedTooltip.name)
             tooltipLines[1]:SetTextColor(r, g, b)
