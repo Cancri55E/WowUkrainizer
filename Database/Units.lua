@@ -21,35 +21,3 @@ do
 
     ns._db.UnitSubnames = data
 end
-
-do
-    local data = {
-        [1263733816] = "Beast",          --Beast
-        [1380758106] = "Dragonkin",      --Dragonkin
-        [2922108995] = "Demon",          --Demon
-        [530495695] = "Elemental",       --Elemental
-        [1257650543] = "Giant",          --Giant
-        [1335182036] = "Undead",         --Undead
-        [589698483] = "Humanoid",        --Humanoid
-        [514370084] = "Critter",         --Critter
-        [1163581639] = "Mechanical",     --Mechanical
-        [237873257] = "Totem",           --Totem
-        [4168209797] = "Non-Combat Pet", --Non-Combat Pet
-        [2103008983] = "Gas Cloud",      --Gas Cloud
-        [2721766664] = "Wild Pet",       --Wild Pet
-        [3623635121] = "Aberration",     --Aberration
-        [496532506] = "Corpse",          --Corpse
-    }
-
-    ns._db.UnitTypes = data
-end
-
-do
-    local data = {
-        [133474279] = "Elite", --Elite
-        [3982664215] = "Rare", --Rare
-        [595924386] = "Boss",  --Boss
-    }
-
-    ns._db.UnitRanks = data
-end
