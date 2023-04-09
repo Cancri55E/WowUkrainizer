@@ -38,3 +38,27 @@ do
 
     ns._db.UnitRanks = data
 end
+
+do
+    local data = {
+        [0] = "Arcane Charges",
+        [0] = "Astral Power",
+        [0] = "Chi",
+        [0] = "Combo Points",
+        [0] = "Energy",
+        [0] = "Essence",
+        [0] = "Focus",
+        [0] = "Fury",
+        [0] = "Holy Power",
+        [0] = "Insanity",
+        [0] = "Maelstrom",
+        [0] = "Mana",
+        [0] = "Pain",
+        [0] = "Rage",
+        [0] = "Runes",
+        [0] = "Runic Power",
+        [0] = "Soul Shards"
+    }
+
+    ns._db.SpellResourceTypes = data
+end

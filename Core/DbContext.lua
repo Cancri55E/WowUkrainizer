@@ -6,7 +6,7 @@ local dbContext = {}
 
 local function getValueWithFallback(hashTable, default)
     if (not default) then return default end
-    local hash = ns.Utils.GetStringHash(default)
+    local hash = ns.StringExtensions.GetHash(default)
     return hashTable[hash] or default
 end
 

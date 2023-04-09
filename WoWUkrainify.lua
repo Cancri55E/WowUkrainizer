@@ -7,6 +7,9 @@ local function OnPlayerLogin()
 
     ns.UnitTooltipTranslator.SetEnabled(true)
     ns.UnitTooltipTranslator.EnableDebugInfo(true)
+
+    ns.SpellTooltipTranslator.SetEnabled(true)
+    ns.SpellTooltipTranslator.EnableDebugInfo(true)
 end
 
 local function OnAddOnLoaded(_, name)
