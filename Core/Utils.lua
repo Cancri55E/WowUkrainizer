@@ -57,5 +57,25 @@ do
         end
     end
 
+    function internal.ExtractValuesFromString(str)
+        local values = {}
+        local modifiedText = str:gsub("(%d+)", function(num)
+            table.insert(values, tonumber(num))
+            return "{" .. #values .. "}"
+        end)
+
+        return {
+            text = modifiedText,
+            values = values
+        }
+    end
+
+    function internal.InsertValuesIntoString(str, values)
+        local result = str:gsub("{(%d+)}", function(index)
+            return values[tonumber(index)]
+        end)
+        return result
+    end
+
     ns.StringExtensions = internal
 end

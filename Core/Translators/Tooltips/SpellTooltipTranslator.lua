@@ -5,10 +5,13 @@ local frixqtFont = "Interface\\AddOns\\WoWUkrainify\\assets\\FRIZQT_UA.ttf"
 
 local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
+local ExtractValuesFromString = ns.StringExtensions.ExtractValuesFromString
+local InsertValuesIntoString = ns.StringExtensions.InsertValuesIntoString
 
 local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "Replaced by%s+(.+)"
-local spellResourceMarkers = { "Rage", "Mana", "Energy", "Combo Points" }
+
+local spellResources = { "Rage", "Mana", "Energy", "Combo Points" }
 
 local translator = {
     static = {
@@ -28,6 +31,26 @@ local function print_table(tbl, prefix)
             print(prefix .. key .. ": " .. tostring(value))
         end
     end
+end
+
+local function tryGetResourceType(input)
+    local resourcePatterns = {}
+    for _, resource in ipairs(spellResources) do
+        table.insert(resourcePatterns, "%d+ " .. resource)
+    end
+
+    local resources = {}
+    local foundResource = false
+
+    for _, pattern in ipairs(resourcePatterns) do
+        for resource in input:gmatch(pattern) do
+            foundResource = true
+            local extracted = ExtractValuesFromString(resource)
+            table.insert(resources, extracted)
+        end
+    end
+
+    return foundResource and resources or nil
 end
 
 local function parseSpellTooltip(spellRow)
@@ -69,16 +92,12 @@ local function parseSpellTooltip(spellRow)
     for i = contentIndex, #spellRow do
         local element = spellRow[i]
 
-        local isResourceType = false
-        for _, keyword in ipairs(spellResourceMarkers) do
-            if element:find(keyword) then
-                refObj.ResourceType = { i, element }
-                isResourceType = true
-                break
-            end
+        local resourceType = tryGetResourceType(element)
+        if (resourceType) then
+            refObj.ResourceType = { i, element }
         end
 
-        if not isResourceType then
+        if not resourceType then
             if (element == "Next Rank:") then
                 tooltipInfo.Talent.NextRankIndex = i
                 refObj = tooltipInfo.Talent.NextRank
@@ -105,24 +124,27 @@ end
 local function getLocalizedSpellTooltip(spellId, tooltipRows)
     local spellInfo = parseSpellTooltip(tooltipRows)
 
-    --print_table(spellInfo)
+    if (not _G.WoWUkrainify_UntranslatedData.SpellInfo) then
+        _G.WoWUkrainify_UntranslatedData.SpellInfo = {}
+    end
+    _G.WoWUkrainify_UntranslatedData.SpellInfo[tonumber(spellId)] = spellInfo
 
-    if (tonumber(spellId) == 370695) then
-        spellInfo.Name = 'Лють природи'
-        spellInfo.Talent.CurrentRank.Description[1].value =
-        "Перебуваючи у формі ведмедя, ви наносите на 10% більше шкоди від таємних чарів."
-        if (spellInfo.Talent.NextRankIndex ~= -1) then
-            spellInfo.Talent.NextRank.Description[1].value =
-            "Перебуваючи у формі ведмедя, ви наносите на 20% більше шкоди від таємних чарів."
-        end
-    end
-    if (tonumber(spellId) == 400254) then
-        spellInfo.Name = 'Рейз'
-    end
+    -- if (tonumber(spellId) == 370695) then
+    --     spellInfo.Name = 'Лють природи'
+    --     spellInfo.Talent.CurrentRank.Description[1].value =
+    --     "Перебуваючи у формі ведмедя, ви наносите на 10% більше шкоди від таємних чарів."
+    --     if (spellInfo.Talent.NextRankIndex ~= -1) then
+    --         spellInfo.Talent.NextRank.Description[1].value =
+    --         "Перебуваючи у формі ведмедя, ви наносите на 20% більше шкоди від таємних чарів."
+    --     end
+    -- end
+    -- if (tonumber(spellId) == 400254) then
+    --     spellInfo.Name = 'Рейз'
+    -- end
     return spellInfo
 end
 
-local function setText(index, value)
+local function updateGameTooltipFontStringText(index, value)
     local row = math.ceil(index / 2)
     local tooltipTextKey = ''
     if (index % 2 == 0) then
@@ -159,27 +181,31 @@ local function spellTooltipCallback(tooltip, tooltipData)
     if (localizedSpellTooltipInfo.Talent and localizedSpellTooltipInfo.Talent.NextRankIndex == -1) then return end
 
     if (localizedSpellTooltipInfo) then
-        setText(1, localizedSpellTooltipInfo.Name)
+        updateGameTooltipFontStringText(1, localizedSpellTooltipInfo.Name)
 
         local talent = localizedSpellTooltipInfo.Talent
         if (talent) then
-            setText(3, "Ранг " .. talent.MinRank .. "/" .. talent.MaxRank)
+            updateGameTooltipFontStringText(3, "Ранг " .. talent.MinRank .. "/" .. talent.MaxRank)
 
             local currentRank = localizedSpellTooltipInfo.Talent.CurrentRank
             if (currentRank) then
-                setText(currentRank.Description[1].index, currentRank.Description[1].value)
+                if (currentRank.Description) then
+                    updateGameTooltipFontStringText(currentRank.Description[1].index, currentRank.Description[1].value)
+                end
                 if (currentRank.Passive) then
-                    setText(currentRank.Passive, "Пасивний")
+                    updateGameTooltipFontStringText(currentRank.Passive, "Пасивний")
                 end
             end
 
             if (talent.NextRankIndex and talent.NextRankIndex ~= -1) then
-                setText(talent.NextRankIndex, "Наступний ранг:")
+                updateGameTooltipFontStringText(talent.NextRankIndex, "Наступний ранг:")
 
                 local nextRank = localizedSpellTooltipInfo.Talent.NextRank
-                setText(nextRank.Description[1].index, nextRank.Description[1].value)
+                if (nextRank.Description) then
+                    updateGameTooltipFontStringText(nextRank.Description[1].index, nextRank.Description[1].value)
+                end
                 if (nextRank.Passive) then
-                    setText(nextRank.Passive, "Пасивний")
+                    updateGameTooltipFontStringText(nextRank.Passive, "Пасивний")
                 end
             end
         end
