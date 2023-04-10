@@ -1,23 +1,44 @@
 local _, ns = ...;
 
-local morpheusFont = "Interface\\AddOns\\WoWUkrainify\\assets\\Morpheus_UA.ttf"
-local frixqtFont = "Interface\\AddOns\\WoWUkrainify\\assets\\FRIZQT_UA.ttf"
-
 local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
-local ExtractValuesFromString = ns.StringExtensions.ExtractValuesFromString
-local InsertValuesIntoString = ns.StringExtensions.InsertValuesIntoString
+
+local SPELL_PASSIVE_TRANSLATION = ns.SPELL_PASSIVE_TRANSLATION
+local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
+local SPELL_NEXT_RANK_TRANSLATION = ns.SPELL_NEXT_RANK_TRANSLATION
+
+local GetSpellNameWithFallback = ns.DbContext.Spells.GetSpellNameWithFallback
+local GetSpellDescriptionWithFallback = ns.DbContext.Spells.GetSpellDescriptionWithFallback
+local GetSpellCharacteristicsWithFallback = ns.DbContext.Spells.GetSpellCharacteristicsWithFallback
 
 local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "Replaced by%s+(.+)"
 
-local spellResources = { "Rage", "Mana", "Energy", "Combo Points" }
+local spellResources = { "Arcane Charges",
+    "Astral Power",
+    "Chi",
+    "Combo Points",
+    "Energy",
+    "Essence",
+    "Focus",
+    "Fury",
+    "Holy Power",
+    "Insanity",
+    "Maelstrom",
+    "Mana",
+    "Pain",
+    "Rage",
+    "Runes",
+    "Health",
+    "Runic Power",
+    "Soul Shards"
+}
 
 local translator = {
     static = {
         isEnabled = false,
         isInitialized = false,
-        enableDebugInfo = false
+        debugEnabled = false
     }
 }
 ns.SpellTooltipTranslator = translator
@@ -33,7 +54,7 @@ local function print_table(tbl, prefix)
     end
 end
 
-local function tryGetResourceType(input)
+local function tryGetResourceType(tooltipText)
     local resourcePatterns = {}
     for _, resource in ipairs(spellResources) do
         table.insert(resourcePatterns, "%d+ " .. resource)
@@ -42,27 +63,27 @@ local function tryGetResourceType(input)
     local resources = {}
     local foundResource = false
 
-    for _, pattern in ipairs(resourcePatterns) do
-        for resource in input:gmatch(pattern) do
-            foundResource = true
-            local extracted = ExtractValuesFromString(resource)
-            table.insert(resources, extracted)
+    for _, inputPart in ipairs(tooltipText.split('\n')) do
+        for _, pattern in ipairs(resourcePatterns) do
+            for resource in inputPart:gmatch(pattern) do
+                foundResource = true
+                table.insert(resources, resource)
+            end
         end
     end
-
     return foundResource and resources or nil
 end
 
-local function parseSpellTooltip(spellRow)
-    local tooltipInfo = {
-        Name = spellRow[1],
-        Form = spellRow[2] or "",
+local function parseSpellTooltip(tooltipTextArray)
+    local spellTooltip = {
+        Name = tooltipTextArray[1],
+        Form = tooltipTextArray[2] or "",
     }
 
     local contentIndex = 3
 
-    if (spellRow[3]) then
-        local minRank, maxRank = spellRow[3]:match(talentRankPattern)
+    if (tooltipTextArray[3]) then
+        local minRank, maxRank = tooltipTextArray[3]:match(talentRankPattern)
         if (minRank and maxRank) then
             local talent = { MinRank = tonumber(minRank), MaxRank = tonumber(maxRank), CurrentRank = {} }
 
@@ -71,63 +92,112 @@ local function parseSpellTooltip(spellRow)
                 talent.NextRank = {}
             end
 
-            if (spellRow[5]) then
-                local replacedBy = spellRow[5]:match(talentReplacedByPattern)
+            if (tooltipTextArray[5]) then
+                local replacedBy = tooltipTextArray[5]:match(talentReplacedByPattern)
                 if (replacedBy) then
                     contentIndex = 5
                     talent.ReplacedBy = replacedBy
                 end
             end
 
-            tooltipInfo.Talent = talent
+            spellTooltip.Talent = talent
 
             contentIndex = contentIndex + 4
         else
-            tooltipInfo.SpellInfo = {}
+            spellTooltip.Spell = {}
         end
     end
 
-    local refObj = tooltipInfo.Talent and tooltipInfo.Talent.CurrentRank or tooltipInfo.SpellInfo
+    local spellContainer = spellTooltip.Talent and spellTooltip.Talent.CurrentRank or spellTooltip.Spell
 
-    for i = contentIndex, #spellRow do
-        local element = spellRow[i]
+    for i = contentIndex, #tooltipTextArray do
+        local element = tooltipTextArray[i]
+        if (element ~= nil or element ~= "") then
+            local resourceTypes = tryGetResourceType(element)
+            if (resourceTypes) then
+                spellContainer.ResourceType = { i }
+                for x, resourceType in ipairs(resourceTypes) do
+                    table.insert(spellContainer.ResourceType, x + 1, resourceType)
+                end
+            end
 
-        local resourceType = tryGetResourceType(element)
-        if (resourceType) then
-            refObj.ResourceType = { i, element }
-        end
-
-        if not resourceType then
-            if (element == "Next Rank:") then
-                tooltipInfo.Talent.NextRankIndex = i
-                refObj = tooltipInfo.Talent.NextRank
-            elseif element == "Melee Range" or EndsWith(element, "yd range") then
-                refObj.Range = { i, element }
-            elseif element == "Instant" or EndsWith(element, "sec cast") then
-                refObj.CastTime = { i, element }
-            elseif StartsWith(element, "Requires") then
-                refObj.Requires = { i, element }
-            elseif EndsWith(element, "cooldown") or EndsWith(element, "recharge") then
-                refObj.Cooldown = { i, element }
-            elseif element == "Passive" then
-                refObj.Passive = i
-            elseif i % 2 == 1 then
-                if (not refObj.Description) then refObj.Description = {} end
-                refObj.Description[#refObj.Description + 1] = { index = i, value = element }
+            if not resourceTypes then
+                if (element == "Next Rank:") then
+                    spellTooltip.Talent.NextRankIndex = i
+                    spellContainer = spellTooltip.Talent.NextRank
+                elseif element == "Melee Range" or EndsWith(element, "yd range") then
+                    spellContainer.Range = { i, element }
+                elseif element == "Instant" or EndsWith(element, "sec cast") or StartsWith(element, "Channeled") then
+                    spellContainer.CastTime = { i, element }
+                elseif StartsWith(element, "Requires") then
+                    spellContainer.Requires = { i, element }
+                elseif EndsWith(element, "cooldown") or EndsWith(element, "recharge") then
+                    spellContainer.Cooldown = { i, element }
+                elseif element == "Passive" then
+                    spellContainer.Passive = i
+                elseif i % 2 == 1 then
+                    if (not spellContainer.Descriptions) then spellContainer.Descriptions = {} end
+                    spellContainer.Descriptions[#spellContainer.Descriptions + 1] = { index = i, value = element }
+                end
             end
         end
     end
 
-    return tooltipInfo
+    return spellTooltip
 end
 
-local function getLocalizedSpellTooltip(spellId, tooltipRows)
-    local spellInfo = parseSpellTooltip(tooltipRows)
+local function fillTranslationFor(spellContainer)
+    if (not spellContainer) then return end
 
-    if (not _G.WoWUkrainify_UntranslatedData.SpellInfo) then
-        _G.WoWUkrainify_UntranslatedData.SpellInfo = {}
+    -- TODO: Requires
+
+    if (spellContainer.ResourceType) then
+        for i = 2, #spellContainer.ResourceType do
+            spellContainer.ResourceType[i] = GetSpellCharacteristicsWithFallback(spellContainer.ResourceType[i])
+        end
     end
-    _G.WoWUkrainify_UntranslatedData.SpellInfo[tonumber(spellId)] = spellInfo
+
+    if (spellContainer.Range) then
+        spellContainer.Range[2] = GetSpellCharacteristicsWithFallback(spellContainer.Range[2])
+    end
+
+    if (spellContainer.CastTime) then
+        spellContainer.CastTime[2] = GetSpellCharacteristicsWithFallback(spellContainer.CastTime[2])
+    end
+    if (spellContainer.Cooldown) then
+        spellContainer.Cooldown[2] = GetSpellCharacteristicsWithFallback(spellContainer.Cooldown[2])
+    end
+
+    -- TODO: ReplacedBy
+
+    if (spellContainer.Descriptions) then
+        for _, description in ipairs(spellContainer.Descriptions) do
+            description.value = GetSpellDescriptionWithFallback(description.value)
+        end
+    end
+end
+
+local function getTranslatedSpellTooltip(spellId, tooltipTextArray)
+    local spellTooltip = parseSpellTooltip(tooltipTextArray)
+
+    if (translator.static.debugEnabled) then
+        if (not _G.WoWUkrainify_UntranslatedData.SpellDebugInfo) then
+            _G.WoWUkrainify_UntranslatedData.SpellDebugInfo = {}
+        end
+        _G.WoWUkrainify_UntranslatedData.SpellDebugInfo[tonumber(spellId)] = spellTooltip
+    end
+
+    spellTooltip.Name = GetSpellNameWithFallback(spellTooltip.Name)
+    -- TODO: Form
+
+    if (spellTooltip.Spell) then
+        fillTranslationFor(spellTooltip.Spell)
+    elseif (spellTooltip.Talent) then
+        fillTranslationFor(spellTooltip.Talent.CurrentRank)
+        if (spellTooltip.Talent.NextRankIndex ~= -1) then
+            fillTranslationFor(spellTooltip.Talent.NextRank)
+        end
+    end
 
     -- if (tonumber(spellId) == 370695) then
     --     spellInfo.Name = 'Лють природи'
@@ -141,10 +211,10 @@ local function getLocalizedSpellTooltip(spellId, tooltipRows)
     -- if (tonumber(spellId) == 400254) then
     --     spellInfo.Name = 'Рейз'
     -- end
-    return spellInfo
+    return spellTooltip
 end
 
-local function updateGameTooltipFontStringText(index, value)
+local function setGameTooltipText(index, value)
     local row = math.ceil(index / 2)
     local tooltipTextKey = ''
     if (index % 2 == 0) then
@@ -158,80 +228,56 @@ local function updateGameTooltipFontStringText(index, value)
     tooltipLines:SetTextColor(r, g, b)
 end
 
-local function spellTooltipCallback(tooltip, tooltipData)
+local function setGameTooltipTextFrom(spellContainer)
+    if (spellContainer) then
+        if (spellContainer.Passive) then
+            setGameTooltipText(spellContainer.Passive, SPELL_PASSIVE_TRANSLATION)
+        end
+    end
+end
+
+local function tooltipCallback(tooltip, tooltipData)
     if (not translator.static.isEnabled) then return end
 
     local spellId = tonumber(tooltipData.id)
 
-    local tooltipRows = {}
+    local tooltipTextArray = {}
     for i = 1, tooltip:NumLines() do
         local lineLeft = _G["GameTooltipTextLeft" .. i]
         if (lineLeft) then
-            tooltipRows[#tooltipRows + 1] = lineLeft:GetText() or ''
+            tooltipTextArray[#tooltipTextArray + 1] = lineLeft:GetText() or ''
         end
 
         local lineRight = _G["GameTooltipTextRight" .. i]
         if (lineRight) then
-            tooltipRows[#tooltipRows + 1] = lineRight:GetText() or ''
+            tooltipTextArray[#tooltipTextArray + 1] = lineRight:GetText() or ''
         end
     end
 
-    local localizedSpellTooltipInfo = getLocalizedSpellTooltip(spellId, tooltipRows)
+    local translatedTooltip = getTranslatedSpellTooltip(spellId, tooltipTextArray)
 
-    if (localizedSpellTooltipInfo.Talent and localizedSpellTooltipInfo.Talent.NextRankIndex == -1) then return end
+    if (translatedTooltip and translatedTooltip.Talent and translatedTooltip.Talent.NextRankIndex == -1) then return end -- Hook
 
-    if (localizedSpellTooltipInfo) then
-        updateGameTooltipFontStringText(1, localizedSpellTooltipInfo.Name)
+    setGameTooltipText(1, translatedTooltip.Name)
+    -- TODO: Form if not empty
 
-        local talent = localizedSpellTooltipInfo.Talent
-        if (talent) then
-            updateGameTooltipFontStringText(3, "Ранг " .. talent.MinRank .. "/" .. talent.MaxRank)
+    local talent = translatedTooltip.Talent
+    if (talent) then
+        setGameTooltipText(3, SPELL_RANK_TRANSLATION .. talent.MinRank .. "/" .. talent.MaxRank)
+        setGameTooltipTextFrom(talent.CurrentRank)
 
-            local currentRank = localizedSpellTooltipInfo.Talent.CurrentRank
-            if (currentRank) then
-                if (currentRank.Description) then
-                    updateGameTooltipFontStringText(currentRank.Description[1].index, currentRank.Description[1].value)
-                end
-                if (currentRank.Passive) then
-                    updateGameTooltipFontStringText(currentRank.Passive, "Пасивний")
-                end
-            end
-
-            if (talent.NextRankIndex and talent.NextRankIndex ~= -1) then
-                updateGameTooltipFontStringText(talent.NextRankIndex, "Наступний ранг:")
-
-                local nextRank = localizedSpellTooltipInfo.Talent.NextRank
-                if (nextRank.Description) then
-                    updateGameTooltipFontStringText(nextRank.Description[1].index, nextRank.Description[1].value)
-                end
-                if (nextRank.Passive) then
-                    updateGameTooltipFontStringText(nextRank.Passive, "Пасивний")
-                end
-            end
+        if (talent.NextRankIndex) then
+            setGameTooltipText(talent.NextRankIndex, SPELL_NEXT_RANK_TRANSLATION)
+            setGameTooltipTextFrom(talent.NextRank)
         end
+    else
+        setGameTooltipTextFrom(talent.Spell)
     end
-    --print_table(spellInfo)
-
-    -- Form:
-    -- Name: Fury of Nature
-    -- Talent.NextRankIndex: 13
-    -- Talent.NextRank.Description.1.index: 17
-    -- Talent.NextRank.Description.1.value: While in Bear Form, you deal 20% increased Arcane damage.
-    -- Talent.NextRank.Passive: 15
-    -- Talent.CurrentRank.Description.1.index: 9
-    -- Talent.CurrentRank.Description.1.value: While in Bear Form, you deal 10% increased Arcane damage.
-    -- Talent.CurrentRank.Description.2.index: 11
-    -- Talent.CurrentRank.Description.2.value:
-    -- Talent.CurrentRank.Passive: 7
-    -- Talent.MaxRank: 2
-    -- Talent.MinRank: 1
-
-    --print("End Spell")
 end
 
 local function initialize()
     if (translator.static.isInitialized) then return end
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, spellTooltipCallback)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, tooltipCallback)
     translator.static.isInitialized = true
 end
 
@@ -255,5 +301,5 @@ function translator.SetEnabled(value)
 end
 
 function translator.EnableDebugInfo(value)
-    translator.static.enableDebugInfo = value
+    translator.static.debugEnabled = value
 end

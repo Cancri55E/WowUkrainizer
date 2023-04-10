@@ -2,6 +2,9 @@ local _, ns = ...;
 
 if (ns.DbContext) then return end
 
+local ExtractValuesFromString = ns.StringExtensions.ExtractValuesFromString
+local InsertValuesIntoString = ns.StringExtensions.InsertValuesIntoString
+
 local dbContext = {}
 
 local function getValueWithFallback(hashTable, default)
@@ -35,6 +38,28 @@ do
     end
 
     dbContext.Units = repository
+end
+
+do
+    local repository = {}
+
+    function repository.GetSpellNameWithFallback(default)
+        return getValueWithFallback(ns._db.SpellNames, default)
+    end
+
+    function repository.GetSpellDescriptionWithFallback(default)
+        local text, values = ExtractValuesFromString(default)
+        local translatedText = getValueWithFallback(ns._db.SpellDescriptions, text)
+        return InsertValuesIntoString(translatedText, values)
+    end
+
+    function repository.GetSpellCharacteristicsWithFallback(default)
+        local text, values = ExtractValuesFromString(default)
+        local translatedText = getValueWithFallback(ns._db.CommonSpellCharacteristics, text)
+        return InsertValuesIntoString(translatedText, values)
+    end
+
+    dbContext.Spells = repository
 end
 
 ns.DbContext = dbContext
