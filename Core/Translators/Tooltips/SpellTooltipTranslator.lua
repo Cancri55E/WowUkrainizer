@@ -55,9 +55,10 @@ local function tryGetResourceType(tooltipText)
 
     for _, inputPart in ipairs(Split(tooltipText, '\n')) do
         for _, pattern in ipairs(resourcePatterns) do
-            for resource in inputPart:gmatch(pattern) do
+            for _ in inputPart:gmatch(pattern) do
                 foundResource = true
-                table.insert(resources, resource)
+                print(inputPart, pattern)
+                table.insert(resources, inputPart)
             end
         end
     end
@@ -141,6 +142,7 @@ local function fillTranslationFor(spellContainer)
 
     if (spellContainer.ResourceType) then
         for i = 2, #spellContainer.ResourceType do
+            print("fillTranslationFor", spellContainer.ResourceType[i])
             spellContainer.ResourceType[i] = GetSpellAttributeOrDefault(spellContainer.ResourceType[i])
         end
     end

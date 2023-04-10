@@ -81,8 +81,16 @@ do
 
     function internal.ExtractNumericValuesFromString(str)
         local values = {}
-        local modifiedText = str:gsub("(%d+)", function(num)
-            table.insert(values, tonumber(num))
+        local textWithNumbersWithoutCommas = str:gsub("(%d[%d,]*%d)", function(num)
+            local sanitizedNum = num:gsub(",", "")
+            return sanitizedNum
+        end)
+        local modifiedText = textWithNumbersWithoutCommas:gsub("(%d+)", function(numWithoutCommas)
+            local num = numWithoutCommas:reverse():gsub("(%d%d%d)", "%1,"):reverse()
+            if num:sub(1, 1) == "," then
+                num = num:sub(2)
+            end
+            table.insert(values, num)
             return "{" .. #values .. "}"
         end)
 
