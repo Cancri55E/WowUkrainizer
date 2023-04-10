@@ -2,34 +2,41 @@ local _, ns = ...;
 
 if (ns.DbContext) then return end
 
-local ExtractValuesFromString = ns.StringExtensions.ExtractValuesFromString
-local InsertValuesIntoString = ns.StringExtensions.InsertValuesIntoString
+local ExtractNumericValuesFromString = ns.StringExtensions.ExtractNumericValuesFromString
+local InsertNumericValuesIntoString = ns.StringExtensions.InsertNumericValuesIntoString
 
 local dbContext = {}
 
-local function getValueWithFallback(hashTable, default)
+local function getValueOrDefault(hashTable, default)
     if (not default) then return default end
     local hash = ns.StringExtensions.GetHash(default)
     return hashTable[hash] or default
+end
+
+local function getFormattedValueOrDefault(hashTable, default)
+    if (not default) then return default end
+    local text, numValues = ExtractNumericValuesFromString(default)
+    local translatedText = getValueOrDefault(hashTable, text)
+    return InsertNumericValuesIntoString(translatedText, numValues)
 end
 
 do
     local repository = {}
 
     function repository.GetUnitNameWithFallback(default)
-        return getValueWithFallback(ns._db.UnitNames, default)
+        return getValueOrDefault(ns._db.UnitNames, default)
     end
 
     function repository.GetUnitSubnameWithFallback(default)
-        return getValueWithFallback(ns._db.UnitSubnames, default)
+        return getValueOrDefault(ns._db.UnitSubnames, default)
     end
 
     function repository.GetUnitTypeWithFallback(default)
-        return getValueWithFallback(ns._db.UnitTypes, default)
+        return getValueOrDefault(ns._db.UnitTypes, default)
     end
 
     function repository.GetUnitRankWithFallback(default)
-        return getValueWithFallback(ns._db.UnitRanks, default)
+        return getValueOrDefault(ns._db.UnitRanks, default)
     end
 
     function repository.GetUnitFractionWithFallback(default)
@@ -43,20 +50,16 @@ end
 do
     local repository = {}
 
-    function repository.GetSpellNameWithFallback(default)
-        return getValueWithFallback(ns._db.SpellNames, default)
+    function repository.GetSpellNameOrDefault(default)
+        return getValueOrDefault(ns._db.SpellNames, default)
     end
 
-    function repository.GetSpellDescriptionWithFallback(default)
-        local text, values = ExtractValuesFromString(default)
-        local translatedText = getValueWithFallback(ns._db.SpellDescriptions, text)
-        return InsertValuesIntoString(translatedText, values)
+    function repository.GetSpellDescriptionOrDefault(default)
+        return getFormattedValueOrDefault(ns._db.SpellDescriptions, default)
     end
 
-    function repository.GetSpellCharacteristicsWithFallback(default)
-        local text, values = ExtractValuesFromString(default)
-        local translatedText = getValueWithFallback(ns._db.CommonSpellCharacteristics, text)
-        return InsertValuesIntoString(translatedText, values)
+    function repository.GetSpellAttributeOrDefault(default)
+        return getFormattedValueOrDefault(ns._db.CommonSpellAttributes, default)
     end
 
     dbContext.Spells = repository

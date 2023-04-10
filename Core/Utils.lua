@@ -1,5 +1,6 @@
 local _, ns = ...;
 
+-- Common functions
 do
     local internal = {}
 
@@ -17,9 +18,21 @@ do
         fontString:SetFont(newFontFile, height, flags)
     end
 
+    function internal.PrintTableFunctions(tbl, prefix)
+        prefix = prefix or ""
+        for key, value in pairs(tbl) do
+            if type(value) == "table" then
+                internal.PrintTable(value, prefix .. key .. ".")
+            elseif type(value) == "function" and type(value) ~= 'userdata' then
+                print(prefix .. key .. ": " .. tostring(value))
+            end
+        end
+    end
+
     ns.Utils = internal
 end
 
+-- StringExtensions
 do
     local internal = {}
 
@@ -57,20 +70,26 @@ do
         end
     end
 
-    function internal.ExtractValuesFromString(str)
+    function internal.Split(input, delimiter)
+        local items = {}
+        local pattern = "([^" .. delimiter .. "]+)"
+        for item in input:gmatch(pattern) do
+            table.insert(items, item)
+        end
+        return items
+    end
+
+    function internal.ExtractNumericValuesFromString(str)
         local values = {}
         local modifiedText = str:gsub("(%d+)", function(num)
             table.insert(values, tonumber(num))
             return "{" .. #values .. "}"
         end)
 
-        return {
-            text = modifiedText,
-            values = values
-        }
+        return modifiedText, values
     end
 
-    function internal.InsertValuesIntoString(str, values)
+    function internal.InsertNumericValuesIntoString(str, values)
         local result = str:gsub("{(%d+)}", function(index)
             return values[tonumber(index)]
         end)

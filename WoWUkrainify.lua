@@ -3,7 +3,9 @@ local addonName, ns = ...;
 local eventHandler = ns.EventHandler:new()
 
 local function OnPlayerLogin()
-    _G.WoWUkrainify_UntranslatedData = {}
+    if (not _G.WoWUkrainify_UntranslatedData) then
+        _G.WoWUkrainify_UntranslatedData = {}
+    end
 
     ns.UnitTooltipTranslator.SetEnabled(true)
     ns.UnitTooltipTranslator.EnableDebugInfo(true)
