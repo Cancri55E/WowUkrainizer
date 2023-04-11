@@ -10,7 +10,7 @@ To install the add-on, simply download the latest release from the GitHub reposi
 ## License
 The WoWUkrainify is licensed under the MIT License. For the full text of the MIT License, please see the [LICENSE](LICENSE) file.
 
-## Font Attribution
+### Font Attribution
 
 This project uses the Arsenal font, created by Andrij Shevchenko <andrij.design@gmail.com>. The font is licensed under the SIL Open Font License, Version 1.1.
 
