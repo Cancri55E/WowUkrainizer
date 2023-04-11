@@ -2,10 +2,21 @@ local addonName, ns = ...;
 
 local eventHandler = ns.EventHandler:new()
 
+local gameTooltipFontName = [[Interface\AddOns\WoWUkrainify\assets\Arsenal_Regular.ttf]]
+
 local function OnPlayerLogin()
     if (not _G.WoWUkrainify_UntranslatedData) then
         _G.WoWUkrainify_UntranslatedData = {}
     end
+
+    local _, height, flags = GameTooltipHeaderText:GetFont()
+    GameTooltipHeaderText:SetFont(gameTooltipFontName, height * 1.1, flags)
+
+    local _, height, flags = GameTooltipText:GetFont()
+    GameTooltipText:SetFont(gameTooltipFontName, height * 1.1, flags)
+
+    local _, height, flags = GameTooltipTextSmall:GetFont()
+    GameTooltipTextSmall:SetFont(gameTooltipFontName, height * 1.1, flags)
 
     ns.UnitTooltipTranslator.SetEnabled(true)
     ns.UnitTooltipTranslator.EnableDebugInfo(true)

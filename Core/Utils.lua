@@ -12,12 +12,6 @@ do
         end)
     end
 
-    function internal.UpdateFont(fontString, newFontFile)
-        local fontFile, height, flags = fontString:GetFont()
-        if (fontFile == newFontFile) then return end
-        fontString:SetFont(newFontFile, height, flags)
-    end
-
     function internal.PrintTableFunctions(tbl, prefix)
         prefix = prefix or ""
         for key, value in pairs(tbl) do

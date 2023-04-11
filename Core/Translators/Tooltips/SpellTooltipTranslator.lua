@@ -205,6 +205,7 @@ local function setGameTooltipText(index, value)
         tooltipTextKey = 'GameTooltipTextLeft'
     end
     local tooltipLines = _G[tooltipTextKey .. row]
+
     local r, g, b = tooltipLines:GetTextColor()
     tooltipLines:SetText(value)
     tooltipLines:SetTextColor(r, g, b)
