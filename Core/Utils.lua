@@ -75,7 +75,7 @@ do
 
     function internal.ExtractNumericValuesFromString(str)
         local values = {}
-        local modifiedText = str:gsub("(%d[%d,.]*%d)", function(num)
+        local modifiedText = str:gsub("(%d[%d,]*%.?%d*)", function(num)
             table.insert(values, num)
             return "{" .. #values .. "}"
         end)

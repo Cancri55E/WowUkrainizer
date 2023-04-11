@@ -47,7 +47,7 @@ ns.SpellTooltipTranslator = translator
 local function tryGetResourceType(tooltipText)
     local resourcePatterns = {}
     for _, resource in ipairs(spellResources) do
-        table.insert(resourcePatterns, "%d+ " .. resource)
+        table.insert(resourcePatterns, "(%d[%d,]*%.?%d*) " .. resource)
     end
 
     local resources = {}
