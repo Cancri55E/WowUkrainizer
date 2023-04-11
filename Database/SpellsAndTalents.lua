@@ -6,10 +6,16 @@ local _, ns = ...;
 
 if (not ns._db) then return end
 
-ns._db.UnitNames = {
-    [1292786250] = "Остін Хаксворт", -- Austin Huxworth
-}
+do
+    local data = {
+    }
 
-ns._db.UnitSubnames = {
-    [2989914850] = "Конюший", -- Stable Master
-}
+    ns._db.SpellNames = data
+end
+
+do
+    local data = {
+    }
+
+    ns._db.SpellDescriptions = data
+end

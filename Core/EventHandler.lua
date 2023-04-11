@@ -1,7 +1,5 @@
 local _, ns = ...;
 
-if (ns.EventHandler) then return end
-
 local eventHandler = class("EventHandler");
 ns.EventHandler = eventHandler
 

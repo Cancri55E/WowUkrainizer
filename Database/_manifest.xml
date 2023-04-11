@@ -2,4 +2,5 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Init.lua"/>
 	<Script file="Units.lua"/>
+	<Script file="SpellsAndTalents.lua"/>
 </Ui>

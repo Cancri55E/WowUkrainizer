@@ -6,10 +6,6 @@ local GetUnitTypeWithFallback = ns.DbContext.Units.GetUnitTypeWithFallback
 local GetUnitRankWithFallback = ns.DbContext.Units.GetUnitRankWithFallback
 local GetUnitFractionWithFallback = ns.DbContext.Units.GetUnitFractionWithFallback
 
-
-local morpheusFont = "Interface\\AddOns\\WoWUkrainify\\assets\\Morpheus_UA.ttf"
-local frixqtFont = "Interface\\AddOns\\WoWUkrainify\\assets\\FRIZQT_UA.ttf"
-
 local translator = {
     static = {
         isEnabled = false,
@@ -126,7 +122,6 @@ local function unitTooltipCallback(tooltip, tooltipLineData)
             for i = 1, tooltip:NumLines() do
                 local line = _G["GameTooltipTextLeft" .. i]
                 tooltipLines[#tooltipLines + 1] = line
-                ns.Utils.UpdateFont(line, frixqtFont)
             end
 
             local r, g, b = tooltipLines[1]:GetTextColor()
