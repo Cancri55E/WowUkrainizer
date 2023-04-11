@@ -6,18 +6,10 @@ local _, ns = ...;
 
 if (not ns._db) then return end
 
-do
-    local data = {
-        [1292786250] = "Остін Хаксворт", -- Austin Huxworth (id: 157046, 154327, 156610, 161666)
-    }
+ns._db.UnitNames = {
+    [1292786250] = "Остін Хаксворт", -- Austin Huxworth
+}
 
-    ns._db.UnitNames = data
-end
-
-do
-    local data = {
-        [2989914850] = "Конюший", -- Stable Master
-    }
-
-    ns._db.UnitSubnames = data
-end
+ns._db.UnitSubnames = {
+    [2989914850] = "Конюший", -- Stable Master
+}

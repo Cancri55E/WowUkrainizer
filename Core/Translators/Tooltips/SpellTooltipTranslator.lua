@@ -54,12 +54,14 @@ local function tryGetResourceType(tooltipText)
     local foundResource = false
 
     for _, inputPart in ipairs(Split(tooltipText, '\n')) do
+        foundResource = false
         for _, pattern in ipairs(resourcePatterns) do
             for _ in inputPart:gmatch(pattern) do
                 foundResource = true
                 table.insert(resources, inputPart)
             end
         end
+        if (not foundResource) then break end
     end
     return foundResource and resources or nil
 end
@@ -277,7 +279,7 @@ local function tooltipCallback(tooltip, tooltipData)
 
     local talent = translatedTooltip.Talent
     if (talent) then
-        setGameTooltipText(3, SPELL_RANK_TRANSLATION .. talent.MinRank .. "/" .. talent.MaxRank)
+        setGameTooltipText(3, SPELL_RANK_TRANSLATION .. " " .. talent.MinRank .. "/" .. talent.MaxRank)
         setGameTooltipTextFrom(talent.CurrentRank)
 
         if (talent.NextRankIndex) then
