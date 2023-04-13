@@ -2,7 +2,6 @@ local _, ns = ...;
 
 local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
-local Split = ns.StringExtensions.Split
 
 local SPELL_PASSIVE_TRANSLATION = ns.SPELL_PASSIVE_TRANSLATION
 local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
@@ -14,6 +13,7 @@ local GetSpellAttributeOrDefault = ns.DbContext.Spells.GetSpellAttributeOrDefaul
 
 local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "Replaced by%s+(.+)"
+local maxChargesPattern = "Max %d+ Charges"
 
 local spellResources = { "Arcane Charges",
     "Astral Power",
@@ -29,9 +29,11 @@ local spellResources = { "Arcane Charges",
     "Mana",
     "Pain",
     "Rage",
+    "Rune",
     "Runes",
     "Health",
     "Runic Power",
+    "Runic Power per sec",
     "Soul Shards"
 }
 
@@ -44,26 +46,43 @@ local translator = {
 }
 ns.SpellTooltipTranslator = translator
 
-local function tryGetResourceType(tooltipText)
-    local resourcePatterns = {}
+local function isResourceString(str, spellResources)
     for _, resource in ipairs(spellResources) do
-        table.insert(resourcePatterns, "(%d[%d,]*%.?%d*) " .. resource)
+        if str:match("^%d+[.,]?%d* to %d+[.,]?%d* " .. resource .. "$") or str:match("^%d+[.,]?%d* " .. resource .. "$") then
+            return true
+        end
     end
+    return false
+end
 
-    local resources = {}
-    local foundResource = false
+local function splitResourceString(str)
+    local resourceStrings = {}
+    for resourceString in str:gmatch("([^\n]+)") do
+        table.insert(resourceStrings, resourceString)
+    end
+    return resourceStrings
+end
 
-    for _, inputPart in ipairs(Split(tooltipText, '\n')) do
-        foundResource = false
-        for _, pattern in ipairs(resourcePatterns) do
-            for _ in inputPart:gmatch(pattern) do
-                foundResource = true
-                table.insert(resources, inputPart)
+local function processResourceStrings(str)
+    local resultTable = {}
+    local resourceStrings = splitResourceString(str)
+
+    for _, resourceString in ipairs(resourceStrings) do
+        if isResourceString(resourceString, spellResources) then
+            local isInTable = false
+            for _, element in ipairs(resultTable) do
+                if element == resourceString then
+                    isInTable = true
+                    break
+                end
+            end
+            if not isInTable then
+                table.insert(resultTable, resourceString)
             end
         end
-        if (not foundResource) then break end
     end
-    return foundResource and resources or nil
+
+    return next(resultTable) ~= nil and resultTable or nil
 end
 
 local function parseSpellTooltip(tooltipTextArray)
@@ -105,7 +124,7 @@ local function parseSpellTooltip(tooltipTextArray)
     for i = contentIndex, #tooltipTextArray do
         local element = tooltipTextArray[i]
         if (element ~= nil or element ~= "") then
-            local resourceTypes = tryGetResourceType(element)
+            local resourceTypes = processResourceStrings(element)
             if (resourceTypes) then
                 spellContainer.ResourceType = { i }
                 for x, resourceType in ipairs(resourceTypes) do
@@ -117,6 +136,8 @@ local function parseSpellTooltip(tooltipTextArray)
                 if (element == "Next Rank:") then
                     spellTooltip.Talent.NextRankIndex = i
                     spellContainer = spellTooltip.Talent.NextRank
+                elseif (string.match(element, maxChargesPattern)) then
+                    spellContainer.MaxCharges = { i, element }
                 elseif element == "Melee Range" or EndsWith(element, "yd range") then
                     spellContainer.Range = { i, element }
                 elseif element == "Instant" or EndsWith(element, "sec cast") or StartsWith(element, "Channeled") then
@@ -158,8 +179,13 @@ local function fillTranslationFor(spellContainer)
     if (spellContainer.CastTime) then
         spellContainer.CastTime[2] = GetSpellAttributeOrDefault(spellContainer.CastTime[2])
     end
+
     if (spellContainer.Cooldown) then
         spellContainer.Cooldown[2] = GetSpellAttributeOrDefault(spellContainer.Cooldown[2])
+    end
+
+    if (spellContainer.MaxCharges) then
+        spellContainer.MaxCharges[2] = GetSpellAttributeOrDefault(spellContainer.MaxCharges[2])
     end
 
     if (spellContainer.ReplacedBy) then
@@ -173,19 +199,11 @@ local function fillTranslationFor(spellContainer)
     end
 end
 
-local function getTranslatedSpellTooltip(spellId, tooltipTextArray)
+local function getTranslatedSpellTooltip(tooltipTextArray)
     local spellTooltip = parseSpellTooltip(tooltipTextArray)
-
-    if (translator.static.debugEnabled) then
-        if (not _G.WoWUkrainify_UntranslatedData.SpellDebugInfo) then
-            _G.WoWUkrainify_UntranslatedData.SpellDebugInfo = {}
-        end
-        _G.WoWUkrainify_UntranslatedData.SpellDebugInfo[tonumber(spellId)] = spellTooltip
-    end
 
     spellTooltip.Name = GetSpellNameOrDefault(spellTooltip.Name)
     spellTooltip.Form = GetSpellAttributeOrDefault(spellTooltip.Form)
-
     if (spellTooltip.Spell) then
         fillTranslationFor(spellTooltip.Spell)
     elseif (spellTooltip.Talent) then
@@ -229,6 +247,9 @@ local function setGameTooltipTextFrom(spellContainer)
     if (spellContainer.Cooldown) then
         setGameTooltipText(spellContainer.Cooldown[1], spellContainer.Cooldown[2])
     end
+    if (spellContainer.MaxCharges) then
+        setGameTooltipText(spellContainer.MaxCharges[1], spellContainer.MaxCharges[2])
+    end
     if (spellContainer.Passive) then
         setGameTooltipText(spellContainer.Passive, SPELL_PASSIVE_TRANSLATION)
     end
@@ -253,8 +274,6 @@ end
 local function tooltipCallback(tooltip, tooltipData)
     if (not translator.static.isEnabled) then return end
 
-    local spellId = tonumber(tooltipData.id)
-
     local tooltipTextArray = {}
     for i = 1, tooltip:NumLines() do
         local lineLeft = _G["GameTooltipTextLeft" .. i]
@@ -268,7 +287,7 @@ local function tooltipCallback(tooltip, tooltipData)
         end
     end
 
-    local translatedTooltip = getTranslatedSpellTooltip(spellId, tooltipTextArray)
+    local translatedTooltip = getTranslatedSpellTooltip(tooltipTextArray)
 
     if (translatedTooltip and translatedTooltip.Talent and translatedTooltip.Talent.NextRankIndex == -1) then return end -- Hook
 

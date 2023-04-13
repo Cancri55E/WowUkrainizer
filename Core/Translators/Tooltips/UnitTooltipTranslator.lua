@@ -1,5 +1,8 @@
 local _, ns = ...;
 
+local LEVEL_TRANSLATION = ns.LEVEL_TRANSLATION
+local PET_LEVEL_TRANSLATION = ns.PET_LEVEL_TRANSLATION
+
 local GetUnitNameWithFallback = ns.DbContext.Units.GetUnitNameWithFallback
 local GetUnitSubnameWithFallback = ns.DbContext.Units.GetUnitSubnameWithFallback
 local GetUnitTypeWithFallback = ns.DbContext.Units.GetUnitTypeWithFallback
@@ -16,7 +19,7 @@ local translator = {
 ns.UnitTooltipTranslator = translator
 
 local function parseUnitLevelString(unitLevelString)
-    local level, unitType, rank = nil, nil, nil
+    local level, unitType, rank, isPet = nil, nil, nil, false
     local unitLevelParts = {}
 
     for part in unitLevelString:gmatch("%S+") do
@@ -35,9 +38,15 @@ local function parseUnitLevelString(unitLevelString)
                 unitType = unitLevelParts[rankIndex]
             end
         end
+    elseif unitLevelParts[1] == "Pet" then
+        isPet = true
+        level = unitLevelParts[3]
+        if #unitLevelParts > 3 then
+            unitType = unitLevelParts[4]
+        end
     end
 
-    return level, unitType, rank
+    return level, unitType, rank, isPet
 end
 
 local function parseUnitTooltip(unitTooltipLines)
@@ -49,11 +58,12 @@ local function parseUnitTooltip(unitTooltipLines)
     local unitTooltip = { name = leftTexts[1], levelData = {} }
     if (#leftTexts > 1) then
         local index = 2
-        unitTooltip.subnameData = leftTexts[index] and leftTexts[index]:sub(1, 5) ~= "Level" and
+        unitTooltip.subnameData = leftTexts[index] and leftTexts[index]:sub(1, 9) ~= "Pet Level" and
+            leftTexts[index]:sub(1, 5) ~= "Level" and
             { index = index, value = leftTexts[index] }
         index = index + (unitTooltip.subnameData and 1 or 0)
 
-        unitTooltip.levelData.index, unitTooltip.levelData.level, unitTooltip.levelData.unitType, unitTooltip.levelData.rank =
+        unitTooltip.levelData.index, unitTooltip.levelData.level, unitTooltip.levelData.unitType, unitTooltip.levelData.rank, unitTooltip.levelData.isPet =
             index, parseUnitLevelString(leftTexts[index])
 
         for i = index + 1, #leftTexts do
@@ -78,12 +88,19 @@ local function getLocalizedUnitTooltip(unitTooltipLines)
     local name = GetUnitNameWithFallback(parsedTooltip.name)
     local levelData = {
         index = parsedTooltip.levelData.index,
-        value = string.format("%s %s %s %s",
-            ns.LEVEL_TRANSLATION,
-            parsedTooltip.levelData.level,
-            parsedTooltip.levelData.unitType and GetUnitTypeWithFallback(parsedTooltip.levelData.unitType) or "",
-            parsedTooltip.levelData.rank and "(" .. GetUnitRankWithFallback(parsedTooltip.levelData.rank) .. ")" or "")
     }
+    if (not parsedTooltip.levelData.isPet) then
+        levelData.value = string.format("%s %s %s %s",
+            LEVEL_TRANSLATION,
+            parsedTooltip.levelData.level,
+            (parsedTooltip.levelData.unitType and GetUnitTypeWithFallback(parsedTooltip.levelData.unitType)) or "",
+            (parsedTooltip.levelData.rank and "(" .. GetUnitRankWithFallback(parsedTooltip.levelData.rank) .. ")") or "")
+    else
+        levelData.value = string.format("%s %s",
+            string.gsub(PET_LEVEL_TRANSLATION, "{1}", parsedTooltip.levelData.level),
+            (parsedTooltip.levelData.unitType and GetUnitTypeWithFallback(parsedTooltip.levelData.unitType)) or "")
+    end
+
     local subnameData = nil
     if (parsedTooltip.subnameData) then
         local subname = GetUnitSubnameWithFallback(parsedTooltip.subnameData.value)
@@ -142,10 +159,6 @@ local function unitTooltipCallback(tooltip, tooltipLineData)
                 tooltipLines[localizedTooltip.leaderData.index]:SetText(localizedTooltip.leaderData.value)
             end
         end
-    end
-
-    if (translator.static.enableDebugInfo) then
-        tooltip:AddLine("ID: " .. tostring(unitId))
     end
 end
 
