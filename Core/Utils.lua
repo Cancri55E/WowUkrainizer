@@ -92,3 +92,17 @@ do
 
     ns.StringExtensions = internal
 end
+
+do
+    local internal = {}
+
+    function internal.UpdateFontString(fontString, value)
+        if (not fontString) then return end
+
+        local r, g, b = fontString:GetTextColor()
+        fontString:SetText(value)
+        fontString:SetTextColor(r, g, b)
+    end
+
+    ns.FontStringExtensions = internal
+end
