@@ -2,7 +2,6 @@ local _, ns = ...;
 
 local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
-local UpdateFontString = ns.FontStringExtensions.UpdateFontString
 
 local SPELL_PASSIVE_TRANSLATION = ns.SPELL_PASSIVE_TRANSLATION
 local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
@@ -16,54 +15,48 @@ local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "Replaced by%s+(.+)"
 local maxChargesPattern = "Max %d+ Charges"
 
-local translator = {
-    static = {
-        isEnabled = false,
-        isInitialized = false,
-        debugEnabled = false
-    }
-}
-ns.SpellTooltipTranslator = translator
-
-local function isResourceString(str)
-    local spellResources = { "Arcane Charges",
-        "Astral Power",
-        "Chi",
-        "Combo Points",
-        "Energy",
-        "Essence",
-        "Focus",
-        "Fury",
-        "Holy Power",
-        "Insanity",
-        "Maelstrom",
-        "Mana",
-        "Pain",
-        "Rage",
-        "Rune",
-        "Runes",
-        "Health",
-        "Runic Power",
-        "Runic Power per sec",
-        "Soul Shards"
-    }
-    for _, resource in ipairs(spellResources) do
-        if str:match("^%d+[.,]?%d* to %d+[.,]?%d* " .. resource .. "$") or str:match("^%d+[.,]?%d* " .. resource .. "$") then
-            return true
-        end
-    end
-    return false
-end
-
-local function splitResourceString(str)
-    local resourceStrings = {}
-    for resourceString in str:gmatch("([^\n]+)") do
-        table.insert(resourceStrings, resourceString)
-    end
-    return resourceStrings
-end
+local translator = class("SpellTooltipTranslator", ns.Translators.BaseTooltipTranslator)
+ns.Translators.SpellTooltipTranslator = translator
 
 local function processResourceStrings(str)
+    local function isResourceString(value)
+        local spellResources = { "Arcane Charges",
+            "Astral Power",
+            "Chi",
+            "Combo Points",
+            "Energy",
+            "Essence",
+            "Focus",
+            "Fury",
+            "Holy Power",
+            "Insanity",
+            "Maelstrom",
+            "Mana",
+            "Pain",
+            "Rage",
+            "Rune",
+            "Runes",
+            "Health",
+            "Runic Power",
+            "Runic Power per sec",
+            "Soul Shards"
+        }
+        for _, resource in ipairs(spellResources) do
+            if value:match("^%d+[.,]?%d* to %d+[.,]?%d* " .. resource .. "$") or value:match("^%d+[.,]?%d* " .. resource .. "$") then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function splitResourceString(value)
+        local resourceStrings = {}
+        for resourceString in value:gmatch("([^\n]+)") do
+            table.insert(resourceStrings, resourceString)
+        end
+        return resourceStrings
+    end
+
     local resultTable = {}
     local resourceStrings = splitResourceString(str)
 
@@ -85,16 +78,16 @@ local function processResourceStrings(str)
     return next(resultTable) ~= nil and resultTable or nil
 end
 
-local function parseSpellTooltip(tooltipTextArray)
+local function parseSpellTooltip(tooltipTexts)
     local spellTooltip = {
-        Name = tooltipTextArray[1],
-        Form = tooltipTextArray[2] or "",
+        Name = tooltipTexts[1],
+        Form = tooltipTexts[2] or "",
     }
 
     local contentIndex = 3
 
-    if (tooltipTextArray[3]) then
-        local minRank, maxRank = tooltipTextArray[3]:match(talentRankPattern)
+    if (tooltipTexts[3]) then
+        local minRank, maxRank = tooltipTexts[3]:match(talentRankPattern)
         if (minRank and maxRank) then
             local talent = { MinRank = tonumber(minRank), MaxRank = tonumber(maxRank), CurrentRank = {} }
 
@@ -103,8 +96,8 @@ local function parseSpellTooltip(tooltipTextArray)
                 talent.NextRank = {}
             end
 
-            if (tooltipTextArray[5]) then
-                local replacedBy = tooltipTextArray[5]:match(talentReplacedByPattern)
+            if (tooltipTexts[5]) then
+                local replacedBy = tooltipTexts[5]:match(talentReplacedByPattern)
                 if (replacedBy) then
                     contentIndex = 5
                     talent.ReplacedBy = replacedBy
@@ -121,8 +114,8 @@ local function parseSpellTooltip(tooltipTextArray)
 
     local spellContainer = spellTooltip.Talent and spellTooltip.Talent.CurrentRank or spellTooltip.Spell
 
-    for i = contentIndex, #tooltipTextArray do
-        local element = tooltipTextArray[i]
+    for i = contentIndex, #tooltipTexts do
+        local element = tooltipTexts[i]
         if (element ~= nil or element ~= "") then
             local resourceTypes = processResourceStrings(element)
             if (resourceTypes) then
@@ -159,178 +152,145 @@ local function parseSpellTooltip(tooltipTextArray)
     return spellTooltip
 end
 
-local function fillTranslationFor(spellContainer)
+local function translateTooltipSpellInfo(spellContainer)
     if (not spellContainer) then return end
+
+    local translatedTooltipLines = {}
+
+    if (spellContainer.ReplacedBy) then
+        table.insert(translatedTooltipLines, {
+            index = 5,
+            value = GetSpellAttributeOrDefault(spellContainer.ReplacedBy)
+        })
+    end
 
     if (spellContainer.ResourceType) then
         for i = 2, #spellContainer.ResourceType do
             spellContainer.ResourceType[i] = GetSpellAttributeOrDefault(spellContainer.ResourceType[i])
         end
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.ResourceType[1],
+            value = table.concat(spellContainer.ResourceType, "\n", 2)
+        })
     end
 
     if (spellContainer.Range) then
-        spellContainer.Range[2] = GetSpellAttributeOrDefault(spellContainer.Range[2])
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.Range[1],
+            value = GetSpellAttributeOrDefault(spellContainer.Range[2])
+        })
     end
 
     if (spellContainer.Requires) then
-        spellContainer.Requires[2] = GetSpellAttributeOrDefault(spellContainer.Requires[2])
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.Requires[1],
+            value = GetSpellAttributeOrDefault(spellContainer.Requires[2])
+        })
     end
 
     if (spellContainer.CastTime) then
-        spellContainer.CastTime[2] = GetSpellAttributeOrDefault(spellContainer.CastTime[2])
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.CastTime[1],
+            value = GetSpellAttributeOrDefault(spellContainer.CastTime[2])
+        })
     end
 
     if (spellContainer.Cooldown) then
-        spellContainer.Cooldown[2] = GetSpellAttributeOrDefault(spellContainer.Cooldown[2])
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.Cooldown[1],
+            value = GetSpellAttributeOrDefault(spellContainer.Cooldown[2])
+        })
     end
 
     if (spellContainer.MaxCharges) then
-        spellContainer.MaxCharges[2] = GetSpellAttributeOrDefault(spellContainer.MaxCharges[2])
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.MaxCharges[1],
+            value = GetSpellAttributeOrDefault(spellContainer.MaxCharges[2])
+        })
     end
 
-    if (spellContainer.ReplacedBy) then
-        spellContainer.ReplacedBy = GetSpellAttributeOrDefault(spellContainer.ReplacedBy)
-    end
-
-    if (spellContainer.Descriptions) then
-        for _, description in ipairs(spellContainer.Descriptions) do
-            description.value = GetSpellDescriptionOrDefault(description.value)
-        end
-    end
-end
-
-local function getTranslatedSpellTooltip(tooltipTextArray)
-    local spellTooltip = parseSpellTooltip(tooltipTextArray)
-
-    spellTooltip.Name = GetSpellNameOrDefault(spellTooltip.Name)
-    spellTooltip.Form = GetSpellAttributeOrDefault(spellTooltip.Form)
-    if (spellTooltip.Spell) then
-        fillTranslationFor(spellTooltip.Spell)
-    elseif (spellTooltip.Talent) then
-        fillTranslationFor(spellTooltip.Talent.CurrentRank)
-        if (spellTooltip.Talent.NextRankIndex ~= -1) then
-            fillTranslationFor(spellTooltip.Talent.NextRank)
-        end
-    end
-
-    return spellTooltip
-end
-
-local function setGameTooltipText(index, value)
-    local row = math.ceil(index / 2)
-    local tooltipTextKey = ''
-    if (index % 2 == 0) then
-        tooltipTextKey = 'GameTooltipTextRight'
-    else
-        tooltipTextKey = 'GameTooltipTextLeft'
-    end
-    UpdateFontString(_G[tooltipTextKey .. row], value)
-end
-
-local function setGameTooltipTextFrom(spellContainer)
-    if (not spellContainer) then return end
-
-    if (spellContainer.ResourceType) then
-        setGameTooltipText(spellContainer.ResourceType[1], table.concat(spellContainer.ResourceType, "\n", 2))
-    end
-    if (spellContainer.Range) then
-        setGameTooltipText(spellContainer.Range[1], spellContainer.Range[2])
-    end
-
-    if (spellContainer.CastTime) then
-        setGameTooltipText(spellContainer.CastTime[1], spellContainer.CastTime[2])
-    end
-    if (spellContainer.Cooldown) then
-        setGameTooltipText(spellContainer.Cooldown[1], spellContainer.Cooldown[2])
-    end
-    if (spellContainer.MaxCharges) then
-        setGameTooltipText(spellContainer.MaxCharges[1], spellContainer.MaxCharges[2])
-    end
     if (spellContainer.Passive) then
-        setGameTooltipText(spellContainer.Passive, SPELL_PASSIVE_TRANSLATION)
-    end
-
-    if (spellContainer.ReplacedBy) then
-        setGameTooltipText(5, spellContainer.ReplacedBy)
-    end
-
-    if (spellContainer.Requires) then
-        setGameTooltipText(spellContainer.Requires[1], spellContainer.Requires[2])
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.Passive,
+            value = SPELL_PASSIVE_TRANSLATION
+        })
     end
 
     if (spellContainer.Descriptions) then
         for _, description in ipairs(spellContainer.Descriptions) do
-            if (description.value ~= "") then
-                setGameTooltipText(description.index, description.value)
-            end
+            table.insert(translatedTooltipLines, {
+                index = description.index,
+                value = GetSpellDescriptionOrDefault(description.value)
+            })
         end
     end
+
+    return translatedTooltipLines
 end
 
-local function tooltipCallback(tooltip, tooltipData)
-    if (not translator.static.isEnabled) then return end
-
-    local tooltipTextArray = {}
+function translator:ParseTooltip(tooltip, tooltipData)
+    local tooltipTexts = {}
     for i = 1, tooltip:NumLines() do
         local lineLeft = _G["GameTooltipTextLeft" .. i]
         if (lineLeft) then
-            tooltipTextArray[#tooltipTextArray + 1] = lineLeft:GetText() or ''
+            local lli = #tooltipTexts + 1;
+            tooltipTexts[lli] = lineLeft:GetText() or ''
+            self:_addFontStringToIndexLookup(lli, lineLeft)
         end
 
         local lineRight = _G["GameTooltipTextRight" .. i]
         if (lineRight) then
-            tooltipTextArray[#tooltipTextArray + 1] = lineRight:GetText() or ''
+            local lri = #tooltipTexts + 1;
+            tooltipTexts[lri] = lineRight:GetText() or ''
+            self:_addFontStringToIndexLookup(lri, lineRight)
         end
     end
 
-    local translatedTooltip = getTranslatedSpellTooltip(tooltipTextArray)
+    local tooltipInfo = parseSpellTooltip(tooltipTexts)
+    if (tooltipInfo and tooltipInfo.Talent and tooltipInfo.Talent.NextRankIndex == -1) then return end -- hook
 
-    if (translatedTooltip and translatedTooltip.Talent and translatedTooltip.Talent.NextRankIndex == -1) then return end -- Hook
+    return tooltipInfo
+end
 
-    setGameTooltipText(1, translatedTooltip.Name)
-    if (translatedTooltip.Form and translatedTooltip.Form ~= "") then
-        setGameTooltipText(2, translatedTooltip.Form)
-    end
-
-    local talent = translatedTooltip.Talent
-    if (talent) then
-        setGameTooltipText(3, SPELL_RANK_TRANSLATION .. " " .. talent.MinRank .. "/" .. talent.MaxRank)
-        setGameTooltipTextFrom(talent.CurrentRank)
-
-        if (talent.NextRankIndex) then
-            setGameTooltipText(talent.NextRankIndex, SPELL_NEXT_RANK_TRANSLATION)
-            setGameTooltipTextFrom(talent.NextRank)
+function translator:TranslateTooltipInfo(tooltipInfo)
+    local function addRange(t1, t2)
+        if (not t2) then return end
+        for _, value in ipairs(t2) do
+            table.insert(t1, value)
         end
-    else
-        setGameTooltipTextFrom(translatedTooltip.Spell)
     end
-end
 
-local function initialize()
-    if (translator.static.isInitialized) then return end
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, tooltipCallback)
-    translator.static.isInitialized = true
-end
+    local translatedTooltipLines = {}
 
-local function enable()
-    if (translator.static.isEnabled) then return end
-    initialize()
-    translator.static.isEnabled = true
-end
+    table.insert(translatedTooltipLines, {
+        index = 1,
+        value = GetSpellNameOrDefault(tooltipInfo.Name)
+    })
 
-local function disable()
-    if (not translator.static.isEnabled) then return end
-    translator.static.isEnabled = false
-end
-
-function translator.SetEnabled(value)
-    if (value) then
-        enable()
-    else
-        disable()
+    if (tooltipInfo.Form and tooltipInfo.Form ~= "") then
+        table.insert(translatedTooltipLines, {
+            index = 2,
+            value = GetSpellAttributeOrDefault(tooltipInfo.Form)
+        })
     end
-end
 
-function translator.EnableDebugInfo(value)
-    translator.static.debugEnabled = value
+    if (tooltipInfo.Spell) then
+        addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Spell))
+    elseif (tooltipInfo.Talent) then
+        table.insert(translatedTooltipLines, {
+            index = 3,
+            value = SPELL_RANK_TRANSLATION .. " " .. tooltipInfo.Talent.MinRank .. "/" .. tooltipInfo.Talent.MaxRank
+        })
+        addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.CurrentRank))
+
+        if (tooltipInfo.Talent.NextRankIndex ~= -1) then
+            table.insert(translatedTooltipLines, {
+                index = tooltipInfo.Talent.NextRankIndex,
+                value = SPELL_NEXT_RANK_TRANSLATION
+            })
+            addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.NextRank))
+        end
+    end
+
+    return translatedTooltipLines
 end

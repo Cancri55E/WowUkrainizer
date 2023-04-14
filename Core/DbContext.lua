@@ -23,23 +23,23 @@ end
 do
     local repository = {}
 
-    function repository.GetUnitNameWithFallback(default)
+    function repository.GetUnitNameOrDefault(default)
         return getValueOrDefault(ns._db.UnitNames, default)
     end
 
-    function repository.GetUnitSubnameWithFallback(default)
+    function repository.GetUnitSubnameOrDefault(default)
         return getValueOrDefault(ns._db.UnitSubnames, default)
     end
 
-    function repository.GetUnitTypeWithFallback(default)
+    function repository.GetUnitTypeOrDefault(default)
         return getValueOrDefault(ns._db.UnitTypes, default)
     end
 
-    function repository.GetUnitRankWithFallback(default)
+    function repository.GetUnitRankOrDefault(default)
         return getValueOrDefault(ns._db.UnitRanks, default)
     end
 
-    function repository.GetUnitFractionWithFallback(default)
+    function repository.GetUnitFractionOrDefault(default)
         if (not default) then return default end
         return default -- TODO:
     end

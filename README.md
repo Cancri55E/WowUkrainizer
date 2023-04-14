@@ -1,4 +1,4 @@
-# WoWUkrainify
+# WowUkrainizer
 
 ## Introduction
 
