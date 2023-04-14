@@ -1,14 +1,17 @@
 local _, ns = ...;
 
 -- Constants
-ns.LEVEL_TRANSLATION = "Рівень "
-ns.PET_LEVEL_TRANSLATION = "Вихованець {1} рівня"
+ns.LEVEL_TRANSLATION = "Рівень"
 ns.PAGE_TRANSLATION = "Сторінка"
 ns.LEADER_TRANSLATION = "Правитель"
 
 ns.SPELL_PASSIVE_TRANSLATION = "Пасивний"
 ns.SPELL_RANK_TRANSLATION = "Pівень"
 ns.SPELL_NEXT_RANK_TRANSLATION = "Наступний рівень:"
+
+ns.PET_LEVEL_TRANSLATION = "Вихованець {1} рівня"
+ns.PET_CAPTURABLE_TRANSLATION = "Mожна приручити"
+ns.PET_COLLECTED_TRANSLATION = "Зібрано ({1}/{2})"
 
 ns._db = {}
 
@@ -23,11 +26,12 @@ ns._db.UnitTypes = {
     [514370084] = "Створіння",
     [1163581639] = "Механізм",
     [237873257] = "Тотем",
-    [4168209797] = "Небойовий Улюбленець",
+    [4168209797] = "Небойовий Вихованець",
     [2103008983] = "Газова Хмара",
-    [2721766664] = "Дика Тварина",
+    [2721766664] = "Дикий Вихованець",
     [3623635121] = "Аберація",
     [496532506] = "Труп",
+    [4147004237] = "Водний",
 }
 
 ns._db.UnitRanks = {

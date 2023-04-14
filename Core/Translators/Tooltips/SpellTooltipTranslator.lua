@@ -2,6 +2,7 @@ local _, ns = ...;
 
 local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
+local UpdateFontString = ns.FontStringExtensions.UpdateFontString
 
 local SPELL_PASSIVE_TRANSLATION = ns.SPELL_PASSIVE_TRANSLATION
 local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
@@ -15,28 +16,6 @@ local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "Replaced by%s+(.+)"
 local maxChargesPattern = "Max %d+ Charges"
 
-local spellResources = { "Arcane Charges",
-    "Astral Power",
-    "Chi",
-    "Combo Points",
-    "Energy",
-    "Essence",
-    "Focus",
-    "Fury",
-    "Holy Power",
-    "Insanity",
-    "Maelstrom",
-    "Mana",
-    "Pain",
-    "Rage",
-    "Rune",
-    "Runes",
-    "Health",
-    "Runic Power",
-    "Runic Power per sec",
-    "Soul Shards"
-}
-
 local translator = {
     static = {
         isEnabled = false,
@@ -46,7 +25,28 @@ local translator = {
 }
 ns.SpellTooltipTranslator = translator
 
-local function isResourceString(str, spellResources)
+local function isResourceString(str)
+    local spellResources = { "Arcane Charges",
+        "Astral Power",
+        "Chi",
+        "Combo Points",
+        "Energy",
+        "Essence",
+        "Focus",
+        "Fury",
+        "Holy Power",
+        "Insanity",
+        "Maelstrom",
+        "Mana",
+        "Pain",
+        "Rage",
+        "Rune",
+        "Runes",
+        "Health",
+        "Runic Power",
+        "Runic Power per sec",
+        "Soul Shards"
+    }
     for _, resource in ipairs(spellResources) do
         if str:match("^%d+[.,]?%d* to %d+[.,]?%d* " .. resource .. "$") or str:match("^%d+[.,]?%d* " .. resource .. "$") then
             return true
@@ -68,7 +68,7 @@ local function processResourceStrings(str)
     local resourceStrings = splitResourceString(str)
 
     for _, resourceString in ipairs(resourceStrings) do
-        if isResourceString(resourceString, spellResources) then
+        if isResourceString(resourceString) then
             local isInTable = false
             for _, element in ipairs(resultTable) do
                 if element == resourceString then
@@ -224,11 +224,7 @@ local function setGameTooltipText(index, value)
     else
         tooltipTextKey = 'GameTooltipTextLeft'
     end
-    local tooltipLines = _G[tooltipTextKey .. row]
-
-    local r, g, b = tooltipLines:GetTextColor()
-    tooltipLines:SetText(value)
-    tooltipLines:SetTextColor(r, g, b)
+    UpdateFontString(_G[tooltipTextKey .. row], value)
 end
 
 local function setGameTooltipTextFrom(spellContainer)
