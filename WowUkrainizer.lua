@@ -32,11 +32,11 @@ local function regAddonCommands()
 
         if command == "spell" then
             spellTooltipTranslator:SetEnabled(enable)
-            print("|cFFFFD700Успішно:|r " .. (enable and "|cFF00FF00Увімкнуто|r" or "|cFFFF0000Вимкнуто|r")
+            print((enable and "|cFF00FF00Увімкнуто|r" or "|cFFFF0000Вимкнуто|r")
                 .. " |cFFFFD700переклад заклинань та талантів.|r")
         elseif command == "unit" then
             unitTooltipTranslator:SetEnabled(enable)
-            print("|cFFFFD700Успішно:|r " .. (enable and "|cFF00FF00Увімкнуто|r" or "|cFFFF0000Вимкнуто|r")
+            print((enable and "|cFF00FF00Увімкнуто|r" or "|cFFFF0000Вимкнуто|r")
                 .. " |cFFFFD700переклад імен НІП.|r")
         else
             print("|cFFFF0000Помилка:|r Невідома команда.")
