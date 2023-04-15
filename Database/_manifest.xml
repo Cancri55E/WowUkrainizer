@@ -3,4 +3,5 @@
 	<Script file="Init.lua"/>
 	<Script file="Units.lua"/>
 	<Script file="SpellsAndTalents.lua"/>
+	<Script file="Frames.lua"/>
 </Ui>

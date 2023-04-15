@@ -1,20 +1,23 @@
 local addonName, ns = ...;
 
+ns.DefaultFontName = [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]]
+ns.DefaultBoldFontName = [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf]]
+
 local eventHandler = ns.EventHandler:new()
 
-local unitTooltipTranslator, spellTooltipTranslator
+local unitTooltipTranslator, spellTooltipTranslator, spellbookFrameTranslator
 local initialized = false
 
+
 local function setGameTooltipFont()
-    local gameTooltipFontName = [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]]
     local _, height, flags = GameTooltipHeaderText:GetFont()
-    GameTooltipHeaderText:SetFont(gameTooltipFontName, height * 1.1, flags)
+    GameTooltipHeaderText:SetFont(ns.DefaultFontName, height * 1.1, flags)
 
     local _, height, flags = GameTooltipText:GetFont()
-    GameTooltipText:SetFont(gameTooltipFontName, height * 1.1, flags)
+    GameTooltipText:SetFont(ns.DefaultFontName, height * 1.1, flags)
 
     local _, height, flags = GameTooltipTextSmall:GetFont()
-    GameTooltipTextSmall:SetFont(gameTooltipFontName, height * 1.1, flags)
+    GameTooltipTextSmall:SetFont(ns.DefaultFontName, height * 1.1, flags)
 end
 
 local function regAddonCommands()
@@ -58,12 +61,16 @@ local function initializeAddon()
 
     unitTooltipTranslator = ns.Translators.UnitTooltipTranslator:new(Enum.TooltipDataType.Unit)
     spellTooltipTranslator = ns.Translators.SpellTooltipTranslator:new(Enum.TooltipDataType.Spell)
+
+    -- Frames
+    spellbookFrameTranslator = ns.Translators.SpellbookFrameTranslator:new()
 end
 
 local function OnAddOnLoaded(_, name)
     local function OnPlayerLogin()
         unitTooltipTranslator:SetEnabled(true)
         spellTooltipTranslator:SetEnabled(true)
+        spellbookFrameTranslator:SetEnabled(true)
     end
 
     if (name == addonName) then
