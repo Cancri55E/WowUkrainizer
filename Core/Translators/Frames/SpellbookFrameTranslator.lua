@@ -127,6 +127,10 @@ function translator:initialize()
 
     setDefaultFont()
 
+    SpellBookFrame_HelpPlate[1].ToolTipText = GetTranslationOrDefault(SPELLBOOK_HELP_1)
+    SpellBookFrame_HelpPlate[2].ToolTipText = GetTranslationOrDefault(SPELLBOOK_HELP_2)
+    SpellBookFrame_HelpPlate[3].ToolTipText = GetTranslationOrDefault(SPELLBOOK_HELP_3)
+
     hooksecurefunc(SpellButton1, "UpdateButton", updateSpellButtonWrapper)
     hooksecurefunc(SpellButton2, "UpdateButton", updateSpellButtonWrapper)
     hooksecurefunc(SpellButton3, "UpdateButton", updateSpellButtonWrapper)

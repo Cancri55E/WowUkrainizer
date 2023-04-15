@@ -27,7 +27,11 @@
         "BOOKTYPE_SPELL",
         "GetText",
         "SpellBookFrameTabButton3",
-        "SpellBookFrames"
+        "SpellBookFrames",
+        "SpellBookFrame_HelpPlate",
+        "SPELLBOOK_HELP_1",
+        "SPELLBOOK_HELP_2",
+        "SPELLBOOK_HELP_3"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false
