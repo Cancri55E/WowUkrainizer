@@ -4,4 +4,5 @@
 	<Script file="Tooltips\BaseTooltipTranslator.lua"/>
 	<Script file="Tooltips\UnitTooltipTranslator.lua"/>
 	<Script file="Tooltips\SpellTooltipTranslator.lua"/>
+	<Script file="Frames\SpellbookFrameTranslator.lua"/>
 </Ui>

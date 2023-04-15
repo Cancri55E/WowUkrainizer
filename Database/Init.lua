@@ -2,9 +2,11 @@ local _, ns = ...;
 
 -- Constants
 ns.LEVEL_TRANSLATION = "Рівень"
+ns.RANK_TRANSLATION = "Ранг"
 ns.PAGE_TRANSLATION = "Сторінка"
 ns.LEADER_TRANSLATION = "Правитель"
 
+ns.SPELL_GENERAL_TRANSLATION = "Загальні"
 ns.SPELL_PASSIVE_TRANSLATION = "Пасивний"
 ns.SPELL_RANK_TRANSLATION = "Pівень"
 ns.SPELL_NEXT_RANK_TRANSLATION = "Наступний рівень:"
@@ -14,6 +16,14 @@ ns.PET_CAPTURABLE_TRANSLATION = "Mожна приручити"
 ns.PET_COLLECTED_TRANSLATION = "Зібрано ({1}/{2})"
 
 ns._db = {}
+
+ns._db.Classes = {
+    [0] = { "", "", "", "", "", "", "" }
+}
+
+ns._db.Specializations = {
+
+}
 
 ns._db.UnitTypes = {
     [1263733816] = "Звір",

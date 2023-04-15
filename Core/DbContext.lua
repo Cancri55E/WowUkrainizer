@@ -23,6 +23,11 @@ end
 do
     local repository = {}
 
+    local function calcIndex(index, gender)
+        if (not index or not gender) then return 1 end
+        return index * 2 - (3 - gender)
+    end
+
     function repository.GetUnitNameOrDefault(default)
         return getValueOrDefault(ns._db.UnitNames, default)
     end
@@ -44,6 +49,24 @@ do
         return default -- TODO:
     end
 
+    function repository.GetClass(default, case, gender)
+        if (not default) then return default end
+
+        local class = getValueOrDefault(ns._db.Classes, default)
+        if (not class) then return default end
+
+        return class[calcIndex(case, gender)] or default
+    end
+
+    function repository.GetSpecialization(default, case, gender)
+        if (not default) then return default end
+
+        local spec = getValueOrDefault(ns._db.Specializations, default)
+        if (not spec) then return default end
+
+        return spec[calcIndex(case, gender)] or default
+    end
+
     dbContext.Units = repository
 end
 
@@ -63,6 +86,16 @@ do
     end
 
     dbContext.Spells = repository
+end
+
+do
+    local repository = {}
+
+    function repository.GetTranslationOrDefault(default)
+        return getValueOrDefault(ns._db.SpellbookFrameLines, default)
+    end
+
+    dbContext.SpellbookFrame = repository
 end
 
 ns.DbContext = dbContext
