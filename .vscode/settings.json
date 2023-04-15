@@ -4,6 +4,9 @@
         "class",
         "GameTooltipText",
         "GameTooltipHeaderText",
-        "GameTooltipTextSmall"
-    ]
+        "GameTooltipTextSmall",
+        "SlashCmdList",
+    ],
+    "gitlens.codeLens.authors.enabled": false,
+    "gitlens.codeLens.recentChange.enabled": false
 }

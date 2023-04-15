@@ -1,31 +1,25 @@
 local _, ns = ...;
 
+local _G = _G
+
 local LEADER_TRANSLATION = ns.LEADER_TRANSLATION
 local LEVEL_TRANSLATION = ns.LEVEL_TRANSLATION
 local PET_LEVEL_TRANSLATION = ns.PET_LEVEL_TRANSLATION
 local PET_CAPTURABLE_TRANSLATION = ns.PET_CAPTURABLE_TRANSLATION
 local PET_COLLECTED_TRANSLATION = ns.PET_COLLECTED_TRANSLATION
 
-
-local GetUnitNameWithFallback = ns.DbContext.Units.GetUnitNameWithFallback
-local GetUnitSubnameWithFallback = ns.DbContext.Units.GetUnitSubnameWithFallback
-local GetUnitTypeWithFallback = ns.DbContext.Units.GetUnitTypeWithFallback
-local GetUnitRankWithFallback = ns.DbContext.Units.GetUnitRankWithFallback
-local GetUnitFractionWithFallback = ns.DbContext.Units.GetUnitFractionWithFallback
+local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
+local GetUnitSubnameOrDefault = ns.DbContext.Units.GetUnitSubnameOrDefault
+local GetUnitTypeOrDefault = ns.DbContext.Units.GetUnitTypeOrDefault
+local GetUnitRankOrDefault = ns.DbContext.Units.GetUnitRankOrDefault
+local GetUnitFractionOrDefault = ns.DbContext.Units.GetUnitFractionOrDefault
 
 local StartsWith = ns.StringExtensions.StartsWith
 local ExtractNumericValuesFromString = ns.StringExtensions.ExtractNumericValuesFromString
 local InsertNumericValuesIntoString = ns.StringExtensions.InsertNumericValuesIntoString
-local UpdateFontString = ns.FontStringExtensions.UpdateFontString
 
-local translator = {
-    static = {
-        isEnabled = false,
-        isInitialized = false,
-        enableDebugInfo = false
-    }
-}
-ns.UnitTooltipTranslator = translator
+local translator = class("UnitTooltipTranslator", ns.Translators.BaseTooltipTranslator)
+ns.Translators.UnitTooltipTranslator = translator
 
 local function parseUnitTooltipLines(unitTooltipLines)
     local function isSubname(str)
@@ -95,157 +89,99 @@ local function parseUnitTooltipLines(unitTooltipLines)
         table.insert(leftTexts, tooltipLine.leftText)
     end
 
-    local unitTooltipInfo = { name = leftTexts[1], levelInfo = {} }
+    local tooltipInfo = { name = leftTexts[1], levelInfo = {} }
 
     if (#leftTexts > 1) then
         local index = 2
 
-        unitTooltipInfo.subnameInfo = parseSubnameInfo(leftTexts, index)
-        index = index + (unitTooltipInfo.subnameInfo and 1 or 0)
+        tooltipInfo.subnameInfo = parseSubnameInfo(leftTexts, index)
+        index = index + (tooltipInfo.subnameInfo and 1 or 0)
 
-        unitTooltipInfo.levelInfo.index, unitTooltipInfo.levelInfo.level, unitTooltipInfo.levelInfo.unitType,
-        unitTooltipInfo.levelInfo.rank, unitTooltipInfo.levelInfo.isPet = index, parseUnitLevelString(leftTexts[index])
+        tooltipInfo.levelInfo.index, tooltipInfo.levelInfo.level, tooltipInfo.levelInfo.unitType,
+        tooltipInfo.levelInfo.rank, tooltipInfo.levelInfo.isPet = index, parseUnitLevelString(leftTexts[index])
 
-        unitTooltipInfo.pvpInfo, unitTooltipInfo.factionInfo, unitTooltipInfo.capturableLineIndex, unitTooltipInfo.collectedInfo,
-        unitTooltipInfo.leaderLineIndex = parseRemainingInfo(leftTexts, index + 1)
+        tooltipInfo.pvpInfo, tooltipInfo.factionInfo, tooltipInfo.capturableLineIndex, tooltipInfo.collectedInfo,
+        tooltipInfo.leaderLineIndex = parseRemainingInfo(leftTexts, index + 1)
     end
 
-    return unitTooltipInfo
+    return tooltipInfo
 end
 
-local function getTranslatedUnitTooltip(unitTooltipLines)
-    local unitTooltipInfo = parseUnitTooltipLines(unitTooltipLines)
+function translator:ParseTooltip(tooltip, tooltipData)
+    local unitKind = strsplit("-", tooltipData.guid)
+    if (unitKind == "Creature" or unitKind == "Vehicle") then
+        for i = 1, tooltip:NumLines() do
+            self:_addFontStringToIndexLookup(i, _G["GameTooltipTextLeft" .. i])
+        end
 
-    if (not unitTooltipInfo.name or not unitTooltipInfo.levelInfo) then return end
+        return parseUnitTooltipLines(tooltipData.lines)
+    end
+end
 
+function translator:TranslateTooltipInfo(tooltipInfo)
     local function getLevelInfoString(levelInfo)
         if (not levelInfo.isPet) then
             return string.format("%s %s %s %s",
                 LEVEL_TRANSLATION,
                 levelInfo.level,
-                (levelInfo.unitType and GetUnitTypeWithFallback(levelInfo.unitType)) or "",
-                (levelInfo.rank and "(" .. GetUnitRankWithFallback(levelInfo.rank) .. ")") or "")
+                (levelInfo.unitType and GetUnitTypeOrDefault(levelInfo.unitType)) or "",
+                (levelInfo.rank and "(" .. GetUnitRankOrDefault(levelInfo.rank) .. ")") or "")
         else
             return string.format("%s %s",
                 string.gsub(PET_LEVEL_TRANSLATION, "{1}", levelInfo.level),
-                (levelInfo.unitType and GetUnitTypeWithFallback(levelInfo.unitType)) or "")
+                (levelInfo.unitType and GetUnitTypeOrDefault(levelInfo.unitType)) or "")
         end
     end
 
-    local name = GetUnitNameWithFallback(unitTooltipInfo.name)
-    local levelInfo = {
-        index = unitTooltipInfo.levelInfo.index,
-        value = getLevelInfoString(unitTooltipInfo.levelInfo)
-    }
+    if (not tooltipInfo.name or not tooltipInfo.levelInfo) then return end
 
-    local subnameInfo = nil
-    if (unitTooltipInfo.subnameInfo) then
-        local subname = GetUnitSubnameWithFallback(unitTooltipInfo.subnameInfo.value)
-        subnameInfo = { index = unitTooltipInfo.subnameInfo.index, value = subname }
+    local translatedTooltipLines = {}
+
+    table.insert(translatedTooltipLines, {
+        index = 1,
+        value = GetUnitNameOrDefault(tooltipInfo.name)
+    })
+
+    table.insert(translatedTooltipLines, {
+        index = tooltipInfo.levelInfo.index,
+        value = getLevelInfoString(tooltipInfo.levelInfo)
+    })
+
+    if (tooltipInfo.subnameInfo) then
+        table.insert(translatedTooltipLines, {
+            index = tooltipInfo.subnameInfo.index,
+            value = GetUnitSubnameOrDefault(tooltipInfo.subnameInfo.value)
+        })
     end
 
-    local factionInfo = nil
-    if (unitTooltipInfo.factionInfo) then
-        local fraction = GetUnitFractionWithFallback(unitTooltipInfo.factionInfo.value)
-        factionInfo = { index = unitTooltipInfo.factionInfo.index, value = fraction }
+    if (tooltipInfo.factionInfo) then
+        table.insert(translatedTooltipLines, {
+            index = tooltipInfo.factionInfo.index,
+            value = GetUnitFractionOrDefault(tooltipInfo.factionInfo.value)
+        })
     end
 
-    local capturableInfo
-    if (unitTooltipInfo.capturableLineIndex) then
-        capturableInfo = { index = unitTooltipInfo.capturableLineIndex, value = PET_CAPTURABLE_TRANSLATION }
+    if (tooltipInfo.capturableLineIndex) then
+        table.insert(translatedTooltipLines, {
+            index = tooltipInfo.capturableLineIndex,
+            value = PET_CAPTURABLE_TRANSLATION
+        })
     end
 
-    local collectedInfo
-    if (unitTooltipInfo.collectedInfo) then
-        local text, numValues = ExtractNumericValuesFromString(unitTooltipInfo.collectedInfo.value)
-        collectedInfo = {
-            index = unitTooltipInfo.collectedInfo.index,
+    if (tooltipInfo.collectedInfo) then
+        local _, numValues = ExtractNumericValuesFromString(tooltipInfo.collectedInfo.value)
+        table.insert(translatedTooltipLines, {
+            index = tooltipInfo.collectedInfo.index,
             value = InsertNumericValuesIntoString(PET_COLLECTED_TRANSLATION, numValues)
-        }
+        })
     end
 
-    local leaderInfo = nil
-    if (unitTooltipInfo.leaderLineIndex) then
-        leaderInfo = { index = unitTooltipInfo.leaderLineIndex, value = LEADER_TRANSLATION }
+    if (tooltipInfo.leaderLineIndex) then
+        table.insert(translatedTooltipLines, {
+            index = tooltipInfo.leaderLineIndex,
+            value = LEADER_TRANSLATION
+        })
     end
 
-    return {
-        name = name,
-        levelInfo = levelInfo,
-        subnameInfo = subnameInfo,
-        fractionInfo = factionInfo,
-        leaderInfo = leaderInfo,
-        capturableInfo = capturableInfo,
-        collectedInfo = collectedInfo
-    }
-end
-
-local function unitTooltipCallback(tooltip, tooltipLineData)
-    if (not translator.static.isEnabled) then return end
-
-    local unitKind = strsplit("-", tooltipLineData.guid)
-
-    if (unitKind == "Creature" or unitKind == "Vehicle") then
-        local translatedTooltip = getTranslatedUnitTooltip(tooltipLineData.lines)
-        if (not translatedTooltip) then return end
-
-        local tooltipLines = {}
-        for i = 1, tooltip:NumLines() do
-            local line = _G["GameTooltipTextLeft" .. i]
-            tooltipLines[#tooltipLines + 1] = line
-        end
-
-        UpdateFontString(tooltipLines[1], translatedTooltip.name)
-        UpdateFontString(tooltipLines[translatedTooltip.levelInfo.index], translatedTooltip.levelInfo.value)
-
-        if (translatedTooltip.subnameInfo) then
-            UpdateFontString(tooltipLines[translatedTooltip.subnameInfo.index], translatedTooltip.subnameInfo.value)
-        end
-
-        if (translatedTooltip.fractionInfo) then
-            UpdateFontString(tooltipLines[translatedTooltip.fractionInfo.index], translatedTooltip.fractionInfo.value)
-        end
-
-        if (translatedTooltip.capturableInfo) then
-            UpdateFontString(tooltipLines[translatedTooltip.capturableInfo.index], translatedTooltip.capturableInfo
-                .value)
-        end
-
-        if (translatedTooltip.collectedInfo) then
-            UpdateFontString(tooltipLines[translatedTooltip.collectedInfo.index], translatedTooltip.collectedInfo.value)
-        end
-
-        if (translatedTooltip.leaderInfo) then
-            UpdateFontString(tooltipLines[translatedTooltip.leaderInfo.index], translatedTooltip.leaderInfo.value)
-        end
-    end
-end
-
-local function initialize()
-    if (translator.static.isInitialized) then return end
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, unitTooltipCallback)
-    translator.static.isInitialized = true
-end
-
-local function enable()
-    if (translator.static.isEnabled) then return end
-    initialize()
-    translator.static.isEnabled = true
-end
-
-local function disable()
-    if (not translator.static.isEnabled) then return end
-    translator.static.isEnabled = false
-end
-
-function translator.SetEnabled(value)
-    if (value) then
-        enable()
-    else
-        disable()
-    end
-end
-
-function translator.EnableDebugInfo(value)
-    translator.static.enableDebugInfo = value
+    return translatedTooltipLines
 end
