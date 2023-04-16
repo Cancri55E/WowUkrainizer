@@ -22,11 +22,9 @@ local function updateSpellButtonCallback(self)
     local _, _, spellID = GetSpellBookItemName(slot, SpellBookFrame.bookType);
     if (not spellID) then return end
 
-    local name = self:GetName();
-
     local spellString = self.SpellName
     if (spellString) then
-        UpdateFontString(spellString, GetSpellNameOrDefault(spellString:GetText()))
+        UpdateFontString(spellString, GetSpellNameOrDefault(spellString:GetText(), false))
     end
 
     local subSpellNameString = self.SpellSubName
