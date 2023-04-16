@@ -25,6 +25,7 @@ do
 
     local function calcIndex(index, gender)
         if (not index or not gender) then return 1 end
+        gender = 2 -- hook until table with translations not complited
         return index * 2 - (3 - gender)
     end
 
@@ -58,13 +59,9 @@ do
         return class[calcIndex(case, gender)] or default
     end
 
-    function repository.GetSpecialization(default, case, gender)
+    function repository.GetSpecialization(default)
         if (not default) then return default end
-
-        local spec = getValueOrDefault(ns._db.Specializations, default)
-        if (not spec) then return default end
-
-        return spec[calcIndex(case, gender)] or default
+        return getValueOrDefault(ns._db.Specializations, default)
     end
 
     dbContext.Units = repository
@@ -74,11 +71,19 @@ do
     local repository = {}
 
     function repository.GetSpellNameOrDefault(default)
-        return getValueOrDefault(ns._db.SpellNames, default)
+        for _, value in ipairs(ns._db.SpellNames) do
+            local result = getValueOrDefault(value, default)
+            if (result ~= default) then return result end
+        end
+        return default
     end
 
     function repository.GetSpellDescriptionOrDefault(default)
-        return getFormattedValueOrDefault(ns._db.SpellDescriptions, default)
+        for _, value in ipairs(ns._db.SpellDescriptions) do
+            local result = getFormattedValueOrDefault(value, default)
+            if (result ~= default) then return result end
+        end
+        return default
     end
 
     function repository.GetSpellAttributeOrDefault(default)
