@@ -264,7 +264,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     table.insert(translatedTooltipLines, {
         index = 1,
-        value = GetSpellNameOrDefault(tooltipInfo.Name)
+        value = GetSpellNameOrDefault(tooltipInfo.Name, true)
     })
 
     if (tooltipInfo.Form and tooltipInfo.Form ~= "") then

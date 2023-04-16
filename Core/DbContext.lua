@@ -20,6 +20,16 @@ local function getFormattedValueOrDefault(hashTable, default)
     return InsertNumericValuesIntoString(translatedText, numValues)
 end
 
+local function removeBrackets(str)
+    return str:gsub("[%[%]]", "")
+end
+
+local function replaceBrackets(str)
+    str = str:gsub("%[", "|cFF47D5FF")
+    str = str:gsub("%]", "|r")
+    return str
+end
+
 do
     local repository = {}
 
@@ -70,10 +80,16 @@ end
 do
     local repository = {}
 
-    function repository.GetSpellNameOrDefault(default)
+    function repository.GetSpellNameOrDefault(default, highlight)
         for _, value in ipairs(ns._db.SpellNames) do
             local result = getValueOrDefault(value, default)
-            if (result ~= default) then return result end
+            if (result ~= default) then
+                if (highlight) then
+                    return replaceBrackets(result)
+                else
+                    return removeBrackets(result)
+                end
+            end
         end
         return default
     end
@@ -81,7 +97,9 @@ do
     function repository.GetSpellDescriptionOrDefault(default)
         for _, value in ipairs(ns._db.SpellDescriptions) do
             local result = getFormattedValueOrDefault(value, default)
-            if (result ~= default) then return result end
+            if (result ~= default) then
+                return replaceBrackets(result)
+            end
         end
         return default
     end
