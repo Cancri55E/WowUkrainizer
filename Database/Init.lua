@@ -11,6 +11,9 @@ ns.SPELL_PASSIVE_TRANSLATION = "Пасивний"
 ns.SPELL_RANK_TRANSLATION = "Pівень"
 ns.SPELL_NEXT_RANK_TRANSLATION = "Наступний рівень:"
 
+ns.TALENT_REPLACES_TRANSLATION = "Замінює"
+ns.TALENT_UPGRADE_TRANSLATION = "Оновлення"
+
 ns.PET_LEVEL_TRANSLATION = "Супутник {1} рівня"
 ns.PET_CAPTURABLE_TRANSLATION = "Mожна приручити"
 ns.PET_COLLECTED_TRANSLATION = "Зібрано ({1}/{2})"
@@ -98,10 +101,13 @@ ns._db.UnitRanks = {
 
 ns._db.CommonSpellAttributes = {
     -- Spell range
+    [1058728356] = "T: Unlimited range",
     [4074264436] = "Ближній бій",
     [3782563343] = "Дистанція: {1} м",
     [1817768102] = "Дистанція: {1}-{2} м",
     -- Spell cooldown
+    [774638190] = "T: Recharging: {1} sec",
+    [2834160027] = "T: Recharging: {1} min",
     [132771445] = "Відновлення: {1} сек",
     [3950124302] = "Відновлення: {1} хв",
     [1926006671] = "Відновлення: {1} год",
@@ -109,6 +115,8 @@ ns._db.CommonSpellAttributes = {
     [2205574258] = "Миттєво",
     [4208014116] = "Підтримується",
     [4176069676] = "{1} сек. застосування",
+    -- TODO:
+    [728783484] = "T: {1} sec empower", -- (Evoker)
     -- Spell Resource
     [123472231] = "{1} зарядів магії",
     [2883780072] = "{1} астральної сили",
@@ -130,9 +138,13 @@ ns._db.CommonSpellAttributes = {
     [335373991] = "{1} сили рун",
     [861701157] = "{1} сили рун за сек",
     [1419705412] = "{1} уламків душ",
+    [1978072700] = "T: {1} Soul Shard",
+    [3689279656] = "T: {1} Mana per sec",   -- (warlock Drain Soul)
+    [2430624037] = "T: {1} Energy, plus {2} per sec",
+    [3179380790] = "T: {1} Energy per sec", -- (monk)
     -- Spell Commons
     [2608272577] = "Максимум {1} зарядів",
-    -- Evoker forms
+    -- Evoker Spell colors
     [2614467213] = "Червоний",
     [1298549553] = "Синій",
     [1320281273] = "Зелений",
