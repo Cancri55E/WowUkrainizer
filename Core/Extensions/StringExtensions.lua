@@ -4,6 +4,17 @@ local internal = {}
 ns.StringExtensions = internal
 
 function internal.GetHash(str)
+    if (str == nil or type(str) ~= "string" or str == "") then
+        return -1
+    end
+
+    -- Replace multiple spaces with a single underscore
+    str = string.gsub(str, "%s+", "_")
+    -- Remove newlines, carriage returns, periods, and commas
+    str = string.gsub(str, "[\n\r.,]", "")
+    -- Convert text to lowercase
+    str = string.lower(str)
+
     local counter = 1
     local len = string.len(str)
     for i = 1, len, 3 do
@@ -46,14 +57,47 @@ function internal.Split(input, delimiter)
     return items
 end
 
-function internal.ExtractNumericValuesFromString(str)
-    local values = {}
-    local modifiedText = str:gsub("(%d[%d,]*%.?%d*)", function(num)
-        table.insert(values, num)
-        return "{" .. #values .. "}"
+function internal.ExtractNumericValuesFromString(text)
+    if text == nil or text == "" then
+        return text
+    end
+
+    local icons = {}
+    text = string.gsub(text, "%|T(.-)%|t", function(match)
+        table.insert(icons, match)
+        return string.format("{icon:%s}", string.char(#icons + 64))
     end)
 
-    return modifiedText, values
+    local colors = {}
+    text = string.gsub(text,
+        "%|c([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])(.-)%|r",
+        function(color, title)
+            table.insert(colors, color)
+            return string.format("{color:%s|%s}", string.char(#colors + 64), title)
+        end)
+
+    local numbers = {}
+    text = text:gsub("(%d[%d,]*%.?%d*)", function(num)
+        if (num:sub(-1) == ",") then
+            table.insert(numbers, num:sub(1, -2))
+            return string.format("{%d},", #numbers)
+        else
+            table.insert(numbers, num)
+            return string.format("{%d}", #numbers)
+        end
+    end)
+
+    for i = 1, #icons do
+        text = text:gsub(string.format("{icon:%s}", string.char(i + 64)), "|T" .. icons[i] .. "|t")
+    end
+
+    for i = 1, #colors do
+        print(text)
+        text = text:gsub(string.format("{color:%s", string.char(i + 64)), "{" .. colors[i])
+        print(text)
+    end
+
+    return text, numbers
 end
 
 function internal.InsertNumericValuesIntoString(str, values)
