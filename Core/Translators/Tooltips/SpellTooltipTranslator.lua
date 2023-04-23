@@ -141,6 +141,8 @@ local function parseSpellTooltip(tooltipTexts)
                 if (element == "Next Rank:") then
                     spellTooltip.Talent.NextRankIndex = i
                     spellContainer = spellTooltip.Talent.NextRank
+                elseif element == "Left click to select this talent." or StartsWith(element, "Unlocked at level ") then -- "Left click to select this talent." and "Unlocked at level " used as part of description in PvP talent
+                    spellContainer.PvP = i
                 elseif (isEvokerSpellColor(element)) then
                     spellContainer.EvokerSpellColor = { i, element }
                 elseif (string.match(element, maxChargesPattern)) then
@@ -160,11 +162,15 @@ local function parseSpellTooltip(tooltipTexts)
                 elseif element == "Upgrade" then
                     spellContainer.Upgrade = i
                 elseif i % 2 == 1 then
-                    if (not spellContainer.Descriptions) then spellContainer.Descriptions = {} end
-                    spellContainer.Descriptions[#spellContainer.Descriptions + 1] = { index = i, value = element }
+                    if not spellContainer.Descriptions then spellContainer.Descriptions = {} end
+                    table.insert(spellContainer.Descriptions, { index = i, value = element })
                 end
             end
         end
+    end
+
+    if (not spellContainer.Descriptions) then
+        return -- HOOK: Description for PvP talent is empty. In this case client send another callback. Need to find why.
     end
 
     return spellTooltip
@@ -295,7 +301,10 @@ function translator:ParseTooltip(tooltip, tooltipData)
     end
 
     local tooltipInfo = parseSpellTooltip(tooltipTexts)
-    if (tooltipInfo and tooltipInfo.Talent and tooltipInfo.Talent.NextRankIndex == -1) then return end -- hook
+
+    if (not tooltipInfo) then return end
+
+    if (tooltipInfo and tooltipInfo.Talent and tooltipInfo.Talent.NextRankIndex == -1) then return end -- HOOK: No Rank 2+ info in multirang talent tooltip. In this case client send another callback. Need to find why
 
     return tooltipInfo
 end
