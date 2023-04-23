@@ -11,7 +11,7 @@ function internal.GetHash(str)
     -- Replace multiple spaces with a single underscore
     str = string.gsub(str, "%s+", "_")
     -- Remove newlines, carriage returns, periods, and commas
-    str = string.gsub(str, "[\n\r.,]", "")
+    str = string.gsub(str, "[\n\r.,’`]", "")
     -- Convert text to lowercase
     str = string.lower(str)
 

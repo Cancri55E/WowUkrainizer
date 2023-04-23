@@ -304,7 +304,7 @@ function translator:ParseTooltip(tooltip, tooltipData)
 
     if (not tooltipInfo) then return end
 
-    if (tooltipInfo and tooltipInfo.Talent and tooltipInfo.Talent.NextRankIndex == -1) then return end -- HOOK: No Rank 2+ info in multirang talent tooltip. In this case client send another callback. Need to find why
+    if (tooltipInfo and tooltipInfo.Talent and (tooltipInfo.Talent.MinRank ~= 0 and tooltipInfo.Talent.NextRankIndex == -1)) then return end -- HOOK: No Rank 1/2+ info in multirang talent tooltip. In this case client send another callback. Need to find why
 
     return tooltipInfo
 end
