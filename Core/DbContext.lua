@@ -81,25 +81,21 @@ do
     local repository = {}
 
     function repository.GetSpellNameOrDefault(default, highlight)
-        for _, value in ipairs(ns._db.SpellNames) do
-            local result = getValueOrDefault(value, default)
-            if (result ~= default) then
-                if (highlight) then
-                    return replaceBrackets(result)
-                else
-                    return removeBrackets(result)
-                end
+        local result = getValueOrDefault(ns._db.SpellNames, default)
+        if (result ~= default) then
+            if (highlight) then
+                return replaceBrackets(result)
+            else
+                return removeBrackets(result)
             end
         end
         return default
     end
 
     function repository.GetSpellDescriptionOrDefault(default)
-        for _, value in ipairs(ns._db.SpellDescriptions) do
-            local result = getFormattedValueOrDefault(value, default)
-            if (result ~= default) then
-                return replaceBrackets(result)
-            end
+        local result = getFormattedValueOrDefault(ns._db.SpellDescriptions, default)
+        if (result ~= default) then
+            return replaceBrackets(result)
         end
         return default
     end

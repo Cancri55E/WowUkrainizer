@@ -92,9 +92,7 @@ function internal.ExtractNumericValuesFromString(text)
     end
 
     for i = 1, #colors do
-        print(text)
         text = text:gsub(string.format("{color:%s", string.char(i + 64)), "{" .. colors[i])
-        print(text)
     end
 
     return text, numbers
@@ -104,5 +102,6 @@ function internal.InsertNumericValuesIntoString(str, values)
     local result = str:gsub("{(%d+)}", function(index)
         return values[tonumber(index)]
     end)
-    return result
+
+    return result:gsub("{(%x+)|([^}]+)}", "|c%1%2|r")
 end
