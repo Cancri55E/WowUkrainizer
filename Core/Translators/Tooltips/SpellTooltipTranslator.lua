@@ -149,7 +149,7 @@ local function parseSpellTooltip(tooltipTexts)
                     spellContainer.MaxCharges = { i, element }
                 elseif element == "Melee Range" or element == "Unlimited range" or EndsWith(element, "yd range") then
                     spellContainer.Range = { i, element }
-                elseif element == "Instant" or EndsWith(element, "sec cast") or EndsWith(element, "sec empower") or StartsWith(element, "Channeled") then
+                elseif element == "Instant" or element == "Channeled" or EndsWith(element, "sec cast") or EndsWith(element, "sec empower") then
                     spellContainer.CastTime = { i, element }
                 elseif StartsWith(element, "Requires") then
                     spellContainer.Requires = { i, element }
