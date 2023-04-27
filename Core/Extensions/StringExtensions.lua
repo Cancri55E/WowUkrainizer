@@ -57,6 +57,19 @@ function internal.Split(input, delimiter)
     return items
 end
 
+function internal.DeclensionWord(number, singular, plural, genitivePlural)
+    local lastDigit = number % 10
+    local lastTwoDigits = number % 100
+
+    if lastDigit == 1 and lastTwoDigits ~= 11 then
+        return singular
+    elseif (lastDigit >= 2 and lastDigit <= 4) and not (lastTwoDigits >= 12 and lastTwoDigits <= 14) then
+        return plural
+    else
+        return genitivePlural
+    end
+end
+
 function internal.ExtractNumericValuesFromString(text)
     if text == nil or text == "" then
         return text
@@ -98,10 +111,18 @@ function internal.ExtractNumericValuesFromString(text)
     return text, numbers
 end
 
-function internal.InsertNumericValuesIntoString(str, values)
+function internal.InsertNumericValuesIntoString(str, numbers)
     local result = str:gsub("{(%d+)}", function(index)
-        return values[tonumber(index)]
+        return numbers[tonumber(index)]
     end)
 
-    return result:gsub("{(%x+)|([^}]+)}", "|c%1%2|r")
+    result = result:gsub("{(%x+)|([^}]+)}", "|c%1%2|r")
+
+    result = result:gsub("(%d+)( *){(declension)|([^|]+)|([^|]+)|([^|]+)}",
+        function(numberString, space, _, nominativ, genetiv, plural)
+            local number = tonumber(numberString)
+            return number .. space .. internal.DeclensionWord(number, nominativ, genetiv, plural)
+        end)
+
+    return result
 end
