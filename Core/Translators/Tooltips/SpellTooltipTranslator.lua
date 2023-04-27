@@ -124,54 +124,61 @@ local function parseSpellTooltip(tooltipTexts)
         end
     end
 
-    local spellContainer = spellTooltip.Talent and spellTooltip.Talent.CurrentRank or spellTooltip.Spell
+    local spellContainer =
+        (spellTooltip.Talent and spellTooltip.Talent.CurrentRank) and spellTooltip.Talent.CurrentRank
+        or spellTooltip.Spell
+        or nil
 
-    for i = contentIndex, #tooltipTexts do
-        local element = tooltipTexts[i]
-        if (element ~= nil or element ~= "") then
-            local resourceTypes = processResourceStrings(element)
-            if (resourceTypes) then
-                spellContainer.ResourceType = { i }
-                for x, resourceType in ipairs(resourceTypes) do
-                    table.insert(spellContainer.ResourceType, x + 1, resourceType)
+    if (spellContainer) then
+        for i = contentIndex, #tooltipTexts do
+            local element = tooltipTexts[i]
+            if (element ~= nil or element ~= "") then
+                local resourceTypes = processResourceStrings(element)
+                if (resourceTypes) then
+                    spellContainer.ResourceType = { i }
+                    for x, resourceType in ipairs(resourceTypes) do
+                        table.insert(spellContainer.ResourceType, x + 1, resourceType)
+                    end
                 end
-            end
 
-            if not resourceTypes then
-                if (element == "Next Rank:") then
-                    spellTooltip.Talent.NextRankIndex = i
-                    spellContainer = spellTooltip.Talent.NextRank
-                elseif element == "Left click to select this talent." or StartsWith(element, "Unlocked at level ") then -- "Left click to select this talent." and "Unlocked at level " used as part of description in PvP talent
-                    spellContainer.PvP = i
-                elseif (isEvokerSpellColor(element)) then
-                    spellContainer.EvokerSpellColor = { i, element }
-                elseif (string.match(element, maxChargesPattern)) then
-                    spellContainer.MaxCharges = { i, element }
-                elseif element == "Melee Range" or element == "Unlimited range" or EndsWith(element, "yd range") then
-                    spellContainer.Range = { i, element }
-                elseif element == "Instant" or element == "Channeled" or EndsWith(element, "sec cast") or EndsWith(element, "sec empower") then
-                    spellContainer.CastTime = { i, element }
-                elseif StartsWith(element, "Requires") then
-                    spellContainer.Requires = { i, element }
-                elseif StartsWith(element, "Replaces") then
-                    spellContainer.Replaces = { i, element }
-                elseif EndsWith(element, "cooldown") or EndsWith(element, "recharge") or StartsWith(element, "Recharging: ") then
-                    spellContainer.Cooldown = { i, element }
-                elseif element == "Passive" then
-                    spellContainer.Passive = i
-                elseif element == "Upgrade" then
-                    spellContainer.Upgrade = i
-                elseif i % 2 == 1 then
-                    if not spellContainer.Descriptions then spellContainer.Descriptions = {} end
-                    table.insert(spellContainer.Descriptions, { index = i, value = element })
+                if not resourceTypes then
+                    if (element == "Next Rank:") then
+                        spellTooltip.Talent.NextRankIndex = i
+                        spellContainer = spellTooltip.Talent.NextRank
+                    elseif element == "Left click to select this talent." or StartsWith(element, "Unlocked at level ") then -- "Left click to select this talent." and "Unlocked at level " used as part of description in PvP talent
+                        spellContainer.PvP = i
+                    elseif (isEvokerSpellColor(element)) then
+                        spellContainer.EvokerSpellColor = { i, element }
+                    elseif (string.match(element, maxChargesPattern)) then
+                        spellContainer.MaxCharges = { i, element }
+                    elseif element == "Melee Range" or element == "Unlimited range" or EndsWith(element, "yd range") then
+                        spellContainer.Range = { i, element }
+                    elseif element == "Instant" or element == "Channeled" or EndsWith(element, "sec cast") or EndsWith(element, "sec empower") then
+                        spellContainer.CastTime = { i, element }
+                    elseif StartsWith(element, "Requires") then
+                        spellContainer.Requires = { i, element }
+                    elseif StartsWith(element, "Replaces") then
+                        spellContainer.Replaces = { i, element }
+                    elseif EndsWith(element, "cooldown") or EndsWith(element, "recharge") or StartsWith(element, "Recharging: ") then
+                        spellContainer.Cooldown = { i, element }
+                    elseif element == "Passive" then
+                        spellContainer.Passive = i
+                    elseif element == "Upgrade" then
+                        spellContainer.Upgrade = i
+                    elseif i % 2 == 1 then
+                        if not spellContainer.Descriptions then spellContainer.Descriptions = {} end
+                        table.insert(spellContainer.Descriptions, { index = i, value = element })
+                    end
                 end
             end
         end
+
+        if (not spellContainer.Descriptions) then
+            return -- HOOK: Description for PvP talent is empty. In this case client send another callback. Need to find why.
+        end
     end
 
-    if (not spellContainer.Descriptions) then
-        return -- HOOK: Description for PvP talent is empty. In this case client send another callback. Need to find why.
-    end
+
 
     return spellTooltip
 end
