@@ -178,8 +178,6 @@ local function parseSpellTooltip(tooltipTexts)
         end
     end
 
-
-
     return spellTooltip
 end
 
