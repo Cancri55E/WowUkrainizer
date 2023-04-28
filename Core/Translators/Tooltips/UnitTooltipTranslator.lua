@@ -53,6 +53,10 @@ local function parseUnitTooltipLines(unitTooltipLines)
     end
 
     local function parseUnitLevelString(unitLevelString)
+	    if not unitLevelString then
+            return nil, nil, nil, false
+		end
+		
         local level, unitType, rank, isPet = nil, nil, nil, false
         local stringParts = {}
 
@@ -123,7 +127,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         if (not levelInfo.isPet) then
             return string.format("%s %s %s %s",
                 LEVEL_TRANSLATION,
-                levelInfo.level,
+                levelInfo.level or "",
                 (levelInfo.unitType and GetUnitTypeOrDefault(levelInfo.unitType)) or "",
                 (levelInfo.rank and "(" .. GetUnitRankOrDefault(levelInfo.rank) .. ")") or "")
         else
