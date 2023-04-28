@@ -53,6 +53,10 @@ local function parseUnitTooltipLines(unitTooltipLines)
     end
 
     local function parseUnitLevelString(unitLevelString)
+	    if not unitLevelString then
+            return nil, nil, nil, false
+		end
+		
         local level, unitType, rank, isPet = nil, nil, nil, false
         local stringParts = {}
 
