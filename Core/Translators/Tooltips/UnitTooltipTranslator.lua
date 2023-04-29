@@ -15,19 +15,17 @@ local GetUnitRankOrDefault = ns.DbContext.Units.GetUnitRankOrDefault
 local GetUnitFractionOrDefault = ns.DbContext.Units.GetUnitFractionOrDefault
 
 local StartsWith = ns.StringExtensions.StartsWith
-local ExtractNumericValuesFromString = ns.StringExtensions.ExtractNumericValuesFromString
-local InsertNumericValuesIntoString = ns.StringExtensions.InsertNumericValuesIntoString
+local ExtractNumericValues = ns.StringExtensions.ExtractNumericValues
+local InsertNumericValues = ns.StringExtensions.InsertNumericValues
 
 local translator = class("UnitTooltipTranslator", ns.Translators.BaseTooltipTranslator)
 ns.Translators.UnitTooltipTranslator = translator
 
 local function parseUnitTooltipLines(unitTooltipLines)
-    local function isSubname(str)
-        return str and str:sub(1, 9) ~= "Pet Level" and str:sub(1, 5) ~= "Level"
-    end
-
     local function parseSubnameInfo(leftTexts, index)
-        return isSubname(leftTexts[index]) and { index = index, value = leftTexts[index] } or nil
+        local value = leftTexts[index]
+        local isSubname = value and value:sub(1, 9) ~= "Pet Level" and value:sub(1, 5) ~= "Level"
+        return isSubname and { index = index, value = value } or nil
     end
 
     local function parseRemainingInfo(leftTexts, startIndex)
@@ -89,7 +87,7 @@ local function parseUnitTooltipLines(unitTooltipLines)
         table.insert(leftTexts, tooltipLine.leftText)
     end
 
-    local tooltipInfo = { name = leftTexts[1], levelInfo = {} }
+    local tooltipInfo = { name = leftTexts[1] }
 
     if (#leftTexts > 1) then
         local index = 2
@@ -97,8 +95,11 @@ local function parseUnitTooltipLines(unitTooltipLines)
         tooltipInfo.subnameInfo = parseSubnameInfo(leftTexts, index)
         index = index + (tooltipInfo.subnameInfo and 1 or 0)
 
-        tooltipInfo.levelInfo.index, tooltipInfo.levelInfo.level, tooltipInfo.levelInfo.unitType,
-        tooltipInfo.levelInfo.rank, tooltipInfo.levelInfo.isPet = index, parseUnitLevelString(leftTexts[index])
+        if (leftTexts[index]) then
+            tooltipInfo.levelInfo = { index = index }
+            tooltipInfo.levelInfo.level, tooltipInfo.levelInfo.unitType,
+            tooltipInfo.levelInfo.rank, tooltipInfo.levelInfo.isPet = parseUnitLevelString(leftTexts[index])
+        end
 
         tooltipInfo.pvpInfo, tooltipInfo.factionInfo, tooltipInfo.capturableLineIndex, tooltipInfo.collectedInfo,
         tooltipInfo.leaderLineIndex = parseRemainingInfo(leftTexts, index + 1)
@@ -121,11 +122,11 @@ end
 function translator:TranslateTooltipInfo(tooltipInfo)
     local function getLevelInfoString(levelInfo)
         if (not levelInfo.isPet) then
-            return string.format("%s %s %s %s",
+            return string.format("%s%s%s%s",
                 LEVEL_TRANSLATION,
-                levelInfo.level,
-                (levelInfo.unitType and GetUnitTypeOrDefault(levelInfo.unitType)) or "",
-                (levelInfo.rank and "(" .. GetUnitRankOrDefault(levelInfo.rank) .. ")") or "")
+                levelInfo.level and " " .. levelInfo.level or "",
+                (levelInfo.unitType and " " .. GetUnitTypeOrDefault(levelInfo.unitType)) or "",
+                (levelInfo.rank and " (" .. GetUnitRankOrDefault(levelInfo.rank) .. ")") or "")
         else
             return string.format("%s %s",
                 string.gsub(PET_LEVEL_TRANSLATION, "{1}", levelInfo.level),
@@ -133,7 +134,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         end
     end
 
-    if (not tooltipInfo.name or not tooltipInfo.levelInfo) then return end
+    if (not tooltipInfo.name) then return end
 
     local translatedTooltipLines = {}
 
@@ -142,10 +143,12 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         value = GetUnitNameOrDefault(tooltipInfo.name)
     })
 
-    table.insert(translatedTooltipLines, {
-        index = tooltipInfo.levelInfo.index,
-        value = getLevelInfoString(tooltipInfo.levelInfo)
-    })
+    if (tooltipInfo.levelInfo) then
+        table.insert(translatedTooltipLines, {
+            index = tooltipInfo.levelInfo.index,
+            value = getLevelInfoString(tooltipInfo.levelInfo)
+        })
+    end
 
     if (tooltipInfo.subnameInfo) then
         table.insert(translatedTooltipLines, {
@@ -169,10 +172,10 @@ function translator:TranslateTooltipInfo(tooltipInfo)
     end
 
     if (tooltipInfo.collectedInfo) then
-        local _, numValues = ExtractNumericValuesFromString(tooltipInfo.collectedInfo.value)
+        local _, numValues = ExtractNumericValues(tooltipInfo.collectedInfo.value)
         table.insert(translatedTooltipLines, {
             index = tooltipInfo.collectedInfo.index,
-            value = InsertNumericValuesIntoString(PET_COLLECTED_TRANSLATION, numValues)
+            value = InsertNumericValues(PET_COLLECTED_TRANSLATION, numValues)
         })
     end
 
