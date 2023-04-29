@@ -3,7 +3,7 @@ local _, ns = ...;
 local _G = _G
 
 local PAGE_TRANSLATION, SPELL_PASSIVE_TRANSLATION = ns.PAGE_TRANSLATION, ns.SPELL_PASSIVE_TRANSLATION
-local RANK_TRANSLATION, LEVEL_TRANSLATION = ns.RANK_TRANSLATION, ns.LEVEL_TRANSLATION
+local SPELL_RANK_TRANSLATION, LEVEL_TRANSLATION = ns.SPELL_RANK_TRANSLATION, ns.LEVEL_TRANSLATION
 local SPELL_GENERAL_TRANSLATION = ns.SPELL_GENERAL_TRANSLATION
 
 local StartsWith, UpdateFontString = ns.StringExtensions.StartsWith, ns.FontStringExtensions.UpdateFontString
@@ -40,7 +40,7 @@ local function updateSpellButtonCallback(self)
                 if (subSpellName == "Passive") then
                     UpdateFontString(subSpellNameString, SPELL_PASSIVE_TRANSLATION)
                 elseif (StartsWith(subSpellName, "Rank")) then
-                    UpdateFontString(subSpellNameString, string.gsub(subSpellName, "Rank", RANK_TRANSLATION))
+                    UpdateFontString(subSpellNameString, string.gsub(subSpellName, "Rank", SPELL_RANK_TRANSLATION))
                 else
                     UpdateFontString(subSpellNameString, GetSpellAttributeOrDefault(subSpellName))
                 end
