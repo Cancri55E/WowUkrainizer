@@ -8,12 +8,7 @@ function internal.GetHash(str)
         return -1
     end
 
-    -- Replace multiple spaces with a single underscore
-    str = string.gsub(str, "%s+", "_")
-    -- Remove newlines, carriage returns, periods, and commas
-    str = string.gsub(str, "[\n\r.,’`]", "")
-    -- Convert text to lowercase
-    str = string.lower(str)
+    str = str:gsub("%s+", "_"):gsub("[\n\r’`.,]", ""):lower()
 
     local counter = 1
     local len = string.len(str)
