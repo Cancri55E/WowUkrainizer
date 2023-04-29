@@ -2,8 +2,8 @@ local _, ns = ...;
 
 if (ns.DbContext) then return end
 
-local ExtractNumericValuesFromString = ns.StringExtensions.ExtractNumericValuesFromString
-local InsertNumericValuesIntoString = ns.StringExtensions.InsertNumericValuesIntoString
+local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
+local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithNumerics
 
 local dbContext = {}
 
@@ -15,9 +15,9 @@ end
 
 local function getFormattedValueOrDefault(hashTable, default)
     if (not default) then return default end
-    local text, numValues = ExtractNumericValuesFromString(default)
+    local text, numValues = NormalizeStringAndExtractNumerics(default)
     local translatedText = getValueOrDefault(hashTable, text)
-    return InsertNumericValuesIntoString(translatedText, numValues)
+    return ReconstructStringWithNumerics(translatedText, numValues)
 end
 
 local function removeBrackets(str)

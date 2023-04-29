@@ -15,8 +15,8 @@ local GetUnitRankOrDefault = ns.DbContext.Units.GetUnitRankOrDefault
 local GetUnitFractionOrDefault = ns.DbContext.Units.GetUnitFractionOrDefault
 
 local StartsWith = ns.StringExtensions.StartsWith
-local ExtractNumericValuesFromString = ns.StringExtensions.ExtractNumericValuesFromString
-local InsertNumericValuesIntoString = ns.StringExtensions.InsertNumericValuesIntoString
+local ExtractNumericValues = ns.StringExtensions.ExtractNumericValues
+local InsertNumericValues = ns.StringExtensions.InsertNumericValues
 
 local translator = class("UnitTooltipTranslator", ns.Translators.BaseTooltipTranslator)
 ns.Translators.UnitTooltipTranslator = translator
@@ -172,10 +172,10 @@ function translator:TranslateTooltipInfo(tooltipInfo)
     end
 
     if (tooltipInfo.collectedInfo) then
-        local _, numValues = ExtractNumericValuesFromString(tooltipInfo.collectedInfo.value)
+        local _, numValues = ExtractNumericValues(tooltipInfo.collectedInfo.value)
         table.insert(translatedTooltipLines, {
             index = tooltipInfo.collectedInfo.index,
-            value = InsertNumericValuesIntoString(PET_COLLECTED_TRANSLATION, numValues)
+            value = InsertNumericValues(PET_COLLECTED_TRANSLATION, numValues)
         })
     end
 

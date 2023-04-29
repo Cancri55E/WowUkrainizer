@@ -65,27 +65,9 @@ function internal.DeclensionWord(number, singular, plural, genitivePlural)
     end
 end
 
-function internal.ExtractNumericValuesFromString(text)
-    if text == nil or text == "" then
-        return text
-    end
-
-    local icons = {}
-    text = string.gsub(text, "%|T(.-)%|t", function(match)
-        table.insert(icons, match)
-        return string.format("{icon:%s}", string.char(#icons + 64))
-    end)
-
-    local colors = {}
-    text = string.gsub(text,
-        "%|c([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])(.-)%|r",
-        function(color, title)
-            table.insert(colors, color)
-            return string.format("{color:%s|%s}", string.char(#colors + 64), title)
-        end)
-
+function internal.ExtractNumericValues(str)
     local numbers = {}
-    text = text:gsub("(%d[%d,]*%.?%d*)", function(num)
+    str = str:gsub("(%d[%d,]*%.?%d*)", function(num)
         if (num:sub(-1) == ",") then
             table.insert(numbers, num:sub(1, -2))
             return string.format("{%d},", #numbers)
@@ -95,29 +77,11 @@ function internal.ExtractNumericValuesFromString(text)
         end
     end)
 
-    for i = 1, #icons do
-        text = text:gsub(string.format("{icon:%s}", string.char(i + 64)), "|T" .. icons[i] .. "|t")
-    end
-
-    for i = 1, #colors do
-        text = text:gsub(string.format("{color:%s", string.char(i + 64)), "{" .. colors[i])
-    end
-
-    return text, numbers
+    return str, numbers
 end
 
-function internal.InsertNumericValuesIntoString(str, numbers)
-    local result = str:gsub("{(%d+)}", function(index)
-        return numbers[tonumber(index)]
+function internal.InsertNumericValues(str, numericValues)
+    return str:gsub("{(%d+)}", function(index)
+        return numericValues[tonumber(index)]
     end)
-
-    result = result:gsub("{(%x+)|([^}]+)}", "|c%1%2|r")
-
-    result = result:gsub("(%d+)( *){(declension)|([^|]+)|([^|]+)|([^|]+)}",
-        function(numberString, space, _, nominativ, genetiv, plural)
-            local number = tonumber(numberString)
-            return number .. space .. internal.DeclensionWord(number, nominativ, genetiv, plural)
-        end)
-
-    return result
 end
