@@ -2,8 +2,8 @@ local _, ns = ...;
 
 if (ns.DbContext) then return end
 
-local ExtractNumericValuesFromString = ns.StringExtensions.ExtractNumericValuesFromString
-local InsertNumericValuesIntoString = ns.StringExtensions.InsertNumericValuesIntoString
+local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
+local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithNumerics
 
 local dbContext = {}
 
@@ -15,9 +15,9 @@ end
 
 local function getFormattedValueOrDefault(hashTable, default)
     if (not default) then return default end
-    local text, numValues = ExtractNumericValuesFromString(default)
+    local text, numValues = NormalizeStringAndExtractNumerics(default)
     local translatedText = getValueOrDefault(hashTable, text)
-    return InsertNumericValuesIntoString(translatedText, numValues)
+    return ReconstructStringWithNumerics(translatedText, numValues)
 end
 
 local function removeBrackets(str)
@@ -81,25 +81,21 @@ do
     local repository = {}
 
     function repository.GetSpellNameOrDefault(default, highlight)
-        for _, value in ipairs(ns._db.SpellNames) do
-            local result = getValueOrDefault(value, default)
-            if (result ~= default) then
-                if (highlight) then
-                    return replaceBrackets(result)
-                else
-                    return removeBrackets(result)
-                end
+        local result = getValueOrDefault(ns._db.SpellNames, default)
+        if (result ~= default) then
+            if (highlight) then
+                return replaceBrackets(result)
+            else
+                return removeBrackets(result)
             end
         end
         return default
     end
 
     function repository.GetSpellDescriptionOrDefault(default)
-        for _, value in ipairs(ns._db.SpellDescriptions) do
-            local result = getFormattedValueOrDefault(value, default)
-            if (result ~= default) then
-                return replaceBrackets(result)
-            end
+        local result = getFormattedValueOrDefault(ns._db.SpellDescriptions, default)
+        if (result ~= default) then
+            return replaceBrackets(result)
         end
         return default
     end
