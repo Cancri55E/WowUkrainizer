@@ -2,6 +2,7 @@ local _, ns = ...;
 
 local ExtractNumericValues = ns.StringExtensions.ExtractNumericValues
 local InsertNumericValues = ns.StringExtensions.InsertNumericValues
+local DeclensionWord = ns.StringExtensions.DeclensionWord
 
 local internal = {}
 ns.StringNormalizer = internal
@@ -47,7 +48,7 @@ function internal.ReconstructStringWithNumerics(str, numbers)
     result = result:gsub("(%d+)( *){(declension)|([^|]+)|([^|]+)|([^|]+)}",
         function(numberString, space, _, nominativ, genetiv, plural)
             local number = tonumber(numberString)
-            return number .. space .. internal.DeclensionWord(number, nominativ, genetiv, plural)
+            return number .. space .. DeclensionWord(number, nominativ, genetiv, plural)
         end)
 
     return result
