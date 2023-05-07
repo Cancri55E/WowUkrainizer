@@ -1,0 +1,12 @@
+package-as: WowUkrainizer
+
+embedded-libraries:
+  - ace3
+  - libstub
+
+ignore:
+  - .vscode
+  - .git
+  - screenshots
+  - readme.md
+  - cvars.dump
