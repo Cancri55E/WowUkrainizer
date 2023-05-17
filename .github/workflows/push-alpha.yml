@@ -23,6 +23,9 @@ jobs:
         with:
           fetch-depth: 200
 
+      - name: Generate Changelog
+        run: ./generate_changelog.sh
+
       - name: Checkout DevTools
         uses: actions/checkout@v3
         with:
@@ -53,9 +56,6 @@ jobs:
       - name: Display update translation log
         run: |
           cat log.txt
-          
-      - name: Generate Changelog
-        run: ./generate_changelog.sh
 
       - name: Create Package
         uses: BigWigsMods/packager@v2
