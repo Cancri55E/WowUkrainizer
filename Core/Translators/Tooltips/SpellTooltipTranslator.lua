@@ -1,5 +1,7 @@
 local _, ns = ...;
 
+local _G = _G
+
 local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
 
@@ -279,12 +281,74 @@ local function translateTooltipSpellInfo(spellContainer)
         for _, description in ipairs(spellContainer.Descriptions) do
             table.insert(translatedTooltipLines, {
                 index = description.index,
-                value = GetSpellDescriptionOrDefault(description.value)
+                value = GetSpellDescriptionOrDefault(description.value),
+                originalValue = description.value,
+                tag = "Description"
             })
         end
     end
 
     return translatedTooltipLines
+end
+
+local function addUntranslatedSpellToDump(spellId, translatedTooltipLines)
+    local function findUntranslatedDescriptions(tooltipLines)
+        local results = {}
+        for _, obj in ipairs(tooltipLines) do
+            if obj.tag == "Description" and obj.value == obj.originalValue then
+                table.insert(results, obj.originalValue)
+            end
+        end
+        return results
+    end
+
+    local function isValueInTable(t, value)
+        for _, v in ipairs(t) do
+            if v == value then
+                return true
+            end
+        end
+        return false
+    end
+
+    local originalName = translatedTooltipLines[1].originalValue
+    local untranslatedDescriptions, untranslatedName = findUntranslatedDescriptions(translatedTooltipLines),
+        translatedTooltipLines[1].value == originalName and originalName or ""
+
+    if (#untranslatedDescriptions == 0 and untranslatedName == "") then return end
+
+    local className = UnitClass("player")
+    local specializationId, specializationName = GetSpecializationInfo(GetSpecialization())
+
+    if (not _G.WowUkrainizerData) then _G.WowUkrainizerData = {} end
+    if (not _G.WowUkrainizerData.UntranslatedData) then _G.WowUkrainizerData.UntranslatedData = {} end
+    if (not _G.WowUkrainizerData.UntranslatedData.Spells) then _G.WowUkrainizerData.UntranslatedData.Spells = {} end
+
+    local untranslatedSpells = _G.WowUkrainizerData.UntranslatedData.Spells
+
+    if (not untranslatedSpells[className]) then untranslatedSpells[className] = {} end
+    if (not untranslatedSpells[className][specializationId]) then
+        untranslatedSpells[className][specializationId] = { Name = specializationName, Values = {} }
+    end
+
+    if (not untranslatedSpells[className][specializationId].Values[originalName]) then
+        untranslatedSpells[className][specializationId].Values[originalName] = {}
+    end
+
+    untranslatedSpells[className][specializationId].Values[originalName].UntranslatedName = untranslatedName ~= ""
+
+    local spellDescriptions = untranslatedSpells[className][specializationId].Values[originalName][spellId]
+    if not spellDescriptions then
+        spellDescriptions = {}
+        untranslatedSpells[className][specializationId].Values[originalName][spellId] = spellDescriptions
+    end
+
+    for _, desc in ipairs(untranslatedDescriptions) do
+        if (not isValueInTable(spellDescriptions, desc)) then
+            table.insert(spellDescriptions, desc)
+            print('Untranslated spell descriptions added to database: ', originalName, spellId)
+        end
+    end
 end
 
 function translator:ParseTooltip(tooltip, tooltipData)
@@ -311,6 +375,8 @@ function translator:ParseTooltip(tooltip, tooltipData)
 
     if (tooltipInfo and tooltipInfo.Talent and (tooltipInfo.Talent.MinRank ~= 0 and tooltipInfo.Talent.NextRankIndex == -1)) then return end -- HOOK: No Rank 1/2+ info in multirang talent tooltip. In this case client send another callback. Need to find why
 
+    tooltipInfo.SpellId = tonumber(tooltipData.id)
+
     return tooltipInfo
 end
 
@@ -326,7 +392,9 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     table.insert(translatedTooltipLines, {
         index = 1,
-        value = GetSpellNameOrDefault(tooltipInfo.Name, true)
+        value = GetSpellNameOrDefault(tooltipInfo.Name, true),
+        originalValue = tooltipInfo.Name,
+        tag = "Name"
     })
 
     if (tooltipInfo.Form and tooltipInfo.Form ~= "") then
@@ -353,6 +421,8 @@ function translator:TranslateTooltipInfo(tooltipInfo)
             addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.NextRank))
         end
     end
+
+    addUntranslatedSpellToDump(tooltipInfo.SpellId, translatedTooltipLines)
 
     return translatedTooltipLines
 end
