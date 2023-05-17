@@ -1,0 +1,18 @@
+{
+  "name": "wowukrainizer",
+  "version": "0.2.0",
+  "description": "WowUkrainizer is an addon for the World of Warcraft, designed to provide Ukrainian-speaking players with a localized gaming experience. With this addon installed, all in-game content will be automatically translated into Ukrainian, allowing players to fully immerse themselves in the game without having to rely on their English language skills.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/github": "^8.0.7",
+    "@semantic-release/release-notes-generator": "^11.0.1",
+    "semantic-release": "^21.0.2"
+  }
+}
