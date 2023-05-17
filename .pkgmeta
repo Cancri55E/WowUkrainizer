@@ -5,8 +5,10 @@ embedded-libraries:
   - libstub
 
 ignore:
+  - .releaserc
   - .vscode
   - .git
   - screenshots
-  - readme.md
   - cvars.dump
+  - package.json
+  - package-lock.json
