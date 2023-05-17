@@ -18,3 +18,5 @@ ignore:
   - package-lock.json
   - generate_changelog.sh
   - release.sh
+  - DevTools
+  - RawData
