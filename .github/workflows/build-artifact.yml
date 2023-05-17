@@ -11,12 +11,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 200
-          
-      - name: Set execute permissions
-        run: chmod +x generate_changelog.sh
-  
-      - name: Generate Changelog
-        run: ./generate_changelog.sh
         
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -48,7 +42,7 @@ jobs:
       - name: Run DevTools project
         id: run_update_translation_cmd
         run: |
-          dotnet run --project ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release -- --m "generate-lua" --ds "${{ github.workspace }}/RawData/Data.db" --t "${{ github.workspace }}/Database" 2>log.txt
+          dotnet run --project ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release -- --m "generate-lua" --ds "${{ github.workspace }}/RawData/Data.db" --l "${{ github.workspace }}/Database" 2>log.txt
 
       - name: Display update translation log
         run: |
