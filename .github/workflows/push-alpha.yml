@@ -17,7 +17,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 200
-
+          
+      - name: Set execute permissions
+        run: chmod +x generate_changelog.sh
+  
       - name: Generate Changelog
         run: ./generate_changelog.sh
         

@@ -12,13 +12,55 @@ jobs:
         with:
           fetch-depth: 200
           
+      - name: Set execute permissions
+        run: chmod +x generate_changelog.sh
+  
       - name: Generate Changelog
         run: ./generate_changelog.sh
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Checkout DevTools
+        uses: actions/checkout@v3
+        with:
+          ref: feature/refactoring
+          repository: Cancri55E/WowUkrainizer-DevTools
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          path: DevTools
+          
+      - name: Checkout RawData
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          repository: Cancri55E/WowUkrainizer-Data
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          path: RawData
+
+      - name: Restore DevTools NuGet packages
+        run: dotnet restore ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj
+
+      - name: Build DevTools project
+        run: dotnet build ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --no-restore
+        
+      - name: Run DevTools project
+        id: run_update_translation_cmd
+        run: |
+          dotnet run --project ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release -- --m "generate-lua" --ds "${{ github.workspace }}/RawData/Data.db" --t "${{ github.workspace }}/Database" 2>log.txt
+
+      - name: Display update translation log
+        run: |
+          cat log.txt
         
       - name: Create Package
         uses: BigWigsMods/packager@v2
         with:
           args: -d -z
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v3
         with:
