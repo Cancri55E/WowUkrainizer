@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - develop
 
 jobs:
   release:
@@ -35,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   push_to_curseforge:
-    name: Push to CurseForge
+    name: Push Release to CurseForge
     needs: release
     runs-on: ubuntu-22.04
     steps:
@@ -49,4 +48,3 @@ jobs:
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
-    if: github.ref == 'refs/heads/develop'

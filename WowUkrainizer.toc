@@ -1,4 +1,4 @@
-## Interface: 100007
+## Interface: 100100
 ## Title: World of Warcraft Ukrainizer
 ## Notes: Модифікація додає український переклад до гри, що дозволяє україномовним гравцям краще зрозуміти ігровий процес та насолоджуватись грою на європейських серверах.
 ## Author: Volodymyr <55CancriE> Nykonov
