@@ -13,11 +13,6 @@ jobs:
     name: Push to CurseForge
     runs-on: ubuntu-22.04
     steps:
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '7.0.x'
-          
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -25,6 +20,11 @@ jobs:
 
       - name: Generate Changelog
         run: ./generate_changelog.sh
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
 
       - name: Checkout DevTools
         uses: actions/checkout@v3
