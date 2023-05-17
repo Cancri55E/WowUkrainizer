@@ -2,7 +2,7 @@
   "branches": [
     "master",
     {
-      "name": "dev",
+      "name": "develop",
       "prerelease": "alpha"
     }
   ],
@@ -10,5 +10,6 @@
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     "@semantic-release/github"
-  ]
+  ],
+  "tagFormat": "${version}"
 }

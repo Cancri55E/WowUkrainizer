@@ -1,0 +1,14 @@
+package-as: WowUkrainizer
+
+embedded-libraries:
+  - ace3
+  - libstub
+
+ignore:
+  - .releaserc
+  - .vscode
+  - .git
+  - screenshots
+  - cvars.dump
+  - package.json
+  - package-lock.json
