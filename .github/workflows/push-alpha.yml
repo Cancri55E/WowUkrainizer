@@ -6,6 +6,8 @@ on:
     branches:
       - develop
 
+permissions: write-all
+
 jobs:
   push_to_curseforge:
     name: Push to CurseForge
@@ -26,7 +28,7 @@ jobs:
         with:
           ref: feature/refactoring
           repository: Cancri55E/WowUkrainizer-DevTools
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
           path: DevTools
           
       - name: Checkout RawData
@@ -34,7 +36,7 @@ jobs:
         with:
           ref: main
           repository: Cancri55E/WowUkrainizer-Data
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
           path: RawData
 
       - name: Restore DevTools NuGet packages
