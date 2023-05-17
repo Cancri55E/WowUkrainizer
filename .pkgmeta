@@ -4,6 +4,10 @@ embedded-libraries:
   - ace3
   - libstub
 
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
 ignore:
   - .releaserc
   - .vscode
