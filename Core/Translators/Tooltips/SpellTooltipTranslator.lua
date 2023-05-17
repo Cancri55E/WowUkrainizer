@@ -1,11 +1,15 @@
 local _, ns = ...;
 
+local _G = _G
+
 local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
 
 local SPELL_PASSIVE_TRANSLATION = ns.SPELL_PASSIVE_TRANSLATION
+local TALENT_UPGRADE_TRANSLATION = ns.TALENT_UPGRADE_TRANSLATION
 local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
 local SPELL_NEXT_RANK_TRANSLATION = ns.SPELL_NEXT_RANK_TRANSLATION
+local TALENT_REPLACES_TRANSLATION = ns.TALENT_REPLACES_TRANSLATION
 
 local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
 local GetSpellDescriptionOrDefault = ns.DbContext.Spells.GetSpellDescriptionOrDefault
@@ -20,7 +24,8 @@ ns.Translators.SpellTooltipTranslator = translator
 
 local function processResourceStrings(str)
     local function isResourceString(value)
-        local spellResources = { "Arcane Charges",
+        local spellResources = {
+            "Arcane Charges",
             "Astral Power",
             "Chi",
             "Combo Points",
@@ -38,14 +43,19 @@ local function processResourceStrings(str)
             "Runes",
             "Health",
             "Runic Power",
-            "Runic Power per sec",
-            "Soul Shards"
+            "Soul Shards",
+            "Soul Shard"
         }
+
         for _, resource in ipairs(spellResources) do
-            if value:match("^%d+[.,]?%d* to %d+[.,]?%d* " .. resource .. "$") or value:match("^%d+[.,]?%d* " .. resource .. "$") then
+            if value:match("^%d+[.,]?%d* to %d+[.,]?%d* " .. resource .. "$")
+                or value:match("^%d+[.,]?%d* " .. resource .. "$")
+                or value:match("^%d+[.,]?%d* " .. resource .. ", plus %d+[.,]?%d* per sec$")
+                or value:match("^%d+[.,]?%d* " .. resource .. " per sec$") then
                 return true
             end
         end
+
         return false
     end
 
@@ -76,6 +86,10 @@ local function processResourceStrings(str)
     end
 
     return next(resultTable) ~= nil and resultTable or nil
+end
+
+local function isEvokerSpellColor(str)
+    return str == "Red" or str == "Green" or str == "Blue" or str == "Black" or str == "Bronze"
 end
 
 local function parseSpellTooltip(tooltipTexts)
@@ -112,40 +126,57 @@ local function parseSpellTooltip(tooltipTexts)
         end
     end
 
-    local spellContainer = spellTooltip.Talent and spellTooltip.Talent.CurrentRank or spellTooltip.Spell
+    local spellContainer =
+        (spellTooltip.Talent and spellTooltip.Talent.CurrentRank) and spellTooltip.Talent.CurrentRank
+        or spellTooltip.Spell
+        or nil
 
-    for i = contentIndex, #tooltipTexts do
-        local element = tooltipTexts[i]
-        if (element ~= nil or element ~= "") then
-            local resourceTypes = processResourceStrings(element)
-            if (resourceTypes) then
-                spellContainer.ResourceType = { i }
-                for x, resourceType in ipairs(resourceTypes) do
-                    table.insert(spellContainer.ResourceType, x + 1, resourceType)
+    if (spellContainer) then
+        for i = contentIndex, #tooltipTexts do
+            local element = tooltipTexts[i]
+            if (element ~= nil or element ~= "") then
+                local resourceTypes = processResourceStrings(element)
+                if (resourceTypes) then
+                    spellContainer.ResourceType = { i }
+                    for x, resourceType in ipairs(resourceTypes) do
+                        table.insert(spellContainer.ResourceType, x + 1, resourceType)
+                    end
+                end
+
+                if not resourceTypes then
+                    if (element == "Next Rank:") then
+                        spellTooltip.Talent.NextRankIndex = i
+                        spellContainer = spellTooltip.Talent.NextRank
+                    elseif element == "Left click to select this talent." or StartsWith(element, "Unlocked at level ") then -- "Left click to select this talent." and "Unlocked at level " used as part of description in PvP talent
+                        spellContainer.PvP = i
+                    elseif (isEvokerSpellColor(element)) then
+                        spellContainer.EvokerSpellColor = { i, element }
+                    elseif (string.match(element, maxChargesPattern)) then
+                        spellContainer.MaxCharges = { i, element }
+                    elseif element == "Melee Range" or element == "Unlimited range" or EndsWith(element, "yd range") then
+                        spellContainer.Range = { i, element }
+                    elseif element == "Instant" or element == "Channeled" or EndsWith(element, "sec cast") or EndsWith(element, "sec empower") then
+                        spellContainer.CastTime = { i, element }
+                    elseif StartsWith(element, "Requires") then
+                        spellContainer.Requires = { i, element }
+                    elseif StartsWith(element, "Replaces") then
+                        spellContainer.Replaces = { i, element }
+                    elseif EndsWith(element, "cooldown") or EndsWith(element, "recharge") or StartsWith(element, "Recharging: ") then
+                        spellContainer.Cooldown = { i, element }
+                    elseif element == "Passive" then
+                        spellContainer.Passive = i
+                    elseif element == "Upgrade" then
+                        spellContainer.Upgrade = i
+                    elseif i % 2 == 1 then
+                        if not spellContainer.Descriptions then spellContainer.Descriptions = {} end
+                        table.insert(spellContainer.Descriptions, { index = i, value = element })
+                    end
                 end
             end
+        end
 
-            if not resourceTypes then
-                if (element == "Next Rank:") then
-                    spellTooltip.Talent.NextRankIndex = i
-                    spellContainer = spellTooltip.Talent.NextRank
-                elseif (string.match(element, maxChargesPattern)) then
-                    spellContainer.MaxCharges = { i, element }
-                elseif element == "Melee Range" or EndsWith(element, "yd range") then
-                    spellContainer.Range = { i, element }
-                elseif element == "Instant" or EndsWith(element, "sec cast") or StartsWith(element, "Channeled") then
-                    spellContainer.CastTime = { i, element }
-                elseif StartsWith(element, "Requires") then
-                    spellContainer.Requires = { i, element }
-                elseif EndsWith(element, "cooldown") or EndsWith(element, "recharge") then
-                    spellContainer.Cooldown = { i, element }
-                elseif element == "Passive" then
-                    spellContainer.Passive = i
-                elseif i % 2 == 1 then
-                    if (not spellContainer.Descriptions) then spellContainer.Descriptions = {} end
-                    spellContainer.Descriptions[#spellContainer.Descriptions + 1] = { index = i, value = element }
-                end
-            end
+        if (not spellContainer.Descriptions) then
+            return -- HOOK: Description for PvP talent is empty. In this case client send another callback. Need to find why.
         end
     end
 
@@ -153,6 +184,14 @@ local function parseSpellTooltip(tooltipTexts)
 end
 
 local function translateTooltipSpellInfo(spellContainer)
+    local function extractReplaceSpellName(str)
+        local spellName = str:match("Replaces%s+(.+)")
+        if spellName ~= nil then
+            spellName = spellName:trim()
+        end
+        return spellName
+    end
+
     if (not spellContainer) then return end
 
     local translatedTooltipLines = {}
@@ -188,6 +227,14 @@ local function translateTooltipSpellInfo(spellContainer)
         })
     end
 
+    if (spellContainer.Replaces) then
+        local replaceSpellName = GetSpellNameOrDefault(extractReplaceSpellName(spellContainer.Replaces[2]), false)
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.Replaces[1],
+            value = TALENT_REPLACES_TRANSLATION .. " " .. replaceSpellName
+        })
+    end
+
     if (spellContainer.CastTime) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.CastTime[1],
@@ -209,6 +256,13 @@ local function translateTooltipSpellInfo(spellContainer)
         })
     end
 
+    if (spellContainer.EvokerSpellColor) then
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.EvokerSpellColor[1],
+            value = GetSpellAttributeOrDefault(spellContainer.EvokerSpellColor[2])
+        })
+    end
+
     if (spellContainer.Passive) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.Passive,
@@ -216,16 +270,85 @@ local function translateTooltipSpellInfo(spellContainer)
         })
     end
 
+    if (spellContainer.Upgrade) then
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.Upgrade,
+            value = TALENT_UPGRADE_TRANSLATION
+        })
+    end
+
     if (spellContainer.Descriptions) then
         for _, description in ipairs(spellContainer.Descriptions) do
             table.insert(translatedTooltipLines, {
                 index = description.index,
-                value = GetSpellDescriptionOrDefault(description.value)
+                value = GetSpellDescriptionOrDefault(description.value),
+                originalValue = description.value,
+                tag = "Description"
             })
         end
     end
 
     return translatedTooltipLines
+end
+
+local function addUntranslatedSpellToDump(spellId, translatedTooltipLines)
+    local function findUntranslatedDescriptions(tooltipLines)
+        local results = {}
+        for _, obj in ipairs(tooltipLines) do
+            if obj.tag == "Description" and obj.value == obj.originalValue then
+                table.insert(results, obj.originalValue)
+            end
+        end
+        return results
+    end
+
+    local function isValueInTable(t, value)
+        for _, v in ipairs(t) do
+            if v == value then
+                return true
+            end
+        end
+        return false
+    end
+
+    local originalName = translatedTooltipLines[1].originalValue
+    local untranslatedDescriptions, untranslatedName = findUntranslatedDescriptions(translatedTooltipLines),
+        translatedTooltipLines[1].value == originalName and originalName or ""
+
+    if (#untranslatedDescriptions == 0 and untranslatedName == "") then return end
+
+    local className = UnitClass("player")
+    local specializationId, specializationName = GetSpecializationInfo(GetSpecialization())
+
+    if (not _G.WowUkrainizerData) then _G.WowUkrainizerData = {} end
+    if (not _G.WowUkrainizerData.UntranslatedData) then _G.WowUkrainizerData.UntranslatedData = {} end
+    if (not _G.WowUkrainizerData.UntranslatedData.Spells) then _G.WowUkrainizerData.UntranslatedData.Spells = {} end
+
+    local untranslatedSpells = _G.WowUkrainizerData.UntranslatedData.Spells
+
+    if (not untranslatedSpells[className]) then untranslatedSpells[className] = {} end
+    if (not untranslatedSpells[className][specializationId]) then
+        untranslatedSpells[className][specializationId] = { Name = specializationName, Values = {} }
+    end
+
+    if (not untranslatedSpells[className][specializationId].Values[originalName]) then
+        untranslatedSpells[className][specializationId].Values[originalName] = {}
+    end
+
+    untranslatedSpells[className][specializationId].Values[originalName].UntranslatedName = untranslatedName ~= ""
+
+    local spellDescriptions = untranslatedSpells[className][specializationId].Values[originalName][spellId]
+    if not spellDescriptions then
+        spellDescriptions = {}
+        untranslatedSpells[className][specializationId].Values[originalName][spellId] = spellDescriptions
+    end
+
+    for _, desc in ipairs(untranslatedDescriptions) do
+        if (not isValueInTable(spellDescriptions, desc)) then
+            table.insert(spellDescriptions, desc)
+            print('Untranslated spell descriptions added to database: ', originalName, spellId)
+        end
+    end
 end
 
 function translator:ParseTooltip(tooltip, tooltipData)
@@ -247,7 +370,12 @@ function translator:ParseTooltip(tooltip, tooltipData)
     end
 
     local tooltipInfo = parseSpellTooltip(tooltipTexts)
-    if (tooltipInfo and tooltipInfo.Talent and tooltipInfo.Talent.NextRankIndex == -1) then return end -- hook
+
+    if (not tooltipInfo) then return end
+
+    if (tooltipInfo and tooltipInfo.Talent and (tooltipInfo.Talent.MinRank ~= 0 and tooltipInfo.Talent.NextRankIndex == -1)) then return end -- HOOK: No Rank 1/2+ info in multirang talent tooltip. In this case client send another callback. Need to find why
+
+    tooltipInfo.SpellId = tonumber(tooltipData.id)
 
     return tooltipInfo
 end
@@ -264,7 +392,9 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     table.insert(translatedTooltipLines, {
         index = 1,
-        value = GetSpellNameOrDefault(tooltipInfo.Name, true)
+        value = GetSpellNameOrDefault(tooltipInfo.Name, true),
+        originalValue = tooltipInfo.Name,
+        tag = "Name"
     })
 
     if (tooltipInfo.Form and tooltipInfo.Form ~= "") then
@@ -291,6 +421,8 @@ function translator:TranslateTooltipInfo(tooltipInfo)
             addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.NextRank))
         end
     end
+
+    addUntranslatedSpellToDump(tooltipInfo.SpellId, translatedTooltipLines)
 
     return translatedTooltipLines
 end

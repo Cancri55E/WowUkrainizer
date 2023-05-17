@@ -4,6 +4,12 @@ local internal = {}
 ns.StringExtensions = internal
 
 function internal.GetHash(str)
+    if (str == nil or type(str) ~= "string" or str == "") then
+        return -1
+    end
+
+    str = str:gsub("%s+", "_"):gsub("[\n\r’`.,]", ""):lower()
+
     local counter = 1
     local len = string.len(str)
     for i = 1, len, 3 do
@@ -46,19 +52,36 @@ function internal.Split(input, delimiter)
     return items
 end
 
-function internal.ExtractNumericValuesFromString(str)
-    local values = {}
-    local modifiedText = str:gsub("(%d[%d,]*%.?%d*)", function(num)
-        table.insert(values, num)
-        return "{" .. #values .. "}"
-    end)
+function internal.DeclensionWord(number, singular, plural, genitivePlural)
+    local lastDigit = number % 10
+    local lastTwoDigits = number % 100
 
-    return modifiedText, values
+    if lastDigit == 1 and lastTwoDigits ~= 11 then
+        return singular
+    elseif (lastDigit >= 2 and lastDigit <= 4) and not (lastTwoDigits >= 12 and lastTwoDigits <= 14) then
+        return plural
+    else
+        return genitivePlural
+    end
 end
 
-function internal.InsertNumericValuesIntoString(str, values)
-    local result = str:gsub("{(%d+)}", function(index)
-        return values[tonumber(index)]
+function internal.ExtractNumericValues(str)
+    local numbers = {}
+    str = str:gsub("(%d[%d,]*%.?%d*)", function(num)
+        if (num:sub(-1) == ",") then
+            table.insert(numbers, num:sub(1, -2))
+            return string.format("{%d},", #numbers)
+        else
+            table.insert(numbers, num)
+            return string.format("{%d}", #numbers)
+        end
     end)
-    return result
+
+    return str, numbers
+end
+
+function internal.InsertNumericValues(str, numericValues)
+    return str:gsub("{(%d+)}", function(index)
+        return numericValues[tonumber(index)]
+    end)
 end

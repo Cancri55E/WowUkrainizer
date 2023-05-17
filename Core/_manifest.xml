@@ -3,6 +3,7 @@
 	<Script file="Debugger.lua"/>
 	<Script file="EventHandler.lua"/>
 	<Include file="Extensions\_manifest.xml"/>
+	<Script file="StringNormalizer.lua"/>
 	<Script file="DbContext.lua"/>
 	<Include file="Translators\_manifest.xml"/>
 </Ui>

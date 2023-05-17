@@ -41,3 +41,6 @@ luac.out
 
 # Node
 node_modules
+
+# Other
+.release
