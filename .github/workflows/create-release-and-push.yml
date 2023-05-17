@@ -43,6 +43,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set execute permissions
+        run: chmod +x generate_changelog.sh
+  
+      - name: Generate Changelog
+        run: ./generate_changelog.sh
+
       - name: Create Package
         uses: BigWigsMods/packager@v2
         env:
