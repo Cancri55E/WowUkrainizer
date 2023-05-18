@@ -1,10 +1,14 @@
-## Interface: 100007
+## Interface: 100100
 ## Title: World of Warcraft Ukrainizer
-## Notes: Модифікація додає український переклад до гри, що дозволяє україномовним гравцям краще зрозуміти ігровий процес та насолоджуватись грою на європейських серверах.
+## Notes: Модифікація додає український переклад, що дозволяє україномовним гравцям краще зрозуміти ігровий процес та насолоджуватись грою на англомовних серверах.
 ## Author: Volodymyr <55CancriE> Nykonov
-## Version: 10.0.7.1
+## Version: @project-version@
+## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WowUkrainizerData
 ## X-AddonProvider: github
+## X-Category: Tooltip Miscellaneous
+## X-Website: https://www.curseforge.com/wow/addons/wowukrainizer
+## X-Curse-Project-ID: 851138
 
 WowUkrainizer.xml
