@@ -3,18 +3,26 @@ name: Push release to CurseForge
 on:
   workflow_dispatch:
 
+permissions: write-all
+
 jobs:
   push_to_curseforge:
     name: Push to CurseForge
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@master
         with:
           fetch-depth: 0
 
+      - name: Set execute permissions
+        run: chmod +x generate_changelog.sh
+
+      - name: Generate Changelog
+        run: ./generate_changelog.sh
+
       - name: Create Package
-        uses: BigWigsMods/packager@v2
+        uses: BigWigsMods/packager@master
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
