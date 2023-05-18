@@ -1,0 +1,22 @@
+package-as: WowUkrainizer
+
+embedded-libraries:
+  - ace3
+  - libstub
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+ignore:
+  - .releaserc
+  - .vscode
+  - .git
+  - screenshots
+  - cvars.dump
+  - package.json
+  - package-lock.json
+  - generate_changelog.sh
+  - release.sh
+  - DevTools
+  - RawData
