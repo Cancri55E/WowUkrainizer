@@ -8,15 +8,14 @@ local eventHandler = ns.EventHandler:new()
 local unitTooltipTranslator, spellTooltipTranslator, spellbookFrameTranslator, specializationFrameTranslator
 local initialized = false
 
-
 local function setGameTooltipFont()
     local _, height, flags = GameTooltipHeaderText:GetFont()
     GameTooltipHeaderText:SetFont(ns.DefaultFontName, height * 1.1, flags)
 
-    local _, height, flags = GameTooltipText:GetFont()
+    _, height, flags = GameTooltipText:GetFont()
     GameTooltipText:SetFont(ns.DefaultFontName, height * 1.1, flags)
 
-    local _, height, flags = GameTooltipTextSmall:GetFont()
+    _, height, flags = GameTooltipTextSmall:GetFont()
     GameTooltipTextSmall:SetFont(ns.DefaultFontName, height * 1.1, flags)
 end
 

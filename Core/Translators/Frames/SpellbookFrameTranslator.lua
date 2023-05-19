@@ -9,8 +9,11 @@ local SPELL_GENERAL_TRANSLATION = ns.SPELL_GENERAL_TRANSLATION
 local StartsWith, UpdateFontString = ns.StringExtensions.StartsWith, ns.FontStringExtensions.UpdateFontString
 local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
 local GetSpellAttributeOrDefault = ns.DbContext.Spells.GetSpellAttributeOrDefault
-local GetTranslationOrDefault = ns.DbContext.SpellbookFrame.GetTranslationOrDefault
 local GetClass, GetSpecialization = ns.DbContext.Units.GetClass, ns.DbContext.Units.GetSpecialization
+
+local function GetTranslationOrDefault(default)
+    return ns.DbContext.Frames.GetTranslationOrDefault("spellbook", default)
+end
 
 local translator = class("SpellbookFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.SpellbookFrameTranslator = translator
@@ -125,9 +128,9 @@ function translator:initialize()
 
     setDefaultFont()
 
-    SpellBookFrame_HelpPlate[1].ToolTipText = GetTranslationOrDefault(SPELLBOOK_HELP_1)
-    SpellBookFrame_HelpPlate[2].ToolTipText = GetTranslationOrDefault(SPELLBOOK_HELP_2)
-    SpellBookFrame_HelpPlate[3].ToolTipText = GetTranslationOrDefault(SPELLBOOK_HELP_3)
+    SpellBookFrame_HelpPlate[1].ToolTipText = GetTranslationOrDefault(_G["SPELLBOOK_HELP_1"])
+    SpellBookFrame_HelpPlate[2].ToolTipText = GetTranslationOrDefault(_G["SPELLBOOK_HELP_2"])
+    SpellBookFrame_HelpPlate[3].ToolTipText = GetTranslationOrDefault(_G["SPELLBOOK_HELP_3"])
 
     hooksecurefunc(SpellButton1, "UpdateButton", updateSpellButtonWrapper)
     hooksecurefunc(SpellButton2, "UpdateButton", updateSpellButtonWrapper)

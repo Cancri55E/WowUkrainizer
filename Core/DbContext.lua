@@ -110,11 +110,15 @@ end
 do
     local repository = {}
 
-    function repository.GetTranslationOrDefault(default)
-        return getValueOrDefault(ns._db.SpellbookFrameLines, default)
+    function repository.GetTranslationOrDefault(type, default)
+        if (type == "spellbook") then
+            return getValueOrDefault(ns._db.SpellbookFrameLines, default)
+        elseif (type == "specialization") then
+            return getValueOrDefault(ns._db.SpecializationFrameLines, default)
+        end
     end
 
-    dbContext.SpellbookFrame = repository
+    dbContext.Frames = repository
 end
 
 ns.DbContext = dbContext

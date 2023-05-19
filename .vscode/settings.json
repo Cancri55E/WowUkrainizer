@@ -31,7 +31,20 @@
         "SpellBookFrame_HelpPlate",
         "SPELLBOOK_HELP_1",
         "SPELLBOOK_HELP_2",
-        "SPELLBOOK_HELP_3"
+        "SPELLBOOK_HELP_3",
+        "TALENT_FRAME_CONFIRM_CLOSE",
+        "ClassTalentFrameMixin",
+        "TutorialHelper",
+        "ClassSpecContentFrameMixin",
+        "ClassTalentSpecTabMixin",
+        "ClassTalentFrame",
+        "LE_UNIT_STAT_STRENGTH",
+        "SPEC_FRAME_PRIMARY_STAT_STRENGTH",
+        "LE_UNIT_STAT_AGILITY",
+        "SPEC_FRAME_PRIMARY_STAT_AGILITY",
+        "LE_UNIT_STAT_INTELLECT",
+        "SPEC_FRAME_PRIMARY_STAT_INTELLECT",
+        "SPEC_STAT_STRINGS"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false
