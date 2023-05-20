@@ -1,16 +1,18 @@
 local _, ns = ...;
 
-local aceHook = LibStub("AceHook-3.0")
-local _G = _G
-
-local GetTranslatedSpecialization = ns.DbContext.Units.GetSpecialization
+local GetSpecialization = ns.DbContext.Units.GetSpecialization
+local GetSpecializationNote = ns.DbContext.Units.GetSpecializationNote
+local GetRole = ns.DbContext.Units.GetRole
+local GetAttribute = ns.DbContext.Units.GetAttribute
+local UpdateFontString = ns.FontStringExtensions.UpdateFontString
+local GetTranslationOrDefault = ns.DbContext.Frames.GetTranslationOrDefault
 
 local eventHandler = ns.EventHandler:new()
 local translator = class("SpecializationFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.SpecializationFrameTranslator = translator
 
-local function GetTranslationOrDefault(default)
-    return ns.DbContext.Frames.GetTranslationOrDefault("specialization", default)
+local function getTranslationOrDefault(default)
+    return GetTranslationOrDefault("specialization", default)
 end
 
 local function translateFontString(fontString, translationFunc)
@@ -18,7 +20,7 @@ local function translateFontString(fontString, translationFunc)
     local enText = fontString:GetText()
 
     if (enText == nil or enText == "") then return end
-    ns.FontStringExtensions.UpdateFontString(fontString, translationFunc(enText))
+    UpdateFontString(fontString, translationFunc(enText))
 end
 
 local function setDefaultFonts(specContentFrame)
@@ -39,24 +41,32 @@ local function OnAddOnLoaded(self, addonName)
     if (addonName ~= 'Blizzard_ClassTalentUI') then return end
 
     self.isSpecContentFramesFontUpdated = false
-
-    SPEC_STAT_STRINGS = {
-        [LE_UNIT_STAT_STRENGTH] = GetTranslationOrDefault(_G["SPEC_FRAME_PRIMARY_STAT_STRENGTH"]),
-        [LE_UNIT_STAT_AGILITY] = GetTranslationOrDefault(_G["SPEC_FRAME_PRIMARY_STAT_AGILITY"]),
-        [LE_UNIT_STAT_INTELLECT] = GetTranslationOrDefault(_G["SPEC_FRAME_PRIMARY_STAT_INTELLECT"]),
-    };
+    SPEC_FRAME_PRIMARY_STAT = getTranslationOrDefault(SPEC_FRAME_PRIMARY_STAT)
 
     hooksecurefunc(ClassTalentFrame.SpecTab, "UpdateSpecContents", function(specTab)
+        print("UpdateSpecContents")
+        if (not self:IsEnabled()) then return end
+        print("UpdateSpecContents enabled")
         -- TODO: To func
         for specContentFrame in specTab.SpecContentFramePool:EnumerateActive() do
             if (not self.isSpecContentFramesFontUpdated) then
                 setDefaultFonts(specContentFrame)
             end
-            translateFontString(specContentFrame.SpecName, GetTranslatedSpecialization)
-            translateFontString(specContentFrame.SampleAbilityText, GetTranslationOrDefault)
-            -- Description
-            translateFontString(specContentFrame.ActivatedText, GetTranslationOrDefault)
-            translateFontString(specContentFrame.ActivateButton.Text, GetTranslationOrDefault)
+            translateFontString(specContentFrame.SpecName, GetSpecialization)
+            translateFontString(specContentFrame.SampleAbilityText, getTranslationOrDefault)
+            translateFontString(specContentFrame.ActivatedText, getTranslationOrDefault)
+            translateFontString(specContentFrame.ActivateButton.Text, getTranslationOrDefault)
+            translateFontString(specContentFrame.RoleName, GetRole)
+
+            local sex = UnitSex("player");
+            local _, _, description, _, _, primaryStat = GetSpecializationInfo(specContentFrame.specIndex, false, false,
+                nil, sex);
+            if primaryStat and primaryStat ~= 0 then
+                local translatedStat = GetAttribute(SPEC_STAT_STRINGS[primaryStat])
+                local translatedDescription = GetSpecializationNote(description) ..
+                    "|n" .. SPEC_FRAME_PRIMARY_STAT:format(translatedStat)
+                UpdateFontString(specContentFrame.Description, translatedDescription)
+            end
         end
 
         if (not self.isSpecContentFramesFontUpdated) then
@@ -68,31 +78,24 @@ local function OnAddOnLoaded(self, addonName)
 end
 
 function translator:initialize()
-    if (not self:IsEnabled()) then return end
-
-    _G["DAMAGER"] = GetTranslationOrDefault(_G["DAMAGER"])
-    _G["TANK"] = GetTranslationOrDefault(_G["TANK"])
-    _G["HEALER"] = GetTranslationOrDefault(_G["HEALER"])
     -- WAR_MODE
-    _G["WAR_MODE_CALL_TO_ARMS"] = GetTranslationOrDefault(_G["WAR_MODE_CALL_TO_ARMS"])
-    _G["WAR_MODE_BONUS_INCENTIVE_TOOLTIP"] = GetTranslationOrDefault(_G["WAR_MODE_BONUS_INCENTIVE_TOOLTIP"])
-    _G["PVP_LABEL_WAR_MODE"] = GetTranslationOrDefault(_G["PVP_LABEL_WAR_MODE"])
-    _G["PVP_WAR_MODE_DESCRIPTION_FORMAT"] = GetTranslationOrDefault(_G["PVP_WAR_MODE_DESCRIPTION_FORMAT"])
-    _G["PVP_WAR_MODE_ENABLED"] = GetTranslationOrDefault(_G["PVP_WAR_MODE_ENABLED"])
-    -- Tabs
-    _G["TALENT_FRAME_TAB_LABEL_SPEC"] = GetTranslationOrDefault(_G["TALENT_FRAME_TAB_LABEL_SPEC"])
-    _G["TALENT_FRAME_TAB_LABEL_TALENTS"] = GetTranslationOrDefault(_G["TALENT_FRAME_TAB_LABEL_TALENTS"])
-    -- Common
-    _G["TALENT_FRAME_CONFIRM_CLOSE"] = GetTranslationOrDefault(_G["TALENT_FRAME_CONFIRM_CLOSE"])
-    _G["TALENTS_INSPECT_FORMAT"] = GetTranslationOrDefault(_G["TALENTS_INSPECT_FORMAT"])
-    _G["TALENTS_LINK_FORMAT"] = GetTranslationOrDefault(_G["TALENTS_LINK_FORMAT"])
-    _G["SPECIALIZATION"] = GetTranslationOrDefault(_G["SPECIALIZATION"])
-    _G["TALENTS"] = GetTranslationOrDefault(_G["TALENTS"])
-
+    WAR_MODE_CALL_TO_ARMS = getTranslationOrDefault(WAR_MODE_CALL_TO_ARMS)
+    WAR_MODE_BONUS_INCENTIVE_TOOLTIP = getTranslationOrDefault(WAR_MODE_BONUS_INCENTIVE_TOOLTIP)
+    PVP_LABEL_WAR_MODE = getTranslationOrDefault(PVP_LABEL_WAR_MODE)
+    PVP_WAR_MODE_DESCRIPTION_FORMAT = getTranslationOrDefault(PVP_WAR_MODE_DESCRIPTION_FORMAT)
+    PVP_WAR_MODE_ENABLED = getTranslationOrDefault(PVP_WAR_MODE_ENABLED)
+    -- Tabs and Title
+    TALENT_FRAME_TAB_LABEL_SPEC = getTranslationOrDefault(TALENT_FRAME_TAB_LABEL_SPEC)
+    TALENT_FRAME_TAB_LABEL_TALENTS = getTranslationOrDefault(TALENT_FRAME_TAB_LABEL_TALENTS)
+    SPECIALIZATION = getTranslationOrDefault(SPECIALIZATION)
+    TALENTS = getTranslationOrDefault(TALENTS)
+    -- Other
+    TALENT_FRAME_CONFIRM_CLOSE = getTranslationOrDefault(TALENT_FRAME_CONFIRM_CLOSE)
+    TALENTS_INSPECT_FORMAT = getTranslationOrDefault(TALENTS_INSPECT_FORMAT)
+    TALENTS_LINK_FORMAT = getTranslationOrDefault(TALENTS_LINK_FORMAT)
     -- TODO: Move to base frame
-    _G["CONTINUE"] = GetTranslationOrDefault(_G["CONTINUE"])
-    _G["CANCEL"] = GetTranslationOrDefault(_G["CANCEL"])
-
+    CONTINUE = getTranslationOrDefault(CONTINUE)
+    CANCEL = getTranslationOrDefault(CANCEL)
 
     --_G[""] = GetTranslationOrDefault(_G[""])
 

@@ -74,6 +74,21 @@ do
         return getValueOrDefault(ns._db.Specializations, default)
     end
 
+    function repository.GetSpecializationNote(default)
+        if (not default) then return default end
+        return getValueOrDefault(ns._db.SpecializationNotes, default)
+    end
+
+    function repository.GetRole(default)
+        if (not default) then return default end
+        return getValueOrDefault(ns._db.Roles, default)
+    end
+
+    function repository.GetAttribute(default)
+        if (not default) then return default end
+        return getValueOrDefault(ns._db.Attributes, default)
+    end
+
     dbContext.Units = repository
 end
 
