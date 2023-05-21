@@ -10,3 +10,8 @@ function internal.UpdateFontString(fontString, value)
     fontString:SetText(value)
     fontString:SetTextColor(r, g, b)
 end
+
+function internal.SetFont(fontString, fontName, scale)
+    local _, height, flags = fontString:GetFont()
+    fontString:SetFont(fontName, height * scale, flags)
+end
