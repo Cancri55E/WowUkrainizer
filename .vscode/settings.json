@@ -90,7 +90,11 @@
         "Tooltip_Small",
         "GameTooltipHeader",
         "SystemFont_Shadow_Small",
-        "Talents"
+        "Talents",
+        "TALENT_FRAME_SEARCH_TOOLTIP_RELATED_MATCH",
+        "TALENT_FRAME_SEARCH_TOOLTIP_MATCH",
+        "TALENT_FRAME_SEARCH_TOOLTIP_EXACT_MATCH",
+        "TALENT_FRAME_SEARCH_TOOLTIP_NOT_ON_ACTIONBAR"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false

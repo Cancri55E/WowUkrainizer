@@ -11,6 +11,7 @@ local GetTranslationOrDefault = ns.DbContext.Frames.GetTranslationOrDefault
 local SetText = ns.FontStringExtensions.SetText
 
 local eventHandler = ns.EventHandler:new()
+local aceHook = LibStub("AceHook-3.0")
 
 local translator = class("ClassTalentFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.ClassTalentFrameTranslator = translator
@@ -59,6 +60,20 @@ function translator:initialize()
         onBlizzardClassTalentUILoaded(self)
         eventHandler:Unregister(onAddonLoaded, "ADDON_LOADED")
     end
+
+    aceHook:RawHook(TalentButtonUtil, "GetTooltipForActionBarStatus", function(status)
+        local statusText = aceHook.hooks[TalentButtonUtil]["GetTooltipForActionBarStatus"](status)
+        return getTranslationOrDefault(statusText)
+    end, true)
+
+    aceHook:RawHook(TalentButtonUtil, "GetStyleForSearchMatchType", function(matchType)
+        local result = aceHook.hooks[TalentButtonUtil]["GetStyleForSearchMatchType"](matchType)
+        if (result) then
+            result.tooltipText = getTranslationOrDefault(result.tooltipText)
+        end
+        return result
+    end, true)
+
     eventHandler:Register(onAddonLoaded, "ADDON_LOADED")
 end
 
@@ -86,6 +101,12 @@ function translator:OnEnabled()
         "TALENT_FRAME_DROP_DOWN_EXPORT_CHAT_LINK",
         "TALENT_FRAME_DROP_DOWN_STARTER_BUILD_TOOLTIP",
         "TALENT_FRAME_DROP_DOWN_STARTER_BUILD",
+        "TALENT_FRAME_SEARCH_TOOLTIP_RELATED_MATCH",
+        "TALENT_FRAME_SEARCH_TOOLTIP_MATCH",
+        "TALENT_FRAME_SEARCH_TOOLTIP_EXACT_MATCH",
+        "TALENT_FRAME_SEARCH_TOOLTIP_ON_DISABLED_ACTIONBAR",
+        "TALENT_FRAME_SEARCH_TOOLTIP_NOT_ON_ACTIONBAR",
+        "TALENT_FRAME_SEARCH_TOOLTIP_ON_INACTIVE_BONUSBAR",
         -- warmode
         "WAR_MODE_CALL_TO_ARMS",
         "WAR_MODE_BONUS_INCENTIVE_TOOLTIP",
