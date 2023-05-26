@@ -11,6 +11,13 @@ end
 
 function translator:SetEnabled(enabled)
     self.enabled = enabled
+    if (enabled) then self:OnEnabled() else self:OnDisabled() end
+end
+
+function translator:OnEnabled()
+end
+
+function translator:OnDisabled()
 end
 
 function translator:AddToDebugOutput(category, data)
