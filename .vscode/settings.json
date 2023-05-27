@@ -94,7 +94,9 @@
         "TALENT_FRAME_SEARCH_TOOLTIP_RELATED_MATCH",
         "TALENT_FRAME_SEARCH_TOOLTIP_MATCH",
         "TALENT_FRAME_SEARCH_TOOLTIP_EXACT_MATCH",
-        "TALENT_FRAME_SEARCH_TOOLTIP_NOT_ON_ACTIONBAR"
+        "TALENT_FRAME_SEARCH_TOOLTIP_NOT_ON_ACTIONBAR",
+        "TalentButtonUtil",
+        "TALENT_BUTTON_TOOLTIP_NOT_ON_ACTION_BAR"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false

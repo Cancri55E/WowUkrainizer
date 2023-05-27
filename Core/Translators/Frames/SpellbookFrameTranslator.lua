@@ -33,10 +33,7 @@ local function updateSpellButtonCallback(self)
     local subSpellNameString = self.SpellSubName
     local subSpellName = subSpellNameString and subSpellNameString:GetText() or nil;
 
-    local requiredLevelString = self.RequiredLevelString
-    local requiredLevel = requiredLevelString and requiredLevelString:GetText() or nil;
-
-    if (subSpellName or requiredLevel) then
+    if (subSpellName) then
         local spell = Spell:CreateFromSpellID(spellID);
         spell:ContinueOnSpellLoad(function()
             if (subSpellName) then
@@ -46,12 +43,6 @@ local function updateSpellButtonCallback(self)
                     SetText(subSpellNameString, string.gsub(subSpellName, "Rank", SPELL_RANK_TRANSLATION))
                 else
                     SetText(subSpellNameString, GetSpellAttributeOrDefault(subSpellName))
-                end
-            end
-
-            if (requiredLevel) then
-                if (StartsWith(requiredLevel, "Level")) then
-                    SetText(requiredLevelString, string.gsub(requiredLevel, "Level", LEVEL_TRANSLATION))
                 end
             end
         end);
@@ -82,7 +73,7 @@ local function updatePagesCallback()
     SetText(SpellBookPageText, string.gsub(SpellBookPageText:GetText(), "Page", PAGE_TRANSLATION))
 end
 
-local function updateCallback(...)
+local function updateFrameCallback(...)
     local titleTextFontString = SpellBookFrame:GetTitleText()
     titleTextFontString:SetText(getTranslationOrDefault(titleTextFontString:GetText()))
 
@@ -128,6 +119,19 @@ function translator:initialize()
 
     hooksecurefunc("SpellBookFrame_Update", function(_)
         if (not self:IsEnabled()) then return end
-        updateCallback()
+        updateFrameCallback()
     end)
+end
+
+function translator:OnEnabled()
+    local constants = {
+        "SPELLBOOK_SPELL_NOT_ON_ACTION_BAR",
+        "UNLEARN_SKILL_TOOLTIP",
+        "CLICK_BINDING_NOT_AVAILABLE",
+        "BOOSTED_CHAR_SPELL_TEMPLOCK",
+        "SPELLBOOK_AVAILABLE_AT",
+    }
+    for _, const in ipairs(constants) do
+        _G[const] = getTranslationOrDefault(_G[const])
+    end
 end

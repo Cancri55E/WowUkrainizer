@@ -61,11 +61,13 @@ function translator:initialize()
         eventHandler:Unregister(onAddonLoaded, "ADDON_LOADED")
     end
 
+    -- Translate the TALENT_BUTTON_TOOLTIP_* consts for action
     aceHook:RawHook(TalentButtonUtil, "GetTooltipForActionBarStatus", function(status)
         local statusText = aceHook.hooks[TalentButtonUtil]["GetTooltipForActionBarStatus"](status)
         return getTranslationOrDefault(statusText)
     end, true)
 
+    -- Translate the TALENT_FRAME_SEARCH_TOOLTIP_* consts
     aceHook:RawHook(TalentButtonUtil, "GetStyleForSearchMatchType", function(matchType)
         local result = aceHook.hooks[TalentButtonUtil]["GetStyleForSearchMatchType"](matchType)
         if (result) then
@@ -101,12 +103,21 @@ function translator:OnEnabled()
         "TALENT_FRAME_DROP_DOWN_EXPORT_CHAT_LINK",
         "TALENT_FRAME_DROP_DOWN_STARTER_BUILD_TOOLTIP",
         "TALENT_FRAME_DROP_DOWN_STARTER_BUILD",
-        "TALENT_FRAME_SEARCH_TOOLTIP_RELATED_MATCH",
-        "TALENT_FRAME_SEARCH_TOOLTIP_MATCH",
-        "TALENT_FRAME_SEARCH_TOOLTIP_EXACT_MATCH",
-        "TALENT_FRAME_SEARCH_TOOLTIP_ON_DISABLED_ACTIONBAR",
-        "TALENT_FRAME_SEARCH_TOOLTIP_NOT_ON_ACTIONBAR",
-        "TALENT_FRAME_SEARCH_TOOLTIP_ON_INACTIVE_BONUSBAR",
+        -- Talent buttons
+        "TALENT_BUTTON_TOOLTIP_CLEAR_REPURCHASE_INSTRUCTIONS",
+        "TALENT_BUTTON_TOOLTIP_PURCHASE_INSTRUCTIONS",
+        "TALENT_BUTTON_TOOLTIP_REPURCHASE_INSTRUCTIONS",
+        "TALENT_BUTTON_TOOLTIP_PVP_TALENT_REQUIREMENT_ERROR",
+        "TALENT_BUTTON_TOOLTIP_REFUND_INSTRUCTIONS",
+        "TALENT_BUTTON_TOOLTIP_SELECTION_ERROR",
+        "TALENT_BUTTON_TOOLTIP_SELECTION_CURRENT_INSTRUCTIONS",
+        "TALENT_BUTTON_TOOLTIP_COST_FORMAT",
+        "TALENT_BUTTON_TOOLTIP_SELECTION_COST_ERROR",
+        "TALENT_BUTTON_TOOLTIP_SELECTION_CHOICE_ERROR",
+        -- TODO: ?
+        --["TALENT_BUTTON_TOOLTIP_RANK_FORMAT"] = "Rank %s/%s",
+        --["TALENT_BUTTON_TOOLTIP_NEXT_RANK"] = "Next Rank:",
+        --["TALENT_BUTTON_TOOLTIP_REPLACED_BY_FORMAT"] = "Replaced by %s",
         -- warmode
         "WAR_MODE_CALL_TO_ARMS",
         "WAR_MODE_BONUS_INCENTIVE_TOOLTIP",
