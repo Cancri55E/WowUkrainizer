@@ -86,13 +86,11 @@ local function OnAddOnLoaded(_, name)
     end
 
     if (name == addonName) then
-        if name == addonName then
-            initializeAddon()
-            if not IsLoggedIn() then
-                eventHandler:Register(OnPlayerLogin, "PLAYER_LOGIN")
-            else
-                OnPlayerLogin()
-            end
+        initializeAddon()
+        if not IsLoggedIn() then
+            eventHandler:Register(OnPlayerLogin, "PLAYER_LOGIN")
+        else
+            OnPlayerLogin()
         end
     end
 end

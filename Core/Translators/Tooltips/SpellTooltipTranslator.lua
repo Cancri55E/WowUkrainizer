@@ -352,16 +352,19 @@ local function addUntranslatedSpellToDump(spellId, translatedTooltipLines)
 end
 
 function translator:ParseTooltip(tooltip, tooltipData)
+    local linePrefix = "GameTooltip";
+    if (tooltip == _G.ElvUISpellBookTooltip) then linePrefix = 'ElvUISpellBookTooltip' end
+
     local tooltipTexts = {}
     for i = 1, tooltip:NumLines() do
-        local lineLeft = _G["GameTooltipTextLeft" .. i]
+        local lineLeft = _G[linePrefix .. "TextLeft" .. i]
         if (lineLeft) then
             local lli = #tooltipTexts + 1;
             tooltipTexts[lli] = lineLeft:GetText() or ''
             self:_addFontStringToIndexLookup(lli, lineLeft)
         end
 
-        local lineRight = _G["GameTooltipTextRight" .. i]
+        local lineRight = _G[linePrefix .. "TextRight" .. i]
         if (lineRight) then
             local lri = #tooltipTexts + 1;
             tooltipTexts[lri] = lineRight:GetText() or ''

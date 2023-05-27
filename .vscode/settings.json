@@ -96,7 +96,8 @@
         "TALENT_FRAME_SEARCH_TOOLTIP_EXACT_MATCH",
         "TALENT_FRAME_SEARCH_TOOLTIP_NOT_ON_ACTIONBAR",
         "TalentButtonUtil",
-        "TALENT_BUTTON_TOOLTIP_NOT_ON_ACTION_BAR"
+        "TALENT_BUTTON_TOOLTIP_NOT_ON_ACTION_BAR",
+        "GameTooltip"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false
