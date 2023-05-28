@@ -2,12 +2,12 @@ local _, ns = ...;
 
 local _G = _G
 
+local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
 local GetRole, GetAttribute = ns.DbContext.Units.GetRole, ns.DbContext.Units.GetAttribute
 local GetSpecialization, GetClass = ns.DbContext.Units.GetSpecialization, ns.DbContext.Units.GetClass
 local GetSpecializationNote = ns.DbContext.Units.GetSpecializationNote
 local GetTranslationOrDefault = ns.DbContext.Frames.GetTranslationOrDefault
 local SetText = ns.FontStringExtensions.SetText
-local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithNumerics
 
 local eventHandler = ns.EventHandler:new()
 local aceHook = LibStub("AceHook-3.0")
@@ -47,22 +47,46 @@ local function updateSpecContentsHook(self, specTab)
     end
 end
 
-local function refreshCurrencyDisplayHook(self)
+local function refreshCurrencyDisplayHook(self, talentsTab)
     if (not self:IsEnabled()) then return end
 
-    local classNameTranslated = GetClass(ClassTalentFrame.TalentsTab:GetClassName(), 1, 2)
-    ClassTalentFrame.TalentsTab.ClassCurrencyDisplay:SetPointTypeText(string.upper(classNameTranslated));
+    local classNameTranslated = GetClass(talentsTab:GetClassName(), 1, 2)
+    talentsTab.ClassCurrencyDisplay:SetPointTypeText(string.upper(classNameTranslated));
 
-    local specNameTranslated = GetSpecialization(ClassTalentFrame.TalentsTab:GetSpecName())
-    ClassTalentFrame.TalentsTab.SpecCurrencyDisplay:SetPointTypeText(string.upper(specNameTranslated));
+    local specNameTranslated = GetSpecialization(talentsTab:GetSpecName())
+    talentsTab.SpecCurrencyDisplay:SetPointTypeText(string.upper(specNameTranslated));
+end
+
+local function getConditionInfoHook(self, configID, condID)
+    if (not self:IsEnabled()) then return end
+
+    local condInfo = aceHook.hooks[C_Traits]["GetConditionInfo"](configID, condID)
+    if (condInfo.tooltipFormat and condInfo.spentAmountRequired) then
+        local translatedTooltipFormat = getTranslationOrDefault(condInfo.tooltipFormat)
+        condInfo.tooltipText =
+            RED_FONT_COLOR:WrapTextInColorCode(translatedTooltipFormat:format(condInfo.spentAmountRequired))
+    end
+    return condInfo
+end
+
+local function updateShownPvPTalentsHook(self, pvpTalentList) -- TODO: Optimize code here
+    if (not self:IsEnabled()) then return end
+    pvpTalentList.ScrollBox:ForEachFrame(function(listButton)
+        listButton.Name:SetText(GetSpellNameOrDefault(listButton.talentInfo.name));
+    end);
 end
 
 local function onBlizzardClassTalentUILoaded(self)
     hooksecurefunc(ClassTalentFrame.SpecTab, "UpdateSpecContents", function(specTab)
         updateSpecContentsHook(self, specTab)
     end)
-    hooksecurefunc(ClassTalentFrame.TalentsTab, "RefreshCurrencyDisplay", function()
-        refreshCurrencyDisplayHook(self)
+
+    hooksecurefunc(ClassTalentFrame.TalentsTab, "RefreshCurrencyDisplay", function(talentsTab)
+        refreshCurrencyDisplayHook(self, talentsTab)
+    end)
+
+    ClassTalentFrame.TalentsTab.PvPTalentList:HookScript("OnUpdate", function()
+        updateShownPvPTalentsHook(self, ClassTalentFrame.TalentsTab.PvPTalentList)
     end)
 end
 
@@ -82,10 +106,12 @@ function translator:initialize()
     -- Translate the TALENT_FRAME_SEARCH_TOOLTIP_* consts
     aceHook:RawHook(TalentButtonUtil, "GetStyleForSearchMatchType", function(matchType)
         local result = aceHook.hooks[TalentButtonUtil]["GetStyleForSearchMatchType"](matchType)
-        if (result) then
-            result.tooltipText = getTranslationOrDefault(result.tooltipText)
-        end
+        if (result) then result.tooltipText = getTranslationOrDefault(result.tooltipText) end
         return result
+    end, true)
+
+    aceHook:RawHook(C_Traits, "GetConditionInfo", function(configID, condID)
+        return getConditionInfoHook(self, configID, condID)
     end, true)
 
     eventHandler:Register(onAddonLoaded, "ADDON_LOADED")
@@ -99,6 +125,7 @@ function translator:OnEnabled()
     --["TALENT_FRAME_SEARCH_PREVIEW_OVERFLOW_FORMAT"] = "And %s more"
     --["TALENT_FRAME_LABEL_PVP_TALENT_SLOTS"] = "PVP"
     --["TALENT_FRAME_SEARCH_NOT_ON_ACTIONBAR"] = "Missing from action bar"
+
     local constants = {
         -- Tabs and Title
         "TALENT_FRAME_TAB_LABEL_SPEC",
@@ -130,6 +157,7 @@ function translator:OnEnabled()
         "TALENT_FRAME_CONFIG_OPERATION_TOO_FAST",
         "TALENT_FRAME_APPLY_BUTTON_TEXT",
         "TALENT_FRAME_DISCARD_CHANGES_BUTTON_TOOLTIP",
+        "TALENT_FRAME_GATE_TOOLTIP_FORMAT",
         -- Talent buttons
         "TALENT_BUTTON_TOOLTIP_CLEAR_REPURCHASE_INSTRUCTIONS",
         "TALENT_BUTTON_TOOLTIP_PURCHASE_INSTRUCTIONS",
@@ -141,21 +169,22 @@ function translator:OnEnabled()
         "TALENT_BUTTON_TOOLTIP_COST_FORMAT",
         "TALENT_BUTTON_TOOLTIP_SELECTION_COST_ERROR",
         "TALENT_BUTTON_TOOLTIP_SELECTION_CHOICE_ERROR",
-        -- warmode
+        -- PVP Talents
+        "TALENT_NOT_SELECTED",
+        "PVP_TALENT_SLOT",
+        "PVP_TALENT_SLOT_LOCKED",
+        "PVP_TALENT_SLOT_EMPTY",
+        -- Warmode
         "WAR_MODE_CALL_TO_ARMS",
         "WAR_MODE_BONUS_INCENTIVE_TOOLTIP",
         "PVP_LABEL_WAR_MODE",
         "PVP_WAR_MODE_DESCRIPTION_FORMAT",
         "PVP_WAR_MODE_ENABLED",
         "TALENT_FRAME_CONFIRM_CLOSE",
-        -- TODO: Other?
-        -- "TALENTS_INSPECT_FORMAT",
-        -- "TALENTS_LINK_FORMAT"
+        -- TODO: Someday
+        --"GENERIC_TRAIT_FRAME_CONFIRM_PURCHASE_FORMAT",
     }
     for _, const in ipairs(constants) do
         _G[const] = getTranslationOrDefault(_G[const])
     end
-
-    _G["TALENT_FRAME_GATE_TOOLTIP_FORMAT"] = ReconstructStringWithNumerics(getTranslationOrDefault(_G
-        ["TALENT_FRAME_GATE_TOOLTIP_FORMAT"]))
 end

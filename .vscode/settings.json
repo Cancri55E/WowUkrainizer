@@ -114,7 +114,13 @@
         "PlayerSpecFrame_HelpPlate",
         "PlayerTalentFrame_HelpPlate",
         "PanelTemplates_GetSelectedTab",
-        "PlayerTalentFrame"
+        "PlayerTalentFrame",
+        "GENERIC_TRAIT_FRAME_CONFIRM_PURCHASE_FORMAT",
+        "RED_FONT_COLOR",
+        "TALENT_NOT_SELECTED",
+        "PVP_TALENT_SLOT",
+        "PVP_TALENT_SLOT_LOCKED",
+        "PVP_TALENT_SLOT_EMPTY"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false
