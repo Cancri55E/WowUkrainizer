@@ -90,10 +90,6 @@ function translator:initialize()
         updateSpellButtonCallback(spellButton)
     end
 
-    SpellBookFrame_HelpPlate[1].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_1"])
-    SpellBookFrame_HelpPlate[2].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_2"])
-    SpellBookFrame_HelpPlate[3].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_3"])
-
     hooksecurefunc(SpellButton1, "UpdateButton", updateSpellButtonWrapper)
     hooksecurefunc(SpellButton2, "UpdateButton", updateSpellButtonWrapper)
     hooksecurefunc(SpellButton3, "UpdateButton", updateSpellButtonWrapper)
@@ -124,6 +120,10 @@ function translator:initialize()
 end
 
 function translator:OnEnabled()
+    SpellBookFrame_HelpPlate[1].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_1"])
+    SpellBookFrame_HelpPlate[2].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_2"])
+    SpellBookFrame_HelpPlate[3].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_3"])
+
     local constants = {
         "SPELLBOOK_SPELL_NOT_ON_ACTION_BAR",
         "UNLEARN_SKILL_TOOLTIP",
