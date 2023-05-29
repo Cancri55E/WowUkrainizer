@@ -6,11 +6,14 @@ local PAGE_TRANSLATION, SPELL_PASSIVE_TRANSLATION = ns.PAGE_TRANSLATION, ns.SPEL
 local SPELL_RANK_TRANSLATION, LEVEL_TRANSLATION = ns.SPELL_RANK_TRANSLATION, ns.LEVEL_TRANSLATION
 local SPELL_GENERAL_TRANSLATION = ns.SPELL_GENERAL_TRANSLATION
 
-local StartsWith, UpdateFontString = ns.StringExtensions.StartsWith, ns.FontStringExtensions.UpdateFontString
+local StartsWith, SetText = ns.StringExtensions.StartsWith, ns.FontStringExtensions.SetText
 local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
 local GetSpellAttributeOrDefault = ns.DbContext.Spells.GetSpellAttributeOrDefault
-local GetTranslationOrDefault = ns.DbContext.SpellbookFrame.GetTranslationOrDefault
 local GetClass, GetSpecialization = ns.DbContext.Units.GetClass, ns.DbContext.Units.GetSpecialization
+
+local function getTranslationOrDefault(default)
+    return ns.DbContext.Frames.GetTranslationOrDefault("spellbook", default)
+end
 
 local translator = class("SpellbookFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.SpellbookFrameTranslator = translator
@@ -24,31 +27,22 @@ local function updateSpellButtonCallback(self)
 
     local spellString = self.SpellName
     if (spellString) then
-        UpdateFontString(spellString, GetSpellNameOrDefault(spellString:GetText(), false))
+        SetText(spellString, GetSpellNameOrDefault(spellString:GetText(), false))
     end
 
     local subSpellNameString = self.SpellSubName
     local subSpellName = subSpellNameString and subSpellNameString:GetText() or nil;
 
-    local requiredLevelString = self.RequiredLevelString
-    local requiredLevel = requiredLevelString and requiredLevelString:GetText() or nil;
-
-    if (subSpellName or requiredLevel) then
+    if (subSpellName) then
         local spell = Spell:CreateFromSpellID(spellID);
         spell:ContinueOnSpellLoad(function()
             if (subSpellName) then
                 if (subSpellName == "Passive") then
-                    UpdateFontString(subSpellNameString, SPELL_PASSIVE_TRANSLATION)
+                    SetText(subSpellNameString, SPELL_PASSIVE_TRANSLATION)
                 elseif (StartsWith(subSpellName, "Rank")) then
-                    UpdateFontString(subSpellNameString, string.gsub(subSpellName, "Rank", SPELL_RANK_TRANSLATION))
+                    SetText(subSpellNameString, string.gsub(subSpellName, "Rank", SPELL_RANK_TRANSLATION))
                 else
-                    UpdateFontString(subSpellNameString, GetSpellAttributeOrDefault(subSpellName))
-                end
-            end
-
-            if (requiredLevel) then
-                if (StartsWith(requiredLevel, "Level")) then
-                    UpdateFontString(requiredLevelString, string.gsub(requiredLevel, "Level", LEVEL_TRANSLATION))
+                    SetText(subSpellNameString, GetSpellAttributeOrDefault(subSpellName))
                 end
             end
         end);
@@ -76,44 +70,17 @@ local function updateSkillLineTabsCallback()
 end
 
 local function updatePagesCallback()
-    UpdateFontString(SpellBookPageText, string.gsub(SpellBookPageText:GetText(), "Page", PAGE_TRANSLATION))
+    SetText(SpellBookPageText, string.gsub(SpellBookPageText:GetText(), "Page", PAGE_TRANSLATION))
 end
 
-local function updateCallback(...)
+local function updateFrameCallback(...)
     local titleTextFontString = SpellBookFrame:GetTitleText()
-    titleTextFontString:SetText(GetTranslationOrDefault(titleTextFontString:GetText()))
+    titleTextFontString:SetText(getTranslationOrDefault(titleTextFontString:GetText()))
 
-    SpellBookFrameTabButton1:SetText(GetTranslationOrDefault(SpellBookFrameTabButton1:GetText()))
-    SpellBookFrameTabButton2:SetText(GetTranslationOrDefault(SpellBookFrameTabButton2:GetText()))
+    SpellBookFrameTabButton1:SetText(getTranslationOrDefault(SpellBookFrameTabButton1:GetText()))
+    SpellBookFrameTabButton2:SetText(getTranslationOrDefault(SpellBookFrameTabButton2:GetText()))
     if (SpellBookFrameTabButton3) then
-        SpellBookFrameTabButton3:SetText(GetTranslationOrDefault(SpellBookFrameTabButton3:GetText()))
-    end
-end
-
-local function setDefaultFont()
-    local function updateFont(obj, fontName, scale)
-        local _, height, flags = obj:GetFont()
-        obj:SetFont(fontName, height * scale, flags)
-    end
-
-    updateFont(SpellBookFrameTabButton1:GetFontString(), ns.DefaultFontName, 1.05)
-    updateFont(SpellBookFrameTabButton2:GetFontString(), ns.DefaultFontName, 1.05)
-    if (SpellBookFrameTabButton3) then
-        updateFont(SpellBookFrameTabButton3:GetFontString(), ns.DefaultFontName, 1.05)
-    end
-
-    updateFont(SpellBookPageText, ns.DefaultFontName, 1.05)
-    updateFont(SpellBookFrame.TitleContainer.TitleText, ns.DefaultFontName, 1.1)
-
-    for i = 1, 12, 1 do
-        local spellString = _G["SpellButton" .. i .. "SpellName"]
-        updateFont(spellString, ns.DefaultFontName, 1.15)
-
-        local subSpellNameString = _G["SpellButton" .. i .. "SubSpellName"];
-        updateFont(subSpellNameString, ns.DefaultFontName, 1.05)
-
-        local requiredLevelString = _G["SpellButton" .. i .. "RequiredLevelString"];
-        updateFont(requiredLevelString, ns.DefaultFontName, 1.05)
+        SpellBookFrameTabButton3:SetText(getTranslationOrDefault(SpellBookFrameTabButton3:GetText()))
     end
 end
 
@@ -122,12 +89,6 @@ function translator:initialize()
         if (not self:IsEnabled()) then return end
         updateSpellButtonCallback(spellButton)
     end
-
-    setDefaultFont()
-
-    SpellBookFrame_HelpPlate[1].ToolTipText = GetTranslationOrDefault(SPELLBOOK_HELP_1)
-    SpellBookFrame_HelpPlate[2].ToolTipText = GetTranslationOrDefault(SPELLBOOK_HELP_2)
-    SpellBookFrame_HelpPlate[3].ToolTipText = GetTranslationOrDefault(SPELLBOOK_HELP_3)
 
     hooksecurefunc(SpellButton1, "UpdateButton", updateSpellButtonWrapper)
     hooksecurefunc(SpellButton2, "UpdateButton", updateSpellButtonWrapper)
@@ -154,6 +115,23 @@ function translator:initialize()
 
     hooksecurefunc("SpellBookFrame_Update", function(_)
         if (not self:IsEnabled()) then return end
-        updateCallback()
+        updateFrameCallback()
     end)
+end
+
+function translator:OnEnabled()
+    SpellBookFrame_HelpPlate[1].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_1"])
+    SpellBookFrame_HelpPlate[2].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_2"])
+    SpellBookFrame_HelpPlate[3].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_3"])
+
+    local constants = {
+        "SPELLBOOK_SPELL_NOT_ON_ACTION_BAR",
+        "UNLEARN_SKILL_TOOLTIP",
+        "CLICK_BINDING_NOT_AVAILABLE",
+        "BOOSTED_CHAR_SPELL_TEMPLOCK",
+        "SPELLBOOK_AVAILABLE_AT",
+    }
+    for _, const in ipairs(constants) do
+        _G[const] = getTranslationOrDefault(_G[const])
+    end
 end
