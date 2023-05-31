@@ -10,6 +10,7 @@ local StartsWith, SetText = ns.StringExtensions.StartsWith, ns.FontStringExtensi
 local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
 local GetSpellAttributeOrDefault = ns.DbContext.Spells.GetSpellAttributeOrDefault
 local GetClass, GetSpecialization = ns.DbContext.Units.GetClass, ns.DbContext.Units.GetSpecialization
+local GetAdditionalSpellTipsOrDefault = ns.DbContext.Frames.GetAdditionalSpellTipsOrDefault
 
 local function getTranslationOrDefault(default)
     return ns.DbContext.Frames.GetTranslationOrDefault("spellbook", default)
@@ -124,8 +125,9 @@ function translator:OnEnabled()
     SpellBookFrame_HelpPlate[2].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_2"])
     SpellBookFrame_HelpPlate[3].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_3"])
 
+    SPELLBOOK_SPELL_NOT_ON_ACTION_BAR = GetAdditionalSpellTipsOrDefault(_G["SPELLBOOK_SPELL_NOT_ON_ACTION_BAR"])
+
     local constants = {
-        "SPELLBOOK_SPELL_NOT_ON_ACTION_BAR",
         "UNLEARN_SKILL_TOOLTIP",
         "CLICK_BINDING_NOT_AVAILABLE",
         "BOOSTED_CHAR_SPELL_TEMPLOCK",

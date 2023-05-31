@@ -133,6 +133,10 @@ do
         end
     end
 
+    function repository.GetAdditionalSpellTipsOrDefault(default)
+        return getFormattedValueOrDefault(ns._db.AdditionalSpellTips, default)
+    end
+
     dbContext.Frames = repository
 end
 
