@@ -18,3 +18,6 @@ ns._db.SpellbookFrameLines = {
 ns._db.SpecializationFrameLines = {
 
 }
+
+ns._db.AdditionalSpellTips = {
+}
