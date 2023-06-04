@@ -19,5 +19,8 @@ ns._db.SpecializationFrameLines = {
 
 }
 
+ns._db.ClassTalentFrameLines = {
+}
+
 ns._db.AdditionalSpellTips = {
 }
