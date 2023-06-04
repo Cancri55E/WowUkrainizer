@@ -27,6 +27,7 @@ function translator:initialize(tooltipDataType)
     ns.Translators.BaseTooltipTranslator.initialize(self, tooltipDataType)
 
     hooksecurefunc(_G["TalentDisplayMixin"], "SetTooltipInternal", function(mixin)
+        if (not self._postCallLineCount) then return end
         local tooltip = GameTooltip;
         for i = self._postCallLineCount + 1, tooltip:NumLines() do
             local lineLeft = _G["GameTooltipTextLeft" .. i]
