@@ -26,10 +26,9 @@ ns.Translators.SpellTooltipTranslator = translator
 function translator:initialize(tooltipDataType)
     ns.Translators.BaseTooltipTranslator.initialize(self, tooltipDataType)
 
-    hooksecurefunc(_G["TalentDisplayMixin"], "SetTooltipInternal", function(mixin)
+    hooksecurefunc(_G["TalentDisplayMixin"], "SetTooltipInternal", function(...)
         if (not self._postCallLineCount) then return end
-        local tooltip = GameTooltip;
-        for i = self._postCallLineCount + 1, tooltip:NumLines() do
+        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
             local lineLeft = _G["GameTooltipTextLeft" .. i]
             if (lineLeft) then
                 local leftTranslatedTips = GetAdditionalSpellTipsOrDefault(lineLeft:GetText() or '')
@@ -42,8 +41,39 @@ function translator:initialize(tooltipDataType)
                 lineRight:SetText(rightTranslatedTips)
             end
         end
-        tooltip:Show();
+        GameTooltip:Show();
     end)
+
+    EventRegistry:RegisterCallback("PvPTalentButton.TooltipHook", function(...)
+        local function extractRequirementTalentName(str)
+            local prefix = "Requires "
+            local suffix = " talent"
+            local start = str:find("^" .. prefix)
+            local _end = str:find(suffix .. "$")
+            if start and _end then
+                local extracted = str:sub(#prefix + 1, _end - 1)
+                return prefix .. "%s" .. suffix, extracted
+            end
+            return str
+        end
+
+        if (not self._postCallLineCount) then return end
+        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
+            local lineLeft = _G["GameTooltipTextLeft" .. i]
+            if (lineLeft) then
+                local text = lineLeft:GetText() or ''
+                local requiresText, talentName = extractRequirementTalentName(text)
+                if (talentName ~= nil) then
+                    local translatedRequiresText = GetSpellAttributeOrDefault(requiresText)
+                    translatedRequiresText = translatedRequiresText:format(GetSpellNameOrDefault(talentName))
+                    lineLeft:SetText(translatedRequiresText)
+                else
+                    lineLeft:SetText(GetAdditionalSpellTipsOrDefault(text))
+                end
+            end
+        end
+        GameTooltip:Show();
+    end, translator)
 end
 
 local function processResourceStrings(str)
@@ -218,18 +248,6 @@ local function parseSpellTooltip(tooltipTexts)
 end
 
 local function translateTooltipSpellInfo(spellContainer)
-    local function extractRequirementTalentName(str)
-        local prefix = "Requires "
-        local suffix = " talents"
-        local start = str:find("^" .. prefix)
-        local _end = str:find(suffix .. "$")
-        if start and _end then
-            local extracted = str:sub(#prefix + 1, _end - 1)
-            return prefix .. "%s" .. suffix, extracted
-        end
-        return str
-    end
-
     local function extractReplaceSpellName(str)
         local spellName = str:match("Replaces%s+(.+)")
         if spellName ~= nil then
@@ -267,15 +285,9 @@ local function translateTooltipSpellInfo(spellContainer)
     end
 
     if (spellContainer.Requires) then
-        local requiresText, talentName = extractRequirementTalentName(spellContainer.Requires[2])
-        local translatedRequiresText = GetSpellAttributeOrDefault(requiresText)
-        if (talentName ~= nil) then
-            translatedRequiresText = translatedRequiresText:format(GetSpellNameOrDefault(talentName))
-        end
-
         table.insert(translatedTooltipLines, {
             index = spellContainer.Requires[1],
-            value = translatedRequiresText
+            value = GetSpellAttributeOrDefault(spellContainer.Requires[2])
         })
     end
 
