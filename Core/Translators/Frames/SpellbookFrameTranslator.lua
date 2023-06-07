@@ -19,34 +19,27 @@ end
 local translator = class("SpellbookFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.SpellbookFrameTranslator = translator
 
-local function updateSpellButtonCallback(self)
-    local slot, _, _ = SpellBook_GetSpellBookSlot(self);
-    if (not slot) then return end
-
-    local _, _, spellID = GetSpellBookItemName(slot, SpellBookFrame.bookType);
-    if (not spellID) then return end
-
-    local spellString = self.SpellName
+local function updateSpellButtonCallback(spellButton)
+    local spellString = spellButton.SpellName
     if (spellString) then
         SetText(spellString, GetSpellNameOrDefault(spellString:GetText(), false))
     end
 
-    local subSpellNameString = self.SpellSubName
+    local subSpellNameString = spellButton.SpellSubName
     local subSpellName = subSpellNameString and subSpellNameString:GetText() or nil;
-
     if (subSpellName) then
-        local spell = Spell:CreateFromSpellID(spellID);
-        spell:ContinueOnSpellLoad(function()
-            if (subSpellName) then
-                if (subSpellName == "Passive") then
-                    SetText(subSpellNameString, SPELL_PASSIVE_TRANSLATION)
-                elseif (StartsWith(subSpellName, "Rank")) then
-                    SetText(subSpellNameString, string.gsub(subSpellName, "Rank", SPELL_RANK_TRANSLATION))
-                else
-                    SetText(subSpellNameString, GetSpellAttributeOrDefault(subSpellName))
-                end
-            end
-        end);
+        if (subSpellName == "Passive") then
+            SetText(subSpellNameString, SPELL_PASSIVE_TRANSLATION)
+        elseif (StartsWith(subSpellName, "Rank")) then
+            SetText(subSpellNameString, string.gsub(subSpellName, "Rank", SPELL_RANK_TRANSLATION))
+        else
+            SetText(subSpellNameString, GetSpellAttributeOrDefault(subSpellName))
+        end
+    end
+
+    if (spellButton.RequiredLevelString) then
+        local requiredLevelStringText = spellButton.RequiredLevelString:GetText()
+        spellButton.RequiredLevelString:SetText(getTranslationOrDefault(requiredLevelStringText));
     end
 end
 
@@ -85,31 +78,57 @@ local function updateFrameCallback(...)
     end
 end
 
+local function unlearnButtonTooltipHook()
+    local tooltipLine = _G["GameTooltipTextLeft1"]
+    if (tooltipLine) then
+        local text = tooltipLine:GetText()
+        if (text) then tooltipLine:SetText(getTranslationOrDefault(text)) end
+    end
+end
+
+local function spellButtonTooltipHook(button)
+    if (not button) then return end
+    if (GameTooltip:GetOwner() ~= button) then return end
+
+    for i = 1, GameTooltip:NumLines() do
+        local lineLeft = _G["GameTooltipTextLeft" .. i]
+        if (lineLeft) then
+            local text = lineLeft:GetText() or ''
+            if (text == _G["SPELLBOOK_SPELL_NOT_ON_ACTION_BAR"]) then
+                lineLeft:SetText(GetAdditionalSpellTipsOrDefault(_G["SPELLBOOK_SPELL_NOT_ON_ACTION_BAR"]))
+            elseif (text == _G["CLICK_BINDING_NOT_AVAILABLE"]) then
+                lineLeft:SetText(getTranslationOrDefault(_G["CLICK_BINDING_NOT_AVAILABLE"]))
+            end
+        end
+    end
+    GameTooltip:Show()
+end
+
 function translator:initialize()
-    local function updateSpellButtonWrapper(spellButton)
-        if (not self:IsEnabled()) then return end
-        updateSpellButtonCallback(spellButton)
+    SpellBookFrame_HelpPlate[1].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_1"])
+    SpellBookFrame_HelpPlate[2].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_2"])
+    SpellBookFrame_HelpPlate[3].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_3"])
+
+    for i = 1, 12, 1 do
+        local spellButton = _G["SpellButton" .. i]
+
+        hooksecurefunc(spellButton, "UpdateButton", function()
+            if (not self:IsEnabled()) then return end
+            updateSpellButtonCallback(spellButton)
+        end)
+
+        spellButton:HookScript("OnUpdate", function()
+            if (not self:IsEnabled()) then return end
+            spellButtonTooltipHook(spellButton)
+        end)
     end
 
-    hooksecurefunc(SpellButton1, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton2, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton3, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton4, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton5, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton6, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton7, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton8, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton9, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton10, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton11, "UpdateButton", updateSpellButtonWrapper)
-    hooksecurefunc(SpellButton12, "UpdateButton", updateSpellButtonWrapper)
-
-    hooksecurefunc("SpellBookFrame_UpdateSkillLineTabs", function(_)
+    hooksecurefunc("SpellBookFrame_UpdateSkillLineTabs", function()
         if (not self:IsEnabled()) then return end
         updateSkillLineTabsCallback()
     end)
 
-    hooksecurefunc("SpellBookFrame_UpdatePages", function(_)
+    hooksecurefunc("SpellBookFrame_UpdatePages", function()
         if (not self:IsEnabled()) then return end
         updatePagesCallback()
     end)
@@ -118,22 +137,14 @@ function translator:initialize()
         if (not self:IsEnabled()) then return end
         updateFrameCallback()
     end)
-end
 
-function translator:OnEnabled()
-    SpellBookFrame_HelpPlate[1].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_1"])
-    SpellBookFrame_HelpPlate[2].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_2"])
-    SpellBookFrame_HelpPlate[3].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_3"])
+    PrimaryProfession1.UnlearnButton:HookScript("OnEnter", function()
+        if (not self:IsEnabled()) then return end
+        unlearnButtonTooltipHook()
+    end)
 
-    SPELLBOOK_SPELL_NOT_ON_ACTION_BAR = GetAdditionalSpellTipsOrDefault(_G["SPELLBOOK_SPELL_NOT_ON_ACTION_BAR"])
-
-    local constants = {
-        "UNLEARN_SKILL_TOOLTIP",
-        "CLICK_BINDING_NOT_AVAILABLE",
-        "BOOSTED_CHAR_SPELL_TEMPLOCK",
-        "SPELLBOOK_AVAILABLE_AT",
-    }
-    for _, const in ipairs(constants) do
-        _G[const] = getTranslationOrDefault(_G[const])
-    end
+    PrimaryProfession2.UnlearnButton:HookScript("OnEnter", function()
+        if (not self:IsEnabled()) then return end
+        unlearnButtonTooltipHook()
+    end)
 end

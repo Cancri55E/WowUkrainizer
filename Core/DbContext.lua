@@ -127,9 +127,9 @@ do
 
     function repository.GetTranslationOrDefault(type, default)
         if (type == "spellbook") then
-            return getValueOrDefault(ns._db.SpellbookFrameLines, default)
+            return getFormattedValueOrDefault(ns._db.SpellbookFrameLines, default)
         elseif (type == "class_talent") then
-            return getValueOrDefault(ns._db.ClassTalentFrameLines, default)
+            return getFormattedValueOrDefault(ns._db.ClassTalentFrameLines, default)
         end
     end
 
