@@ -128,14 +128,25 @@ local function pvpTalentList_OnUpdate(self, pvpTalentList)
 end
 
 local function onBlizzardClassTalentUILoaded(self)
+    local function loadoutDropDownDisabledCallbackHook(originDisabledCallback)
+        return function()
+            local disabled, title, text, warning = originDisabledCallback()
+            if (warning) then warning = getTranslationOrDefault(warning) end
+            return disabled, title, text, warning
+        end
+    end
+
     ClassTalentFrame.TalentsTab.ApplyButton.Text:SetText(getTranslationOrDefault(_G["TALENT_FRAME_APPLY_BUTTON_TEXT"]))
     ClassTalentFrame.TalentsTab.InspectCopyButton.Text:SetText(getTranslationOrDefault(_G
         ["TALENT_FRAME_INSPECT_COPY_BUTTON_TEXT"]))
     ClassTalentFrame.TalentsTab.UndoButton.tooltipText = getTranslationOrDefault(_G
         ["TALENT_FRAME_DISCARD_CHANGES_BUTTON_TOOLTIP"])
+    ClassTalentFrame.TalentsTab.LoadoutDropDown.editEntryTooltip = getTranslationOrDefault(_G
+        ["TALENT_FRAME_DROP_DOWN_TOOLTIP_EDIT"])
 
-    local loadoutDropDownControl = ClassTalentFrame.TalentsTab.LoadoutDropDown:GetDropDownControl();
-    loadoutDropDownControl:SetNoneSelectedText(getTranslationOrDefault(_G["TALENT_FRAME_DROP_DOWN_DEFAULT"]));
+    for _, value in ipairs(ClassTalentFrame.TalentsTab.LoadoutDropDown.sentinelKeyToInfo) do
+        value.disabledCallback = loadoutDropDownDisabledCallbackHook(value.disabledCallback)
+    end
 
     hooksecurefunc(ClassTalentFrame, "UpdateFrameTitle", function(frame)
         updateFrameTitleHook(self, frame)
@@ -167,6 +178,10 @@ local function onBlizzardClassTalentUILoaded(self)
 
     ClassTalentFrame.TalentsTab:HookScript("OnShow", function(talentsTab)
         talentsTab_OnShow(self, talentsTab)
+    end)
+
+    ClassTalentFrame.TalentsTab.ApplyButton:HookScript("OnEnter", function(applyButton)
+        translateGameTooltipText(self, applyButton)
     end)
 
     ClassTalentFrame.TalentsTab.WarmodeButton:HookScript("OnEnter", function(warmodeButton)
@@ -211,21 +226,6 @@ function translator:OnEnabled()
         -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_LEFT",
         -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_RIGHT",
         -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_ALL",
-
-        -- "TALENT_FRAME_NEW_LOADOUT_DISABLED_TOOLTIP",
-        -- "TALENT_FRAME_EXPORT_LOADOUT_DISABLED_TOOLTIP",
-
-        -- "TALENT_FRAME_DROP_DOWN_NEW_LOADOUT",
-        -- "TALENT_FRAME_DROP_DOWN_TOOLTIP_EDIT",
-        -- "TALENT_FRAME_DROP_DOWN_IMPORT",
-        -- "TALENT_FRAME_DROP_DOWN_EXPORT_CLIPBOARD",
-        -- "TALENT_FRAME_DROP_DOWN_EXPORT_CHAT_LINK",
-        -- "TALENT_FRAME_DROP_DOWN_STARTER_BUILD_TOOLTIP",
-        -- "TALENT_FRAME_DROP_DOWN_STARTER_BUILD",
-        -- "TALENT_FRAME_DROP_DOWN_EXPORT",
-        -- "TALENT_FRAME_EXPORT_TEXT",
-
-        -- "TALENT_FRAME_GATE_TOOLTIP_FORMAT",
     }
     for _, const in ipairs(constants) do
         _G[const] = getTranslationOrDefault(_G[const])
