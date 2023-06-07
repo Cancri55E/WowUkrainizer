@@ -7,6 +7,7 @@ local GetRole, GetAttribute = ns.DbContext.Units.GetRole, ns.DbContext.Units.Get
 local GetSpecialization, GetClass = ns.DbContext.Units.GetSpecialization, ns.DbContext.Units.GetClass
 local GetSpecializationNote = ns.DbContext.Units.GetSpecializationNote
 local GetTranslationOrDefault = ns.DbContext.Frames.GetTranslationOrDefault
+local GetAdditionalSpellTipsOrDefault = ns.DbContext.Frames.GetAdditionalSpellTipsOrDefault
 local SetText = ns.FontStringExtensions.SetText
 
 local eventHandler = ns.EventHandler:new()
@@ -19,15 +20,44 @@ local function getTranslationOrDefault(default)
     return GetTranslationOrDefault("class_talent", default)
 end
 
-local function updateSpecContentsHook(self, specTab)
-    local function translateFontStringText(fontString, translationFunc)
-        if (fontString == nil) then return end
-        local enText = fontString:GetText()
+local function translateFontStringText(fontString, translationFunc)
+    if (fontString == nil) then return end
+    local text = fontString:GetText()
 
-        if (enText == nil or enText == "") then return end
-        SetText(fontString, translationFunc(enText))
+    if (text == nil or text == "") then return end
+    SetText(fontString, translationFunc(text))
+end
+
+local function translateGameTooltipText(self, owner)
+    if (not self:IsEnabled()) then return end
+    if (not owner) then return end
+    if (GameTooltip:GetOwner() ~= owner) then return end
+
+    for i = 1, GameTooltip:NumLines() do
+        local lineLeft = _G["GameTooltipTextLeft" .. i]
+        if (lineLeft) then
+            lineLeft:SetText(getTranslationOrDefault(lineLeft:GetText() or ''))
+        end
     end
+    GameTooltip:Show()
+end
 
+local function translateStaticPopup(self, extraHeight)
+    if (not self:IsEnabled()) then return end
+
+    local popup = _G["StaticPopup1"]
+    if (not popup) then return end
+
+    translateFontStringText(popup.text, getTranslationOrDefault)
+    translateFontStringText(popup.button1.Text, getTranslationOrDefault)
+    translateFontStringText(popup.button2.Text, getTranslationOrDefault)
+
+    if (extraHeight) then
+        popup:SetHeight(popup:GetHeight() + extraHeight);
+    end
+end
+
+local function updateSpecContentsHook(self, specTab)
     if (not self:IsEnabled()) then return end
     for specContentFrame in specTab.SpecContentFramePool:EnumerateActive() do
         local sex = UnitSex("player");
@@ -36,7 +66,7 @@ local function updateSpecContentsHook(self, specTab)
         if primaryStat and primaryStat ~= 0 then
             local translatedStat = GetAttribute(SPEC_STAT_STRINGS[primaryStat])
             local translatedDescription = GetSpecializationNote(description) ..
-                "|n" .. SPEC_FRAME_PRIMARY_STAT:format(translatedStat)
+                "|n" .. getTranslationOrDefault(_G["SPEC_FRAME_PRIMARY_STAT"]):format(translatedStat)
             SetText(specContentFrame.Description, translatedDescription)
         end
         translateFontStringText(specContentFrame.SpecName, GetSpecialization)
@@ -47,29 +77,50 @@ local function updateSpecContentsHook(self, specTab)
     end
 end
 
-local function refreshCurrencyDisplayHook(self, talentsTab)
+local function updateFrameTitleHook(self, classTalentFrame)
     if (not self:IsEnabled()) then return end
 
-    local classNameTranslated = GetClass(talentsTab:GetClassName(), 1, 2)
-    talentsTab.ClassCurrencyDisplay:SetPointTypeText(string.upper(classNameTranslated));
+    local titleText = ""
+    if classTalentFrame:IsInspecting() then
+        local inspectUnit = classTalentFrame:GetInspectUnit();
+        if inspectUnit then
+            titleText = getTranslationOrDefault(_G["TALENTS_INSPECT_FORMAT"]):format(UnitName(inspectUnit));
+        else
+            local classNameTranslated = GetClass(classTalentFrame:GetClassName(), 1, 2) -- TODO: Sex ?
+            local specNameTranslated = GetSpecialization(classTalentFrame:GetSpecName())
+            titleText = getTranslationOrDefault(_G["TALENTS_LINK_FORMAT"]):format(specNameTranslated, classNameTranslated);
+        end
+    elseif classTalentFrame:GetTab() == classTalentFrame.specTabID then
+        titleText = getTranslationOrDefault(_G["SPECIALIZATION"]);
+    else -- tabID == self.talentTabID
+        titleText = getTranslationOrDefault(_G["TALENTS"]);
+    end
+    classTalentFrame:SetTitle(titleText)
+end
+
+local function talentsTab_OnShow(self, talentsTab)
+    if (not self:IsEnabled()) then return end
+
+    local currencyDisplayFormat = getTranslationOrDefault(_G["TALENT_FRAME_CURRENCY_DISPLAY_FORMAT"])
+
+    local classNameTranslated = GetClass(talentsTab:GetClassName(), 1, 2) -- TODO: Sex ?
+    talentsTab.ClassCurrencyDisplay.CurrencyLabel:SetText(
+        string.upper(currencyDisplayFormat:format(classNameTranslated)));
 
     local specNameTranslated = GetSpecialization(talentsTab:GetSpecName())
-    talentsTab.SpecCurrencyDisplay:SetPointTypeText(string.upper(specNameTranslated));
+    talentsTab.SpecCurrencyDisplay.CurrencyLabel:SetText(
+        string.upper(currencyDisplayFormat:format(specNameTranslated)));
 end
 
-local function getConditionInfoHook(self, configID, condID)
+local function classTalentFrame_OnShow(self, classTalentFrame)
     if (not self:IsEnabled()) then return end
 
-    local condInfo = aceHook.hooks[C_Traits]["GetConditionInfo"](configID, condID)
-    if (condInfo.tooltipFormat and condInfo.spentAmountRequired) then
-        local translatedTooltipFormat = getTranslationOrDefault(condInfo.tooltipFormat)
-        condInfo.tooltipText =
-            RED_FONT_COLOR:WrapTextInColorCode(translatedTooltipFormat:format(condInfo.spentAmountRequired))
-    end
-    return condInfo
+    classTalentFrame:GetTalentsTabButton():SetText(getTranslationOrDefault(_G["TALENT_FRAME_TAB_LABEL_TALENTS"]))
+    classTalentFrame:GetTabButton(classTalentFrame.specTabID):SetText(getTranslationOrDefault(_G
+        ["TALENT_FRAME_TAB_LABEL_SPEC"]))
 end
 
-local function updateShownPvPTalentsHook(self, pvpTalentList) -- TODO: Optimize code here
+local function pvpTalentList_OnUpdate(self, pvpTalentList)
     if (not self:IsEnabled()) then return end
     pvpTalentList.ScrollBox:ForEachFrame(function(listButton)
         listButton.Name:SetText(GetSpellNameOrDefault(listButton.talentInfo.name));
@@ -77,17 +128,64 @@ local function updateShownPvPTalentsHook(self, pvpTalentList) -- TODO: Optimize 
 end
 
 local function onBlizzardClassTalentUILoaded(self)
-    hooksecurefunc(ClassTalentFrame.SpecTab, "UpdateSpecContents", function(specTab)
-        updateSpecContentsHook(self, specTab)
+    ClassTalentFrame.TalentsTab.ApplyButton.Text:SetText(getTranslationOrDefault(_G["TALENT_FRAME_APPLY_BUTTON_TEXT"]))
+    ClassTalentFrame.TalentsTab.InspectCopyButton.Text:SetText(getTranslationOrDefault(_G
+        ["TALENT_FRAME_INSPECT_COPY_BUTTON_TEXT"]))
+    ClassTalentFrame.TalentsTab.UndoButton.tooltipText = getTranslationOrDefault(_G
+        ["TALENT_FRAME_DISCARD_CHANGES_BUTTON_TOOLTIP"])
+
+    local loadoutDropDownControl = ClassTalentFrame.TalentsTab.LoadoutDropDown:GetDropDownControl();
+    loadoutDropDownControl:SetNoneSelectedText(getTranslationOrDefault(_G["TALENT_FRAME_DROP_DOWN_DEFAULT"]));
+
+    hooksecurefunc(ClassTalentFrame, "UpdateFrameTitle", function(frame)
+        updateFrameTitleHook(self, frame)
     end)
 
-    hooksecurefunc(ClassTalentFrame.TalentsTab, "RefreshCurrencyDisplay", function(talentsTab)
-        refreshCurrencyDisplayHook(self, talentsTab)
+    hooksecurefunc(ClassTalentFrame, "CheckConfirmResetAction", function(...)
+        translateStaticPopup(self)
     end)
 
-    ClassTalentFrame.TalentsTab.PvPTalentList:HookScript("OnUpdate", function()
-        updateShownPvPTalentsHook(self, ClassTalentFrame.TalentsTab.PvPTalentList)
+    hooksecurefunc(ClassTalentFrame.SpecTab, "UpdateSpecContents", function(tab)
+        updateSpecContentsHook(self, tab)
     end)
+
+    hooksecurefunc(ClassTalentFrame.TalentsTab, "CheckConfirmStarterBuildDeviation", function(...)
+        translateStaticPopup(self, 16)
+    end)
+
+    hooksecurefunc(ClassTalentFrame.TalentsTab.WarmodeButton, "Update", function(warmodeButton)
+        translateGameTooltipText(self, warmodeButton)
+    end)
+
+    hooksecurefunc(TalentFrameGateMixin, "OnEnter", function(mixin)
+        translateGameTooltipText(self, mixin)
+    end)
+
+    ClassTalentFrame:HookScript("OnShow", function(classTalentFrame)
+        classTalentFrame_OnShow(self, classTalentFrame)
+    end)
+
+    ClassTalentFrame.TalentsTab:HookScript("OnShow", function(talentsTab)
+        talentsTab_OnShow(self, talentsTab)
+    end)
+
+    ClassTalentFrame.TalentsTab.WarmodeButton:HookScript("OnEnter", function(warmodeButton)
+        translateGameTooltipText(self, warmodeButton)
+    end)
+
+    ClassTalentFrame.TalentsTab.WarmodeButton.WarmodeIncentive:HookScript("OnEnter", function(warmodeIncentive)
+        translateGameTooltipText(self, warmodeIncentive)
+    end)
+
+    ClassTalentFrame.TalentsTab.PvPTalentList:HookScript("OnUpdate", function(pvpTalentList)
+        pvpTalentList_OnUpdate(self, pvpTalentList)
+    end)
+
+    for i = 1, 3, 1 do
+        ClassTalentFrame.TalentsTab.PvPTalentSlotTray["TalentSlot" .. i]:HookScript("OnEnter", function(talentSlot)
+            translateGameTooltipText(self, talentSlot)
+        end)
+    end
 end
 
 function translator:initialize()
@@ -97,92 +195,37 @@ function translator:initialize()
         eventHandler:Unregister(onAddonLoaded, "ADDON_LOADED")
     end
 
-    -- Translate the TALENT_BUTTON_TOOLTIP_* consts for action
-    aceHook:RawHook(TalentButtonUtil, "GetTooltipForActionBarStatus", function(status)
-        local statusText = aceHook.hooks[TalentButtonUtil]["GetTooltipForActionBarStatus"](status)
-        return getTranslationOrDefault(statusText)
-    end, true)
-
-    -- Translate the TALENT_FRAME_SEARCH_TOOLTIP_* consts
     aceHook:RawHook(TalentButtonUtil, "GetStyleForSearchMatchType", function(matchType)
         local result = aceHook.hooks[TalentButtonUtil]["GetStyleForSearchMatchType"](matchType)
         if (result) then result.tooltipText = getTranslationOrDefault(result.tooltipText) end
         return result
     end, true)
 
-    aceHook:RawHook(C_Traits, "GetConditionInfo", function(configID, condID)
-        return getConditionInfoHook(self, configID, condID)
-    end, true)
-
     eventHandler:Register(onAddonLoaded, "ADDON_LOADED")
 end
 
 function translator:OnEnabled()
-    -- Next constants will be ignored
-    --["TALENT_BUTTON_TOOLTIP_RANK_FORMAT"] = "Rank %s/%s",
-    --["TALENT_BUTTON_TOOLTIP_NEXT_RANK"] = "Next Rank:",
-    --["TALENT_BUTTON_TOOLTIP_REPLACED_BY_FORMAT"] = "Replaced by %s",
-    --["TALENT_FRAME_SEARCH_PREVIEW_OVERFLOW_FORMAT"] = "And %s more"
-    --["TALENT_FRAME_LABEL_PVP_TALENT_SLOTS"] = "PVP"
-    --["TALENT_FRAME_SEARCH_NOT_ON_ACTIONBAR"] = "Missing from action bar"
-
     local constants = {
-        -- Tabs and Title
-        "TALENT_FRAME_TAB_LABEL_SPEC",
-        "TALENT_FRAME_TAB_LABEL_TALENTS",
-        "SPECIALIZATION",
-        "TALENTS",
-        -- Spec
-        "SPEC_FRAME_PRIMARY_STAT",
-        -- Talents
-        "TALENT_FRAME_RESET_BUTTON_DROPDOWN_TITLE",
-        "TALENT_FRAME_RESET_BUTTON_DROPDOWN_LEFT",
-        "TALENT_FRAME_RESET_BUTTON_DROPDOWN_RIGHT",
-        "TALENT_FRAME_RESET_BUTTON_DROPDOWN_ALL",
-        "TALENT_FRAME_NEW_LOADOUT_DISABLED_TOOLTIP",
-        "TALENT_FRAME_EXPORT_LOADOUT_DISABLED_TOOLTIP",
-        "TALENT_FRAME_DROP_DOWN_DEFAULT",
-        "TALENT_FRAME_DROP_DOWN_NEW_LOADOUT",
-        "TALENT_FRAME_DROP_DOWN_TOOLTIP_EDIT",
-        "TALENT_FRAME_DROP_DOWN_IMPORT",
-        "TALENT_FRAME_DROP_DOWN_EXPORT_CLIPBOARD",
-        "TALENT_FRAME_DROP_DOWN_EXPORT_CHAT_LINK",
-        "TALENT_FRAME_DROP_DOWN_STARTER_BUILD_TOOLTIP",
-        "TALENT_FRAME_DROP_DOWN_STARTER_BUILD",
-        "TALENT_FRAME_CURRENCY_DISPLAY_FORMAT",
-        "TALENT_FRAME_INSPECT_COPY_BUTTON_TEXT",
-        "TALENT_FRAME_DROP_DOWN_EXPORT",
-        "TALENT_FRAME_EXPORT_TEXT",
-        "TALENT_FRAME_CONFIRM_STARTER_DEVIATION",
-        "TALENT_FRAME_CONFIG_OPERATION_TOO_FAST",
-        "TALENT_FRAME_APPLY_BUTTON_TEXT",
-        "TALENT_FRAME_DISCARD_CHANGES_BUTTON_TOOLTIP",
-        "TALENT_FRAME_GATE_TOOLTIP_FORMAT",
-        -- Talent buttons
-        "TALENT_BUTTON_TOOLTIP_CLEAR_REPURCHASE_INSTRUCTIONS",
-        "TALENT_BUTTON_TOOLTIP_PURCHASE_INSTRUCTIONS",
-        "TALENT_BUTTON_TOOLTIP_REPURCHASE_INSTRUCTIONS",
-        "TALENT_BUTTON_TOOLTIP_PVP_TALENT_REQUIREMENT_ERROR",
-        "TALENT_BUTTON_TOOLTIP_REFUND_INSTRUCTIONS",
-        "TALENT_BUTTON_TOOLTIP_SELECTION_ERROR",
-        "TALENT_BUTTON_TOOLTIP_SELECTION_CURRENT_INSTRUCTIONS",
-        "TALENT_BUTTON_TOOLTIP_COST_FORMAT",
-        "TALENT_BUTTON_TOOLTIP_SELECTION_COST_ERROR",
-        "TALENT_BUTTON_TOOLTIP_SELECTION_CHOICE_ERROR",
-        -- PVP Talents
-        "TALENT_NOT_SELECTED",
-        "PVP_TALENT_SLOT",
-        "PVP_TALENT_SLOT_LOCKED",
-        "PVP_TALENT_SLOT_EMPTY",
-        -- Warmode
-        "WAR_MODE_CALL_TO_ARMS",
-        "WAR_MODE_BONUS_INCENTIVE_TOOLTIP",
-        "PVP_LABEL_WAR_MODE",
-        "PVP_WAR_MODE_DESCRIPTION_FORMAT",
-        "PVP_WAR_MODE_ENABLED",
-        "TALENT_FRAME_CONFIRM_CLOSE",
-        -- TODO: Someday
-        --"GENERIC_TRAIT_FRAME_CONFIRM_PURCHASE_FORMAT",
+        -- -- Talents
+        -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_TITLE",
+        -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_LEFT",
+        -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_RIGHT",
+        -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_ALL",
+
+        -- "TALENT_FRAME_NEW_LOADOUT_DISABLED_TOOLTIP",
+        -- "TALENT_FRAME_EXPORT_LOADOUT_DISABLED_TOOLTIP",
+
+        -- "TALENT_FRAME_DROP_DOWN_NEW_LOADOUT",
+        -- "TALENT_FRAME_DROP_DOWN_TOOLTIP_EDIT",
+        -- "TALENT_FRAME_DROP_DOWN_IMPORT",
+        -- "TALENT_FRAME_DROP_DOWN_EXPORT_CLIPBOARD",
+        -- "TALENT_FRAME_DROP_DOWN_EXPORT_CHAT_LINK",
+        -- "TALENT_FRAME_DROP_DOWN_STARTER_BUILD_TOOLTIP",
+        -- "TALENT_FRAME_DROP_DOWN_STARTER_BUILD",
+        -- "TALENT_FRAME_DROP_DOWN_EXPORT",
+        -- "TALENT_FRAME_EXPORT_TEXT",
+
+        -- "TALENT_FRAME_GATE_TOOLTIP_FORMAT",
     }
     for _, const in ipairs(constants) do
         _G[const] = getTranslationOrDefault(_G[const])
