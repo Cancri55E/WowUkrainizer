@@ -8,6 +8,8 @@ ns.DefaultBoldFontName = [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.tt
 local eventHandler = ns.EventHandler:new()
 
 local unitTooltipTranslator, spellTooltipTranslator, spellbookFrameTranslator, classTalentFrameTranslator
+local nameplateAndUnitFrameTranslator
+
 local initialized = false
 
 local function setGameFonts(fontName)
@@ -73,6 +75,9 @@ local function initializeAddon()
     -- Frames
     spellbookFrameTranslator = ns.Translators.SpellbookFrameTranslator:new()
     classTalentFrameTranslator = ns.Translators.ClassTalentFrameTranslator:new()
+
+    -- Other
+    nameplateAndUnitFrameTranslator = ns.Translators.NameplateAndUnitFrameTranslator:new()
 end
 
 local function OnAddOnLoaded(_, name)
@@ -83,6 +88,8 @@ local function OnAddOnLoaded(_, name)
         -- Frames
         spellbookFrameTranslator:SetEnabled(true)
         classTalentFrameTranslator:SetEnabled(true)
+        -- Other
+        nameplateAndUnitFrameTranslator:SetEnabled(true)
     end
 
     if (name == addonName) then
