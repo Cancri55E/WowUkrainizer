@@ -138,7 +138,8 @@
         "MovieFrameSubtitleString",
         "PvPTalentSlotButtonMixin",
         "WarmodeButtonMixin",
-        "TalentFrameGateMixin"
+        "TalentFrameGateMixin",
+        "TargetFrame"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false

@@ -6,6 +6,8 @@ local StartsWith = ns.StringExtensions.StartsWith
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetUnitSubnameOrDefault = ns.DbContext.Units.GetUnitSubnameOrDefault
 
+local eventHandler = ns.EventHandler:new()
+
 local translator = class("NameplateAndUnitFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.NameplateAndUnitFrameTranslator = translator
 
@@ -176,4 +178,10 @@ function translator:initialize()
             end
         end
     end
+
+    eventHandler:Register(function()
+        -- SetUnitFrameText(TargetFrame.name, UnitGUID("target"))
+        if (not self:IsEnabled()) then return end
+        TargetFrame.name:SetText(GetUnitNameOrDefault(TargetFrame.name:GetText()))
+    end, "PLAYER_TARGET_CHANGED", "UNIT_NAME_UPDATE", "INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 end
