@@ -7,7 +7,6 @@ local GetRole, GetAttribute = ns.DbContext.Units.GetRole, ns.DbContext.Units.Get
 local GetSpecialization, GetClass = ns.DbContext.Units.GetSpecialization, ns.DbContext.Units.GetClass
 local GetSpecializationNote = ns.DbContext.Units.GetSpecializationNote
 local GetTranslationOrDefault = ns.DbContext.Frames.GetTranslationOrDefault
-local GetAdditionalSpellTipsOrDefault = ns.DbContext.Frames.GetAdditionalSpellTipsOrDefault
 local SetText = ns.FontStringExtensions.SetText
 
 local eventHandler = ns.EventHandler:new()
