@@ -180,7 +180,6 @@ function translator:initialize()
     end
 
     eventHandler:Register(function()
-        -- SetUnitFrameText(TargetFrame.name, UnitGUID("target"))
         if (not self:IsEnabled()) then return end
         TargetFrame.name:SetText(GetUnitNameOrDefault(TargetFrame.name:GetText()))
     end, "PLAYER_TARGET_CHANGED", "UNIT_NAME_UPDATE", "INSTANCE_ENCOUNTER_ENGAGE_UNIT")
