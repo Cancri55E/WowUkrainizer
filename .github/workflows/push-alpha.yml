@@ -18,12 +18,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set execute permissions
-        run: chmod +x generate_changelog.sh
-
-      - name: Generate Changelog
-        run: ./generate_changelog.sh
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
@@ -59,7 +53,15 @@ jobs:
       - name: Display update translation log
         run: |
           cat log.txt
-
+          
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v2
+        with:
+          config: cliff.toml
+          args: --verbose
+        env:
+          OUTPUT: CHANGELOG.md
+          
       - name: Create Package
         uses: BigWigsMods/packager@master
         env:
