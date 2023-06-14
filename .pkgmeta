@@ -16,7 +16,7 @@ ignore:
   - cvars.dump
   - package.json
   - package-lock.json
-  - generate_changelog.sh
   - release.sh
+  - cliff.toml
   - DevTools
   - RawData

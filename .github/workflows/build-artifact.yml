@@ -47,7 +47,15 @@ jobs:
       - name: Display update translation log
         run: |
           cat log.txt
-
+          
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v2
+        with:
+          config: cliff.toml
+          args: --verbose
+        env:
+          OUTPUT: CHANGELOG.md
+          
       - name: Create Package
         uses: BigWigsMods/packager@master
         with:
