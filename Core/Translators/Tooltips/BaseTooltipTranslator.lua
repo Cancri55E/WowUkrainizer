@@ -1,6 +1,6 @@
 local _, ns = ...;
 
-local UpdateFontString = ns.FontStringExtensions.UpdateFontString
+local SetText = ns.FontStringExtensions.SetText
 
 local translator = class("BaseTooltipTranslator", ns.Translators.BaseTranslator)
 ns.Translators.BaseTooltipTranslator = translator
@@ -48,7 +48,7 @@ function translator:TooltipCallback(tooltip, tooltipData)
     for _, line in ipairs(translatedTooltipLines) do
         local tooltipFontString = self:_getFontStringFromIndexLookup(line.index)
         if (tooltipFontString) then
-            UpdateFontString(tooltipFontString, line.value)
+            SetText(tooltipFontString, line.value)
         end
     end
 end

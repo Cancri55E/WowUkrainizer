@@ -71,6 +71,9 @@ function internal.ExtractNumericValues(str)
         if (num:sub(-1) == ",") then
             table.insert(numbers, num:sub(1, -2))
             return string.format("{%d},", #numbers)
+        elseif (num:sub(-1) == ".") then
+            table.insert(numbers, num:sub(1, -2))
+            return string.format("{%d}.", #numbers)
         else
             table.insert(numbers, num)
             return string.format("{%d}", #numbers)

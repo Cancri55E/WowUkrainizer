@@ -14,6 +14,7 @@ local TALENT_REPLACES_TRANSLATION = ns.TALENT_REPLACES_TRANSLATION
 local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
 local GetSpellDescriptionOrDefault = ns.DbContext.Spells.GetSpellDescriptionOrDefault
 local GetSpellAttributeOrDefault = ns.DbContext.Spells.GetSpellAttributeOrDefault
+local GetAdditionalSpellTipsOrDefault = ns.DbContext.Frames.GetAdditionalSpellTipsOrDefault
 
 local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "Replaced by%s+(.+)"
@@ -21,6 +22,59 @@ local maxChargesPattern = "Max %d+ Charges"
 
 local translator = class("SpellTooltipTranslator", ns.Translators.BaseTooltipTranslator)
 ns.Translators.SpellTooltipTranslator = translator
+
+function translator:initialize(tooltipDataType)
+    ns.Translators.BaseTooltipTranslator.initialize(self, tooltipDataType)
+
+    hooksecurefunc(_G["TalentDisplayMixin"], "SetTooltipInternal", function(...)
+        if (not self._postCallLineCount) then return end
+        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
+            local lineLeft = _G["GameTooltipTextLeft" .. i]
+            if (lineLeft) then
+                local leftTranslatedTips = GetAdditionalSpellTipsOrDefault(lineLeft:GetText() or '')
+                lineLeft:SetText(leftTranslatedTips)
+            end
+
+            local lineRight = _G["GameTooltipTextRight" .. i]
+            if (lineRight) then
+                local rightTranslatedTips = GetAdditionalSpellTipsOrDefault(lineRight:GetText() or '')
+                lineRight:SetText(rightTranslatedTips)
+            end
+        end
+        GameTooltip:Show();
+    end)
+
+    EventRegistry:RegisterCallback("PvPTalentButton.TooltipHook", function(...)
+        local function extractRequirementTalentName(str)
+            local prefix = "Requires "
+            local suffix = " talent"
+            local start = str:find("^" .. prefix)
+            local _end = str:find(suffix .. "$")
+            if start and _end then
+                local extracted = str:sub(#prefix + 1, _end - 1)
+                return prefix .. "%s" .. suffix, extracted
+            end
+            return str
+        end
+
+        if (not self._postCallLineCount) then return end
+        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
+            local lineLeft = _G["GameTooltipTextLeft" .. i]
+            if (lineLeft) then
+                local text = lineLeft:GetText() or ''
+                local requiresText, talentName = extractRequirementTalentName(text)
+                if (talentName ~= nil) then
+                    local translatedRequiresText = GetSpellAttributeOrDefault(requiresText)
+                    translatedRequiresText = translatedRequiresText:format(GetSpellNameOrDefault(talentName))
+                    lineLeft:SetText(translatedRequiresText)
+                else
+                    lineLeft:SetText(GetAdditionalSpellTipsOrDefault(text))
+                end
+            end
+        end
+        GameTooltip:Show();
+    end, translator)
+end
 
 local function processResourceStrings(str)
     local function isResourceString(value)
@@ -88,11 +142,18 @@ local function processResourceStrings(str)
     return next(resultTable) ~= nil and resultTable or nil
 end
 
-local function isEvokerSpellColor(str)
-    return str == "Red" or str == "Green" or str == "Blue" or str == "Black" or str == "Bronze"
-end
-
 local function parseSpellTooltip(tooltipTexts)
+    local function isEvokerSpellColor(str)
+        return str == "Red" or str == "Green" or str == "Blue" or str == "Black" or str == "Bronze"
+    end
+
+    local function isAdditionalSpellTips(str)
+        return str == "Left click to select this talent."
+            or StartsWith(str, "Unlocked at level ")
+            or str == "Click to learn"
+            or str == "Talents cannot be changed in combat."
+    end
+
     local spellTooltip = {
         Name = tooltipTexts[1],
         Form = tooltipTexts[2] or "",
@@ -133,9 +194,9 @@ local function parseSpellTooltip(tooltipTexts)
 
     if (spellContainer) then
         for i = contentIndex, #tooltipTexts do
-            local element = tooltipTexts[i]
-            if (element ~= nil or element ~= "") then
-                local resourceTypes = processResourceStrings(element)
+            local text = tooltipTexts[i]
+            if (text ~= nil or text ~= "") then
+                local resourceTypes = processResourceStrings(text)
                 if (resourceTypes) then
                     spellContainer.ResourceType = { i }
                     for x, resourceType in ipairs(resourceTypes) do
@@ -144,32 +205,35 @@ local function parseSpellTooltip(tooltipTexts)
                 end
 
                 if not resourceTypes then
-                    if (element == "Next Rank:") then
+                    if (text == "Next Rank:") then
                         spellTooltip.Talent.NextRankIndex = i
                         spellContainer = spellTooltip.Talent.NextRank
-                    elseif element == "Left click to select this talent." or StartsWith(element, "Unlocked at level ") then -- "Left click to select this talent." and "Unlocked at level " used as part of description in PvP talent
-                        spellContainer.PvP = i
-                    elseif (isEvokerSpellColor(element)) then
-                        spellContainer.EvokerSpellColor = { i, element }
-                    elseif (string.match(element, maxChargesPattern)) then
-                        spellContainer.MaxCharges = { i, element }
-                    elseif element == "Melee Range" or element == "Unlimited range" or EndsWith(element, "yd range") then
-                        spellContainer.Range = { i, element }
-                    elseif element == "Instant" or element == "Channeled" or EndsWith(element, "sec cast") or EndsWith(element, "sec empower") then
-                        spellContainer.CastTime = { i, element }
-                    elseif StartsWith(element, "Requires") then
-                        spellContainer.Requires = { i, element }
-                    elseif StartsWith(element, "Replaces") then
-                        spellContainer.Replaces = { i, element }
-                    elseif EndsWith(element, "cooldown") or EndsWith(element, "recharge") or StartsWith(element, "Recharging: ") then
-                        spellContainer.Cooldown = { i, element }
-                    elseif element == "Passive" then
+                    elseif isAdditionalSpellTips(text) then
+                        if (not spellContainer.AdditionalSpellTips) then spellContainer.AdditionalSpellTips = {} end
+                        table.insert(spellContainer.AdditionalSpellTips, { i, text })
+                    elseif (isEvokerSpellColor(text)) then
+                        spellContainer.EvokerSpellColor = { i, text }
+                    elseif (string.match(text, maxChargesPattern)) then
+                        spellContainer.MaxCharges = { i, text }
+                    elseif text == "Melee Range" or text == "Unlimited range" or EndsWith(text, "yd range") then
+                        spellContainer.Range = { i, text }
+                    elseif text == "Instant" or text == "Channeled" or EndsWith(text, "sec cast") or EndsWith(text, "sec empower") then
+                        spellContainer.CastTime = { i, text }
+                    elseif StartsWith(text, "Requires") then
+                        spellContainer.Requires = { i, text }
+                    elseif StartsWith(text, "Replaces") then
+                        spellContainer.Replaces = { i, text }
+                    elseif EndsWith(text, "cooldown") or EndsWith(text, "recharge") or StartsWith(text, "Recharging: ") then
+                        spellContainer.Cooldown = { i, text }
+                    elseif StartsWith(text, "Cooldown remaining:") then
+                        spellContainer.CooldownRemaining = { i, text }
+                    elseif text == "Passive" then
                         spellContainer.Passive = i
-                    elseif element == "Upgrade" then
+                    elseif text == "Upgrade" then
                         spellContainer.Upgrade = i
                     elseif i % 2 == 1 then
                         if not spellContainer.Descriptions then spellContainer.Descriptions = {} end
-                        table.insert(spellContainer.Descriptions, { index = i, value = element })
+                        table.insert(spellContainer.Descriptions, { index = i, value = text })
                     end
                 end
             end
@@ -249,6 +313,13 @@ local function translateTooltipSpellInfo(spellContainer)
         })
     end
 
+    if (spellContainer.CooldownRemaining) then
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.CooldownRemaining[1],
+            value = GetSpellAttributeOrDefault(spellContainer.CooldownRemaining[2])
+        })
+    end
+
     if (spellContainer.MaxCharges) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.MaxCharges[1],
@@ -275,6 +346,15 @@ local function translateTooltipSpellInfo(spellContainer)
             index = spellContainer.Upgrade,
             value = TALENT_UPGRADE_TRANSLATION
         })
+    end
+
+    if (spellContainer.AdditionalSpellTips) then
+        for _, spellTip in ipairs(spellContainer.AdditionalSpellTips) do
+            table.insert(translatedTooltipLines, {
+                index = spellTip[1],
+                value = GetAdditionalSpellTipsOrDefault(spellTip[2])
+            })
+        end
     end
 
     if (spellContainer.Descriptions) then
@@ -352,16 +432,21 @@ local function addUntranslatedSpellToDump(spellId, translatedTooltipLines)
 end
 
 function translator:ParseTooltip(tooltip, tooltipData)
+    local linePrefix = "GameTooltip";
+    if (tooltip == _G["ElvUISpellBookTooltip"]) then linePrefix = 'ElvUISpellBookTooltip' end
+
+    self._postCallLineCount = tonumber(tooltip:NumLines())
+
     local tooltipTexts = {}
     for i = 1, tooltip:NumLines() do
-        local lineLeft = _G["GameTooltipTextLeft" .. i]
+        local lineLeft = _G[linePrefix .. "TextLeft" .. i]
         if (lineLeft) then
             local lli = #tooltipTexts + 1;
             tooltipTexts[lli] = lineLeft:GetText() or ''
             self:_addFontStringToIndexLookup(lli, lineLeft)
         end
 
-        local lineRight = _G["GameTooltipTextRight" .. i]
+        local lineRight = _G[linePrefix .. "TextRight" .. i]
         if (lineRight) then
             local lri = #tooltipTexts + 1;
             tooltipTexts[lri] = lineRight:GetText() or ''
@@ -373,7 +458,8 @@ function translator:ParseTooltip(tooltip, tooltipData)
 
     if (not tooltipInfo) then return end
 
-    if (tooltipInfo and tooltipInfo.Talent and (tooltipInfo.Talent.MinRank ~= 0 and tooltipInfo.Talent.NextRankIndex == -1)) then return end -- HOOK: No Rank 1/2+ info in multirang talent tooltip. In this case client send another callback. Need to find why
+    -- HOOK: No Rank 1/2+ info in multirang talent tooltip. In this case client send another callback. Need to find why
+    if (tooltipInfo and tooltipInfo.Talent and (tooltipInfo.Talent.MinRank ~= 0 and tooltipInfo.Talent.NextRankIndex == -1)) then return end
 
     tooltipInfo.SpellId = tonumber(tooltipData.id)
 
