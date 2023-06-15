@@ -10,6 +10,7 @@ local TALENT_UPGRADE_TRANSLATION = ns.TALENT_UPGRADE_TRANSLATION
 local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
 local SPELL_NEXT_RANK_TRANSLATION = ns.SPELL_NEXT_RANK_TRANSLATION
 local TALENT_REPLACES_TRANSLATION = ns.TALENT_REPLACES_TRANSLATION
+local TALENT_REPLACED_BY_TRANSLATION = ns.TALENT_REPLACED_BY_TRANSLATION
 
 local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
 local GetSpellDescriptionOrDefault = ns.DbContext.Spells.GetSpellDescriptionOrDefault
@@ -17,7 +18,8 @@ local GetSpellAttributeOrDefault = ns.DbContext.Spells.GetSpellAttributeOrDefaul
 local GetAdditionalSpellTipsOrDefault = ns.DbContext.Frames.GetAdditionalSpellTipsOrDefault
 
 local talentRankPattern = "Rank (%d+)/(%d+)"
-local talentReplacedByPattern = "Replaced by%s+(.+)"
+local talentReplacedByPattern = "^Replaced by%s+(.+)"
+local talentReplacesPattern = "^Replaces%s+(.+)"
 local maxChargesPattern = "Max %d+ Charges"
 
 local translator = class("SpellTooltipTranslator", ns.Translators.BaseTooltipTranslator)
@@ -171,17 +173,9 @@ local function parseSpellTooltip(tooltipTexts)
                 talent.NextRank = {}
             end
 
-            if (tooltipTexts[5]) then
-                local replacedBy = tooltipTexts[5]:match(talentReplacedByPattern)
-                if (replacedBy) then
-                    contentIndex = 5
-                    talent.ReplacedBy = replacedBy
-                end
-            end
-
             spellTooltip.Talent = talent
 
-            contentIndex = contentIndex + 4
+            contentIndex = contentIndex + 2
         else
             spellTooltip.Spell = {}
         end
@@ -205,7 +199,15 @@ local function parseSpellTooltip(tooltipTexts)
                 end
 
                 if not resourceTypes then
-                    if (text == "Next Rank:") then
+                    local replacedBy = text:match(talentReplacedByPattern)
+                    local replaces = text:match(talentReplacesPattern)
+                    if (replaces or replacedBy) then
+                        if (replaces) then
+                            spellContainer.Replaces = { i, replaces:trim() }
+                        else
+                            spellContainer.ReplacedBy = { i, replacedBy:trim() }
+                        end
+                    elseif (text == "Next Rank:") then
                         spellTooltip.Talent.NextRankIndex = i
                         spellContainer = spellTooltip.Talent.NextRank
                     elseif isAdditionalSpellTips(text) then
@@ -221,8 +223,6 @@ local function parseSpellTooltip(tooltipTexts)
                         spellContainer.CastTime = { i, text }
                     elseif StartsWith(text, "Requires") then
                         spellContainer.Requires = { i, text }
-                    elseif StartsWith(text, "Replaces") then
-                        spellContainer.Replaces = { i, text }
                     elseif EndsWith(text, "cooldown") or EndsWith(text, "recharge") or StartsWith(text, "Recharging: ") then
                         spellContainer.Cooldown = { i, text }
                     elseif StartsWith(text, "Cooldown remaining:") then
@@ -248,24 +248,9 @@ local function parseSpellTooltip(tooltipTexts)
 end
 
 local function translateTooltipSpellInfo(spellContainer)
-    local function extractReplaceSpellName(str)
-        local spellName = str:match("Replaces%s+(.+)")
-        if spellName ~= nil then
-            spellName = spellName:trim()
-        end
-        return spellName
-    end
-
     if (not spellContainer) then return end
 
     local translatedTooltipLines = {}
-
-    if (spellContainer.ReplacedBy) then
-        table.insert(translatedTooltipLines, {
-            index = 5,
-            value = GetSpellAttributeOrDefault(spellContainer.ReplacedBy)
-        })
-    end
 
     if (spellContainer.ResourceType) then
         for i = 2, #spellContainer.ResourceType do
@@ -291,11 +276,19 @@ local function translateTooltipSpellInfo(spellContainer)
         })
     end
 
+    if (spellContainer.ReplacedBy) then
+        local spellName = GetSpellNameOrDefault(spellContainer.ReplacedBy[2], false)
+        table.insert(translatedTooltipLines, {
+            index = spellContainer.ReplacedBy[1],
+            value = TALENT_REPLACED_BY_TRANSLATION .. " " .. spellName
+        })
+    end
+
     if (spellContainer.Replaces) then
-        local replaceSpellName = GetSpellNameOrDefault(extractReplaceSpellName(spellContainer.Replaces[2]), false)
+        local spellName = GetSpellNameOrDefault(spellContainer.Replaces[2], false)
         table.insert(translatedTooltipLines, {
             index = spellContainer.Replaces[1],
-            value = TALENT_REPLACES_TRANSLATION .. " " .. replaceSpellName
+            value = TALENT_REPLACES_TRANSLATION .. " " .. spellName
         })
     end
 
@@ -359,12 +352,15 @@ local function translateTooltipSpellInfo(spellContainer)
 
     if (spellContainer.Descriptions) then
         for _, description in ipairs(spellContainer.Descriptions) do
-            table.insert(translatedTooltipLines, {
-                index = description.index,
-                value = GetSpellDescriptionOrDefault(description.value),
-                originalValue = description.value,
-                tag = "Description"
-            })
+            local value = description.value:trim()
+            if (value ~= "") then
+                table.insert(translatedTooltipLines, {
+                    index = description.index,
+                    value = GetSpellDescriptionOrDefault(value),
+                    originalValue = value,
+                    tag = "Description"
+                })
+            end
         end
     end
 
