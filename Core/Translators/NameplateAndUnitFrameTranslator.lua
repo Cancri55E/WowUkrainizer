@@ -131,20 +131,20 @@ end
 function translator:initialize()
     ns.Translators.BaseTranslator.initialize(self)
 
-    hooksecurefunc("CompactUnitFrame_UpdateName", function(control)
+    hooksecurefunc("CompactUnitFrame_UpdateName", function(self)
         if (not self:IsEnabled()) then return end
-        if (StartsWith(control.displayedUnit, "nameplate")) then
-            control.name:SetText(GetUnitNameOrDefault(control.name:GetText()))
+        if (StartsWith(self.displayedUnit, "nameplate")) then
+            self.name:SetText(GetUnitNameOrDefault(self.name:GetText()))
         end
     end)
 
     if (_G["Plater"]) then
-        hooksecurefunc(_G["Plater"], "UpdateUnitName", function(plateFrame)
+        hooksecurefunc(_G["Plater"], "UpdateUnitName", function(_, plateFrame)
             local nameString = plateFrame.CurrentUnitNameString
             nameString:SetText(GetUnitNameOrDefault(nameString:GetText()))
         end)
 
-        hooksecurefunc(_G["Plater"], "UpdatePlateText", function(plateFrame)
+        hooksecurefunc(_G["Plater"], "UpdatePlateText", function(_, plateFrame)
             if (plateFrame.ActorTitleSpecial:IsVisible()) then
                 local titleText = plateFrame.ActorTitleSpecial:GetText():match("<(.-)>")
                 plateFrame.ActorTitleSpecial:SetText("<" .. GetUnitSubnameOrDefault(titleText) .. ">")
