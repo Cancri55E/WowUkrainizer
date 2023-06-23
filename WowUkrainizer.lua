@@ -34,10 +34,10 @@ local function buildOptions()
                 name = "Загальні налаштування",
                 childGroups = "tab",
                 args = {
-                    Sorting1 = {
+                    GeneralSettings = {
                         name = "Загальні налаштування",
                         type = "group",
-                        order = 1.1,
+                        order = 1,
                         width = "double",
                         args = {
                             UIHeader = {
@@ -45,7 +45,7 @@ local function buildOptions()
                                 name = "Інтерфейс користувача",
                                 order = 1
                             },
-                            VerticalMargin1 = {
+                            VerticalMargin_1 = {
                                 type = "description",
                                 name = " ",
                                 order = 2
@@ -58,7 +58,7 @@ local function buildOptions()
                                 order = 3,
                                 width = "full"
                             },
-                            VerticalMargin2 = {
+                            VerticalMargin_2 = {
                                 type = "description",
                                 name = " ",
                                 order = 4
@@ -71,90 +71,103 @@ local function buildOptions()
                             },
                             SpellbookFrame = {
                                 type = "toggle",
-                                name = "Вікно \"Книга здібностей\"",
+                                name = "Вікно \"Книга здібностей та професії\"",
                                 order = 6,
-                                width = 1.2,
+                                width = "full",
                             },
-                            -- TranslateSpellNameInSpellbookHorizaontalMargin = {
-                            --     type = "description",
-                            --     name = " ",
-                            --     fontSize = "small",
-                            --     order = 7,
-                            --     width = 40
-                            -- },
-                            TranslateSpellNameInSpellbook = {
-                                type = "toggle",
-                                name = "Перекладати назви здібностей",
+
+                            VerticalMargin_3 = {
+                                type = "description",
+                                name = " ",
+                                order = 7,
+                                width = "full"
+                            },
+                            -- Spell Name in spellbook
+                            HorizaontalMargin_1 = {
+                                type = "description",
+                                name = " ",
+                                fontSize = "medium",
                                 order = 8,
-                                width = 2,
+                                width = 0.2
+                            },
+                            SpellNameLangInSpellbook_Desc = {
+                                type = "description",
+                                name = "Якою мовою виводити назви здібностей",
+                                fontSize = "medium",
+                                order = 9,
+                                width = 2
+                            },
+                            SpellNameLangInSpellbook = {
+                                type = "select",
+                                name = "",
+                                width = 1,
+                                order = 10,
+                                values = {
+                                    ["en"] = "Англійська",
+                                    ["ua"] = "Українська",
+                                },
+                            },
+                            SpellNameLangInSpellbook_End = {
+                                type = "description",
+                                name = " ",
+                                fontSize = "medium",
+                                order = 11,
+                                width = 0.4
                             },
                             VerticalMargin3 = {
                                 type = "description",
                                 name = " ",
-                                order = 9,
+                                order = 12,
                                 width = "full",
                             },
                             TooltipsHeader = {
                                 type = "header",
                                 name = "Екрані підказки",
-                                order = 10
+                                order = 13
                             },
                             VerticalMargin4 = {
                                 type = "description",
                                 name = " ",
-                                order = 11
+                                order = 14
                             },
                             TranslateUnitTooltips = {
                                 type = "toggle",
                                 name = "Перекладати підказки НІП",
-                                order = 12,
+                                order = 15,
                                 width = "full",
                             },
                             TranslateSpellTooltips = {
                                 type = "toggle",
                                 name = "Перекладати підказки здібностей та талантів",
-                                order = 13,
+                                order = 16,
                                 width = "full",
                             },
                             VerticalMargin5 = {
                                 type = "description",
                                 name = " ",
-                                order = 14,
+                                order = 17,
                                 width = "full"
-                            },
-                            HorizaontalMargin0 = {
-                                type = "description",
-                                name = " ",
-                                fontSize = "medium",
-                                order = 14.1,
-                                width = 0.2
-                            },
-                            HighlightSpellNameInDescription = {
-                                type = "toggle",
-                                name = "Виділяти голубим кольором назви здібностей (талантів) в описі",
-                                order = 14.2,
-                                width = 3.4,
                             },
                             -- Spell Name
                             HorizaontalMargin1 = {
                                 type = "description",
                                 name = " ",
                                 fontSize = "medium",
-                                order = 15,
+                                order = 18,
                                 width = 0.2
                             },
                             TooltipSpellName_Desc = {
                                 type = "description",
                                 name = "Якою мовою виводити назви талантів та здібностей",
                                 fontSize = "medium",
-                                order = 16,
+                                order = 19,
                                 width = 2
                             },
                             TooltipSpellName = {
                                 type = "select",
                                 name = "",
                                 width = 1,
-                                order = 17,
+                                order = 20,
                                 values = {
                                     ["en"] = "Англійська",
                                     ["ua"] = "Українська",
@@ -165,7 +178,7 @@ local function buildOptions()
                                 type = "description",
                                 name = " ",
                                 fontSize = "medium",
-                                order = 18,
+                                order = 21,
                                 width = 0.4
                             },
                             -- Spell Description
@@ -173,101 +186,118 @@ local function buildOptions()
                                 type = "description",
                                 name = " ",
                                 fontSize = "medium",
-                                order = 19,
+                                order = 22,
                                 width = 0.2
                             },
                             TooltipSpellDescription_Desc = {
                                 type = "description",
                                 name = "Якою мовою виводити опис талантів та здібностей",
                                 fontSize = "medium",
-                                order = 20,
+                                order = 23,
                                 width = 2
                             },
                             TooltipSpellDescription = {
                                 type = "select",
                                 name = "",
                                 width = 1,
-                                order = 21,
+                                order = 24,
                                 values = {
                                     ["en"] = "Англійська",
                                     ["ua"] = "Українська",
                                 },
+                            },
+                            TooltipSpellDescription_End = {
+                                type = "description",
+                                name = " ",
+                                fontSize = "medium",
+                                order = 25,
+                                width = 0.4
+                            },
+                            HorizaontalMargin0 = {
+                                type = "description",
+                                name = " ",
+                                fontSize = "medium",
+                                order = 26,
+                                width = 0.2
+                            },
+                            HighlightSpellNameInDescription = {
+                                type = "toggle",
+                                name = "Виділяти голубим кольором назви здібностей (талантів) в описі",
+                                order = 27,
+                                width = 3.4,
                             },
                         }
                     },
                     FontSettings = {
                         name = "Налаштувати шрифти",
                         type = "group",
-                        order = 1.1,
+                        order = 1,
                         width = "double",
                         args = {
                             UseDefaultFonts = {
                                 type = "toggle",
                                 name = "Використовувати стандартні шрифти",
-                                order = 1.11,
+                                order = 1,
                                 width = "double",
                             },
                             HorizaontalMargin1 = {
                                 type = "description",
                                 name = " ",
                                 fontSize = "large",
-                                order = 1.111,
+                                order = 2,
                                 width = "half"
                             },
                             ResetFonts = {
-                                order = 1.112,
+                                order = 3,
                                 name = "За замовченням",
                                 type = "execute",
                             },
                             UserFontHeader = {
                                 type = "header",
                                 name = "",
-                                order = 1.113
+                                order = 4
                             },
                             UserFontWarning = {
                                 type = "description",
                                 name =
                                 "Увага! Перевірте що вибраний вами шрифт підтримує кирилицю. Інакше це призведе візуальних багів з відображенням тексту.",
-                                order = 1.12,
+                                order = 5,
                                 width = "full"
                             },
                             VerticalMargin1 = {
                                 type = "description",
                                 name = " ",
-                                order = 1.131
+                                order = 6
                             },
                             UserFont = {
                                 type = "select",
                                 name = "Доступні шрифти",
                                 width = "double",
-                                order = 1.132,
-                                values = {
-                                    ["ignore"] = "Ignore",
-                                    ["group"] = "Group",
-                                    ["interleave"] = "Interleave",
-                                },
+                                order = 7,
+                                values = sharedMedia:HashTable("font"),
+                                dialogControl = "LSM30_Font",
                             },
                             VerticalMargin2 = {
                                 type = "description",
                                 name = " ",
-                                order = 1.133
+                                order = 8
                             },
                             FontScaleHeader = {
                                 type = "header",
                                 name = "Розмір шрифту (%)",
-                                order = 1.14
+                                order = 9
                             },
                             FontScaleDescription = {
                                 type = "description",
                                 name = "Загальний",
-                                order = 1.151,
+                                order = 10,
                                 width = "1",
                                 fontSize = "medium"
                             },
                             FontScale = {
                                 type = "range",
                                 name = "",
-                                order = 1.152,
+                                order = 11,
                                 min = 0.5,
                                 max = 3,
                                 bigStep = 0.01,
@@ -276,14 +306,14 @@ local function buildOptions()
                             TooltipHeaderFontScaleDescription = {
                                 type = "description",
                                 name = "Заголовок екранних підказок",
-                                order = 1.161,
+                                order = 12,
                                 width = "1",
                                 fontSize = "medium"
                             },
                             TooltipHeaderFontScale = {
                                 type = "range",
                                 name = "",
-                                order = 1.162,
+                                order = 13,
                                 min = 0.5,
                                 max = 3,
                                 bigStep = 0.01,
@@ -292,14 +322,14 @@ local function buildOptions()
                             TooltipFontScaleDescription = {
                                 type = "description",
                                 name = "Текст екранних підказок",
-                                order = 1.171,
+                                order = 14,
                                 width = "1",
                                 fontSize = "medium"
                             },
                             TooltipFontScale = {
                                 type = "range",
                                 name = "",
-                                order = 1.172,
+                                order = 15,
                                 min = 0.5,
                                 max = 3,
                                 bigStep = 0.01,
@@ -309,19 +339,19 @@ local function buildOptions()
                                 type = "description",
                                 name = " ",
                                 fontSize = "large",
-                                order = 1.81
+                                order = 16
                             },
                             VerticalMargin4 = {
                                 type = "description",
                                 name = " ",
                                 fontSize = "large",
-                                order = 1.82
+                                order = 17
                             },
                             VerticalMargin5 = {
                                 type = "description",
                                 name = " ",
                                 fontSize = "large",
-                                order = 1.83
+                                order = 18
                             },
                         }
                     },
