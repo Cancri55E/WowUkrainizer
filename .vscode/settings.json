@@ -176,7 +176,11 @@
         "OKAY",
         "NOT_BOUND",
         "CURRENCY",
-        "DELETE"
+        "DELETE",
+        "StaticPopupDialogs",
+        "ReloadUI",
+        "StaticPopup_Show",
+        "RAID_WARNING"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false

@@ -107,10 +107,14 @@ do
         return default
     end
 
-    function repository.GetSpellDescriptionOrDefault(default)
+    function repository.GetSpellDescriptionOrDefault(default, highlight)
         local result = getFormattedValueOrDefault(ns._db.SpellDescriptions, default)
         if (result ~= default) then
-            return replaceBrackets(result)
+            if (highlight) then
+                return replaceBrackets(result)
+            else
+                return removeBrackets(result)
+            end
         end
         return default
     end
