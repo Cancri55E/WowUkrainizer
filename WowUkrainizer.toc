@@ -5,7 +5,7 @@
 ## Version: @project-version@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: WowUkrainizerData
+## SavedVariables: WowUkrainizerData, WowUkrainizer_Options
 ## X-AddonProvider: github
 ## X-Category: Tooltip Miscellaneous
 ## X-Website: https://www.curseforge.com/wow/addons/wowukrainizer

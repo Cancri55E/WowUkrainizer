@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Debugger.lua"/>
 	<Script file="EventHandler.lua"/>
+	<Script file="SettingsProvider.lua"/>
 	<Include file="Extensions\_manifest.xml"/>
 	<Script file="StringNormalizer.lua"/>
 	<Script file="DbContext.lua"/>

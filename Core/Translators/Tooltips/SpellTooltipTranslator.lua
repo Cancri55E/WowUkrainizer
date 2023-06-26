@@ -2,6 +2,8 @@ local _, ns = ...;
 
 local _G = _G
 
+local settingsProvider = ns.SettingsProvider:new()
+
 local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
 
@@ -356,7 +358,7 @@ local function translateTooltipSpellInfo(spellContainer)
             if (value ~= "") then
                 table.insert(translatedTooltipLines, {
                     index = description.index,
-                    value = GetSpellDescriptionOrDefault(value),
+                    value = GetSpellDescriptionOrDefault(value, settingsProvider.IsNeedHighlightSpellNameInDescription()),
                     originalValue = value,
                     tag = "Description"
                 })
@@ -387,7 +389,13 @@ local function addUntranslatedSpellToDump(spellId, translatedTooltipLines)
         return false
     end
 
-    local originalName = translatedTooltipLines[1].originalValue
+    local originalName
+    if translatedTooltipLines[1] then
+        originalName = translatedTooltipLines[1].originalValue
+    end
+
+    if (originalName == nil) then return end
+
     local untranslatedDescriptions, untranslatedName = findUntranslatedDescriptions(translatedTooltipLines),
         translatedTooltipLines[1].value == originalName and originalName or ""
 
@@ -472,35 +480,48 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     local translatedTooltipLines = {}
 
-    table.insert(translatedTooltipLines, {
-        index = 1,
-        value = GetSpellNameOrDefault(tooltipInfo.Name, true),
-        originalValue = tooltipInfo.Name,
-        tag = "Name"
-    })
+    local spellNameLang = settingsProvider.GetTooltipSpellLangInName()
+    if (spellNameLang ~= "en") then
+        local spellName = tooltipInfo.Name
+        local translatedValue = GetSpellNameOrDefault(tooltipInfo.Name, true)
 
-    if (tooltipInfo.Form and tooltipInfo.Form ~= "") then
+        if (spellName ~= translatedValue) then
+            spellName = spellNameLang == "ua" and translatedValue or
+                "|cFF47D5FF" .. spellName .. "|r\n" .. translatedValue
+        end
+
         table.insert(translatedTooltipLines, {
-            index = 2,
-            value = GetSpellAttributeOrDefault(tooltipInfo.Form)
+            index = 1,
+            value = spellName,
+            originalValue = tooltipInfo.Name,
+            tag = "Name"
         })
     end
 
-    if (tooltipInfo.Spell) then
-        addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Spell))
-    elseif (tooltipInfo.Talent) then
-        table.insert(translatedTooltipLines, {
-            index = 3,
-            value = SPELL_RANK_TRANSLATION .. " " .. tooltipInfo.Talent.MinRank .. "/" .. tooltipInfo.Talent.MaxRank
-        })
-        addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.CurrentRank))
-
-        if (tooltipInfo.Talent.NextRankIndex ~= -1) then
+    if (settingsProvider.IsNeedTranslateSpellDescriptionInTooltip()) then
+        if (tooltipInfo.Form and tooltipInfo.Form ~= "") then
             table.insert(translatedTooltipLines, {
-                index = tooltipInfo.Talent.NextRankIndex,
-                value = SPELL_NEXT_RANK_TRANSLATION
+                index = 2,
+                value = GetSpellAttributeOrDefault(tooltipInfo.Form)
             })
-            addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.NextRank))
+        end
+
+        if (tooltipInfo.Spell) then
+            addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Spell))
+        elseif (tooltipInfo.Talent) then
+            table.insert(translatedTooltipLines, {
+                index = 3,
+                value = SPELL_RANK_TRANSLATION .. " " .. tooltipInfo.Talent.MinRank .. "/" .. tooltipInfo.Talent.MaxRank
+            })
+            addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.CurrentRank))
+
+            if (tooltipInfo.Talent.NextRankIndex ~= -1) then
+                table.insert(translatedTooltipLines, {
+                    index = tooltipInfo.Talent.NextRankIndex,
+                    value = SPELL_NEXT_RANK_TRANSLATION
+                })
+                addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.NextRank))
+            end
         end
     end
 
