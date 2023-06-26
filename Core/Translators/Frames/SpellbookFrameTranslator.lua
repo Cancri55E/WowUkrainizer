@@ -2,8 +2,10 @@ local _, ns = ...;
 
 local _G = _G
 
+local settingsProvider = ns.SettingsProvider:new()
+
 local PAGE_TRANSLATION, SPELL_PASSIVE_TRANSLATION = ns.PAGE_TRANSLATION, ns.SPELL_PASSIVE_TRANSLATION
-local SPELL_RANK_TRANSLATION, LEVEL_TRANSLATION = ns.SPELL_RANK_TRANSLATION, ns.LEVEL_TRANSLATION
+local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
 local SPELL_GENERAL_TRANSLATION = ns.SPELL_GENERAL_TRANSLATION
 
 local StartsWith, SetText = ns.StringExtensions.StartsWith, ns.FontStringExtensions.SetText
@@ -20,9 +22,11 @@ local translator = class("SpellbookFrameTranslator", ns.Translators.BaseTranslat
 ns.Translators.SpellbookFrameTranslator = translator
 
 local function updateSpellButtonCallback(spellButton)
-    local spellString = spellButton.SpellName
-    if (spellString) then
-        SetText(spellString, GetSpellNameOrDefault(spellString:GetText(), false))
+    if (settingsProvider.IsNeedTranslateSpellNameInSpellbook()) then
+        local spellString = spellButton.SpellName
+        if (spellString) then
+            SetText(spellString, GetSpellNameOrDefault(spellString:GetText(), false))
+        end
     end
 
     local subSpellNameString = spellButton.SpellSubName
