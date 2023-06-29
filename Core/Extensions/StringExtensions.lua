@@ -3,10 +3,16 @@ local _, ns = ...;
 local internal = {}
 ns.StringExtensions = internal
 
+function internal.Trim(str)
+    return str:match("^%s*(.-)%s*$")
+end
+
 function internal.GetHash(str)
     if (str == nil or type(str) ~= "string" or str == "") then
         return -1
     end
+
+    str = internal.Trim(str) -- Trim the input string
 
     str = str:gsub("%s+", "_"):gsub("[\n\r’`.,]", ""):lower()
 
