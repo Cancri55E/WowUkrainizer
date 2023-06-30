@@ -6,7 +6,7 @@ local settingsProvider = ns.SettingsProvider:new()
 
 local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
-local ExtractNumericValues = ns.StringExtensions.ExtractNumericValues
+local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
 
 local SPELL_PASSIVE_TRANSLATION = ns.SPELL_PASSIVE_TRANSLATION
 local TALENT_UPGRADE_TRANSLATION = ns.TALENT_UPGRADE_TRANSLATION
@@ -429,7 +429,7 @@ local function addUntranslatedSpellToDump(spellId, translatedTooltipLines)
     end
 
     for _, desc in ipairs(untranslatedDescriptions) do
-        local formattedDesc, _ = ExtractNumericValues(desc)
+        local formattedDesc, _ = NormalizeStringAndExtractNumerics(desc)
         if (not isValueInTable(spellDescriptions, formattedDesc)) then
             table.insert(spellDescriptions, formattedDesc)
             print('Untranslated spell descriptions added to database: ', originalName, spellId)
