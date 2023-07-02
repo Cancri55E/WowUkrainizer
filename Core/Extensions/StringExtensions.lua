@@ -58,6 +58,17 @@ function internal.Split(input, delimiter)
     return items
 end
 
+function internal.StringsAreEqual(str1, str2, ignoreCase)
+    if str1 ~= nil and str2 ~= nil then
+        if ignoreCase then
+            str1 = string.lower(str1)
+            str2 = string.lower(str2)
+        end
+        return str1 == str2
+    end
+    return false
+end
+
 function internal.DeclensionWord(number, singular, plural, genitivePlural)
     local lastDigit = number % 10
     local lastTwoDigits = number % 100
