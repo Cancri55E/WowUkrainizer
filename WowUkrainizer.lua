@@ -6,7 +6,7 @@ local settingsProvider = ns.SettingsProvider:new()
 local SetFont = ns.FontStringExtensions.SetFont
 
 local unitTooltipTranslator, spellTooltipTranslator, spellbookFrameTranslator, classTalentFrameTranslator
-local nameplateAndUnitFrameTranslator
+local nameplateAndUnitFrameTranslator, movieTranslator
 
 local initialized = false
 
@@ -66,7 +66,7 @@ local function OnAddOnLoaded(_, name)
         createInterfaceOptions()
         setGameFonts();
 
-        local translateClassTalentsFrame, translateSpellbookFrame, translateNameplatesAndUnitFrames, translateSpellTooltips, translateUnitTooltips =
+        local translateClassTalentsFrame, translateSpellbookFrame, translateNameplatesAndUnitFrames, translateSpellTooltips, translateUnitTooltips, translateMovieSubtitles =
             settingsProvider.GetTranslatorsState()
 
         -- Tooltips
@@ -94,6 +94,10 @@ local function OnAddOnLoaded(_, name)
         if (translateNameplatesAndUnitFrames) then
             nameplateAndUnitFrameTranslator = ns.Translators.NameplateAndUnitFrameTranslator:new()
             nameplateAndUnitFrameTranslator:SetEnabled(true)
+        end
+        if (translateMovieSubtitles) then
+            movieTranslator = ns.Translators.MovieTranslator:new()
+            movieTranslator:SetEnabled(true)
         end
     end
 
