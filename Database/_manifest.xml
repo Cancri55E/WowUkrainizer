@@ -5,4 +5,5 @@
 	<Script file="Units.lua"/>
 	<Script file="SpellsAndTalents.lua"/>
 	<Script file="Frames.lua"/>
+	<Script file="Subtitles.lua"/>
 </Ui>

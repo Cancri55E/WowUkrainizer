@@ -144,4 +144,14 @@ do
     dbContext.Frames = repository
 end
 
+do
+    local repository = {}
+
+    function repository.GetMovieSubtitle(default)
+        return getValueOrDefault(ns._db.MovieSubtitles, default)
+    end
+
+    dbContext.Subtitles = repository
+end
+
 ns.DbContext = dbContext

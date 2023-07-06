@@ -21,7 +21,7 @@ function translator:OnDisabled()
 end
 
 function translator:AddToDebugOutput(category, data)
-    local function isValueInTable(t, value)
+    local function isValueInTable(t, value) -- TODO: Move to extension
         for _, v in ipairs(t) do
             if v == value then
                 return true

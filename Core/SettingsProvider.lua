@@ -23,7 +23,8 @@ local defaultOptions = {
     TranslateUnitTooltips = true,
     TranslateSpellTooltips = true,
     TooltipSpellLangInName = "both",
-    TooltipSpellLangInDescription = "ua"
+    TooltipSpellLangInDescription = "ua",
+    TranslateMovieSubtitles = true,
 }
 
 function settingsProvider:Load()
@@ -80,6 +81,9 @@ function settingsProvider:Load()
 
     WowUkrainizer_Options.TooltipSpellLangInDescription =
         WowUkrainizer_Options.TooltipSpellLangInDescription or def.TooltipSpellLangInDescription
+
+    WowUkrainizer_Options.TranslateMovieSubtitles =
+        WowUkrainizer_Options.TranslateMovieSubtitles or def.TranslateMovieSubtitles
 end
 
 function settingsProvider:Build()
@@ -196,6 +200,16 @@ function settingsProvider:Build()
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateNameplatesAndUnitFrames end,
                                 set = function(_, value) WowUkrainizer_Options.TranslateNameplatesAndUnitFrames = value end,
+                            },
+
+                            TranslateMovieSubtitles = {
+                                type = "toggle",
+                                name = "Перекладати субтитри в відеороликах",
+                                desc = "Відображає українські субтитри в відеороликах (pre-render)",
+                                order = 11,
+                                width = 3.6,
+                                get = function(_) return WowUkrainizer_Options.TranslateMovieSubtitles end,
+                                set = function(_, value) WowUkrainizer_Options.TranslateMovieSubtitles = value end,
                             },
 
                             VerticalMargin = addVerticalMargin(12),
@@ -453,7 +467,7 @@ end
 function settingsProvider.GetTranslatorsState()
     return WowUkrainizer_Options.TranslateClassTalentsFrame, WowUkrainizer_Options.TranslateSpellbookFrame,
         WowUkrainizer_Options.TranslateNameplatesAndUnitFrames, WowUkrainizer_Options.TranslateSpellTooltips,
-        WowUkrainizer_Options.TranslateUnitTooltips
+        WowUkrainizer_Options.TranslateUnitTooltips, WowUkrainizer_Options.TranslateMovieSubtitles
 end
 
 function settingsProvider.IsNeedTranslateSpellNameInSpellbook()
