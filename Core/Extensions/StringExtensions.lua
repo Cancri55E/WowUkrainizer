@@ -3,10 +3,16 @@ local _, ns = ...;
 local internal = {}
 ns.StringExtensions = internal
 
+function internal.Trim(str)
+    return str:match("^%s*(.-)%s*$")
+end
+
 function internal.GetHash(str)
     if (str == nil or type(str) ~= "string" or str == "") then
         return -1
     end
+
+    str = internal.Trim(str) -- Trim the input string
 
     str = str:gsub("%s+", "_"):gsub("[\n\r’`.,]", ""):lower()
 
@@ -50,6 +56,17 @@ function internal.Split(input, delimiter)
         table.insert(items, item)
     end
     return items
+end
+
+function internal.StringsAreEqual(str1, str2, ignoreCase)
+    if str1 ~= nil and str2 ~= nil then
+        if ignoreCase then
+            str1 = string.lower(str1)
+            str2 = string.lower(str2)
+        end
+        return str1 == str2
+    end
+    return false
 end
 
 function internal.DeclensionWord(number, singular, plural, genitivePlural)

@@ -20,7 +20,7 @@ function internal.NormalizeStringAndExtractNumerics(text)
 
     local colors = {}
     text = string.gsub(text,
-        "%|c([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])(.-)%|r",
+        "%|[cC]([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])(.-)%|[rR]",
         function(color, title)
             table.insert(colors, color)
             return string.format("{color:%s|%s}", string.char(#colors + 64), title)
