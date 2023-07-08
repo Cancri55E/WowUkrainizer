@@ -30,6 +30,7 @@ local function replaceBrackets(str)
     return str
 end
 
+-- Units
 do
     local repository = {}
 
@@ -92,6 +93,7 @@ do
     dbContext.Units = repository
 end
 
+-- Spells
 do
     local repository = {}
 
@@ -126,6 +128,7 @@ do
     dbContext.Spells = repository
 end
 
+-- Frames
 do
     local repository = {}
 
@@ -144,6 +147,7 @@ do
     dbContext.Frames = repository
 end
 
+-- Subtitles
 do
     local repository = {}
 

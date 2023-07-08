@@ -1,6 +1,6 @@
-local _, ns = ...;
+local addonName, ns = ...;
 
---local _G = _G
+local TimestampToDate = ns.NumberExtensions.TimestampToDate
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 
@@ -97,6 +97,9 @@ function settingsProvider:Build()
         }
     end
 
+    local releaseDate = C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")
+    local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
+
     ns.Options = {
         type = "group",
         name = "WowUkrainizer",
@@ -107,8 +110,15 @@ function settingsProvider:Build()
                 name = "Налаштування",
                 childGroups = "tab",
                 args = {
-                    Commands = {
+                    Version = {
+                        type = "description",
+                        name = "Версія: " .. version .. " (" .. TimestampToDate(releaseDate) .. ")",
+                        fontSize = "small",
                         order = 1,
+                        width = "full"
+                    },
+                    Commands = {
+                        order = 2,
                         type = "group",
                         name = " ",
                         inline = true,
@@ -148,7 +158,7 @@ function settingsProvider:Build()
                     GeneralSettings = {
                         name = "Загальні налаштування",
                         type = "group",
-                        order = 1,
+                        order = 3,
                         width = "double",
                         args = {
                             TranslateClassTalentsFrame = {
@@ -301,7 +311,7 @@ function settingsProvider:Build()
                     FontSettings = {
                         name = "Налаштувати шрифти",
                         type = "group",
-                        order = 1,
+                        order = 4,
                         width = "double",
                         args = {
                             UseDefaultFonts = {
