@@ -2,5 +2,4 @@
 ..\FrameXML\UI.xsd">
 	<Script file="StringExtensions.lua"/>
 	<Script file="FontStringExtensions.lua"/>
-	<Script file="NumberExtensions.lua"/>
 </Ui>

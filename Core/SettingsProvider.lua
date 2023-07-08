@@ -1,7 +1,5 @@
 local addonName, ns = ...;
 
-local TimestampToDate = ns.NumberExtensions.TimestampToDate
-
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 
 local settingsProvider = class("SettingsProvider");
@@ -97,7 +95,7 @@ function settingsProvider:Build()
         }
     end
 
-    local releaseDate = C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")
+    local releaseDate = tonumber(C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")) or 0
     local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
 
     ns.Options = {
@@ -112,7 +110,7 @@ function settingsProvider:Build()
                 args = {
                     Version = {
                         type = "description",
-                        name = "Версія: " .. version .. " (" .. TimestampToDate(releaseDate) .. ")",
+                        name = "Версія: " .. version .. " (" .. date("%d.%m.%y %H:%M:%S", releaseDate) .. ")",
                         fontSize = "small",
                         order = 1,
                         width = "full"
