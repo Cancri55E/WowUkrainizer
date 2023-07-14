@@ -514,7 +514,7 @@ function settingsProvider:Build()
                                 "KuprumLight, Mark Tsemma, Glafira, Алексей Коваль, Serhii Feelenko, " ..
                                 "Semerkhet, senpusha, Валерий Бондаренко, NichnaVoitelka, Shelby333, " ..
                                 "Nazar Kulchytskyi, Dmytro Borishpolets, RomenSkyJR, Дмитро Горєнков, " ..
-                                "Женя Браславська, Asturiel, Лігво Друїда, Volodymyr Taras, Олексій Сьомін, " ..
+                                "Женя Браславська, Elanka, Asturiel, Лігво Друїда, Volodymyr Taras, Олексій Сьомін, " ..
                                 "Ксенія Никонова, Primarch, rchenok, Артем Белякін, Roma Rybai, Andrew Kucherov, " ..
                                 "Toris_McDessert"
                         end,
