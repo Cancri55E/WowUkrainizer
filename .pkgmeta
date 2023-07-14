@@ -3,6 +3,7 @@ package-as: WowUkrainizer
 embedded-libraries:
   - ace3
   - libstub
+  - sfx-widgets
 
 manual-changelog:
   filename: CHANGELOG.md
