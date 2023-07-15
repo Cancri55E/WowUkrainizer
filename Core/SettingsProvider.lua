@@ -1,6 +1,4 @@
-local _, ns = ...;
-
---local _G = _G
+local addonName, ns = ...;
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 
@@ -97,6 +95,22 @@ function settingsProvider:Build()
         }
     end
 
+    local function createIncrementor()
+        local x = 0
+        return function()
+            x = x + 1
+            return x
+        end
+    end
+
+    local releaseDate = tonumber(C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")) or 0
+    local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
+    if string.match(version, "-[%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d]$") then
+        version = "[alpha] " .. version
+    end
+
+    local contributorsOrder = createIncrementor()
+
     ns.Options = {
         type = "group",
         name = "WowUkrainizer",
@@ -107,8 +121,15 @@ function settingsProvider:Build()
                 name = "Налаштування",
                 childGroups = "tab",
                 args = {
-                    Commands = {
+                    Version = {
+                        type = "description",
+                        name = "Версія: " .. version .. " (" .. date("%d.%m.%y %H:%M:%S", releaseDate) .. ")",
+                        fontSize = "small",
                         order = 1,
+                        width = "full"
+                    },
+                    Commands = {
+                        order = 2,
                         type = "group",
                         name = " ",
                         inline = true,
@@ -148,7 +169,7 @@ function settingsProvider:Build()
                     GeneralSettings = {
                         name = "Загальні налаштування",
                         type = "group",
-                        order = 1,
+                        order = 3,
                         width = "double",
                         args = {
                             TranslateClassTalentsFrame = {
@@ -301,7 +322,7 @@ function settingsProvider:Build()
                     FontSettings = {
                         name = "Налаштувати шрифти",
                         type = "group",
-                        order = 1,
+                        order = 4,
                         width = "double",
                         args = {
                             UseDefaultFonts = {
@@ -435,6 +456,152 @@ function settingsProvider:Build()
                                 end,
                             },
                         }
+                    },
+                }
+            },
+            Contributors = {
+                order = 2,
+                type = "group",
+                name = "Причетні",
+                args = {
+                    DedicationText = {
+                        order = contributorsOrder(),
+                        type = "description",
+                        name = [[
+Українчики,
+
+Хочу висловити вам мою щиру подяку за невтомну роботу та підтримку в процесі перекладу та тестування аддона. Це лише перший крок в українізації одного із найпопулярніших ігрових світів.
+
+Закликаю вас грати українською, дивитися українських контент-мейкерів та продовжувати підтримувати нашу спільну мету. Всі посилання на потрібні ресурси ви знайдете нижче.
+
+Разом до перемоги!]],
+                        fontSize = "small"
+                    },
+                    SPC00 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    SPC01 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    ContributorsHeader = {
+                        order = contributorsOrder(),
+                        type = "header",
+                        name = "Причетні",
+                        dialogControl = "SFX-Header-II",
+                    },
+                    Proofreaders = {
+                        type = "input",
+                        name = "Редактори",
+                        get = function() return "Semerkhet\n" end,
+                        order = contributorsOrder(),
+                        disabled = true,
+                        dialogControl = "SFX-Info",
+                    },
+                    SPC0 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    Translators = {
+                        type = "input",
+                        name = "Перекладачі",
+                        get = function()
+                            return
+                                "KuprumLight, Mark Tsemma, Glafira, Алексей Коваль, Serhii Feelenko, " ..
+                                "Semerkhet, senpusha, Валерий Бондаренко, NichnaVoitelka, Shelby333, " ..
+                                "Nazar Kulchytskyi, Dmytro Borishpolets, RomenSkyJR, Дмитро Горєнков, " ..
+                                "Женя Браславська, Elanka, Asturiel, Лігво Друїда, Volodymyr Taras, Олексій Сьомін, " ..
+                                "Ксенія Никонова, Primarch, rchenok, Артем Белякін, Roma Rybai, Andrew Kucherov, " ..
+                                "Toris_McDessert"
+                        end,
+                        order = contributorsOrder(),
+                        disabled = true,
+                        dialogControl = "SFX-Info",
+                    },
+                    SPC1 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    Bugfix = {
+                        type = "input",
+                        name = "Технічна поміч",
+                        get = function() return "Лігво Друїда (molaf)\n\n" end,
+                        order = contributorsOrder(),
+                        disabled = false,
+                        dialogControl = "SFX-Info",
+                    },
+                    SPC2 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    SPC4 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    Media = {
+                        order = contributorsOrder(),
+                        type = "header",
+                        name = "Ресурси та Посилання",
+                        dialogControl = "SFX-Header-II",
+                    },
+                    SPC6 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    Discords1 = {
+                        type = "input",
+                        name = "Ukrainian Community",
+                        get = function() return "https://bit.ly/ua_wow" end,
+                        order = contributorsOrder(),
+                        disabled = false,
+                        dialogControl = "SFX-Info-URL",
+                    },
+                    SPC7 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    Discords2 = {
+                        type = "input",
+                        name = "Нічна Воїтелька",
+                        get = function() return "https://discord.gg/VGfWeWTX24" end,
+                        order = contributorsOrder(),
+                        disabled = false,
+                        dialogControl = "SFX-Info-URL",
+                    },
+                    SPC8 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    Twitch1 = {
+                        type = "input",
+                        name = "Rolik33",
+                        get = function() return "https://www.twitch.tv/rolik33" end,
+                        order = contributorsOrder(),
+                        disabled = false,
+                        dialogControl = "SFX-Info-URL",
+                    },
+                    SPC9 = {
+                        type = "description",
+                        name = " ",
+                        order = contributorsOrder(),
+                    },
+                    Youtube1 = {
+                        type = "input",
+                        name = "Unbrkbl Opt1mist",
+                        get = function() return "https://www.youtube.com/user/xcryjedicryx" end,
+                        order = contributorsOrder(),
+                        disabled = false,
+                        dialogControl = "SFX-Info-URL",
                     },
                 }
             }

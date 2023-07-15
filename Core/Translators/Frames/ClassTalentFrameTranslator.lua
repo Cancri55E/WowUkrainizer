@@ -56,7 +56,7 @@ local function translateStaticPopup(self, extraHeight)
     end
 end
 
-local function updateSpecContentsHook(self, specTab)
+local function updateSpecContents(self, specTab)
     if (not self:IsEnabled()) then return end
     for specContentFrame in specTab.SpecContentFramePool:EnumerateActive() do
         local sex = UnitSex("player");
@@ -76,7 +76,7 @@ local function updateSpecContentsHook(self, specTab)
     end
 end
 
-local function updateFrameTitleHook(self, classTalentFrame)
+local function updateFrameTitle(self, classTalentFrame)
     if (not self:IsEnabled()) then return end
 
     local titleText = ""
@@ -97,7 +97,7 @@ local function updateFrameTitleHook(self, classTalentFrame)
     classTalentFrame:SetTitle(titleText)
 end
 
-local function talentsTab_OnShow(self, talentsTab)
+local function talentsTab_OnShow(self, talentsTab) -- TODO: Fix
     if (not self:IsEnabled()) then return end
 
     local currencyDisplayFormat = getTranslationOrDefault(_G["TALENT_FRAME_CURRENCY_DISPLAY_FORMAT"])
@@ -127,50 +127,36 @@ local function pvpTalentList_OnUpdate(self, pvpTalentList)
 end
 
 local function onBlizzardClassTalentUILoaded(self)
-    local function loadoutDropDownDisabledCallbackHook(originDisabledCallback)
-        return function()
-            local disabled, title, text, warning = originDisabledCallback()
-            if (warning) then warning = getTranslationOrDefault(warning) end
-            return disabled, title, text, warning
-        end
-    end
+    -- -- TODO: y changes in LoadoutDropDown cause a taint error
+
+    -- local function loadoutDropDownDisabledCallbackHook(originDisabledCallback)
+    --     return function()
+    --         local disabled, title, text, warning = securecall(originDisabledCallback)
+    --         if (warning) then warning = getTranslationOrDefault(warning) end
+    --         return disabled, title, text, warning
+    --     end
+    -- end
+    -- ClassTalentFrame.TalentsTab.LoadoutDropDown.editEntryTooltip = getTranslationOrDefault(_G
+    --     ["TALENT_FRAME_DROP_DOWN_TOOLTIP_EDIT"])
+    -- for _, value in ipairs(ClassTalentFrame.TalentsTab.LoadoutDropDown.sentinelKeyToInfo) do
+    --     value.disabledCallback = loadoutDropDownDisabledCallbackHook(value.disabledCallback)
+    -- end
 
     ClassTalentFrame.TalentsTab.ApplyButton.Text:SetText(getTranslationOrDefault(_G["TALENT_FRAME_APPLY_BUTTON_TEXT"]))
-    ClassTalentFrame.TalentsTab.InspectCopyButton.Text:SetText(getTranslationOrDefault(_G
-        ["TALENT_FRAME_INSPECT_COPY_BUTTON_TEXT"]))
-    ClassTalentFrame.TalentsTab.UndoButton.tooltipText = getTranslationOrDefault(_G
-        ["TALENT_FRAME_DISCARD_CHANGES_BUTTON_TOOLTIP"])
-    ClassTalentFrame.TalentsTab.LoadoutDropDown.editEntryTooltip = getTranslationOrDefault(_G
-        ["TALENT_FRAME_DROP_DOWN_TOOLTIP_EDIT"])
-
-    for _, value in ipairs(ClassTalentFrame.TalentsTab.LoadoutDropDown.sentinelKeyToInfo) do
-        value.disabledCallback = loadoutDropDownDisabledCallbackHook(value.disabledCallback)
-    end
+    ClassTalentFrame.TalentsTab.InspectCopyButton.Text:SetText(getTranslationOrDefault(
+        _G["TALENT_FRAME_INSPECT_COPY_BUTTON_TEXT"]))
+    ClassTalentFrame.TalentsTab.UndoButton.tooltipText = getTranslationOrDefault(
+        _G["TALENT_FRAME_DISCARD_CHANGES_BUTTON_TOOLTIP"])
 
     hooksecurefunc(ClassTalentFrame, "UpdateFrameTitle", function(frame)
-        updateFrameTitleHook(self, frame)
-    end)
-
-    hooksecurefunc(ClassTalentFrame, "CheckConfirmResetAction", function(...)
-        translateStaticPopup(self)
+        updateFrameTitle(self, frame)
     end)
 
     hooksecurefunc(ClassTalentFrame.SpecTab, "UpdateSpecContents", function(tab)
-        updateSpecContentsHook(self, tab)
+        updateSpecContents(self, tab)
     end)
 
-    hooksecurefunc(ClassTalentFrame.TalentsTab, "CheckConfirmStarterBuildDeviation", function(...)
-        translateStaticPopup(self, 16)
-    end)
-
-    hooksecurefunc(ClassTalentFrame.TalentsTab.WarmodeButton, "Update", function(warmodeButton)
-        translateGameTooltipText(self, warmodeButton)
-    end)
-
-    hooksecurefunc(TalentFrameGateMixin, "OnEnter", function(mixin)
-        translateGameTooltipText(self, mixin)
-    end)
-
+    -- Translate tabs text
     ClassTalentFrame:HookScript("OnShow", function(classTalentFrame)
         classTalentFrame_OnShow(self, classTalentFrame)
     end)
@@ -183,6 +169,7 @@ local function onBlizzardClassTalentUILoaded(self)
         translateGameTooltipText(self, applyButton)
     end)
 
+    -- Translate warmode button tooltip
     ClassTalentFrame.TalentsTab.WarmodeButton:HookScript("OnEnter", function(warmodeButton)
         translateGameTooltipText(self, warmodeButton)
     end)
@@ -191,15 +178,30 @@ local function onBlizzardClassTalentUILoaded(self)
         translateGameTooltipText(self, warmodeIncentive)
     end)
 
+    -- Translate PvP talents name in list
     ClassTalentFrame.TalentsTab.PvPTalentList:HookScript("OnUpdate", function(pvpTalentList)
         pvpTalentList_OnUpdate(self, pvpTalentList)
     end)
 
+    -- Translate tooltip text for PvP slot
     for i = 1, 3, 1 do
         ClassTalentFrame.TalentsTab.PvPTalentSlotTray["TalentSlot" .. i]:HookScript("OnEnter", function(talentSlot)
             translateGameTooltipText(self, talentSlot)
         end)
     end
+
+    -- Static Popups
+    hooksecurefunc(ClassTalentFrame, "CheckConfirmResetAction", function(...)
+        translateStaticPopup(self)
+    end)
+
+    hooksecurefunc(ClassTalentFrame.TalentsTab, "CheckConfirmStarterBuildDeviation", function(...)
+        translateStaticPopup(self, 16)
+    end)
+
+    hooksecurefunc(TalentFrameGateMixin, "OnEnter", function(mixin)
+        translateGameTooltipText(self, mixin)
+    end)
 end
 
 function translator:initialize()
@@ -209,24 +211,11 @@ function translator:initialize()
         eventHandler:Unregister(onAddonLoaded, "ADDON_LOADED")
     end
 
-    aceHook:RawHook(TalentButtonUtil, "GetStyleForSearchMatchType", function(matchType)
-        local result = aceHook.hooks[TalentButtonUtil]["GetStyleForSearchMatchType"](matchType)
-        if (result) then result.tooltipText = getTranslationOrDefault(result.tooltipText) end
-        return result
-    end, true)
+    -- aceHook:RawHook(TalentButtonUtil, "GetStyleForSearchMatchType", function(matchType)
+    --     local result = securecall(aceHook.hooks[TalentButtonUtil]["GetStyleForSearchMatchType"], matchType)
+    --     if (result) then result.tooltipText = getTranslationOrDefault(result.tooltipText) end
+    --     return result
+    -- end, true)
 
     eventHandler:Register(onAddonLoaded, "ADDON_LOADED")
-end
-
-function translator:OnEnabled()
-    local constants = {
-        -- -- Talents
-        -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_TITLE",
-        -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_LEFT",
-        -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_RIGHT",
-        -- "TALENT_FRAME_RESET_BUTTON_DROPDOWN_ALL",
-    }
-    for _, const in ipairs(constants) do
-        _G[const] = getTranslationOrDefault(_G[const])
-    end
 end

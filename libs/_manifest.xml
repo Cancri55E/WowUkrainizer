@@ -8,6 +8,7 @@
 	<Include file="Ace3\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
 	<Include file="Ace3\AceHook-3.0\AceHook-3.0.xml"/>
 	<Include file="Ace3\AceConfig-3.0\AceConfig-3.0.xml"/>
+	<Include file="AceGUI-3.0_SFX-Widgets\AceGUI-3.0_SFX-Widgets.xml"/>
 	<Script file="LibUIDropDownMenu.lua"/>
 	<Include file="TaintLess.xml"/>
 </Ui>
