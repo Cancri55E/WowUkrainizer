@@ -14,7 +14,7 @@ local function createInterfaceOptions()
     settingsProvider:Build()
 
     local namespace = "WowUkrainizer"
-    LibStub("AceConfig-3.0"):RegisterOptionsTable(namespace, ns.Options, { "wu", "wowukrainizer" })
+    LibStub("AceConfig-3.0"):RegisterOptionsTable(namespace, ns.Options)
 
     local configDialogLib = LibStub("AceConfigDialog-3.0")
     configDialogLib:AddToBlizOptions(namespace, nil, nil, "General")
