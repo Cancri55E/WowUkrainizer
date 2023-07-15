@@ -3,6 +3,7 @@
 ## Notes: Модифікація додає український переклад, що дозволяє україномовним гравцям краще зрозуміти ігровий процес та насолоджуватись грою на англомовних серверах.
 ## Author: Volodymyr <55CancriE> Nykonov
 ## Version: @project-version@
+## X-ReleaseDate: @build-timestamp@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WowUkrainizerData, WowUkrainizer_Options

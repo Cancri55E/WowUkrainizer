@@ -1,6 +1,4 @@
-local _, ns = ...;
-
---local _G = _G
+local addonName, ns = ...;
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 
@@ -97,6 +95,12 @@ function settingsProvider:Build()
         }
     end
 
+    local releaseDate = tonumber(C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")) or 0
+    local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
+    if string.match(version, "-[%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d]$") then
+        version = "[alpha] " .. version
+    end
+
     ns.Options = {
         type = "group",
         name = "WowUkrainizer",
@@ -107,8 +111,15 @@ function settingsProvider:Build()
                 name = "Налаштування",
                 childGroups = "tab",
                 args = {
-                    Commands = {
+                    Version = {
+                        type = "description",
+                        name = "Версія: " .. version .. " (" .. date("%d.%m.%y %H:%M:%S", releaseDate) .. ")",
+                        fontSize = "small",
                         order = 1,
+                        width = "full"
+                    },
+                    Commands = {
+                        order = 2,
                         type = "group",
                         name = " ",
                         inline = true,
@@ -148,7 +159,7 @@ function settingsProvider:Build()
                     GeneralSettings = {
                         name = "Загальні налаштування",
                         type = "group",
-                        order = 1,
+                        order = 3,
                         width = "double",
                         args = {
                             TranslateClassTalentsFrame = {
@@ -301,7 +312,7 @@ function settingsProvider:Build()
                     FontSettings = {
                         name = "Налаштувати шрифти",
                         type = "group",
-                        order = 1,
+                        order = 4,
                         width = "double",
                         args = {
                             UseDefaultFonts = {

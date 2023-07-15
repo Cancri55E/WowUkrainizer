@@ -1,9 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Script file="Debugger.lua"/>
+	<Include file="Extensions\_manifest.xml"/>
 	<Script file="EventHandler.lua"/>
 	<Script file="SettingsProvider.lua"/>
-	<Include file="Extensions\_manifest.xml"/>
 	<Script file="StringNormalizer.lua"/>
 	<Script file="DbContext.lua"/>
 	<Include file="Translators\_manifest.xml"/>
