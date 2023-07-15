@@ -17,7 +17,8 @@ local function createInterfaceOptions()
     LibStub("AceConfig-3.0"):RegisterOptionsTable(namespace, ns.Options)
 
     local configDialogLib = LibStub("AceConfigDialog-3.0")
-    configDialogLib:AddToBlizOptions(namespace, nil, nil, "General")
+    configDialogLib:AddToBlizOptions(namespace, "WowUkrainizer", nil, "General")
+    configDialogLib:AddToBlizOptions(namespace, "Причетні", "WowUkrainizer", "Contributors")
 end
 
 local function setGameFonts()
