@@ -48,9 +48,9 @@ commit_parsers = [
   { message = "^perf", group = "🐎 Performance" },
   { message = "^refactor", group = "🔨 Refactor" },
   { message = "^test", group = "🚨 Testing" },
-  { message = "^chore", group = "🤷 Miscellaneous Tasks" },
-  { message = "^ci", group = "🧱 Build" },
-  { message = "^build", group = "🧱 Build" },
+  { message = "^chore", group = "🤷 Miscellaneous Tasks", skip = true },
+  { message = "^ci", group = "🧱 Build", skip = true },
+  { message = "^build", group = "🧱 Build", skip = true },
   { body = ".*security", group = "🔒 Security" },
 ]
 # protect breaking changes from being skipped due to matching a skipping commit_parser
@@ -62,10 +62,10 @@ tag_pattern = "v[0-9]*"
 # regex for skipping tags
 #skip_tags = "v0.1.0-beta.1"
 # regex for ignoring tags
-ignore_tags = ""
+ignore_tags = "^v.*-alpha$"
 # sort the tags topologically
 topo_order = false
 # sort the commits inside sections by oldest/newest order
 sort_commits = "oldest"
 # limit the number of commits included in the changelog.
-limit_commits = 7
+# limit_commits = 42

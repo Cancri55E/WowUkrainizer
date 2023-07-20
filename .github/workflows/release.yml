@@ -1,0 +1,118 @@
+name: Create and Deploy Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseTag:
+        description: 'Enter a tag'
+        required: true
+
+jobs:
+  prepare:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.create_release_branch.outputs.tag }}
+      branch_name: ${{ steps.create_release_branch.outputs.branch_name }}
+    steps:
+      - name: Checkout Code at Tag
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.releaseTag }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+
+      - name: Create New Release Branch
+        id: create_release_branch
+        run: |
+          TAG=$(echo ${{ github.event.inputs.releaseTag }} | sed 's/-alpha$//')
+          BRANCH_NAME="release/${TAG:1}"
+          git config --global user.email "bot@example.com"
+          git config --global user.name "Release Bot"
+          git checkout -b $BRANCH_NAME
+          git tag -a $TAG -m "$TAG"
+          git push origin $BRANCH_NAME
+          git push origin $TAG
+          echo "::set-output name=tag::$TAG"
+          echo "::set-output name=branch_name::$BRANCH_NAME"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Remove Alpha Tag
+        run: |
+          git push --delete origin ${{ github.event.inputs.releaseTag }}
+
+      - name: Retrieve Pre-release ID
+        id: get_release_id
+        run: |
+          RELEASE_ID=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.event.inputs.releaseTag }}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | jq '.id')
+          echo "::set-output name=release_id::$RELEASE_ID"
+
+      - name: Delete Pre-release
+        run: |
+          curl -X DELETE "https://api.github.com/repos/${{ github.repository }}/releases/${{ steps.get_release_id.outputs.release_id }}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
+
+  release:
+    name: Deploy Release
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout New Release Branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.prepare.outputs.branch_name }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+    
+      - name: Generate Detailed Changelog
+        id: generate_changelog
+        uses: orhun/git-cliff-action@v2
+        with:
+          config: cliff.release.toml
+          args: --verbose
+        env:
+          OUTPUT: CHANGELOG.md
+          
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.prepare.outputs.tag }}
+          name: ${{ needs.prepare.outputs.tag }}
+          body: ${{ steps.generate_changelog.outputs.content }}
+          prerelease: false
+
+      - name: Build and Deploy Package
+        uses: BigWigsMods/packager@v2
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload CHANGELOG.md
+        uses: actions/upload-artifact@v3
+        with:
+          name: CHANGELOG.md
+          path: CHANGELOG.md
+
+  update_changelog:
+    name: Update Changelog
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Master Branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Download CHANGELOG.md
+        uses: actions/download-artifact@v2
+        with:
+          name: CHANGELOG.md
+
+      - name: Commit Changelog
+        run: |
+          git config --global user.email "bot@example.com"
+          git config --global user.name "Release Bot"
+          git add CHANGELOG.md
+          git commit -am "docs(release): update changelog for ${{ needs.prepare.outputs.tag }}"
+          git push

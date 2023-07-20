@@ -1,0 +1,41 @@
+name: Continuous Integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  pre_release:
+    name: Create and Deploy Pre-release
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
+      - name: Update AddOn Version
+        id: addon_version
+        uses: PaulHatch/semantic-version@v5.0.3
+        with:
+          tag_prefix: "v"
+          major_pattern: "BREAKING CHANGE:"
+          minor_pattern: "feat:"
+          version_format: "v${major}.${minor}.${patch}-alpha"
+          bump_each_commit: true
+
+      - name: Create GitHub Pre-release
+        id: create_release
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.addon_version.outputs.version }}
+          name: ${{ steps.addon_version.outputs.version }}
+          prerelease: true

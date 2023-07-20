@@ -107,7 +107,9 @@ function settingsProvider:Build()
     local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
     if string.match(version, "-[%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d]$") then
         version = "[alpha] " .. version
-    end
+    elseif string.match(version, "-alpha$") then
+		version = "[alpha] " .. string.gsub(version, "-alpha$", "")
+	end
 
     local contributorsOrder = createIncrementor()
 

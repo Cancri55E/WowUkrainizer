@@ -1,20 +1,24 @@
-name: Push alpha to CurseForge
+name: Build and Deploy Package with Detailed Logs
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - develop
-
-permissions: write-all
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
 
 jobs:
-  push_alpha_to_curseforge:
-    name: Push to CurseForge
+  package:
+    name: Create and Deploy Package
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
+      - name: Checkout Repository
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
@@ -24,7 +28,7 @@ jobs:
           dotnet-version: "7.0.x"
 
       - name: Checkout DevTools
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
         with:
           ref: feature/refactoring
           repository: Cancri55E/WowUkrainizer-DevTools
@@ -32,7 +36,7 @@ jobs:
           path: DevTools
 
       - name: Checkout RawData
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
         with:
           ref: main
           repository: Cancri55E/WowUkrainizer-Data
@@ -53,8 +57,8 @@ jobs:
       - name: Display update translation log
         run: |
           cat log.txt
-          
-      - name: Generate a changelog
+
+      - name: Generate Detailed Changelog
         uses: orhun/git-cliff-action@v2
         with:
           config: cliff.toml
@@ -62,8 +66,8 @@ jobs:
         env:
           OUTPUT: CHANGELOG.md
           
-      - name: Create Package
-        uses: BigWigsMods/packager@master
+      - name: Build and Deploy Package
+        uses: BigWigsMods/packager@v2
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
