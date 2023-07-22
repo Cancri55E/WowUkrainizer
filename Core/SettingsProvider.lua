@@ -23,6 +23,7 @@ local defaultOptions = {
     TooltipSpellLangInName = "both",
     TooltipSpellLangInDescription = "ua",
     TranslateMovieSubtitles = true,
+    TranslateNpcMessages = true,
 }
 
 function settingsProvider:Load()
@@ -82,6 +83,9 @@ function settingsProvider:Load()
 
     WowUkrainizer_Options.TranslateMovieSubtitles =
         WowUkrainizer_Options.TranslateMovieSubtitles or def.TranslateMovieSubtitles
+
+    WowUkrainizer_Options.TranslateNpcMessages =
+        WowUkrainizer_Options.TranslateNpcMessages or def.TranslateNpcMessages
 end
 
 function settingsProvider:Build()
@@ -108,10 +112,12 @@ function settingsProvider:Build()
     if string.match(version, "-[%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d]$") then
         version = "[alpha] " .. version
     elseif string.match(version, "-alpha$") then
-		version = "[alpha] " .. string.gsub(version, "-alpha$", "")
-	end
+        version = "[alpha] " .. string.gsub(version, "-alpha$", "")
+    end
 
-    local contributorsOrder = createIncrementor()
+    local setContributorsPageOrder = createIncrementor()
+    local setFontSettingsArgsOrder = createIncrementor()
+    local setGeneralSettingsArgsOrder = createIncrementor()
 
     ns.Options = {
         type = "group",
@@ -149,13 +155,13 @@ function settingsProvider:Build()
                                 width = "full"
                             },
                             ResetInterface = {
-                                order = 3,
+                                order = 2,
                                 name = "Перезавантажити",
                                 type = "execute",
                                 func = function() ReloadUI() end,
                             },
                             ResetFonts = {
-                                order = 4,
+                                order = 3,
                                 name = "За замовчуванням",
                                 desc =
                                 [[Ця кнопка скидає всі налаштування до стандартних значень, встановлених розробниками аддона.
@@ -177,7 +183,7 @@ function settingsProvider:Build()
                             TranslateClassTalentsFrame = {
                                 type = "toggle",
                                 name = "Перекладати вікно \"Спеціалізація та таланти\"",
-                                order = 3,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateClassTalentsFrame end,
                                 set = function(_, value) WowUkrainizer_Options.TranslateClassTalentsFrame = value end,
@@ -185,7 +191,7 @@ function settingsProvider:Build()
                             TranslateSpellbookFrame = {
                                 type = "toggle",
                                 name = "Перекладати вікно \"Книга здібностей та професії\"",
-                                order = 4,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateSpellbookFrame end,
                                 set = function(_, value) WowUkrainizer_Options.TranslateSpellbookFrame = value end,
@@ -196,14 +202,14 @@ function settingsProvider:Build()
                                 type = "description",
                                 name = "Якою мовою виводити назви здібностей",
                                 fontSize = "medium",
-                                order = 9,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 2.15
                             },
                             SpellNameLangInSpellbook = {
                                 type = "select",
                                 name = "",
                                 width = 1.3,
-                                order = 10,
+                                order = setGeneralSettingsArgsOrder(),
                                 values = {
                                     ["en"] = "Англійська",
                                     ["ua"] = "Українська",
@@ -219,7 +225,7 @@ function settingsProvider:Build()
                                 type = "toggle",
                                 name = "Перекладати Nameplates та Unit Frames",
                                 desc = "Крім стандартних Nameplates, наш аддон також сумісний з Plater та ElvUI.",
-                                order = 11,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateNameplatesAndUnitFrames end,
                                 set = function(_, value) WowUkrainizer_Options.TranslateNameplatesAndUnitFrames = value end,
@@ -229,23 +235,34 @@ function settingsProvider:Build()
                                 type = "toggle",
                                 name = "Перекладати субтитри в відеороликах",
                                 desc = "Відображає українські субтитри в відеороликах (pre-render)",
-                                order = 11,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateMovieSubtitles end,
                                 set = function(_, value) WowUkrainizer_Options.TranslateMovieSubtitles = value end,
+                            },
+
+                            TranslateNpcMessages = {
+                                type = "toggle",
+                                name = "Перекладати діалоги",
+                                desc = "Відображає український переклад в діалогах які ви бачите під час гри " ..
+                                    "(як в чаті, так і в \"бульбашках\" над головами НІП)",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 3.6,
+                                get = function(_) return WowUkrainizer_Options.TranslateNpcMessages end,
+                                set = function(_, value) WowUkrainizer_Options.TranslateNpcMessages = value end,
                             },
 
                             VerticalMargin = addVerticalMargin(12),
                             TooltipsHeader = {
                                 type = "header",
                                 name = "Екрані підказки",
-                                order = 13
+                                order = setGeneralSettingsArgsOrder()
                             },
 
                             TranslateUnitTooltips = {
                                 type = "toggle",
                                 name = "Перекладати підказки НІП",
-                                order = 15,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateUnitTooltips end,
                                 set = function(_, value) WowUkrainizer_Options.TranslateUnitTooltips = value end,
@@ -253,7 +270,7 @@ function settingsProvider:Build()
                             TranslateSpellTooltips = {
                                 type = "toggle",
                                 name = "Перекладати підказки здібностей та талантів",
-                                order = 16,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateSpellTooltips end,
                                 set = function(_, value) WowUkrainizer_Options.TranslateSpellTooltips = value end,
@@ -264,14 +281,14 @@ function settingsProvider:Build()
                                 type = "description",
                                 name = "Мова якою виводяться назви талантів та здібностей",
                                 fontSize = "medium",
-                                order = 19,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 2.15
                             },
                             TooltipSpellLangInName = {
                                 type = "select",
                                 name = "",
                                 width = 1.3,
-                                order = 20,
+                                order = setGeneralSettingsArgsOrder(),
                                 values = {
                                     ["en"] = "Англійська",
                                     ["ua"] = "Українська",
@@ -289,14 +306,14 @@ function settingsProvider:Build()
                                 type = "description",
                                 name = "Мова якою виводиться опис талантів та здібностей",
                                 fontSize = "medium",
-                                order = 23,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 2.15
                             },
                             TooltipSpellLangInDescription = {
                                 type = "select",
                                 name = "",
                                 width = 1.3,
-                                order = 24,
+                                order = setGeneralSettingsArgsOrder(),
                                 values = {
                                     ["en"] = "Англійська",
                                     ["ua"] = "Українська",
@@ -311,7 +328,7 @@ function settingsProvider:Build()
                             HighlightSpellNameInDescription = {
                                 type = "toggle",
                                 name = "Виділяти голубим кольором назви здібностей (талантів) в описі",
-                                order = 27,
+                                order = setGeneralSettingsArgsOrder(),
                                 width = 3.45,
                                 get = function(_) return WowUkrainizer_Options.HighlightSpellNameInDescription end,
                                 set = function(_, value) WowUkrainizer_Options.HighlightSpellNameInDescription = value end,
@@ -336,7 +353,7 @@ function settingsProvider:Build()
 Всі налаштування шрифтів слід проводити безпосередньо через глобальну модифікацію.
 
 Це допоможе забезпечити стабільність та сумісність між різними аддонами.]],
-                                order = 1,
+                                order = setFontSettingsArgsOrder(),
                                 width = "double",
                                 get = function(_) return WowUkrainizer_Options.UseDefaultFonts end,
                                 set = function(_, value) WowUkrainizer_Options.UseDefaultFonts = value end,
@@ -345,13 +362,13 @@ function settingsProvider:Build()
                                 type = "description",
                                 name = " ",
                                 fontSize = "large",
-                                order = 2,
+                                order = setFontSettingsArgsOrder(),
                                 width = "half"
                             },
                             UserFontHeader = {
                                 type = "header",
                                 name = "",
-                                order = 4
+                                order = setFontSettingsArgsOrder()
                             },
                             UserFontWarning = {
                                 type = "description",
@@ -359,14 +376,14 @@ function settingsProvider:Build()
                                 [[Перевірте що вибраний вами шрифт підтримує кирилицю. Інакше це призведе візуальних багів з відображенням тексту.
 Ви можете використати аддон LibSharedMedia-3.0 для додавання нових шрифтів.
                                 ]],
-                                order = 5,
+                                order = setFontSettingsArgsOrder(),
                                 width = "full"
                             },
                             UserFont = {
                                 type = "select",
                                 name = "Доступні шрифти",
                                 width = "double",
-                                order = 7,
+                                order = setFontSettingsArgsOrder(),
                                 values = sharedMedia:HashTable("font"),
                                 dialogControl = "LSM30_Font",
                                 get = function(_) return WowUkrainizer_Options.UserFontName end,
@@ -378,24 +395,24 @@ function settingsProvider:Build()
                             VerticalMargin2 = {
                                 type = "description",
                                 name = " ",
-                                order = 8
+                                order = setFontSettingsArgsOrder()
                             },
                             FontScaleHeader = {
                                 type = "header",
                                 name = "Розмір шрифту (%)",
-                                order = 9
+                                order = setFontSettingsArgsOrder()
                             },
                             FontScaleDescription = {
                                 type = "description",
                                 name = "Загальний",
-                                order = 10,
+                                order = setFontSettingsArgsOrder(),
                                 width = "1",
                                 fontSize = "medium"
                             },
                             FontScale = {
                                 type = "range",
                                 name = "",
-                                order = 11,
+                                order = setFontSettingsArgsOrder(),
                                 min = 0.5,
                                 max = 3,
                                 bigStep = 0.01,
@@ -409,14 +426,14 @@ function settingsProvider:Build()
                             TooltipHeaderFontScaleDescription = {
                                 type = "description",
                                 name = "Заголовок екранних підказок",
-                                order = 12,
+                                order = setFontSettingsArgsOrder(),
                                 width = "1",
                                 fontSize = "medium"
                             },
                             TooltipHeaderFontScale = {
                                 type = "range",
                                 name = "",
-                                order = 13,
+                                order = setFontSettingsArgsOrder(),
                                 min = 0.5,
                                 max = 3,
                                 bigStep = 0.01,
@@ -436,14 +453,14 @@ function settingsProvider:Build()
                             TooltipFontScaleDescription = {
                                 type = "description",
                                 name = "Текст екранних підказок",
-                                order = 14,
+                                order = setFontSettingsArgsOrder(),
                                 width = "1",
                                 fontSize = "medium"
                             },
                             TooltipFontScale = {
                                 type = "range",
                                 name = "",
-                                order = 15,
+                                order = setFontSettingsArgsOrder(),
                                 min = 0.5,
                                 max = 3,
                                 bigStep = 0.01,
@@ -467,7 +484,7 @@ function settingsProvider:Build()
                 name = "Причетні",
                 args = {
                     DedicationText = {
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         type = "description",
                         name = [[
 Українчики,
@@ -482,15 +499,15 @@ function settingsProvider:Build()
                     SPC00 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     SPC01 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     ContributorsHeader = {
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         type = "header",
                         name = "Причетні",
                         dialogControl = "SFX-Header-II",
@@ -499,14 +516,14 @@ function settingsProvider:Build()
                         type = "input",
                         name = "Редактори",
                         get = function() return "Semerkhet\n" end,
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         disabled = true,
                         dialogControl = "SFX-Info",
                     },
                     SPC0 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     Translators = {
                         type = "input",
@@ -520,35 +537,35 @@ function settingsProvider:Build()
                                 "Ксенія Никонова, Primarch, rchenok, Артем Белякін, Roma Rybai, Andrew Kucherov, " ..
                                 "Toris_McDessert"
                         end,
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         disabled = true,
                         dialogControl = "SFX-Info",
                     },
                     SPC1 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     Bugfix = {
                         type = "input",
                         name = "Технічна поміч",
                         get = function() return "Лігво Друїда (molaf)\n\n" end,
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         disabled = false,
                         dialogControl = "SFX-Info",
                     },
                     SPC2 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     SPC4 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     Media = {
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         type = "header",
                         name = "Ресурси та Посилання",
                         dialogControl = "SFX-Header-II",
@@ -556,52 +573,52 @@ function settingsProvider:Build()
                     SPC6 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     Discords1 = {
                         type = "input",
                         name = "Ukrainian Community",
                         get = function() return "https://bit.ly/ua_wow" end,
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         disabled = false,
                         dialogControl = "SFX-Info-URL",
                     },
                     SPC7 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     Discords2 = {
                         type = "input",
                         name = "Нічна Воїтелька",
                         get = function() return "https://discord.gg/VGfWeWTX24" end,
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         disabled = false,
                         dialogControl = "SFX-Info-URL",
                     },
                     SPC8 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     Twitch1 = {
                         type = "input",
                         name = "Rolik33",
                         get = function() return "https://www.twitch.tv/rolik33" end,
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         disabled = false,
                         dialogControl = "SFX-Info-URL",
                     },
                     SPC9 = {
                         type = "description",
                         name = " ",
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                     },
                     Youtube1 = {
                         type = "input",
                         name = "Unbrkbl Opt1mist",
                         get = function() return "https://www.youtube.com/user/xcryjedicryx" end,
-                        order = contributorsOrder(),
+                        order = setContributorsPageOrder(),
                         disabled = false,
                         dialogControl = "SFX-Info-URL",
                     },
@@ -634,9 +651,15 @@ function settingsProvider.GetFontSettings()
 end
 
 function settingsProvider.GetTranslatorsState()
-    return WowUkrainizer_Options.TranslateClassTalentsFrame, WowUkrainizer_Options.TranslateSpellbookFrame,
-        WowUkrainizer_Options.TranslateNameplatesAndUnitFrames, WowUkrainizer_Options.TranslateSpellTooltips,
-        WowUkrainizer_Options.TranslateUnitTooltips, WowUkrainizer_Options.TranslateMovieSubtitles
+    return {
+        translateClassTalentsFrame = WowUkrainizer_Options.TranslateClassTalentsFrame,
+        translateSpellbookFrame = WowUkrainizer_Options.TranslateSpellbookFrame,
+        translateNameplatesAndUnitFrames = WowUkrainizer_Options.TranslateNameplatesAndUnitFrames,
+        translateSpellTooltips = WowUkrainizer_Options.TranslateSpellTooltips,
+        translateUnitTooltips = WowUkrainizer_Options.TranslateUnitTooltips,
+        translateMovieSubtitles = WowUkrainizer_Options.TranslateMovieSubtitles,
+        translateNpcMessages = WowUkrainizer_Options.TranslateNpcMessages
+    }
 end
 
 function settingsProvider.IsNeedTranslateSpellNameInSpellbook()

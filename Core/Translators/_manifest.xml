@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="BaseTranslator.lua"/>
 	<Script file="NameplateAndUnitFrameTranslator.lua"/>
+	<Script file="NpcMessageTranslator.lua"/>
 	<Script file="MovieTranslator.lua"/>
 	<Script file="Tooltips\BaseTooltipTranslator.lua"/>
 	<Script file="Tooltips\UnitTooltipTranslator.lua"/>

@@ -180,7 +180,11 @@
         "StaticPopupDialogs",
         "ReloadUI",
         "StaticPopup_Show",
-        "RAID_WARNING"
+        "RAID_WARNING",
+        "WorldFrame",
+        "ChatFrame_AddMessageEventFilter",
+        "message",
+        "MacroPopupFrame"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false

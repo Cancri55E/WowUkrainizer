@@ -1,12 +1,13 @@
 local addonName, ns = ...;
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
+local eventHandler = ns.EventHandler:new()
 local settingsProvider = ns.SettingsProvider:new()
 
 local SetFont = ns.FontStringExtensions.SetFont
 
 local unitTooltipTranslator, spellTooltipTranslator, spellbookFrameTranslator, classTalentFrameTranslator
-local nameplateAndUnitFrameTranslator, movieTranslator
+local nameplateAndUnitFrameTranslator, movieTranslator, npcMessageTranslator
 
 local initialized = false
 
@@ -59,46 +60,45 @@ local function initializeAddon()
     sharedMedia:Register("font", "Arsenal Bold", [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf]])
 end
 
-local eventHandler = ns.EventHandler:new()
-
 local function OnAddOnLoaded(_, name)
     local function OnPlayerLogin()
         settingsProvider:Load()
         createInterfaceOptions()
         setGameFonts();
 
-        local translateClassTalentsFrame, translateSpellbookFrame, translateNameplatesAndUnitFrames, translateSpellTooltips, translateUnitTooltips, translateMovieSubtitles =
-            settingsProvider.GetTranslatorsState()
+        local translateOptions = settingsProvider.GetTranslatorsState()
 
         -- Tooltips
-        if (translateUnitTooltips) then
+        if (translateOptions.translateUnitTooltips) then
             unitTooltipTranslator = ns.Translators.UnitTooltipTranslator:new(Enum.TooltipDataType.Unit)
             unitTooltipTranslator:SetEnabled(true)
         end
-
-        if (translateSpellTooltips) then
+        if (translateOptions.translateSpellTooltips) then
             spellTooltipTranslator = ns.Translators.SpellTooltipTranslator:new(Enum.TooltipDataType.Spell)
             spellTooltipTranslator:SetEnabled(true)
         end
-
         -- Frames
-        if (translateSpellbookFrame) then
+        if (translateOptions.translateSpellbookFrame) then
             spellbookFrameTranslator = ns.Translators.SpellbookFrameTranslator:new()
             spellbookFrameTranslator:SetEnabled(true)
         end
 
-        if (translateClassTalentsFrame) then
+        if (translateOptions.translateClassTalentsFrame) then
             classTalentFrameTranslator = ns.Translators.ClassTalentFrameTranslator:new()
             classTalentFrameTranslator:SetEnabled(true)
         end
         -- Other
-        if (translateNameplatesAndUnitFrames) then
+        if (translateOptions.translateNameplatesAndUnitFrames) then
             nameplateAndUnitFrameTranslator = ns.Translators.NameplateAndUnitFrameTranslator:new()
             nameplateAndUnitFrameTranslator:SetEnabled(true)
         end
-        if (translateMovieSubtitles) then
+        if (translateOptions.translateMovieSubtitles) then
             movieTranslator = ns.Translators.MovieTranslator:new()
             movieTranslator:SetEnabled(true)
+        end
+        if (translateOptions.translateNpcMessages) then
+            npcMessageTranslator = ns.Translators.NpcMessageTranslator:new()
+            npcMessageTranslator:SetEnabled(true)
         end
     end
 
