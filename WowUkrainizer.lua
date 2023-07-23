@@ -48,6 +48,14 @@ local translators = {
         end
     },
     {
+        name = "MovieTranslator",
+        args = nil,
+        isEnabled = function()
+            return
+                WowUkrainizer_Options.TranslateMovieSubtitles
+        end
+    },
+    {
         name = "NpcMessageTranslator",
         args = nil,
         isEnabled = function()
