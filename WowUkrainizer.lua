@@ -1,7 +1,10 @@
 local addonName, ns = ...;
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
+local eventHandler = ns.EventHandler:new()
 local settingsProvider = ns.SettingsProvider:new()
+
+local SetFont = ns.FontStringExtensions.SetFont
 
 local translators = {
     {
@@ -51,10 +54,16 @@ local translators = {
             return
                 WowUkrainizer_Options.TranslateMovieSubtitles
         end
+    },
+    {
+        name = "NpcMessageTranslator",
+        args = nil,
+        isEnabled = function()
+            return
+                WowUkrainizer_Options.TranslateNpcMessages
+        end
     }
 }
-
-local SetFont = ns.FontStringExtensions.SetFont
 
 local initialized = false
 
@@ -116,8 +125,6 @@ local function initializeAddon()
     sharedMedia:Register("font", "Arsenal Regular", [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]])
     sharedMedia:Register("font", "Arsenal Bold", [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf]])
 end
-
-local eventHandler = ns.EventHandler:new()
 
 local function OnPlayerLogin()
     settingsProvider:Load()

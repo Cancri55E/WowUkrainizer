@@ -158,4 +158,15 @@ do
     dbContext.Subtitles = repository
 end
 
+-- NPC Dialogs
+do
+    local repository = {}
+
+    function repository.GetDialogText(default)
+        return getValueOrDefault(ns._db.DialogTexts, default)
+    end
+
+    dbContext.NpcDialogs = repository
+end
+
 ns.DbContext = dbContext
