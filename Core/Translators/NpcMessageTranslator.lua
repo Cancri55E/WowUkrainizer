@@ -21,10 +21,10 @@ local function addDialogToUntranslatedData(author, msg)
 
     if (not _G.WowUkrainizerData) then _G.WowUkrainizerData = {} end
     if (not _G.WowUkrainizerData.UntranslatedData) then _G.WowUkrainizerData.UntranslatedData = {} end
-    if (not _G.WowUkrainizerData.UntranslatedData.MovieSubtitles) then _G.WowUkrainizerData.UntranslatedData.MovieSubtitles = {} end
-    if (not _G.WowUkrainizerData.UntranslatedData.MovieSubtitles[author]) then _G.WowUkrainizerData.UntranslatedData.MovieSubtitles[author] = {} end
+    if (not _G.WowUkrainizerData.UntranslatedData.NpcMessages) then _G.WowUkrainizerData.UntranslatedData.NpcMessages = {} end
+    if (not _G.WowUkrainizerData.UntranslatedData.NpcMessages[author]) then _G.WowUkrainizerData.UntranslatedData.NpcMessages[author] = {} end
 
-    local authorTable = _G.WowUkrainizerData.UntranslatedData.MovieSubtitles[author]
+    local authorTable = _G.WowUkrainizerData.UntranslatedData.NpcMessages[author]
 
     if (not isValueInTable(authorTable, msg)) then table.insert(authorTable, msg) end
 end
@@ -60,13 +60,12 @@ local function onChatBubbleTimerUpdate(self, elapsed)
 end
 
 local function onMonsterMessageReceived(_, _, msg, author, ...)
-    author = GetUnitNameOrDefault(author)
-    msg = GetDialogText(msg)
-
-    addDialogToUntranslatedData(author, msg)
+    local translatedAuthor = GetUnitNameOrDefault(author)
+    local translatedMsg = GetDialogText(msg)
+    if (msg == translatedMsg) then addDialogToUntranslatedData(author, msg) end
 
     chatBubbleTimer:Start();
-    return false, msg, author, ...
+    return false, translatedMsg, translatedAuthor, ...
 end
 
 function translator:initialize()
