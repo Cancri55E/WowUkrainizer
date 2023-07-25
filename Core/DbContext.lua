@@ -155,6 +155,10 @@ do
         return getValueOrDefault(ns._db.MovieSubtitles, default)
     end
 
+    function repository.GetCinematicSubtitle(default)
+        return getValueOrDefault(ns._db.MovieSubtitles, default)
+    end
+
     dbContext.Subtitles = repository
 end
 

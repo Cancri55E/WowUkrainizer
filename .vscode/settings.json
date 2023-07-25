@@ -184,7 +184,9 @@
         "WorldFrame",
         "ChatFrame_AddMessageEventFilter",
         "message",
-        "MacroPopupFrame"
+        "MacroPopupFrame",
+        "Add",
+        "CHAT_MSG_MONSTER_SAY"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false

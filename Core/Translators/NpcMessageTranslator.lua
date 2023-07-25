@@ -2,10 +2,14 @@ local _, ns = ...;
 
 local chatBubbleTimer
 
-local untranslatedDataStorage = ns.UntranslatedDataStorage:new()
+local aceHook = LibStub("AceHook-3.0")
+local eventHandler = ns.EventHandler:new()
+
+local GenerateUuid = ns.CommonExtensions.GenerateUuid
 local SetFontStringText = ns.FontStringExtensions.SetText
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetDialogText = ns.DbContext.NpcDialogs.GetDialogText
+local GetCinematicSubtitle = ns.DbContext.Subtitles.GetCinematicSubtitle
 
 local translator = class("NpcMessageTranslator", ns.Translators.BaseTranslator)
 ns.Translators.NpcMessageTranslator = translator
@@ -40,17 +44,31 @@ local function onChatBubbleTimerUpdate(self, elapsed)
     end
 end
 
-local function onMonsterMessageReceived(_, _, msg, author, ...)
+local function onMonsterMessageReceived(instance, msg, author, ...)
+    if (instance.cinematicUuid and instance.cinematicUuid ~= '') then
+        return;
+    end
+
     local translatedAuthor = GetUnitNameOrDefault(author)
     local translatedMsg = GetDialogText(msg)
-    if (msg == translatedMsg) then untranslatedDataStorage:Add("NpcMessages", author, msg) end
+
+    if (msg == translatedMsg) then instance.untranslatedDataStorage:Add("NpcMessages", author, msg) end
 
     chatBubbleTimer:Start();
+
     return false, translatedMsg, translatedAuthor, ...
 end
 
 function translator:initialize()
     ns.Translators.BaseTranslator.initialize(self)
+
+    local instance = self
+    instance.hooks = aceHook.hooks
+    instance.untranslatedDataStorage = ns.UntranslatedDataStorage:new()
+
+    local function onMonsterMessageReceivedHook(_, _, msg, author, ...)
+        return onMonsterMessageReceived(instance, msg, author, ...)
+    end
 
     chatBubbleTimer = CreateFrame("Frame", "ChatBubble-Timer", WorldFrame)
     chatBubbleTimer:SetFrameStrata("TOOLTIP")
@@ -60,12 +78,22 @@ function translator:initialize()
         chatBubbleTimer.elapsed = 0
     end
     chatBubbleTimer:Stop()
-
     chatBubbleTimer:SetScript("OnUpdate", onChatBubbleTimerUpdate)
 
-    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_SAY", onMonsterMessageReceived)
-    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_PARTY", onMonsterMessageReceived)
-    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_EMOTE", onMonsterMessageReceived)
-    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_WHISPER", onMonsterMessageReceived)
-    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_YELL", onMonsterMessageReceived)
+    aceHook:RawHook("CinematicFrame_AddSubtitle", function(chatType, subtitle)
+        local translatedSubtitle = GetCinematicSubtitle(subtitle)
+        if (translatedSubtitle == subtitle) then
+            instance.untranslatedDataStorage:Add("CinematicSubtitles", instance.cinematicUuid, translatedSubtitle)
+        end
+        instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedSubtitle)
+    end, true)
+
+    eventHandler:Register(function() instance.cinematicUuid = GenerateUuid() end, "CINEMATIC_START")
+    eventHandler:Register(function() instance.cinematicUuid = '' end, "CINEMATIC_STOP")
+
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_SAY", onMonsterMessageReceivedHook)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_PARTY", onMonsterMessageReceivedHook)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_EMOTE", onMonsterMessageReceivedHook)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_WHISPER", onMonsterMessageReceivedHook)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_YELL", onMonsterMessageReceivedHook)
 end
