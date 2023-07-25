@@ -8,6 +8,7 @@ local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
 local StringsAreEqual = ns.StringExtensions.StringsAreEqual
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
+local IsValueInTable = ns.CommonExtensions.IsValueInTable
 
 local SPELL_PASSIVE_TRANSLATION = ns.SPELL_PASSIVE_TRANSLATION
 local TALENT_UPGRADE_TRANSLATION = ns.TALENT_UPGRADE_TRANSLATION
@@ -371,7 +372,7 @@ local function translateTooltipSpellInfo(spellContainer)
     return translatedTooltipLines
 end
 
-local function addUntranslatedSpellToDump(spellId, translatedTooltipLines)
+local function addUntranslatedSpellToDataStorage(spellId, translatedTooltipLines)
     local function findUntranslatedDescriptions(tooltipLines)
         local results = {}
         for _, obj in ipairs(tooltipLines) do
@@ -380,15 +381,6 @@ local function addUntranslatedSpellToDump(spellId, translatedTooltipLines)
             end
         end
         return results
-    end
-
-    local function isValueInTable(t, value)
-        for _, v in pairs(t) do
-            if v.desc == value then
-                return true
-            end
-        end
-        return false
     end
 
     local _, build = GetBuildInfo()
@@ -423,18 +415,16 @@ local function addUntranslatedSpellToDump(spellId, translatedTooltipLines)
         untranslatedSpells[className][specializationId].Values[originalName] = {}
     end
 
-    untranslatedSpells[className][specializationId].Values[originalName].UntranslatedName = untranslatedName ~= ""
+    local untranslatedSpell = untranslatedSpells[className][specializationId].Values[originalName]
+    untranslatedSpell.UntranslatedName = untranslatedName ~= ""
 
-    local spellDescriptions = untranslatedSpells[className][specializationId].Values[originalName][spellId]
-    if not spellDescriptions then
-        spellDescriptions = {}
-        untranslatedSpells[className][specializationId].Values[originalName][spellId] = spellDescriptions
-    end
+    if not untranslatedSpell[spellId] then untranslatedSpell[spellId] = {} end
 
+    local spellInfo = untranslatedSpell[spellId]
     for _, desc in ipairs(untranslatedDescriptions) do
         local formattedDesc, _ = NormalizeStringAndExtractNumerics(desc)
-        if (not isValueInTable(spellDescriptions, formattedDesc)) then
-            table.insert(spellDescriptions, { build = build, desc = formattedDesc })
+        if (not IsValueInTable(spellInfo, formattedDesc, "desc")) then
+            table.insert(spellInfo, { build = build, desc = formattedDesc })
             print('Untranslated spell descriptions added to database: ', originalName, spellId)
         end
     end
@@ -530,7 +520,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         end
     end
 
-    addUntranslatedSpellToDump(tooltipInfo.SpellId, translatedTooltipLines)
+    addUntranslatedSpellToDataStorage(tooltipInfo.SpellId, translatedTooltipLines)
 
     return translatedTooltipLines
 end
