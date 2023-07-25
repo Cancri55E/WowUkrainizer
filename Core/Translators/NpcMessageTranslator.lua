@@ -2,32 +2,13 @@ local _, ns = ...;
 
 local chatBubbleTimer
 
+local untranslatedDataStorage = ns.UntranslatedDataStorage:new()
 local SetFontStringText = ns.FontStringExtensions.SetText
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetDialogText = ns.DbContext.NpcDialogs.GetDialogText
 
 local translator = class("NpcMessageTranslator", ns.Translators.BaseTranslator)
 ns.Translators.NpcMessageTranslator = translator
-
-local function addDialogToUntranslatedData(author, msg)
-    local function isValueInTable(t, value) -- TODO: Move to extension
-        for _, v in ipairs(t) do
-            if v == value then
-                return true
-            end
-        end
-        return false
-    end
-
-    if (not _G.WowUkrainizerData) then _G.WowUkrainizerData = {} end
-    if (not _G.WowUkrainizerData.UntranslatedData) then _G.WowUkrainizerData.UntranslatedData = {} end
-    if (not _G.WowUkrainizerData.UntranslatedData.NpcMessages) then _G.WowUkrainizerData.UntranslatedData.NpcMessages = {} end
-    if (not _G.WowUkrainizerData.UntranslatedData.NpcMessages[author]) then _G.WowUkrainizerData.UntranslatedData.NpcMessages[author] = {} end
-
-    local authorTable = _G.WowUkrainizerData.UntranslatedData.NpcMessages[author]
-
-    if (not isValueInTable(authorTable, msg)) then table.insert(authorTable, msg) end
-end
 
 local function updateChatBubbleMessage(chatBubbles)
     local function getFontString(chatBubble)
@@ -62,7 +43,7 @@ end
 local function onMonsterMessageReceived(_, _, msg, author, ...)
     local translatedAuthor = GetUnitNameOrDefault(author)
     local translatedMsg = GetDialogText(msg)
-    if (msg == translatedMsg) then addDialogToUntranslatedData(author, msg) end
+    if (msg == translatedMsg) then untranslatedDataStorage:Add("NpcMessages", author, msg) end
 
     chatBubbleTimer:Start();
     return false, translatedMsg, translatedAuthor, ...

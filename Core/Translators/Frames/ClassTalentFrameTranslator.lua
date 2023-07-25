@@ -10,7 +10,6 @@ local GetTranslationOrDefault = ns.DbContext.Frames.GetTranslationOrDefault
 local SetText = ns.FontStringExtensions.SetText
 
 local eventHandler = ns.EventHandler:new()
-local aceHook = LibStub("AceHook-3.0")
 
 local translator = class("ClassTalentFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.ClassTalentFrameTranslator = translator
