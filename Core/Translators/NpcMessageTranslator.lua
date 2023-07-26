@@ -86,7 +86,7 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
         msg = parts[1]
     elseif (#parts == 2) then
         author = parts[1]
-        msg = parts[2]
+        msg = Trim(parts[2])
     else
         author = parts[1]
         msg = parts[2]
