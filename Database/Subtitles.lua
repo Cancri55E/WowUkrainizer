@@ -10,7 +10,3 @@ if (not ns._db) then return end
 ns._db.MovieSubtitles = {
 
 }
-
-ns._db.CinematicSubtitles = {
-
-}
