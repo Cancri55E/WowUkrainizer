@@ -20,7 +20,7 @@ function translator:initialize()
 
     MovieFrame:HookScript("OnMovieShowSubtitle", function(_, text)
         if (trans.currentMovieId ~= 0) then
-            untranslatedDataStorage:Add("MovieSubtitles", trans.currentMovieId, text)
+            untranslatedDataStorage:GetOrAdd("MovieSubtitles", trans.currentMovieId, text)
         end
         MovieFrameSubtitleString:SetText(GetMovieSubtitle(text))
     end)

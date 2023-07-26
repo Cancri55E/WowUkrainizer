@@ -13,7 +13,7 @@ function dataStorage:initialize()
     self.gameBuild = build
 end
 
-function dataStorage:Add(category, subCategory, data)
+function dataStorage:GetOrAdd(category, subCategory, data)
     if (not _G.WowUkrainizerData.UntranslatedData[category]) then _G.WowUkrainizerData.UntranslatedData[category] = {} end
 
     local untranslatedData
@@ -24,7 +24,13 @@ function dataStorage:Add(category, subCategory, data)
         untranslatedData = _G.WowUkrainizerData.UntranslatedData[category]
     end
 
-    if (not IsValueInTable(untranslatedData, data, "value")) then
-        table.insert(untranslatedData, { value = data, build = self.gameBuild })
+    local isValueInTable, currentValue = IsValueInTable(untranslatedData, data, "value")
+
+    if (not isValueInTable) then
+        local newValue = { value = data, build = self.gameBuild }
+        table.insert(untranslatedData, newValue)
+        return newValue
+    else
+        return currentValue
     end
 end
