@@ -51,7 +51,7 @@ end
 
 local function onMonsterMessageReceived(instance, msg, author, ...)
     local displayInTalkingHead = false
-    local _, _, _, _, _, _, talkingHeadAuthor, talkingHeadMsg, _, _ = C_TalkingHead.GetCurrentLineInfo();
+    local _, _, soundKitID, _, _, _, talkingHeadAuthor, talkingHeadMsg, _, _ = C_TalkingHead.GetCurrentLineInfo();
     if (talkingHeadMsg == msg and talkingHeadAuthor == author) then
         displayInTalkingHead = true
     end
@@ -60,7 +60,11 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
     local translatedMsg = GetDialogText(msg)
 
     if (msg == translatedMsg) then
-        instance.untranslatedDataStorage:Add("NpcMessages", author, msg) -- TODO: If it use TalkingHead than add saving soundKitID when voice-over translator will be ready
+        local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
+        if (displayInTalkingHead) then
+            untranslatedData.talkingHead = true
+            untranslatedData.soundKitID = soundKitID
+        end
     end
 
     if (displayInTalkingHead) then
@@ -97,10 +101,13 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
     local translatedMsg = GetDialogText(msg)
 
     if (translatedMsg == msg) then
-        instance.untranslatedDataStorage:Add("CinematicSubtitles", instance.cinematicUuid, msg) -- TODO: Add author when untranslatedDataStorage will be supported a details
+        local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg) -- TODO: Add author when untranslatedDataStorage will be supported a details
+        untranslatedData.cinematicUuid = instance.cinematicUuid
+        untranslatedData.subtitleOrder = instance.subtitleOrder
     end
 
     instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedAuthor .. ": " .. translatedMsg)
+    instance.subtitleOrder = instance.subtitleOrder + 1
 end
 
 function translator:initialize()
@@ -115,7 +122,7 @@ function translator:initialize()
     end
 
     local function onPlaySoudHook(soundKitID, channel, forceNoDuplicates, runFinishCallback)
-        return onPlaySoud(instance, soundKitID, channel, forceNoDuplicates, runFinishCallback)
+        onPlaySoud(instance, soundKitID, channel, forceNoDuplicates, runFinishCallback)
     end
 
     local function onCinematicFrameAddSubtitleHook(chatType, subtitle)
@@ -134,14 +141,22 @@ function translator:initialize()
 
     aceHook:RawHook("CinematicFrame_AddSubtitle", onCinematicFrameAddSubtitleHook, true)
 
-    eventHandler:Register(function() instance.cinematicUuid = GenerateUuid() end, "CINEMATIC_START")
-    eventHandler:Register(function() instance.cinematicUuid = '' end, "CINEMATIC_STOP")
+    eventHandler:Register(function()
+        instance.cinematicUuid = GenerateUuid()
+        instance.subtitleOrder = 0
+    end, "CINEMATIC_START")
+
+    eventHandler:Register(function()
+        instance.cinematicUuid = ''
+        instance.subtitleOrder = -1
+    end, "CINEMATIC_STOP")
 
     eventHandler:Register(function()
         if (not instance.talkingHeadUuid or instance.talkingHeadUuid == '') then
             instance.talkingHeadUuid = GenerateUuid()
         end
     end, "TALKINGHEAD_REQUESTED")
+
     eventHandler:Register(function() instance.talkingHeadUuid = '' end, "TALKINGHEAD_CLOSE")
 
     ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_SAY", onMonsterMessageReceivedHook)
