@@ -43,7 +43,7 @@ end
 local function onMonsterMessageReceived(_, _, msg, author, ...)
     local translatedAuthor = GetUnitNameOrDefault(author)
     local translatedMsg = GetDialogText(msg)
-    if (msg == translatedMsg) then untranslatedDataStorage:Add("NpcMessages", author, msg) end
+    if (msg == translatedMsg) then untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg) end
 
     chatBubbleTimer:Start();
     return false, translatedMsg, translatedAuthor, ...

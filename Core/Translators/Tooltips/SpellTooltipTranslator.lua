@@ -423,7 +423,8 @@ local function addUntranslatedSpellToDataStorage(spellId, translatedTooltipLines
     local spellInfo = untranslatedSpell[spellId]
     for _, desc in ipairs(untranslatedDescriptions) do
         local formattedDesc, _ = NormalizeStringAndExtractNumerics(desc)
-        if (not IsValueInTable(spellInfo, formattedDesc, "desc")) then
+        local isValueInTable = IsValueInTable(spellInfo, formattedDesc, "desc")
+        if (not isValueInTable) then
             table.insert(spellInfo, { build = build, desc = formattedDesc })
             print('Untranslated spell descriptions added to database: ', originalName, spellId)
         end
