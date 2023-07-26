@@ -101,7 +101,7 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
     local translatedMsg = GetDialogText(msg)
 
     if (translatedMsg == msg) then
-        local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg) -- TODO: Add author when untranslatedDataStorage will be supported a details
+        local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
         untranslatedData.cinematicUuid = instance.cinematicUuid
         untranslatedData.subtitleOrder = instance.subtitleOrder
     end
