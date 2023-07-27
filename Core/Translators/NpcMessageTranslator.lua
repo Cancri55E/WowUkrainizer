@@ -106,7 +106,9 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
         untranslatedData.subtitleOrder = instance.subtitleOrder
     end
 
-    instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedAuthor .. ": " .. translatedMsg)
+    local translatedSubtitle = author == '' and translatedMsg or translatedAuthor .. ": " .. translatedMsg
+    instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedSubtitle)
+
     instance.subtitleOrder = instance.subtitleOrder + 1
 end
 

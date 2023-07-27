@@ -13,9 +13,10 @@ end
 
 function internal.IsValueInTable(table, value, key)
     for _, row in ipairs(table) do
-        local valueToCheck = key and row[key] or row
-        if valueToCheck == value then
-            return true, row
+        if type(row) == "table" then
+            if row[key] == value then
+                return true, row
+            end
         end
     end
     return false
