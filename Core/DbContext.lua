@@ -169,4 +169,9 @@ do
     dbContext.NpcDialogs = repository
 end
 
+-- Voice Over
+do
+
+end
+
 ns.DbContext = dbContext

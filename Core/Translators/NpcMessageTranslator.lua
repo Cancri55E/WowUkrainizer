@@ -4,6 +4,7 @@ local chatBubbleTimer
 
 local aceHook = LibStub("AceHook-3.0")
 local eventHandler = ns.EventHandler:new()
+local voiceOverDirector = ns.VoiceOverDirector
 
 local GenerateUuid = ns.CommonExtensions.GenerateUuid
 local Split, Trim = ns.StringExtensions.Split, ns.StringExtensions.Trim

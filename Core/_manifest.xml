@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Include file="Extensions\_manifest.xml"/>
 	<Script file="EventHandler.lua"/>
+	<Script file="VoiceOverDirector.lua"/>
 	<Script file="UntranslatedDataStorage.lua"/>
 	<Script file="SettingsProvider.lua"/>
 	<Script file="StringNormalizer.lua"/>
