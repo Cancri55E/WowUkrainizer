@@ -147,6 +147,8 @@ local function OnPlayerLogin()
             translatorData.translator = createTranslator(translatorData.name, translatorData.args)
         end
     end
+
+    ns.VoiceOverDirector:Initialize()
 end
 
 local function OnAddOnLoaded(_, name)
