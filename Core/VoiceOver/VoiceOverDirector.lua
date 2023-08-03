@@ -12,6 +12,7 @@ local voiceOverDirector = {
         id = 0,
         greetingsId = 0,
         greetingsCount = 0,
+        farewellsId = 0,
         pissedId = 0,
     },
 }
@@ -53,7 +54,6 @@ function voiceOverDirector:Initialize()
 end
 
 function voiceOverDirector:ResetNpc()
-    print('ResetNpc')
     self.lastNpc = {
         id = 0,
         greetingsId = 0,
@@ -64,7 +64,6 @@ function voiceOverDirector:ResetNpc()
 end
 
 function voiceOverDirector:PlaingVoiceCompleted(soundHandle, isEmotion)
-    print('Voice complete')
     if (isEmotion) then
         if self.currentEmotionsHandler == soundHandle then
             self.emotionsIsPlaying = false
@@ -79,7 +78,6 @@ function voiceOverDirector:PlaingVoiceCompleted(soundHandle, isEmotion)
 end
 
 function voiceOverDirector:PlayVoiceOverForDialog(hash, isCinematic, channel)
-    print("PlayVoiceOverForDialog", hash, channel)
     local voData = isCinematic and VoiceOverData.Cinematics[hash] or VoiceOverData.Dialogs[hash]
     if (voData) then
         StopSound(self.currentEmotionsHandler)
@@ -114,10 +112,7 @@ function voiceOverDirector:PlayVoiceOverForEmotion(npcId, emotionType)
     if (VoiceOverData.Emotions[emotionId] == nil) then return end
     if (VoiceOverData.Emotions[emotionId][emotionType] == nil) then return end
 
-    print("dialogIsPlaying ", self.dialogIsPlaying, "emotionsIsPlaying ", self.emotionsIsPlaying)
     if (self.dialogIsPlaying or self.emotionsIsPlaying) then return end
-
-    print('founded emotions for ' .. npcId)
 
     local emotions = nil
     local emotionIndex = nil
@@ -169,9 +164,7 @@ function voiceOverDirector:PlayVoiceOverForEmotion(npcId, emotionType)
         emotionIndex = self.lastNpc.farewellsId
     end
 
-    print('play ' .. emotions[emotionIndex].file)
     local willPlay, soundHandler = PlaySoundFile(emotions[emotionIndex].file, "Dialog")
-    print(willPlay, soundHandler)
     if (willPlay) then
         self.currentEmotionsHandler = soundHandler
         self.emotionsIsPlaying = true
