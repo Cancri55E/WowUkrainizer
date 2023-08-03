@@ -27,18 +27,31 @@ local function onGlobalMouseDown()
     local unitKind, _, _, _, _, unitId, _ = strsplit("-", tooltipData.guid)
     if (unitKind == "Creature" or unitKind == "Vehicle") then
         local name = UnitName("mouseover")
-        voiceOverDirector:PlayVoiceOverForEmotion(unitId, "Greetings")
+        voiceOverDirector:PlayVoiceOverForEmotion(tonumber(unitId), "Greetings")
     end
 end
 
 local function onPlaySoudHook(soundKitID, channel, forceNoDuplicates, runFinishCallback)
     if (channel ~= "Talking Head") then return end
-    -- todo: call Voice-over translator when it`s ready
+
+    local hash = VoiceOverData.SoundKindIds[soundKitID]
+    if (not hash) then return end
+
+    ns.VoiceOverDirector:PlayVoiceOverForDialog(hash, false, channel)
 end
 
 function voiceOverDirector:Initialize()
     local function MuteNpcEmotions()
         -- private_cole (emotions)
+        MuteSoundFile(3488634)
+        MuteSoundFile(3488635)
+        MuteSoundFile(3488636)
+        MuteSoundFile(3488637)
+        MuteSoundFile(3488638)
+        MuteSoundFile(3488639)
+        MuteSoundFile(3488640)
+        MuteSoundFile(3488641)
+        MuteSoundFile(3488642)
     end
 
     local function MuteNpcDialogs()
@@ -63,6 +76,7 @@ function voiceOverDirector:Initialize()
 end
 
 function voiceOverDirector:ResetNpc()
+    print('ResetNpc')
     self.lastNpc = {
         id = 0,
         greetingsId = 0,
@@ -73,6 +87,7 @@ function voiceOverDirector:ResetNpc()
 end
 
 function voiceOverDirector:PlaingVoiceCompleted(soundHandle, isEmotion)
+    print('Voice complete')
     if (isEmotion) then
         if self.currentEmotionsHandler == soundHandle then
             self.emotionsIsPlaying = false
@@ -86,43 +101,66 @@ function voiceOverDirector:PlaingVoiceCompleted(soundHandle, isEmotion)
     end
 end
 
-function voiceOverDirector:PlayVoiceOverForDialog(hash, type)
-    local voFile = VoiceOverData.Dialogs[hash]
-    if (voFile) then
+function voiceOverDirector:PlayVoiceOverForDialog(hash, isCinematic, channel)
+    print("PlayVoiceOverForDialog", hash, channel)
+    local voData = isCinematic and VoiceOverData.Cinematics[hash] or VoiceOverData.Dialogs[hash]
+    if (voData) then
         StopSound(self.currentEmotionsHandler)
         self.currentEmotionsHandler = 0;
+        self.emotionsIsPlaying = false
 
         StopSound(self.currentDialogHandler)
         self.currentDialogHandler = 0;
+        self.dialogIsPlaying = false
 
-        local willPlay, soundHandler = PlaySoundFile(voFile, type)
-        if (willPlay) then self.currentDialogHandler = soundHandler end
+        local willPlay, soundHandler = PlaySoundFile(voData.file, channel)
+        if (willPlay) then
+            self.currentDialogHandler = soundHandler
+            self.dialogIsPlaying = true
+
+            C_Timer.After(voData.lengthInSeconds, function()
+                self:PlaingVoiceCompleted(soundHandler, false)
+            end)
+        end
     end
 end
 
 function voiceOverDirector:PlayVoiceOverForEmotion(npcId, emotionType)
-    if (self.lastNpc.id ~= npcId) then self:ResetNpc() end
+    if (self.lastNpc.id ~= npcId) then
+        self:ResetNpc()
+        self.lastNpc.id = npcId
+    end
 
-    if (VoiceOverData.Emotions[npcId] == nil) then return end
-    if (VoiceOverData.Emotions[npcId][emotionType] == nil) then return end
+    local emotionId = VoiceOverData.NpcEmotions[npcId]
+    if (not emotionId) then return end
 
+    if (VoiceOverData.Emotions[emotionId] == nil) then return end
+    if (VoiceOverData.Emotions[emotionId][emotionType] == nil) then return end
+
+    print("dialogIsPlaying ", self.dialogIsPlaying, "emotionsIsPlaying ", self.emotionsIsPlaying)
     if (self.dialogIsPlaying or self.emotionsIsPlaying) then return end
 
+    print('founded emotions for ' .. npcId)
+
     local emotions = nil
-    local emotionId = nil
+    local emotionIndex = nil
 
     if (emotionType == "Greetings") then
-        local greetingEmotions = VoiceOverData.Emotions[npcId][emotionType]
-        local pissedEmotions = VoiceOverData.Emotions[npcId]["Pissed"]
+        local greetingEmotions = VoiceOverData.Emotions[emotionId][emotionType]
+        local pissedEmotions = VoiceOverData.Emotions[emotionId]["Pissed"]
         self.lastNpc.greetingsCount = self.lastNpc.greetingsCount + 1
         if (self.lastNpc.greetingsCount > 6 and pissedEmotions) then
             self.lastNpc.pissedId = self.lastNpc.pissedId + 1
             if (self.lastNpc.pissedId <= #pissedEmotions) then
                 emotions = pissedEmotions
-                emotionId = self.lastNpc.pissedId
+                emotionIndex = self.lastNpc.pissedId
             else
                 self.lastNpc.pissedId = 0
                 self.lastNpc.greetingsCount = 0
+                self.lastNpc.greetingsId = 1
+
+                emotions = greetingEmotions
+                emotionIndex = 1
             end
         else
             if (self.lastNpc.greetingsId == 0) then
@@ -136,10 +174,10 @@ function voiceOverDirector:PlayVoiceOverForEmotion(npcId, emotionType)
             end
 
             emotions = greetingEmotions
-            emotionId = self.lastNpc.greetingsId
+            emotionIndex = self.lastNpc.greetingsId
         end
     elseif (emotionType == "Farewells") then
-        local farewellsEmotions = VoiceOverData.Emotions[npcId][emotionType]
+        local farewellsEmotions = VoiceOverData.Emotions[emotionId][emotionType]
         if (self.lastNpc.farewellsId == 0) then
             self.lastNpc.farewellsId = self.lastNpc.farewellsId + 1
         else
@@ -151,13 +189,20 @@ function voiceOverDirector:PlayVoiceOverForEmotion(npcId, emotionType)
         end
 
         emotions = farewellsEmotions
-        emotionId = self.lastNpc.farewellsId
+        emotionIndex = self.lastNpc.farewellsId
     end
 
-    local willPlay, soundHandler = PlaySoundFile(emotions[emotionId].file, "Master")
-    if (willPlay) then self.currentEmotionsHandler = soundHandler end
+    print('play ' .. emotions[emotionIndex].file)
+    local willPlay, soundHandler = PlaySoundFile(emotions[emotionIndex].file, "Dialog")
+    print(willPlay, soundHandler)
+    if (willPlay) then
+        self.currentEmotionsHandler = soundHandler
+        self.emotionsIsPlaying = true
 
-    C_Timer.After(self.lengthInSeconds, function() self:PlaingVoiceCompleted(soundHandler, true) end)
+        C_Timer.After(emotions[emotionIndex].lengthInSeconds, function()
+            self:PlaingVoiceCompleted(soundHandler, true)
+        end)
+    end
 end
 
 ns.VoiceOverDirector = voiceOverDirector

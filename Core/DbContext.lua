@@ -10,7 +10,7 @@ local dbContext = {}
 local function getValueOrDefault(hashTable, default)
     if (not default) then return default end
     local hash = ns.StringExtensions.GetHash(default)
-    return hashTable[hash] or default
+    return hashTable[hash] or default, hash
 end
 
 local function getFormattedValueOrDefault(hashTable, default)

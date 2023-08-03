@@ -12,27 +12,45 @@ voiceOverData.Cinematics = {
 }
 
 voiceOverData.Dialogs = {
-    [1444650385] = "",
+    [3687745317] = { file = [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152846_3486957.ogg]], lengthInSeconds = 3 },
+    [1655187725] = { file = [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152847_3486958.ogg]], lengthInSeconds = 3 },
+    [4229072475] = { file = [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152848_3486959.ogg]], lengthInSeconds = 4 },
+    [2911821392] = { file = [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152897_3488623.ogg]], lengthInSeconds = 1 },
+    [372028375] = { file = [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152849_3486966.ogg]], lengthInSeconds = 2 },
 }
 
 voiceOverData.Emotions = {
-    [100] = { Greetings = {
-        [1] = { file = "", lengthInSeconds = 0 },
-        [2] = { file = "", lengthInSeconds = 0 },
-        [3] = { file = "", lengthInSeconds = 0 }
+    [1] = { Greetings = {
+        [1] = { file =
+        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_01_169703_3488637.ogg]], lengthInSeconds = 2 },
+        [2] = { file =
+        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_02_169703_3488638.ogg]], lengthInSeconds = 1 },
+        [3] = { file =
+        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_03_169703_3488639.ogg]], lengthInSeconds = 2 }
     }, Pissed = {
-        [1] = { file = "", lengthInSeconds = 0 },
-        [2] = { file = "", lengthInSeconds = 0 },
-        [3] = { file = "", lengthInSeconds = 0 }
+        [1] = { file =
+        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_01_169704_3488640.ogg]], lengthInSeconds = 2 },
+        [2] = { file =
+        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_02_169704_3488641.ogg]], lengthInSeconds = 3 },
+        [3] = { file =
+        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_03_169704_3488642.ogg]], lengthInSeconds = 2 }
     }, Farewells = {
-        [1] = { file = "", lengthInSeconds = 0 },
-        [2] = { file = "", lengthInSeconds = 0 },
-        [3] = { file = "", lengthInSeconds = 0 }
+        [1] = { file =
+        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_01_169702_3488634.ogg]], lengthInSeconds = 1 },
+        [2] = { file =
+        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_02_169702_3488635.ogg]], lengthInSeconds = 1 },
+        [3] = { file =
+        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_03_169702_3488636.ogg]], lengthInSeconds = 1 }
     } }
 }
 
 voiceOverData.NpcEmotions = {
-    [1] = 1
+    [160664] = 1,
+    [157051] = 1
+}
+
+voiceOverData.SoundKindIds = {
+    [1] = 2
 }
 
 ns.VoiceOverData = voiceOverData

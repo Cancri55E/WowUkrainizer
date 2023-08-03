@@ -30,39 +30,9 @@ local function updateChatBubbleMessage(chatBubbles)
             local fontString = getFontString(chatBubble);
             if (fontString) then
                 local message = fontString:GetText() or "";
-                -- if (message == "Let's move into sparring positions. I'll let you have the first strike.") then
-                --     message = "Перейдемо на спарингові позиції. Перший удар залишу за тобою."
-                --     PlaySoundFile(
-                --         [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152846_3486957.ogg]],
-                --         "Dialog")
-                -- end
-                -- if (message == "Never run from your opponent. Stand your ground and fight until the end!") then
-                --     message = "Ніколи не тікай від супротивника. Будь непохитним і бийся до кінця!"
-                --     PlaySoundFile(
-                --         [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152847_3486958.ogg]],
-                --         "Dialog")
-                -- end
-                -- if (message == "Remember to always face your enemy!") then
-                --     message = "Не забувай завжди дивитися на ворога!"
-                --     PlaySoundFile(
-                --         [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152897_3488623.ogg]],
-                --         "Dialog")
-                -- end
-                -- if (message == "I yield! Well, I'd say you're more than ready for whatever we find on that island.") then
-                --     message =
-                --     "Я здаюсь! Думаю ти готовий до всього, що ми зустрінемо на острові."
-                --     PlaySoundFile(
-                --         [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152848_3486959.ogg]],
-                --         "Dialog")
-                -- end
-                -- if (message == "Captain! We can't weather this storm for long!") then
-                --     message =
-                --     "Капітане! Довго ми не витримаємо в такий шторм!"
-                --     PlaySoundFile(
-                --         [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152849_3486966.ogg]],
-                --         "Dialog")
-                -- end
-                SetFontStringText(fontString, GetDialogText(message))
+                local translatedMsg, msgHash = GetDialogText(message)
+                ns.VoiceOverDirector:PlayVoiceOverForDialog(msgHash, false, "Dialog")
+                SetFontStringText(fontString, translatedMsg)
             end
         end
     end
@@ -125,7 +95,7 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
 
 
     local translatedAuthor = GetUnitNameOrDefault(author)
-    local translatedMsg = GetDialogText(msg)
+    local translatedMsg, msgHash = GetDialogText(msg)
 
     if (translatedMsg == msg) then
         local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
@@ -134,36 +104,7 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
     end
 
     local translatedSubtitle = author == '' and translatedMsg or translatedAuthor .. ": " .. translatedMsg
-
-    -- if (translatedSubtitle == "You are a soldier of the noble Alliance, a coalition of kingdoms upholding the ideals of valor and justice across Azeroth.") then
-    --     translatedSubtitle =
-    --     "Ви - солдат благородного Альянсу, коаліції королівств, що відстоюють ідеали доблесті та справедливості в Азероті."
-    --     PlaySoundFile(
-    --         [[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152835_3486924.ogg]],
-    --         "Dialog")
-    -- end
-    -- if (translatedSubtitle == "An Alliance expedition sent to explore an uncharted island has recently gone missing.") then
-    --     translatedSubtitle = "Нещодавно зникла експедиція Альянсу, що відправилась для дослідження незвіданого острова."
-    --     PlaySoundFile(
-    --         [[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152836_3486925.ogg]],
-    --         "Dialog")
-    -- end
-    -- if (translatedSubtitle == "As a bold new recruit, you have joined the rescue mission departing from Stormwind.") then
-    --     translatedSubtitle =
-    --     "Як сміливий новобранець, ви приєднались до рятувальної місії, що відправляється зі Штормовію."
-    --     PlaySoundFile(
-    --         [[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152837_3486926.ogg]],
-    --         "Dialog")
-    -- end
-    -- if (translatedSubtitle == "Find the lost expedition members and bring them home. For the Alliance!") then
-    --     translatedSubtitle = "Знайдіть зниклих членів експедиції та поверніть їх додому. За Альянс!"
-    --     PlaySoundFile(
-    --         [[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152845_3486934.ogg]],
-    --         "Dialog")
-    -- end
-
-
-
+    ns.VoiceOverDirector:PlayVoiceOverForDialog(msgHash, true, "Dialog")
     instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedSubtitle)
 
     instance.subtitleOrder = instance.subtitleOrder + 1
