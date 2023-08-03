@@ -115,7 +115,7 @@ function voiceOverDirector:PlayVoiceOverForEmotion(npcId, emotionType)
         local greetingEmotions = VoiceOverData.Emotions[npcId][emotionType]
         local pissedEmotions = VoiceOverData.Emotions[npcId]["Pissed"]
         self.lastNpc.greetingsCount = self.lastNpc.greetingsCount + 1
-        if (self.lastNpc.greetingsCount > 5 and pissedEmotions) then
+        if (self.lastNpc.greetingsCount > 6 and pissedEmotions) then
             self.lastNpc.pissedId = self.lastNpc.pissedId + 1
             if (self.lastNpc.pissedId <= #pissedEmotions) then
                 emotions = pissedEmotions

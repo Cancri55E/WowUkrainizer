@@ -7,28 +7,32 @@ local _, ns = ...;
 
 local voiceOverData = {}
 
+voiceOverData.Cinematics = {
+    [1444650385] = "",
+}
+
 voiceOverData.Dialogs = {
-    [1444650385] = "Пивовар",
+    [1444650385] = "",
 }
 
 voiceOverData.Emotions = {
-    [100] = {
-        Greetings = {
-            [1] = { file = "", lengthInSeconds = 0 },
-            [2] = { file = "", lengthInSeconds = 0 },
-            [3] = { file = "", lengthInSeconds = 0 },
-        },
-        Pissed = {
-            [1] = { file = "", lengthInSeconds = 0 },
-            [2] = { file = "", lengthInSeconds = 0 },
-            [3] = { file = "", lengthInSeconds = 0 },
-        },
-        Farewells = {
-            [1] = { file = "", lengthInSeconds = 0 },
-            [2] = { file = "", lengthInSeconds = 0 },
-            [3] = { file = "", lengthInSeconds = 0 },
-        }
-    }
+    [100] = { Greetings = {
+        [1] = { file = "", lengthInSeconds = 0 },
+        [2] = { file = "", lengthInSeconds = 0 },
+        [3] = { file = "", lengthInSeconds = 0 }
+    }, Pissed = {
+        [1] = { file = "", lengthInSeconds = 0 },
+        [2] = { file = "", lengthInSeconds = 0 },
+        [3] = { file = "", lengthInSeconds = 0 }
+    }, Farewells = {
+        [1] = { file = "", lengthInSeconds = 0 },
+        [2] = { file = "", lengthInSeconds = 0 },
+        [3] = { file = "", lengthInSeconds = 0 }
+    } }
+}
+
+voiceOverData.NpcEmotions = {
+    [1] = 1
 }
 
 ns.VoiceOverData = voiceOverData
