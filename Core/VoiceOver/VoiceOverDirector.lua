@@ -41,35 +41,12 @@ local function onPlaySoudHook(soundKitID, channel, forceNoDuplicates, runFinishC
 end
 
 function voiceOverDirector:Initialize()
-    local function MuteNpcEmotions()
-        -- private_cole (emotions)
-        MuteSoundFile(3488634)
-        MuteSoundFile(3488635)
-        MuteSoundFile(3488636)
-        MuteSoundFile(3488637)
-        MuteSoundFile(3488638)
-        MuteSoundFile(3488639)
-        MuteSoundFile(3488640)
-        MuteSoundFile(3488641)
-        MuteSoundFile(3488642)
+    for _, soundFile in pairs(VoiceOverData.MuteDialogs) do
+        MuteSoundFile(soundFile)
     end
-
-    local function MuteNpcDialogs()
-        -- private_cole
-        MuteSoundFile(3486957)
-        MuteSoundFile(3486958)
-        MuteSoundFile(3486959)
-        MuteSoundFile(3488623)
-        MuteSoundFile(3486966)
-        -- cinematics
-        MuteSoundFile(3486924)
-        MuteSoundFile(3486925)
-        MuteSoundFile(3486926)
-        MuteSoundFile(3486934)
+    for _, soundFile in pairs(VoiceOverData.MuteEmotions) do
+        MuteSoundFile(soundFile)
     end
-
-    MuteNpcEmotions()
-    MuteNpcDialogs()
 
     eventHandler:Register(onGlobalMouseDown, "GLOBAL_MOUSE_DOWN")
     hooksecurefunc("PlaySound", onPlaySoudHook)

@@ -53,4 +53,16 @@ voiceOverData.SoundKindIds = {
     [1] = 2
 }
 
+voiceOverData.MuteEmotions = {
+    -- private cole
+    3488634, 3488635, 3488636, 3488637, 3488638, 3488639, 3488640, 3488641, 3488642
+}
+
+voiceOverData.MuteDialogs = {
+    -- private cole
+    3486957, 3486958, 3486959, 3488623, 3486966,
+    -- cinematics
+    3486924, 3486925, 3486926, 3486934,
+}
+
 ns.VoiceOverData = voiceOverData
