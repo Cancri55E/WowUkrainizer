@@ -23,7 +23,7 @@ local function onGlobalMouseDown()
     if (tooltipData.guid == nil) then return end
 
     local reaction = UnitReaction("mouseover", "player")
-    if (reaction < 4) then return end
+    if (not reaction or reaction < 4) then return end
 
     local unitKind, _, _, _, _, unitId, _ = strsplit("-", tooltipData.guid)
     if (unitKind == "Creature" or unitKind == "Vehicle") then

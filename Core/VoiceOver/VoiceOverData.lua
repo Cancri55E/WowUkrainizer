@@ -17,36 +17,109 @@ voiceOverData.Dialogs = {
     [4229072475] = { file = [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152848_3486959.ogg]], lengthInSeconds = 4 },
     [2911821392] = { file = [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152897_3488623.ogg]], lengthInSeconds = 1 },
     [372028375] = { file = [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152849_3486966.ogg]], lengthInSeconds = 2 },
+    -- captain_garrick
+    [2930961147] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152736_3485461.ogg]], lengthInSeconds = 3 },
+    [1090448917] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152718_3485443.ogg]], lengthInSeconds = 6 },
+    [2598535587] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152731_3485456.ogg]], lengthInSeconds = 3 },
+    [1922980967] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152732_3485457.ogg]], lengthInSeconds = 5 },
+    [1929738606] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152734_3485459.ogg]], lengthInSeconds = 5 },
+    [1592247642] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152735_3485460.ogg]], lengthInSeconds = 2 },
+
 }
 
 voiceOverData.Emotions = {
-    [1] = { Greetings = {
-        [1] = { file =
-        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_01_169703_3488637.ogg]], lengthInSeconds = 2 },
-        [2] = { file =
-        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_02_169703_3488638.ogg]], lengthInSeconds = 1 },
-        [3] = { file =
-        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_03_169703_3488639.ogg]], lengthInSeconds = 2 }
-    }, Pissed = {
-        [1] = { file =
-        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_01_169704_3488640.ogg]], lengthInSeconds = 2 },
-        [2] = { file =
-        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_02_169704_3488641.ogg]], lengthInSeconds = 3 },
-        [3] = { file =
-        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_03_169704_3488642.ogg]], lengthInSeconds = 2 }
-    }, Farewells = {
-        [1] = { file =
-        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_01_169702_3488634.ogg]], lengthInSeconds = 1 },
-        [2] = { file =
-        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_02_169702_3488635.ogg]], lengthInSeconds = 1 },
-        [3] = { file =
-        [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_03_169702_3488636.ogg]], lengthInSeconds = 1 }
-    } }
+    [1] = {
+        Greetings = {
+            [1] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_01_169703_3488637.ogg]], lengthInSeconds = 2 },
+            [2] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_02_169703_3488638.ogg]], lengthInSeconds = 1 },
+            [3] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_03_169703_3488639.ogg]], lengthInSeconds = 2 }
+        },
+        Pissed = {
+            [1] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_01_169704_3488640.ogg]], lengthInSeconds = 2 },
+            [2] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_02_169704_3488641.ogg]], lengthInSeconds = 3 },
+            [3] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_03_169704_3488642.ogg]], lengthInSeconds = 2 }
+        },
+        Farewells = {
+            [1] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_01_169702_3488634.ogg]], lengthInSeconds = 1 },
+            [2] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_02_169702_3488635.ogg]], lengthInSeconds = 1 },
+            [3] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_03_169702_3488636.ogg]], lengthInSeconds = 1 }
+        }
+    },
+    [2] = {
+        Greetings = {
+            [1] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_01_154040_3485450.ogg]], lengthInSeconds = 2 },
+            [2] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_02_154040_3485451.ogg]], lengthInSeconds = 2 },
+            [3] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_03_154040_3485452.ogg]], lengthInSeconds = 2 },
+        },
+        Pissed = {
+            [1] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_01_154041_3485453.ogg]], lengthInSeconds = 3 },
+            [2] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_02_154041_3485454.ogg]], lengthInSeconds = 3 },
+            [3] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_03_154041_3485455.ogg]], lengthInSeconds = 6 },
+        },
+        Farewells = {
+            [1] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_01_154039_3485447.ogg]], lengthInSeconds = 2 },
+            [2] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_02_154039_3485448.ogg]], lengthInSeconds = 2 },
+            [3] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_03_154039_3485449.ogg]], lengthInSeconds = 2 },
+        }
+    },
+    [3] = {
+        Greetings = {
+            [1] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_01_154037_3489792.ogg]], lengthInSeconds = 1 },
+            [2] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_02_154037_3489793.ogg]], lengthInSeconds = 1 },
+            [3] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_01_154038_3485444.ogg]], lengthInSeconds = 4 },
+            [4] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_02_154038_3485445.ogg]], lengthInSeconds = 2 },
+            [5] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_03_154038_3485446.ogg]], lengthInSeconds = 2 },
+        },
+        Pissed = {
+            [1] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_01_154041_3485453.ogg]], lengthInSeconds = 3 },
+            [2] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_02_154041_3485454.ogg]], lengthInSeconds = 3 },
+            [3] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_03_154041_3485455.ogg]], lengthInSeconds = 6 },
+        },
+        Farewells = {
+            [1] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_01_154036_3489790.ogg]], lengthInSeconds = 1 },
+            [2] = { file =
+            [[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_02_154036_3489791.ogg]], lengthInSeconds = 1 },
+        }
+    }
 }
 
 voiceOverData.NpcEmotions = {
     [160664] = 1,
-    [157051] = 1
+    [157051] = 1,
+    [156280] = 2
 }
 
 voiceOverData.SoundKindIds = {
@@ -55,7 +128,10 @@ voiceOverData.SoundKindIds = {
 
 voiceOverData.MuteEmotions = {
     -- private cole
-    3488634, 3488635, 3488636, 3488637, 3488638, 3488639, 3488640, 3488641, 3488642
+    3488634, 3488635, 3488636, 3488637, 3488638, 3488639, 3488640, 3488641, 3488642,
+    -- captain garrick
+    3489790, 3485447, 3489791, 3485455, 3485448, 3485449, 3489792, 3485444, 3485450, 3489793, 3485445, 3485451, 3485446,
+    3485452, 3485453, 3485454,
 }
 
 voiceOverData.MuteDialogs = {
@@ -63,6 +139,8 @@ voiceOverData.MuteDialogs = {
     3486957, 3486958, 3486959, 3488623, 3486966,
     -- cinematics
     3486924, 3486925, 3486926, 3486934,
+    -- captain garrick
+    3485461, 3485443, 3485456, 3485457, 3485459, 3485460,
 }
 
 ns.VoiceOverData = voiceOverData
