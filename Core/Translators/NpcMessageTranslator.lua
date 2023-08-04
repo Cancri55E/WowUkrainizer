@@ -10,6 +10,7 @@ local Split, Trim = ns.StringExtensions.Split, ns.StringExtensions.Trim
 local SetFontStringText = ns.FontStringExtensions.SetText
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetDialogText = ns.DbContext.NpcDialogs.GetDialogText
+local GetCinematicSubtitle = ns.DbContext.NpcDialogs.GetCinematicSubtitle
 
 local translator = class("NpcMessageTranslator", ns.Translators.BaseTranslator)
 ns.Translators.NpcMessageTranslator = translator
@@ -95,7 +96,7 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
 
 
     local translatedAuthor = GetUnitNameOrDefault(author)
-    local translatedMsg, msgHash = GetDialogText(msg)
+    local translatedMsg, msgHash = GetCinematicSubtitle(msg)
 
     if (translatedMsg == msg) then
         local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)

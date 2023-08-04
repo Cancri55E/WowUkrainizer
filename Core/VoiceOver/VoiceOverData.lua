@@ -8,7 +8,14 @@ local _, ns = ...;
 local voiceOverData = {}
 
 voiceOverData.Cinematics = {
-    [1444650385] = "",
+    [1844457017] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152835_3486924.ogg]], lengthInSeconds = 10.5 },
+    [3664374311] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152836_3486925.ogg]], lengthInSeconds = 6.5 },
+    [1815550003] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152837_3486926.ogg]], lengthInSeconds = 6.5 },
+    [2556975142] = { file =
+    [[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152845_3486934.ogg]], lengthInSeconds = 7.5 },
 }
 
 voiceOverData.Dialogs = {

@@ -166,6 +166,10 @@ do
         return getValueOrDefault(ns._db.DialogTexts, default)
     end
 
+    function repository.GetCinematicSubtitle(default)
+        return getValueOrDefault(ns._db.CinematicSubtitles, default)
+    end
+
     dbContext.NpcDialogs = repository
 end
 
