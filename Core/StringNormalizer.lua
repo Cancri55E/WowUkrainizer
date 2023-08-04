@@ -53,3 +53,23 @@ function internal.ReconstructStringWithNumerics(str, numbers)
 
     return result
 end
+
+function internal.NormalizePersonalizedString(text)
+    local playerName = UnitName("player")
+    if (playerName) then
+        text = string.gsub(text, playerName, function()
+            return "{name}"
+        end)
+    end
+    return text
+end
+
+function internal.ReconstructPersonalizedString(text)
+    local playerName = UnitName("player")
+    if (playerName) then
+        text = string.gsub(text, "{name}", function()
+            return playerName
+        end)
+    end
+    return text
+end
