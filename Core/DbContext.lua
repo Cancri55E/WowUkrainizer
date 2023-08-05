@@ -24,11 +24,8 @@ end
 
 local function getPersonalizedValueOrDefault(hashTable, default)
     if (not default) then return default end
-    print("Init dialog", default)
     local text = NormalizePersonalizedString(default)
-    print("Normalized dialog", text)
     local translatedText, hash = getValueOrDefault(hashTable, text)
-    print("Translated dialog", translatedText)
     return ReconstructPersonalizedString(translatedText), hash
 end
 
