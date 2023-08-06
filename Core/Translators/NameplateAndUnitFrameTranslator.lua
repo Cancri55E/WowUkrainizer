@@ -133,7 +133,8 @@ function translator:initialize()
 
     hooksecurefunc("CompactUnitFrame_UpdateName", function(control)
         if (not self:IsEnabled()) then return end
-        if (StartsWith(control.displayedUnit, "nameplate")) then
+        if (not ShouldShowName(control)) then return end
+        if (StartsWith(control.displayedUnit, "nameplate")) and control.name and (type(control.name.GetText) == "function") then
             control.name:SetText(GetUnitNameOrDefault(control.name:GetText()))
         end
     end)
