@@ -124,9 +124,7 @@ voiceOverData.Emotions = {
 }
 
 voiceOverData.NpcEmotions = {
-    [160664] = 1,
-    [157051] = 1,
-    [156280] = 2
+    [160664] = 1, [157051] = 1, [156280] = 2, [156626] = 2
 }
 
 voiceOverData.SoundKindIds = {
