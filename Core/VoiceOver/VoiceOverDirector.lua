@@ -15,6 +15,7 @@ local voiceOverDirector = {
         farewellsId = 0,
         pissedId = 0,
     },
+    lastQuestNpcId = 0
 }
 
 local function onGlobalMouseDown()
@@ -51,6 +52,16 @@ function voiceOverDirector:Initialize()
 
     eventHandler:Register(onGlobalMouseDown, "GLOBAL_MOUSE_DOWN")
     hooksecurefunc("PlaySound", onPlaySoudHook)
+
+    QuestFrame:HookScript("OnShow", function()
+        voiceOverDirector.lastQuestNpcId = voiceOverDirector.lastNpc.id
+    end)
+
+    QuestFrame:HookScript("OnHide", function()
+        print("self.lastQuestNpcId", self.lastQuestNpcId)
+        voiceOverDirector:PlayVoiceOverForEmotion(self.lastQuestNpcId, "Farewells")
+        voiceOverDirector.lastQuestNpcId = 0
+    end)
 end
 
 function voiceOverDirector:ResetNpc()
