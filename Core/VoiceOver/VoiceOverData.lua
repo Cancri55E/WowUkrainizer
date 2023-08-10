@@ -128,7 +128,7 @@ voiceOverData.NpcEmotions = {
 }
 
 voiceOverData.SoundKindIds = {
-    [1] = 2
+    [1] = { file = [[]], lengthInSeconds = 10.5 }
 }
 
 voiceOverData.MuteEmotions = {

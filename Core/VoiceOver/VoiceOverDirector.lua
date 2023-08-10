@@ -1,21 +1,25 @@
 local _, ns = ...
-
 local VoiceOverData = ns.VoiceOverData
 local eventHandler = ns.EventHandler:new()
+
+local EMOTION_TYPES = {
+    GREETINGS = "Greetings",
+    FAREWELLS = "Farewells",
+    PISSED = "Pissed"
+}
 
 local voiceOverDirector = {
     currentDialogHandler = 0,
     dialogIsPlaying = false,
-    currentEmotionsHandler = 0,
+    currentEmotionHandler = 0,
     emotionsIsPlaying = false,
-    lastNpc = {
+    currentUnit = {
         id = 0,
         greetingsId = 0,
         greetingsCount = 0,
-        farewellsId = 0,
         pissedId = 0,
     },
-    lastQuestNpcId = 0
+    lastQuestGiverId = 0
 }
 
 local function onGlobalMouseDown()
@@ -28,8 +32,7 @@ local function onGlobalMouseDown()
 
     local unitKind, _, _, _, _, unitId, _ = strsplit("-", tooltipData.guid)
     if (unitKind == "Creature" or unitKind == "Vehicle") then
-        local name = UnitName("mouseover")
-        voiceOverDirector:PlayVoiceOverForEmotion(tonumber(unitId), "Greetings")
+        voiceOverDirector:PlayVoiceOverForEmotion(tonumber(unitId), EMOTION_TYPES.GREETINGS)
     end
 end
 
@@ -39,46 +42,52 @@ local function onPlaySoudHook(soundKitID, channel, forceNoDuplicates, runFinishC
     local hash = VoiceOverData.SoundKindIds[soundKitID]
     if (not hash) then return end
 
-    ns.VoiceOverDirector:PlayVoiceOverForDialog(hash, false, channel)
+    ns.VoiceOverDirector:PlayVoiceOverForDialog(hash, false, "Talking Head")
+end
+
+local function getUniqueRandomValue(current, maxRange)
+    local value
+    repeat value = math.random(maxRange) until value ~= current
+    return value
 end
 
 function voiceOverDirector:Initialize()
     for _, soundFile in pairs(VoiceOverData.MuteDialogs) do
         MuteSoundFile(soundFile)
     end
+
     for _, soundFile in pairs(VoiceOverData.MuteEmotions) do
         MuteSoundFile(soundFile)
     end
 
     eventHandler:Register(onGlobalMouseDown, "GLOBAL_MOUSE_DOWN")
+
     hooksecurefunc("PlaySound", onPlaySoudHook)
 
     QuestFrame:HookScript("OnShow", function()
-        voiceOverDirector.lastQuestNpcId = voiceOverDirector.lastNpc.id
+        voiceOverDirector.lastQuestGiverId = voiceOverDirector.currentUnit.id
     end)
 
     QuestFrame:HookScript("OnHide", function()
-        print("self.lastQuestNpcId", self.lastQuestNpcId)
-        voiceOverDirector:PlayVoiceOverForEmotion(self.lastQuestNpcId, "Farewells")
-        voiceOverDirector.lastQuestNpcId = 0
+        voiceOverDirector:PlayVoiceOverForEmotion(self.lastQuestGiverId, EMOTION_TYPES.FAREWELLS)
+        voiceOverDirector.lastQuestGiverId = 0
     end)
 end
 
-function voiceOverDirector:ResetNpc()
-    self.lastNpc = {
+function voiceOverDirector:ResetNpcEmotions()
+    self.currentUnit = {
         id = 0,
         greetingsId = 0,
         greetingsCount = 0,
-        farewellsId = 0,
         pissedId = 0,
     }
 end
 
 function voiceOverDirector:PlaingVoiceCompleted(soundHandle, isEmotion)
     if (isEmotion) then
-        if self.currentEmotionsHandler == soundHandle then
+        if self.currentEmotionHandler == soundHandle then
             self.emotionsIsPlaying = false
-            self.currentEmotionsHandler = 0
+            self.currentEmotionHandler = 0
         end
     else
         if self.currentDialogHandler == soundHandle then
@@ -91,8 +100,8 @@ end
 function voiceOverDirector:PlayVoiceOverForDialog(hash, isCinematic, channel)
     local voData = isCinematic and VoiceOverData.Cinematics[hash] or VoiceOverData.Dialogs[hash]
     if (voData) then
-        StopSound(self.currentEmotionsHandler)
-        self.currentEmotionsHandler = 0;
+        StopSound(self.currentEmotionHandler)
+        self.currentEmotionHandler = 0;
         self.emotionsIsPlaying = false
 
         StopSound(self.currentDialogHandler)
@@ -111,78 +120,65 @@ function voiceOverDirector:PlayVoiceOverForDialog(hash, isCinematic, channel)
     end
 end
 
-function voiceOverDirector:PlayVoiceOverForEmotion(npcId, emotionType)
-    if (self.lastNpc.id ~= npcId) then
-        self:ResetNpc()
-        self.lastNpc.id = npcId
-    end
-
-    local emotionId = VoiceOverData.NpcEmotions[npcId]
+local function getGreetingsOrPissedEmotion(self, unitId)
+    local emotionId = VoiceOverData.NpcEmotions[unitId]
     if (not emotionId) then return end
 
-    if (VoiceOverData.Emotions[emotionId] == nil) then return end
-    if (VoiceOverData.Emotions[emotionId][emotionType] == nil) then return end
+    local greetingEmotions = VoiceOverData.Emotions[emotionId][EMOTION_TYPES.GREETINGS]
+    if (not greetingEmotions) then return end
+
+    self.currentUnit.greetingsCount = self.currentUnit.greetingsCount + 1
+
+    local pissedEmotions = VoiceOverData.Emotions[emotionId][EMOTION_TYPES.PISSED]
+    if self.currentUnit.greetingsCount > 6 and pissedEmotions then
+        self.currentUnit.pissedId = self.currentUnit.pissedId + 1
+        if self.currentUnit.pissedId <= #pissedEmotions then
+            return pissedEmotions[self.currentUnit.pissedId]
+        else
+            self.currentUnit.pissedId = 0
+            self.currentUnit.greetingsCount = 0
+        end
+    end
+
+    self.currentUnit.greetingsId = getUniqueRandomValue(self.currentUnit.greetingsId, #greetingEmotions)
+    return greetingEmotions[self.currentUnit.greetingsId]
+end
+
+local function getFarewellsEmotion(unitId)
+    local emotionId = VoiceOverData.NpcEmotions[unitId]
+    if (not emotionId) then return end
+
+    local farewellsEmotions = VoiceOverData.Emotions[emotionId][EMOTION_TYPES.FAREWELLS]
+    if (not farewellsEmotions) then return end
+
+    return farewellsEmotions[math.random(#farewellsEmotions)]
+end
+
+function voiceOverDirector:PlayVoiceOverForEmotion(unitId, emotionType)
+    if (self.currentUnit.id ~= unitId) then
+        self:ResetNpcEmotions()
+        self.currentUnit.id = unitId
+    end
 
     if (self.dialogIsPlaying or self.emotionsIsPlaying) then return end
 
-    local emotions = nil
-    local emotionIndex = nil
-
-    if (emotionType == "Greetings") then
-        local greetingEmotions = VoiceOverData.Emotions[emotionId][emotionType]
-        local pissedEmotions = VoiceOverData.Emotions[emotionId]["Pissed"]
-        self.lastNpc.greetingsCount = self.lastNpc.greetingsCount + 1
-        if (self.lastNpc.greetingsCount > 6 and pissedEmotions) then
-            self.lastNpc.pissedId = self.lastNpc.pissedId + 1
-            if (self.lastNpc.pissedId <= #pissedEmotions) then
-                emotions = pissedEmotions
-                emotionIndex = self.lastNpc.pissedId
-            else
-                self.lastNpc.pissedId = 0
-                self.lastNpc.greetingsCount = 0
-                self.lastNpc.greetingsId = 1
-
-                emotions = greetingEmotions
-                emotionIndex = 1
-            end
-        else
-            if (self.lastNpc.greetingsId == 0) then
-                self.lastNpc.greetingsId = self.lastNpc.greetingsId + 1
-            else
-                local newGreetingsId
-                repeat
-                    newGreetingsId = math.random(#greetingEmotions)
-                until newGreetingsId ~= self.lastNpc.greetingsId
-                self.lastNpc.greetingsId = newGreetingsId
-            end
-
-            emotions = greetingEmotions
-            emotionIndex = self.lastNpc.greetingsId
-        end
-    elseif (emotionType == "Farewells") then
-        local farewellsEmotions = VoiceOverData.Emotions[emotionId][emotionType]
-        if (self.lastNpc.farewellsId == 0) then
-            self.lastNpc.farewellsId = self.lastNpc.farewellsId + 1
-        else
-            local newFarewellsId
-            repeat
-                newFarewellsId = math.random(#farewellsEmotions)
-            until newFarewellsId ~= self.lastNpc.farewellsId
-            self.lastNpc.farewellsId = newFarewellsId
-        end
-
-        emotions = farewellsEmotions
-        emotionIndex = self.lastNpc.farewellsId
+    local emotion
+    if emotionType == EMOTION_TYPES.GREETINGS then
+        emotion = getGreetingsOrPissedEmotion(self, unitId)
+    elseif emotionType == EMOTION_TYPES.FAREWELLS then
+        emotion = getFarewellsEmotion(unitId)
     end
 
-    local willPlay, soundHandler = PlaySoundFile(emotions[emotionIndex].file, "Dialog")
-    if (willPlay) then
-        self.currentEmotionsHandler = soundHandler
-        self.emotionsIsPlaying = true
+    if (emotion) then
+        local willPlay, soundHandler = PlaySoundFile(emotion.file, "Dialog")
+        if (willPlay) then
+            self.currentEmotionHandler = soundHandler
+            self.emotionsIsPlaying = true
 
-        C_Timer.After(emotions[emotionIndex].lengthInSeconds, function()
-            self:PlaingVoiceCompleted(soundHandler, true)
-        end)
+            C_Timer.After(emotion.lengthInSeconds, function()
+                self:PlaingVoiceCompleted(soundHandler, true)
+            end)
+        end
     end
 end
 
