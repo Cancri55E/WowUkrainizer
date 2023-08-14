@@ -327,7 +327,7 @@ function settingsProvider:Build()
 
                             HighlightSpellNameInDescription = {
                                 type = "toggle",
-                                name = "Виділяти голубим кольором назви здібностей (талантів) в описі",
+                                name = "Виділяти блакитним кольором назви здібностей (талантів) в описі",
                                 order = setGeneralSettingsArgsOrder(),
                                 width = 3.45,
                                 get = function(_) return WowUkrainizer_Options.HighlightSpellNameInDescription end,
