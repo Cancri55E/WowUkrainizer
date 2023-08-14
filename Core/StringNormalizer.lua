@@ -42,14 +42,11 @@ end
 
 function internal.ReconstructStringWithNumerics(str, numbers)
     local result = InsertNumericValues(str, numbers)
-
-    result = result:gsub("{(%x+)|([^}]+)}", "|c%1%2|r")
-
-    result = result:gsub("(%d+)( *){(declension)|([^|]+)|([^|]+)|([^|]+)}",
+    result = result:gsub("(%d+)( *){(declension)|([^}|]+)|([^}|]+)|([^}|]+)}",
         function(numberString, space, _, nominativ, genetiv, plural)
             local number = tonumber(numberString)
             return number .. space .. DeclensionWord(number, nominativ, genetiv, plural)
         end)
-
+    result = result:gsub("{(%x+)|([^}]+)}", "|c%1%2|r")
     return result
 end
