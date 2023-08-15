@@ -33,7 +33,7 @@ local function updateChatBubbleMessage(chatBubbles)
             if (fontString) then
                 local message = fontString:GetText() or "";
                 local translatedMsg, msgHash = GetDialogText(message)
-                ns.VoiceOverDirector:PlayVoiceOverForDialog(msgHash, false, "Dialog")
+                ns.VoiceOverDirector:PlayDialog(msgHash, false, "Dialog")
                 if (settingsProvider.IsNeedTranslateDialogText()) then
                     SetFontStringText(fontString, translatedMsg)
                 end
@@ -68,10 +68,7 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
         end
     end
 
-    if (displayInTalkingHead) then
-        SetFontStringText(TalkingHeadFrame.NameFrame.Name, translatedAuthor);
-        SetFontStringText(TalkingHeadFrame.TextFrame.Text, translatedMsg);
-    else
+    if (not displayInTalkingHead) then
         chatBubbleTimer:Start();
     end
 
@@ -112,7 +109,7 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
     end
 
     local translatedSubtitle = author == '' and translatedMsg or translatedAuthor .. ": " .. translatedMsg
-    ns.VoiceOverDirector:PlayVoiceOverForDialog(msgHash, true, "Dialog")
+    ns.VoiceOverDirector:PlayDialog(msgHash, true, "Dialog")
 
     if (settingsProvider.IsNeedTranslateCinematicText()) then
         instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedSubtitle)
@@ -167,6 +164,17 @@ function translator:initialize()
     end, "TALKINGHEAD_REQUESTED")
 
     eventHandler:Register(function() instance.talkingHeadUuid = '' end, "TALKINGHEAD_CLOSE")
+
+    TalkingHeadFrame:HookScript("OnUpdate", function()
+        if (not TalkingHeadFrame:IsVisible()) then return end
+        if (not settingsProvider.IsNeedTranslateDialogText()) then return end
+
+        local translatedAuthor = GetUnitNameOrDefault(TalkingHeadFrame.NameFrame.Name:GetText())
+        local translatedMsg = GetDialogText(TalkingHeadFrame.TextFrame.Text:GetText())
+
+        SetFontStringText(TalkingHeadFrame.NameFrame.Name, translatedAuthor);
+        SetFontStringText(TalkingHeadFrame.TextFrame.Text, translatedMsg);
+    end)
 
     ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_SAY", onMonsterMessageReceivedHook)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_PARTY", onMonsterMessageReceivedHook)

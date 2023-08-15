@@ -33,8 +33,12 @@ local function onGlobalMouseDown()
 
     local unitKind, _, _, _, _, unitId, _ = strsplit("-", tooltipData.guid)
     if (unitKind == "Creature" or unitKind == "Vehicle") then
-        voiceOverDirector:PlayVoiceOverForEmotion(tonumber(unitId), EMOTION_TYPES.GREETINGS)
+        voiceOverDirector:PlayEmotion(tonumber(unitId), EMOTION_TYPES.GREETINGS)
     end
+end
+
+local function onLoadingScreenEnabled()
+    voiceOverDirector:StopImmediately();
 end
 
 local function onPlaySoudHook(soundKitID, channel, forceNoDuplicates, runFinishCallback)
@@ -43,7 +47,7 @@ local function onPlaySoudHook(soundKitID, channel, forceNoDuplicates, runFinishC
     local hash = VoiceOverData.SoundKindIds[soundKitID]
     if (not hash) then return end
 
-    ns.VoiceOverDirector:PlayVoiceOverForDialog(hash, false, "Talking Head")
+    ns.VoiceOverDirector:PlayDialog(hash, false, "Talking Head")
 end
 
 local function getUniqueRandomValue(current, maxRange)
@@ -77,6 +81,7 @@ function voiceOverDirector:Initialize()
         end
 
         eventHandler:Register(onGlobalMouseDown, "GLOBAL_MOUSE_DOWN")
+        eventHandler:Register(onLoadingScreenEnabled, "LOADING_SCREEN_ENABLED")
 
         hooksecurefunc("PlaySound", onPlaySoudHook)
 
@@ -85,13 +90,17 @@ function voiceOverDirector:Initialize()
         end)
 
         QuestFrame:HookScript("OnHide", function()
-            voiceOverDirector:PlayVoiceOverForEmotion(self.lastQuestGiverId, EMOTION_TYPES.FAREWELLS)
+            voiceOverDirector:PlayEmotion(self.lastQuestGiverId, EMOTION_TYPES.FAREWELLS)
             voiceOverDirector.lastQuestGiverId = 0
         end)
     end
+
+    if (settingsProvider.IsNeedTranslateCinematicVoiceOver()) then
+        eventHandler:Register(onLoadingScreenEnabled, "LOADING_SCREEN_ENABLED")
+    end
 end
 
-function voiceOverDirector:ResetNpcEmotions()
+function voiceOverDirector:ResetEmotions()
     self.currentUnit = {
         id = 0,
         greetingsId = 0,
@@ -100,7 +109,7 @@ function voiceOverDirector:ResetNpcEmotions()
     }
 end
 
-function voiceOverDirector:PlaingVoiceCompleted(soundHandle, isEmotion)
+function voiceOverDirector:PlayCompleted(soundHandle, isEmotion)
     if (isEmotion) then
         if self.currentEmotionHandler == soundHandle then
             self.emotionsIsPlaying = false
@@ -114,19 +123,23 @@ function voiceOverDirector:PlaingVoiceCompleted(soundHandle, isEmotion)
     end
 end
 
-function voiceOverDirector:PlayVoiceOverForDialog(hash, isCinematic, channel)
+function voiceOverDirector:StopImmediately()
+    StopSound(self.currentEmotionHandler)
+    self.currentEmotionHandler = 0;
+    self.emotionsIsPlaying = false
+
+    StopSound(self.currentDialogHandler)
+    self.currentDialogHandler = 0;
+    self.dialogIsPlaying = false
+end
+
+function voiceOverDirector:PlayDialog(hash, isCinematic, channel)
     if (isCinematic and not settingsProvider.IsNeedTranslateCinematicVoiceOver()) then return end
     if (not isCinematic and not settingsProvider.IsNeedTranslateDialogVoiceOver()) then return end
 
     local voData = isCinematic and VoiceOverData.Cinematics[hash] or VoiceOverData.Dialogs[hash]
     if (voData) then
-        StopSound(self.currentEmotionHandler)
-        self.currentEmotionHandler = 0;
-        self.emotionsIsPlaying = false
-
-        StopSound(self.currentDialogHandler)
-        self.currentDialogHandler = 0;
-        self.dialogIsPlaying = false
+        self:StopImmediately()
 
         local willPlay, soundHandler = PlaySoundFile(voData.file, channel)
         if (willPlay) then
@@ -134,7 +147,7 @@ function voiceOverDirector:PlayVoiceOverForDialog(hash, isCinematic, channel)
             self.dialogIsPlaying = true
 
             C_Timer.After(voData.lengthInSeconds, function()
-                self:PlaingVoiceCompleted(soundHandler, false)
+                self:PlayCompleted(soundHandler, false)
             end)
         end
     end
@@ -174,11 +187,11 @@ local function getFarewellsEmotion(unitId)
     return farewellsEmotions[math.random(#farewellsEmotions)]
 end
 
-function voiceOverDirector:PlayVoiceOverForEmotion(unitId, emotionType)
+function voiceOverDirector:PlayEmotion(unitId, emotionType)
     if (not settingsProvider.IsNeedTranslateDialogVoiceOver()) then return end
 
     if (self.currentUnit.id ~= unitId) then
-        self:ResetNpcEmotions()
+        self:ResetEmotions()
         self.currentUnit.id = unitId
     end
 
@@ -198,7 +211,7 @@ function voiceOverDirector:PlayVoiceOverForEmotion(unitId, emotionType)
             self.emotionsIsPlaying = true
 
             C_Timer.After(emotion.lengthInSeconds, function()
-                self:PlaingVoiceCompleted(soundHandler, true)
+                self:PlayCompleted(soundHandler, true)
             end)
         end
     end
