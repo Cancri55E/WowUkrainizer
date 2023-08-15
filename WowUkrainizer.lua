@@ -60,7 +60,7 @@ local translators = {
         args = nil,
         isEnabled = function()
             return
-                WowUkrainizer_Options.TranslateNpcMessages
+                WowUkrainizer_Options.TranslateNpcDialogs or WowUkrainizer_Options.TranslateCinematics
         end
     }
 }

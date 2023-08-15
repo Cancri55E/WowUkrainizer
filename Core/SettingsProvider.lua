@@ -12,18 +12,27 @@ local defaultOptions = {
     TooltipHeaderFontScaleInPercent = 1.15,
     TooltipFontScaleInPercent = 1.1,
     UseDefaultFonts = false,
-    -- General
+    -- UI
     TranslateClassTalentsFrame = true,
     TranslateSpellbookFrame = true,
     TranslateNameplatesAndUnitFrames = true,
     SpellNameLangInSpellbook = "ua",
+    -- Tooltips
     HighlightSpellNameInDescription = true,
     TranslateUnitTooltips = true,
     TranslateSpellTooltips = true,
     TooltipSpellLangInName = "both",
     TooltipSpellLangInDescription = "ua",
+    -- Gameplay
     TranslateMovieSubtitles = true,
-    TranslateNpcMessages = true,
+
+    TranslateNpcDialogs = true,
+    NpcDialogTextLang = "ua",
+    NpcDialogVoiceOverLang = "ua",
+
+    TranslateCinematics = true,
+    CinematicTextLang = "ua",
+    CinematicVoiceOverLang = "ua",
 }
 
 function settingsProvider:Load()
@@ -32,7 +41,8 @@ function settingsProvider:Load()
     local def = self.GetDefaultOptions()
 
     -- Font settings
-    WowUkrainizer_Options.UserFontName = WowUkrainizer_Options.UserFontName or def.UserFontName
+    WowUkrainizer_Options.UserFontName =
+        WowUkrainizer_Options.UserFontName or def.UserFontName
 
     WowUkrainizer_Options.FontScaleInPercent =
         WowUkrainizer_Options.FontScaleInPercent or def.FontScaleInPercent
@@ -43,37 +53,30 @@ function settingsProvider:Load()
     WowUkrainizer_Options.TooltipFontScaleInPercent =
         WowUkrainizer_Options.TooltipFontScaleInPercent or def.TooltipFontScaleInPercent
 
-    if (WowUkrainizer_Options.UseDefaultFonts == nil) then
-        WowUkrainizer_Options.UseDefaultFonts = def.UseDefaultFonts
-    end
+    WowUkrainizer_Options.UseDefaultFonts =
+        WowUkrainizer_Options.UseDefaultFonts or def.UseDefaultFonts
 
     -- General settings
-    if (WowUkrainizer_Options.TranslateClassTalentsFrame == nil) then
-        WowUkrainizer_Options.TranslateClassTalentsFrame = def.TranslateClassTalentsFrame
-    end
+    WowUkrainizer_Options.TranslateClassTalentsFrame =
+        WowUkrainizer_Options.TranslateClassTalentsFrame or def.TranslateClassTalentsFrame
 
-    if (WowUkrainizer_Options.TranslateSpellbookFrame == nil) then
-        WowUkrainizer_Options.TranslateSpellbookFrame = def.TranslateSpellbookFrame
-    end
+    WowUkrainizer_Options.TranslateSpellbookFrame =
+        WowUkrainizer_Options.TranslateSpellbookFrame or def.TranslateSpellbookFrame
 
-    if (WowUkrainizer_Options.TranslateNameplatesAndUnitFrames == nil) then
-        WowUkrainizer_Options.TranslateNameplatesAndUnitFrames = def.TranslateNameplatesAndUnitFrames
-    end
+    WowUkrainizer_Options.TranslateNameplatesAndUnitFrames =
+        WowUkrainizer_Options.TranslateNameplatesAndUnitFrames or def.TranslateNameplatesAndUnitFrames
 
     WowUkrainizer_Options.SpellNameLangInSpellbook =
         WowUkrainizer_Options.SpellNameLangInSpellbook or def.SpellNameLangInSpellbook
 
-    if (WowUkrainizer_Options.TranslateSpellTooltips == nil) then
-        WowUkrainizer_Options.TranslateSpellTooltips = def.TranslateSpellTooltips
-    end
+    WowUkrainizer_Options.TranslateSpellTooltips =
+        WowUkrainizer_Options.TranslateSpellTooltips or def.TranslateSpellTooltips
 
-    if (WowUkrainizer_Options.TranslateUnitTooltips == nil) then
-        WowUkrainizer_Options.TranslateUnitTooltips = def.TranslateUnitTooltips
-    end
+    WowUkrainizer_Options.TranslateUnitTooltips =
+        WowUkrainizer_Options.TranslateUnitTooltips or def.TranslateUnitTooltips
 
-    if (WowUkrainizer_Options.HighlightSpellNameInDescription == nil) then
-        WowUkrainizer_Options.HighlightSpellNameInDescription = def.HighlightSpellNameInDescription
-    end
+    WowUkrainizer_Options.HighlightSpellNameInDescription =
+        WowUkrainizer_Options.HighlightSpellNameInDescription or def.HighlightSpellNameInDescription
 
     WowUkrainizer_Options.TooltipSpellLangInName =
         WowUkrainizer_Options.TooltipSpellLangInName or def.TooltipSpellLangInName
@@ -84,8 +87,23 @@ function settingsProvider:Load()
     WowUkrainizer_Options.TranslateMovieSubtitles =
         WowUkrainizer_Options.TranslateMovieSubtitles or def.TranslateMovieSubtitles
 
-    WowUkrainizer_Options.TranslateNpcMessages =
-        WowUkrainizer_Options.TranslateNpcMessages or def.TranslateNpcMessages
+    WowUkrainizer_Options.TranslateNpcDialogs =
+        WowUkrainizer_Options.TranslateNpcDialogs or def.TranslateNpcDialogs
+
+    WowUkrainizer_Options.NpcDialogTextLang =
+        WowUkrainizer_Options.NpcDialogTextLang or def.NpcDialogTextLang
+
+    WowUkrainizer_Options.NpcDialogVoiceOverLang =
+        WowUkrainizer_Options.NpcDialogVoiceOverLang or def.NpcDialogVoiceOverLang
+
+    WowUkrainizer_Options.TranslateCinematics =
+        WowUkrainizer_Options.TranslateCinematics or def.TranslateCinematics
+
+    WowUkrainizer_Options.CinematicTextLang =
+        WowUkrainizer_Options.CinematicTextLang or def.CinematicTextLang
+
+    WowUkrainizer_Options.CinematicVoiceOverLang =
+        WowUkrainizer_Options.CinematicVoiceOverLang or def.CinematicVoiceOverLang
 end
 
 function settingsProvider:Build()
@@ -200,7 +218,7 @@ function settingsProvider:Build()
                             -- Spell Name in spellbook
                             SpellNameLangInSpellbook_Desc = {
                                 type = "description",
-                                name = "Якою мовою виводити назви здібностей",
+                                name = "        Мова для назви здібності",
                                 fontSize = "medium",
                                 order = setGeneralSettingsArgsOrder(),
                                 width = 2.15
@@ -231,10 +249,18 @@ function settingsProvider:Build()
                                 set = function(_, value) WowUkrainizer_Options.TranslateNameplatesAndUnitFrames = value end,
                             },
 
+
+                            GameplayVerticalMargin = addVerticalMargin(setGeneralSettingsArgsOrder()),
+                            GameplayHeader = {
+                                type = "header",
+                                name = "Ігролад",
+                                order = setGeneralSettingsArgsOrder()
+                            },
+
                             TranslateMovieSubtitles = {
                                 type = "toggle",
                                 name = "Перекладати субтитри в відеороликах",
-                                desc = "Відображає українські субтитри в відеороликах (pre-render)",
+                                desc = "Відображає українські субтитри в відеороликах (pre-rendered)",
                                 order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateMovieSubtitles end,
@@ -243,16 +269,116 @@ function settingsProvider:Build()
 
                             TranslateNpcMessages = {
                                 type = "toggle",
-                                name = "Перекладати діалоги",
-                                desc = "Відображає український переклад в діалогах які ви бачите під час гри " ..
-                                    "(як в чаті, так і в \"бульбашках\" над головами НІП)",
+                                name = "Перекладати внутрішньоігрові діалоги",
+                                desc = "Налаштувати мову тексту та аудіо для внутрішньоігрових "
+                                    .. "діалогів (в чаті, в \"балакучій голові\" та в \"бульбашках\" над головами НІП)",
                                 order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateNpcMessages end,
                                 set = function(_, value) WowUkrainizer_Options.TranslateNpcMessages = value end,
                             },
+                            NpcDialogTextLang_Desc = {
+                                type = "description",
+                                name = "        Мова субтитрів",
+                                fontSize = "medium",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 2.15,
+                            },
+                            NpcDialogTextLang = {
+                                type = "select",
+                                name = "",
+                                width = 1.3,
+                                order = setGeneralSettingsArgsOrder(),
+                                values = {
+                                    ["en"] = "Англійська",
+                                    ["ua"] = "Українська",
+                                },
+                                get = function(_) return WowUkrainizer_Options.NpcDialogTextLang end,
+                                set = function(_, value) WowUkrainizer_Options.NpcDialogTextLang = value end,
+                                disabled = function()
+                                    return not WowUkrainizer_Options.TranslateNpcMessages
+                                end,
+                            },
+                            NpcDialogVoiceOverLang_Desc = {
+                                type = "description",
+                                name = "        Мова озвучування",
+                                fontSize = "medium",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 2.15
+                            },
+                            NpcDialogVoiceOverLang = {
+                                type = "select",
+                                name = "",
+                                width = 1.3,
+                                order = setGeneralSettingsArgsOrder(),
+                                values = {
+                                    ["en"] = "Англійська",
+                                    ["ua"] = "Українська",
+                                },
+                                get = function(_) return WowUkrainizer_Options.NpcDialogVoiceOverLang end,
+                                set = function(_, value) WowUkrainizer_Options.NpcDialogVoiceOverLang = value end,
+                                disabled = function()
+                                    return not WowUkrainizer_Options.TranslateNpcMessages
+                                end,
+                            },
 
-                            VerticalMargin = addVerticalMargin(12),
+                            TranslateCinematics = {
+                                type = "toggle",
+                                name = "Перекладати внутрішньоігрові кат-сцени",
+                                desc = "Налаштувати мову тексту та аудіо для внутрішньоігрових "
+                                    .. "кат-сцен які зробледі за допомогою ігрового рушія",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 3.6,
+                                get = function(_) return WowUkrainizer_Options.TranslateCinematics end,
+                                set = function(_, value) WowUkrainizer_Options.TranslateCinematics = value end,
+                            },
+                            CinematicTextLang_Desc = {
+                                type = "description",
+                                name = "        Мова субтитрів",
+                                fontSize = "medium",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 2.15
+                            },
+                            CinematicTextLang = {
+                                type = "select",
+                                name = "",
+                                width = 1.3,
+                                order = setGeneralSettingsArgsOrder(),
+                                values = {
+                                    ["en"] = "Англійська",
+                                    ["ua"] = "Українська",
+                                },
+                                get = function(_) return WowUkrainizer_Options.CinematicTextLang end,
+                                set = function(_, value) WowUkrainizer_Options.CinematicTextLang = value end,
+                                disabled = function()
+                                    return not WowUkrainizer_Options.TranslateCinematics
+                                end,
+                            },
+                            CinematicVoiceOverLang_Desc = {
+                                type = "description",
+                                name = "        Мова озвучування",
+                                fontSize = "medium",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 2.15
+                            },
+                            CinematicVoiceOverLang = {
+                                type = "select",
+                                name = "",
+                                width = 1.3,
+                                order = setGeneralSettingsArgsOrder(),
+                                values = {
+                                    ["en"] = "Англійська",
+                                    ["ua"] = "Українська",
+                                },
+                                get = function(_) return WowUkrainizer_Options.CinematicVoiceOverLang end,
+                                set = function(_, value) WowUkrainizer_Options.CinematicVoiceOverLang = value end,
+                                disabled = function()
+                                    return not WowUkrainizer_Options.TranslateCinematics
+                                end,
+                            },
+
+
+                            VerticalMargin = addVerticalMargin(setGeneralSettingsArgsOrder()),
                             TooltipsHeader = {
                                 type = "header",
                                 name = "Екрані підказки",
@@ -276,10 +402,30 @@ function settingsProvider:Build()
                                 set = function(_, value) WowUkrainizer_Options.TranslateSpellTooltips = value end,
                             },
 
+                            HighlightSpellNameInDescriptionOffset = {
+                                type = "description",
+                                name = " ",
+                                fontSize = "medium",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 0.14
+                            },
+
+                            HighlightSpellNameInDescription = {
+                                type = "toggle",
+                                name = "Виділяти блакитним кольором назви здібностей та талантів в описі",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 3.3,
+                                get = function(_) return WowUkrainizer_Options.HighlightSpellNameInDescription end,
+                                set = function(_, value) WowUkrainizer_Options.HighlightSpellNameInDescription = value end,
+                                disabled = function()
+                                    return not WowUkrainizer_Options.TranslateSpellTooltips
+                                end,
+                            },
+
                             -- Spell Name
                             TooltipSpellLangInName_Desc = {
                                 type = "description",
-                                name = "Мова якою виводяться назви талантів та здібностей",
+                                name = "        Мова для назви талантів та здібностей",
                                 fontSize = "medium",
                                 order = setGeneralSettingsArgsOrder(),
                                 width = 2.15
@@ -304,7 +450,7 @@ function settingsProvider:Build()
                             -- Spell Description
                             TooltipSpellLangInDescription_Desc = {
                                 type = "description",
-                                name = "Мова якою виводиться опис талантів та здібностей",
+                                name = "        Мова для опису талантів та здібностей",
                                 fontSize = "medium",
                                 order = setGeneralSettingsArgsOrder(),
                                 width = 2.15
@@ -320,18 +466,6 @@ function settingsProvider:Build()
                                 },
                                 get = function(_) return WowUkrainizer_Options.TooltipSpellLangInDescription end,
                                 set = function(_, value) WowUkrainizer_Options.TooltipSpellLangInDescription = value end,
-                                disabled = function()
-                                    return not WowUkrainizer_Options.TranslateSpellTooltips
-                                end,
-                            },
-
-                            HighlightSpellNameInDescription = {
-                                type = "toggle",
-                                name = "Виділяти блакитним кольором назви здібностей (талантів) в описі",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 3.45,
-                                get = function(_) return WowUkrainizer_Options.HighlightSpellNameInDescription end,
-                                set = function(_, value) WowUkrainizer_Options.HighlightSpellNameInDescription = value end,
                                 disabled = function()
                                     return not WowUkrainizer_Options.TranslateSpellTooltips
                                 end,
@@ -658,7 +792,8 @@ function settingsProvider.GetTranslatorsState()
         translateSpellTooltips = WowUkrainizer_Options.TranslateSpellTooltips,
         translateUnitTooltips = WowUkrainizer_Options.TranslateUnitTooltips,
         translateMovieSubtitles = WowUkrainizer_Options.TranslateMovieSubtitles,
-        translateNpcMessages = WowUkrainizer_Options.TranslateNpcMessages
+        TranslateNpcDialogs = WowUkrainizer_Options.TranslateNpcDialogs,
+        TranslateCinematics = WowUkrainizer_Options.TranslateCinematics,
     }
 end
 
