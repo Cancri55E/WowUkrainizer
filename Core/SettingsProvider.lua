@@ -814,17 +814,17 @@ function settingsProvider.GetTooltipSpellLangInName()
 end
 
 function settingsProvider.IsNeedTranslateDialogText()
-    return WowUkrainizer_Options.NpcDialogTextLang == "ua"
+    return WowUkrainizer_Options.TranslateNpcMessages and WowUkrainizer_Options.NpcDialogTextLang == "ua"
 end
 
 function settingsProvider.IsNeedTranslateDialogVoiceOver()
-    return WowUkrainizer_Options.NpcDialogVoiceOverLang == "ua"
+    return WowUkrainizer_Options.TranslateNpcMessages and WowUkrainizer_Options.NpcDialogVoiceOverLang == "ua"
 end
 
 function settingsProvider.IsNeedTranslateCinematicText()
-    return WowUkrainizer_Options.CinematicTextLang == "ua"
+    return WowUkrainizer_Options.TranslateCinematics and WowUkrainizer_Options.CinematicTextLang == "ua"
 end
 
 function settingsProvider.IsNeedTranslateCinematicVoiceOver()
-    return WowUkrainizer_Options.CinematicVoiceOverLang == "ua"
+    return WowUkrainizer_Options.TranslateCinematics and WowUkrainizer_Options.CinematicVoiceOverLang == "ua"
 end

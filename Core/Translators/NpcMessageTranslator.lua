@@ -116,6 +116,8 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
 
     if (settingsProvider.IsNeedTranslateCinematicText()) then
         instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedSubtitle)
+    else
+        instance.hooks["CinematicFrame_AddSubtitle"](chatType, subtitle)
     end
 
     instance.subtitleOrder = instance.subtitleOrder + 1

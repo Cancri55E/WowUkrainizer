@@ -53,11 +53,25 @@ local function getUniqueRandomValue(current, maxRange)
 end
 
 function voiceOverDirector:Initialize()
-    if (settingsProvider.IsNeedTranslateDialogVoiceOver()) then
-        for _, soundFile in pairs(VoiceOverData.MuteDialogs) do
-            MuteSoundFile(soundFile)
-        end
+    settingsProvider:Load()
 
+    for _, soundFile in pairs(VoiceOverData.MuteDialogs) do
+        if (settingsProvider.IsNeedTranslateDialogVoiceOver()) then
+            MuteSoundFile(soundFile)
+        else
+            UnmuteSoundFile(soundFile)
+        end
+    end
+
+    for _, soundFile in pairs(VoiceOverData.MuteCinematics) do
+        if (settingsProvider.IsNeedTranslateCinematicVoiceOver()) then
+            MuteSoundFile(soundFile)
+        else
+            UnmuteSoundFile(soundFile)
+        end
+    end
+
+    if (settingsProvider.IsNeedTranslateDialogVoiceOver()) then
         for _, soundFile in pairs(VoiceOverData.MuteEmotions) do
             MuteSoundFile(soundFile)
         end
@@ -74,12 +88,6 @@ function voiceOverDirector:Initialize()
             voiceOverDirector:PlayVoiceOverForEmotion(self.lastQuestGiverId, EMOTION_TYPES.FAREWELLS)
             voiceOverDirector.lastQuestGiverId = 0
         end)
-    end
-
-    if (settingsProvider.IsNeedTranslateCinematicVoiceOver()) then
-        for _, soundFile in pairs(VoiceOverData.MuteCinematics) do
-            MuteSoundFile(soundFile)
-        end
     end
 end
 
