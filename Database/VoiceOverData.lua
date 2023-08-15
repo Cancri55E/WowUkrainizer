@@ -72,12 +72,16 @@ voiceOverData.MuteEmotions = {
 
 
 voiceOverData.MuteDialogs = {
-	-- 
-	3486924, 3486925, 3486926, 3486934,
 	-- Captain Garrick
 	3485456, 3485457, 3485443, 3485459, 3485460, 3485461,
 	-- Private Cole
 	3486957, 3486958, 3488623, 3486959, 3486966,
+}
+
+
+voiceOverData.MuteCinematics = {
+	-- 
+	3486924, 3486925, 3486926, 3486934,
 }
 
 ns.VoiceOverData = voiceOverData

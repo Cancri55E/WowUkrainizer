@@ -4,6 +4,7 @@ local chatBubbleTimer
 
 local aceHook = LibStub("AceHook-3.0")
 local eventHandler = ns.EventHandler:new()
+local settingsProvider = ns.SettingsProvider:new()
 
 local GenerateUuid = ns.CommonExtensions.GenerateUuid
 local Split, Trim = ns.StringExtensions.Split, ns.StringExtensions.Trim
@@ -33,7 +34,9 @@ local function updateChatBubbleMessage(chatBubbles)
                 local message = fontString:GetText() or "";
                 local translatedMsg, msgHash = GetDialogText(message)
                 ns.VoiceOverDirector:PlayVoiceOverForDialog(msgHash, false, "Dialog")
-                SetFontStringText(fontString, translatedMsg)
+                if (settingsProvider.IsNeedTranslateDialogText()) then
+                    SetFontStringText(fontString, translatedMsg)
+                end
             end
         end
     end
@@ -72,7 +75,11 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
         chatBubbleTimer:Start();
     end
 
-    return false, translatedMsg, translatedAuthor, ...
+    if (settingsProvider.IsNeedTranslateDialogText()) then
+        return false, translatedMsg, translatedAuthor, ...
+    else
+        return false, msg, author, ...
+    end
 end
 
 local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
@@ -106,7 +113,10 @@ local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
 
     local translatedSubtitle = author == '' and translatedMsg or translatedAuthor .. ": " .. translatedMsg
     ns.VoiceOverDirector:PlayVoiceOverForDialog(msgHash, true, "Dialog")
-    instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedSubtitle)
+
+    if (settingsProvider.IsNeedTranslateCinematicText()) then
+        instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedSubtitle)
+    end
 
     instance.subtitleOrder = instance.subtitleOrder + 1
 end

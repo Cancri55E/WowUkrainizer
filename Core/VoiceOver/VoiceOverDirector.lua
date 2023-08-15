@@ -1,6 +1,7 @@
 local _, ns = ...
 local VoiceOverData = ns.VoiceOverData
 local eventHandler = ns.EventHandler:new()
+local settingsProvider = ns.SettingsProvider:new()
 
 local EMOTION_TYPES = {
     GREETINGS = "Greetings",
@@ -52,26 +53,34 @@ local function getUniqueRandomValue(current, maxRange)
 end
 
 function voiceOverDirector:Initialize()
-    for _, soundFile in pairs(VoiceOverData.MuteDialogs) do
-        MuteSoundFile(soundFile)
+    if (settingsProvider.IsNeedTranslateDialogVoiceOver()) then
+        for _, soundFile in pairs(VoiceOverData.MuteDialogs) do
+            MuteSoundFile(soundFile)
+        end
+
+        for _, soundFile in pairs(VoiceOverData.MuteEmotions) do
+            MuteSoundFile(soundFile)
+        end
+
+        eventHandler:Register(onGlobalMouseDown, "GLOBAL_MOUSE_DOWN")
+
+        hooksecurefunc("PlaySound", onPlaySoudHook)
+
+        QuestFrame:HookScript("OnShow", function()
+            voiceOverDirector.lastQuestGiverId = voiceOverDirector.currentUnit.id
+        end)
+
+        QuestFrame:HookScript("OnHide", function()
+            voiceOverDirector:PlayVoiceOverForEmotion(self.lastQuestGiverId, EMOTION_TYPES.FAREWELLS)
+            voiceOverDirector.lastQuestGiverId = 0
+        end)
     end
 
-    for _, soundFile in pairs(VoiceOverData.MuteEmotions) do
-        MuteSoundFile(soundFile)
+    if (settingsProvider.IsNeedTranslateCinematicVoiceOver()) then
+        for _, soundFile in pairs(VoiceOverData.MuteCinematics) do
+            MuteSoundFile(soundFile)
+        end
     end
-
-    eventHandler:Register(onGlobalMouseDown, "GLOBAL_MOUSE_DOWN")
-
-    hooksecurefunc("PlaySound", onPlaySoudHook)
-
-    QuestFrame:HookScript("OnShow", function()
-        voiceOverDirector.lastQuestGiverId = voiceOverDirector.currentUnit.id
-    end)
-
-    QuestFrame:HookScript("OnHide", function()
-        voiceOverDirector:PlayVoiceOverForEmotion(self.lastQuestGiverId, EMOTION_TYPES.FAREWELLS)
-        voiceOverDirector.lastQuestGiverId = 0
-    end)
 end
 
 function voiceOverDirector:ResetNpcEmotions()
@@ -98,6 +107,9 @@ function voiceOverDirector:PlaingVoiceCompleted(soundHandle, isEmotion)
 end
 
 function voiceOverDirector:PlayVoiceOverForDialog(hash, isCinematic, channel)
+    if (isCinematic and not settingsProvider.IsNeedTranslateCinematicVoiceOver()) then return end
+    if (not isCinematic and not settingsProvider.IsNeedTranslateDialogVoiceOver()) then return end
+
     local voData = isCinematic and VoiceOverData.Cinematics[hash] or VoiceOverData.Dialogs[hash]
     if (voData) then
         StopSound(self.currentEmotionHandler)
@@ -155,6 +167,8 @@ local function getFarewellsEmotion(unitId)
 end
 
 function voiceOverDirector:PlayVoiceOverForEmotion(unitId, emotionType)
+    if (not settingsProvider.IsNeedTranslateDialogVoiceOver()) then return end
+
     if (self.currentUnit.id ~= unitId) then
         self:ResetNpcEmotions()
         self.currentUnit.id = unitId
