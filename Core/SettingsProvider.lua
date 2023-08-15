@@ -326,7 +326,7 @@ function settingsProvider:Build()
                                 type = "toggle",
                                 name = "Перекладати внутрішньоігрові кат-сцени",
                                 desc = "Налаштувати мову тексту та аудіо для внутрішньоігрових "
-                                    .. "кат-сцен які зробледі за допомогою ігрового рушія",
+                                    .. "кат-сцен які зроблені за допомогою ігрового рушія",
                                 order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
                                 get = function(_) return WowUkrainizer_Options.TranslateCinematics end,
