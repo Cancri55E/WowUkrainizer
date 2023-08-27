@@ -154,15 +154,18 @@ function voiceOverDirector:PlayDialog(hash, isCinematic, channel)
 end
 
 local function getGreetingsOrPissedEmotion(self, unitId)
-    local emotionId = VoiceOverData.NpcEmotions[unitId]
-    if (not emotionId) then return end
+    local greetingEmotionId = VoiceOverData.NpcEmotions[unitId] and
+        VoiceOverData.NpcEmotions[unitId][EMOTION_TYPES.GREETINGS]
+    if (not greetingEmotionId) then return end
 
-    local greetingEmotions = VoiceOverData.Emotions[emotionId][EMOTION_TYPES.GREETINGS]
+    local greetingEmotions = VoiceOverData.Emotions[greetingEmotionId]
     if (not greetingEmotions) then return end
 
     self.currentUnit.greetingsCount = self.currentUnit.greetingsCount + 1
 
-    local pissedEmotions = VoiceOverData.Emotions[emotionId][EMOTION_TYPES.PISSED]
+    local pissedEmotionId = VoiceOverData.NpcEmotions[unitId] and VoiceOverData.NpcEmotions[unitId]
+        [EMOTION_TYPES.PISSED]
+    local pissedEmotions = pissedEmotionId and VoiceOverData.Emotions[pissedEmotionId]
     if self.currentUnit.greetingsCount > 6 and pissedEmotions then
         self.currentUnit.pissedId = self.currentUnit.pissedId + 1
         if self.currentUnit.pissedId <= #pissedEmotions then
@@ -177,11 +180,14 @@ local function getGreetingsOrPissedEmotion(self, unitId)
     return greetingEmotions[self.currentUnit.greetingsId]
 end
 
-local function getFarewellsEmotion(unitId)
-    local emotionId = VoiceOverData.NpcEmotions[unitId]
+local function getFarewellsEmotion(self, unitId)
+    self.currentUnit.pissedId = 0
+    self.currentUnit.greetingsCount = 0
+
+    local emotionId = VoiceOverData.NpcEmotions[unitId] and VoiceOverData.NpcEmotions[unitId][EMOTION_TYPES.FAREWELLS]
     if (not emotionId) then return end
 
-    local farewellsEmotions = VoiceOverData.Emotions[emotionId][EMOTION_TYPES.FAREWELLS]
+    local farewellsEmotions = VoiceOverData.Emotions[emotionId]
     if (not farewellsEmotions) then return end
 
     return farewellsEmotions[math.random(#farewellsEmotions)]
@@ -201,7 +207,7 @@ function voiceOverDirector:PlayEmotion(unitId, emotionType)
     if emotionType == EMOTION_TYPES.GREETINGS then
         emotion = getGreetingsOrPissedEmotion(self, unitId)
     elseif emotionType == EMOTION_TYPES.FAREWELLS then
-        emotion = getFarewellsEmotion(unitId)
+        emotion = getFarewellsEmotion(self, unitId)
     end
 
     if (emotion) then
