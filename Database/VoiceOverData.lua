@@ -8,10 +8,10 @@ local _, ns = ...;
 local voiceOverData = {}
 
 voiceOverData.Cinematics = {
-	[1844457017] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152835_3486924.ogg]], lengthInSeconds = 9.75 },
-	[3664374311] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152836_3486925.ogg]], lengthInSeconds = 6.25 },
-	[1815550003] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152837_3486926.ogg]], lengthInSeconds = 6.05 },
-	[2556975142] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152845_3486934.ogg]], lengthInSeconds = 7.6 },
+	[1844457017] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152835_3486924.ogg]], lengthInSeconds = 9.71 },
+	[3664374311] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152836_3486925.ogg]], lengthInSeconds = 6.19 },
+	[1815550003] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152837_3486926.ogg]], lengthInSeconds = 6.01 },
+	[2556975142] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_alliance_begin\vo_152845_3486934.ogg]], lengthInSeconds = 7.53 },
 	[706583598] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_hord_begin\vo_156812_3584836.ogg]], lengthInSeconds = 10.86 },
 	[2768331800] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_hord_begin\vo_161221_3636985.ogg]], lengthInSeconds = 6.83 },
 	[2448792133] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\cinematics\exiles_rich_hord_begin\vo_161222_3636986.ogg]], lengthInSeconds = 6.43 },
@@ -20,17 +20,17 @@ voiceOverData.Cinematics = {
 
 
 voiceOverData.Dialogs = {
-	[2598535587] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152731_3485456.ogg]], lengthInSeconds = 3.45 },
-	[1922980967] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152732_3485457.ogg]], lengthInSeconds = 5.15 },
-	[1090448917] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152718_3485443.ogg]], lengthInSeconds = 6.25 },
-	[1929738606] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152734_3485459.ogg]], lengthInSeconds = 5.15 },
-	[3687745317] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152846_3486957.ogg]], lengthInSeconds = 2.9 },
-	[1655187725] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152847_3486958.ogg]], lengthInSeconds = 3.65 },
-	[2911821392] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152897_3488623.ogg]], lengthInSeconds = 1.75 },
-	[4229072475] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152848_3486959.ogg]], lengthInSeconds = 5.3 },
-	[372028375] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152849_3486966.ogg]], lengthInSeconds = 2.9 },
-	[1592247642] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152735_3485460.ogg]], lengthInSeconds = 1.9 },
-	[2930961147] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152736_3485461.ogg]], lengthInSeconds = 3.3 },
+	[2598535587] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152731_3485456.ogg]], lengthInSeconds = 3.55 },
+	[1922980967] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152732_3485457.ogg]], lengthInSeconds = 6.05 },
+	[1090448917] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152718_3485443.ogg]], lengthInSeconds = 5.95 },
+	[1929738606] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152734_3485459.ogg]], lengthInSeconds = 5.29 },
+	[3687745317] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152846_3486957.ogg]], lengthInSeconds = 2.81 },
+	[1655187725] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152847_3486958.ogg]], lengthInSeconds = 3.56 },
+	[2911821392] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152897_3488623.ogg]], lengthInSeconds = 1.69 },
+	[4229072475] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152848_3486959.ogg]], lengthInSeconds = 5.21 },
+	[372028375] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\vo_152849_3486966.ogg]], lengthInSeconds = 2.83 },
+	[1592247642] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152735_3485460.ogg]], lengthInSeconds = 1.77 },
+	[2930961147] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\vo_152736_3485461.ogg]], lengthInSeconds = 3.24 },
 	[2014878743] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156949_3586023.ogg]], lengthInSeconds = 3.94 },
 	[214564778] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156950_3586024.ogg]], lengthInSeconds = 8.02 },
 	[189554568] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156951_3586025.ogg]], lengthInSeconds = 7.19 },
@@ -46,73 +46,85 @@ voiceOverData.Dialogs = {
 
 
 voiceOverData.Emotions = {
-	[1] = {
-		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_01_169702_3488634.ogg]], lengthInSeconds = 1.2 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_02_169702_3488635.ogg]], lengthInSeconds = 1.55 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_03_169702_3488636.ogg]], lengthInSeconds = 1.1 }, },
-	[2] = {
-		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_01_169703_3488637.ogg]], lengthInSeconds = 1.55 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_02_169703_3488638.ogg]], lengthInSeconds = 1.35 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_03_169703_3488639.ogg]], lengthInSeconds = 2.3 }, },
-	[3] = {
-		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_01_169704_3488640.ogg]], lengthInSeconds = 2.3 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_02_169704_3488641.ogg]], lengthInSeconds = 2.65 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_03_169704_3488642.ogg]], lengthInSeconds = 2.05 }, },
-	[4] = {
-		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_01_154039_3485447.ogg]], lengthInSeconds = 2.45 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_02_154039_3485448.ogg]], lengthInSeconds = 1.9 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_03_154039_3485449.ogg]], lengthInSeconds = 1.6 }, },
-	[5] = {
-		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_01_154036_3489790.ogg]], lengthInSeconds = 1.2 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_02_154036_3489791.ogg]], lengthInSeconds = 1 }, },
-	[6] = {
-		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_01_154040_3485450.ogg]], lengthInSeconds = 2.1 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_02_154040_3485451.ogg]], lengthInSeconds = 2.25 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_03_154040_3485452.ogg]], lengthInSeconds = 1.75 }, },
-	[7] = {
-		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_01_154037_3489792.ogg]], lengthInSeconds = 1.4 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_02_154037_3489793.ogg]], lengthInSeconds = 1.35 }, },
-	[8] = {
-		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_01_154038_3485444.ogg]], lengthInSeconds = 3.65 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_02_154038_3485445.ogg]], lengthInSeconds = 2.55 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_03_154038_3485446.ogg]], lengthInSeconds = 2.2 }, },
-	[9] = {
-		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_01_154041_3485453.ogg]], lengthInSeconds = 3 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_02_154041_3485454.ogg]], lengthInSeconds = 3.4 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_03_154041_3485455.ogg]], lengthInSeconds = 6.4 }, },
-	[10] = {
+	[169702] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_01_169702_3488634.ogg]], lengthInSeconds = 1.13 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_02_169702_3488635.ogg]], lengthInSeconds = 1.5 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\farewells_03_169702_3488636.ogg]], lengthInSeconds = .99 }, },
+	[169703] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_01_169703_3488637.ogg]], lengthInSeconds = 1.49 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_02_169703_3488638.ogg]], lengthInSeconds = 1.3 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\greetings_03_169703_3488639.ogg]], lengthInSeconds = 2.25 }, },
+	[169704] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_01_169704_3488640.ogg]], lengthInSeconds = 2.23 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_02_169704_3488641.ogg]], lengthInSeconds = 3.58 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\private_cole\emotions\pissed_03_169704_3488642.ogg]], lengthInSeconds = 1.99 }, },
+	[154039] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_01_154039_3485447.ogg]], lengthInSeconds = 2.65 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_02_154039_3485448.ogg]], lengthInSeconds = 1.87 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_03_154039_3485449.ogg]], lengthInSeconds = 1.79 }, },
+	[154036] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_01_154036_3489790.ogg]], lengthInSeconds = .84 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\farewells_02_154036_3489791.ogg]], lengthInSeconds = 1.27 }, },
+	[154040] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_01_154040_3485450.ogg]], lengthInSeconds = 2 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_02_154040_3485451.ogg]], lengthInSeconds = 2.35 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_03_154040_3485452.ogg]], lengthInSeconds = 2.11 }, },
+	[154037] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_01_154037_3489792.ogg]], lengthInSeconds = 1.91 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_02_154037_3489793.ogg]], lengthInSeconds = 1.73 }, },
+	[154038] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_01_154038_3485444.ogg]], lengthInSeconds = 3.49 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_02_154038_3485445.ogg]], lengthInSeconds = 2.71 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\greetings_03_154038_3485446.ogg]], lengthInSeconds = 1.76 }, },
+	[154041] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_01_154041_3485453.ogg]], lengthInSeconds = 3.76 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_02_154041_3485454.ogg]], lengthInSeconds = 3.76 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\captain_garrick\emotions\pissed_03_154041_3485455.ogg]], lengthInSeconds = 5.31 }, },
+	[163362] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\emotions\farewells_01_163362_3585731.ogg]], lengthInSeconds = .96 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\emotions\farewells_02_163362_3585732.ogg]], lengthInSeconds = 1.28 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\emotions\farewells_03_163362_3585733.ogg]], lengthInSeconds = 2.38 }, },
-	[11] = {
+	[163361] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\emotions\greetings_01_163361_3585734.ogg]], lengthInSeconds = 1.6 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\emotions\greetings_02_163361_3585735.ogg]], lengthInSeconds = 1.97 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\emotions\greetings_03_163361_3585736.ogg]], lengthInSeconds = 2.65 }, },
-	[12] = {
+	[163363] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\emotions\pissed_01_163363_3585737.ogg]], lengthInSeconds = 2.41 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\emotions\pissed_02_163363_3585738.ogg]], lengthInSeconds = 2.04 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\emotions\pissed_03_163363_3585739.ogg]], lengthInSeconds = 3.93 }, },
-	[13] = {
+	[159630] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\farewells_01_159630_3584884.ogg]], lengthInSeconds = 3.14 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\farewells_02_159630_3584885.ogg]], lengthInSeconds = 1.69 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\farewells_03_159630_3584886.ogg]], lengthInSeconds = 1.02 }, },
-	[14] = {
+	[159631] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\greetings_01_159631_3584887.ogg]], lengthInSeconds = 3.75 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\greetings_02_159631_3584888.ogg]], lengthInSeconds = 3.23 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\greetings_03_159631_3584889.ogg]], lengthInSeconds = 2.4 }, },
-	[15] = {
+	[159629] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\greetings_01_159629_3584881.ogg]], lengthInSeconds = 2.84 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\greetings_02_159629_3584882.ogg]], lengthInSeconds = 3.49 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\greetings_03_159629_3584883.ogg]], lengthInSeconds = 3.13 }, },
-	[16] = {
+	[159632] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\pissed_01_159632_3584890.ogg]], lengthInSeconds = 3.35 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\pissed_02_159632_3584891.ogg]], lengthInSeconds = 5.98 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\emotions\pissed_03_159632_3584892.ogg]], lengthInSeconds = 6.05 }, },
+	[158059] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\emotions\greetings_01_158059_3574367.ogg]], lengthInSeconds = 4.07 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\emotions\greetings_02_158059_3574368.ogg]], lengthInSeconds = 2.94 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\emotions\greetings_03_158059_3574369.ogg]], lengthInSeconds = 2.8 }, },
+	[158061] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\emotions\pissed_158061_3574370.ogg]], lengthInSeconds = 2.61 }, },
+	[166200] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\emotions\farewells_01_166200_3585777.ogg]], lengthInSeconds = 2.13 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\emotions\farewells_02_166200_3585778.ogg]], lengthInSeconds = 1.03 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\emotions\farewells_03_166200_3585779.ogg]], lengthInSeconds = 1.08 }, },
+	[166201] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\emotions\greetings_01_166201_3585780.ogg]], lengthInSeconds = 3.47 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\emotions\greetings_02_166201_3585781.ogg]], lengthInSeconds = 2.76 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\emotions\greetings_03_166201_3585782.ogg]], lengthInSeconds = 1.8 }, },
+	[159887] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\farewells_01_159887_3585540.ogg]], lengthInSeconds = 2.08 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\farewells_02_159887_3585541.ogg]], lengthInSeconds = 1.73 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\farewells_03_159887_3585542.ogg]], lengthInSeconds = 1.34 }, },
+	[159886] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\greetings_01_159886_3585543.ogg]], lengthInSeconds = 3.89 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\greetings_02_159886_3585544.ogg]], lengthInSeconds = 2.56 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\greetings_03_159886_3585545.ogg]], lengthInSeconds = 2.98 }, },
 }
 
 
 voiceOverData.NpcEmotions = {
-	[160664] = { Farewells = 1, Greetings = 2, Pissed = 3 },
-	[156280] = { Farewells = 4, Greetings = 6, Pissed = 9 },
-	[156626] = { Farewells = 4, Greetings = 6, Pissed = 9 },
-	[166583] = { Farewells = 10, Greetings = 11, Pissed = 12 },
-	[166782] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[166573] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[158591] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[166805] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[166918] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[166994] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[175034] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[200657] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[166906] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[168431] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[166824] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[166827] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[166997] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[167021] = { Farewells = 13, Greetings = 14, Pissed = 16 },
-	[167145] = { Farewells = 13, Greetings = 15, Pissed = 16 },
-	[167624] = { Farewells = 13, Greetings = 15, Pissed = 16 },
-	[167926] = { Farewells = 13, Greetings = 15, Pissed = 16 },
-	[167212] = { Farewells = 13, Greetings = 15, Pissed = 16 },
-	[167596] = { Farewells = 13, Greetings = 15, Pissed = 16 },
-	[167633] = { Farewells = 13, Greetings = 15, Pissed = 16 },
-	[167675] = { Farewells = 13, Greetings = 15, Pissed = 16 },
-	[167663] = { Farewells = 13, Greetings = 15, Pissed = 16 },
-	[167913] = { Farewells = 10, Greetings = 11, Pissed = 12 },
-	[171924] = { Farewells = 10, Greetings = 11, Pissed = 12 },
-	[167216] = { Farewells = 10, Greetings = 11, Pissed = 12 },
-	[166815] = { Farewells = 10, Greetings = 11, Pissed = 12 },
-	[166784] = { Farewells = 10, Greetings = 11, Pissed = 12 },
+	[160664] = { Farewells = 169702, Greetings = 169703, Pissed = 169704 },
+	[156280] = { Farewells = 154039, Greetings = 154040, Pissed = 154041 },
+	[156626] = { Farewells = 154039, Greetings = 154040, Pissed = 154041 },
+	[166583] = { Farewells = 163362, Greetings = 163361, Pissed = 163363 },
+	[166782] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[166573] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[158591] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[166805] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[166918] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[166994] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[175034] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[200657] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[166906] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[168431] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[166824] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[166827] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[166997] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[167021] = { Farewells = 159630, Greetings = 159631, Pissed = 159632 },
+	[167145] = { Farewells = 159630, Greetings = 159629, Pissed = 159632 },
+	[167624] = { Farewells = 159630, Greetings = 159629, Pissed = 159632 },
+	[167926] = { Farewells = 159630, Greetings = 159629, Pissed = 159632 },
+	[167212] = { Farewells = 159630, Greetings = 159629, Pissed = 159632 },
+	[167596] = { Farewells = 159630, Greetings = 159629, Pissed = 159632 },
+	[167633] = { Farewells = 159630, Greetings = 159629, Pissed = 159632 },
+	[167675] = { Farewells = 159630, Greetings = 159629, Pissed = 159632 },
+	[167663] = { Farewells = 159630, Greetings = 159629, Pissed = 159632 },
+	[167913] = { Farewells = 163362, Greetings = 163361, Pissed = 163363 },
+	[171924] = { Farewells = 163362, Greetings = 163361, Pissed = 163363 },
+	[167216] = { Farewells = 163362, Greetings = 163361, Pissed = 163363 },
+	[166815] = { Farewells = 163362, Greetings = 163361, Pissed = 163363 },
+	[166784] = { Farewells = 163362, Greetings = 163361, Pissed = 163363 },
 }
 
 
@@ -121,38 +133,50 @@ voiceOverData.SoundKindIds = {
 
 
 voiceOverData.MuteEmotions = {
-	-- 1
+	-- 169702
 	3488634, 3488635, 3488636,
-	-- 2
+	-- 169703
 	3488637, 3488638, 3488639,
-	-- 3
+	-- 169704
 	3488640, 3488641, 3488642,
-	-- 4
+	-- 154039
 	3485447, 3485448, 3485449,
-	-- 5
+	-- 154036
 	3489790, 3489791,
-	-- 6
+	-- 154040
 	3485450, 3485451, 3485452,
-	-- 7
+	-- 154037
 	3489792, 3489793,
-	-- 8
+	-- 154038
 	3485444, 3485445, 3485446,
-	-- 9
+	-- 154041
 	3485453, 3485454, 3485455,
-	-- 10
+	-- 163362
 	3585731, 3585732, 3585733,
-	-- 11
+	-- 163361
 	3585734, 3585735, 3585736,
-	-- 12
+	-- 163363
 	3585737, 3585738, 3585739,
-	-- 13
+	-- 159630
 	3584884, 3584885, 3584886,
-	-- 14
+	-- 159631
 	3584887, 3584888, 3584889,
-	-- 15
+	-- 159629
 	3584881, 3584882, 3584883,
-	-- 16
+	-- 159632
 	3584890, 3584891, 3584892,
+	-- 158059
+	3574367, 3574368, 3574369,
+	-- 158061
+	3574370,
+	-- 166200
+	3585777, 3585778, 3585779,
+	-- 166201
+	3585780, 3585781, 3585782,
+	-- 159887
+	3585540, 3585541, 3585542,
+	-- 159886
+	3585543, 3585544, 3585545,
 }
 
 
