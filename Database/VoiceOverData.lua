@@ -90,6 +90,10 @@ voiceOverData.Emotions = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\farewells_01_159887_3585540.ogg]], lengthInSeconds = 2.08 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\farewells_02_159887_3585541.ogg]], lengthInSeconds = 1.73 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\farewells_03_159887_3585542.ogg]], lengthInSeconds = 1.34 }, },
 	[159886] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\greetings_01_159886_3585543.ogg]], lengthInSeconds = 3.89 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\greetings_02_159886_3585544.ogg]], lengthInSeconds = 2.56 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\emotions\greetings_03_159886_3585545.ogg]], lengthInSeconds = 2.98 }, },
+	[169142] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\farewells_01_169142_3585522.ogg]], lengthInSeconds = 2.09 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\farewells_02_169142_3585523.ogg]], lengthInSeconds = 1.38 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\farewells_03_169142_3585524.ogg]], lengthInSeconds = 1.83 }, },
+	[169143] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\greetings_01_169143_3585525.ogg]], lengthInSeconds = 2.11 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\greetings_02_169143_3585526.ogg]], lengthInSeconds = 3.28 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\greetings_03_169143_3585527.ogg]], lengthInSeconds = 1.77 }, },
 }
 
 
@@ -125,6 +129,12 @@ voiceOverData.NpcEmotions = {
 	[167216] = { Farewells = 163362, Greetings = 163361, Pissed = 163363 },
 	[166815] = { Farewells = 163362, Greetings = 163361, Pissed = 163363 },
 	[166784] = { Farewells = 163362, Greetings = 163361, Pissed = 163363 },
+	[166794] = { Greetings = 158059, Pissed = 158061 },
+	[166590] = { Farewells = 166200, Greetings = 166201, },
+	[166585] = { Farewells = 159887, Greetings = 159886, },
+	[166786] = { Farewells = 159887, Greetings = 159886, },
+	[166791] = { Farewells = 166200, Greetings = 166201, },
+	[166796] = { Greetings = 158059, Pissed = 158061 },
 }
 
 
@@ -177,6 +187,10 @@ voiceOverData.MuteEmotions = {
 	3585540, 3585541, 3585542,
 	-- 159886
 	3585543, 3585544, 3585545,
+	-- 169142
+	3585522, 3585523, 3585524,
+	-- 169143
+	3585525, 3585526, 3585527,
 }
 
 
