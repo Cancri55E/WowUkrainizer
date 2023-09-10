@@ -93,6 +93,10 @@ function voiceOverDirector:Initialize()
             voiceOverDirector:PlayEmotion(self.lastQuestGiverId, EMOTION_TYPES.FAREWELLS)
             voiceOverDirector.lastQuestGiverId = 0
         end)
+    else
+        for _, soundFile in pairs(VoiceOverData.MuteEmotions) do
+            UnmuteSoundFile(soundFile)
+        end
     end
 
     if (settingsProvider.IsNeedTranslateCinematicVoiceOver()) then
