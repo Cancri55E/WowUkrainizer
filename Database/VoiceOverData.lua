@@ -42,6 +42,43 @@ voiceOverData.Dialogs = {
 	[2623088084] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\grunt_throg\vo_156977_3586099.ogg]], lengthInSeconds = 3.72 },
 	[4279207447] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156953_3586027.ogg]], lengthInSeconds = 1.93 },
 	[1466862686] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156954_3586028.ogg]], lengthInSeconds = 4.81 },
+	[87485479] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156955_3586029.ogg]], lengthInSeconds = 7.86 },
+	[1789811370] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156956_3586030.ogg]], lengthInSeconds = 5.83 },
+	[604366029] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\vo_156957_3586031.ogg]], lengthInSeconds = 2.3 },
+	[59830284] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156958_3586032.ogg]], lengthInSeconds = .83 },
+	[2286361189] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\vo_156959_3586033.ogg]], lengthInSeconds = 3.55 },
+	[1791634542] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156960_3586034.ogg]], lengthInSeconds = 4.03 },
+	[470545567] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156961_3586035.ogg]], lengthInSeconds = 4.85 },
+	[3925226213] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\vo_156962_3586036.ogg]], lengthInSeconds = 2.92 },
+	[4247190381] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156963_3586037.ogg]], lengthInSeconds = 4.34 },
+	[4275834405] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156964_3586038.ogg]], lengthInSeconds = 8.45 },
+	[214347748] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156919_3585797.ogg]], lengthInSeconds = 3.09 },
+	[4273887682] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156687_3584039.ogg]], lengthInSeconds = 11.08 },
+	[687813409] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156688_3584040.ogg]], lengthInSeconds = 4.21 },
+	[2600285423] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156689_3584041.ogg]], lengthInSeconds = 7.42 },
+	[2200318469] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156690_3584042.ogg]], lengthInSeconds = 6.12 },
+	[3909382948] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156691_3584043.ogg]], lengthInSeconds = 6.02 },
+	[1956278357] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156700_3584052.ogg]], lengthInSeconds = 7.17 },
+	[2231153033] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156701_3584053.ogg]], lengthInSeconds = 4.7 },
+	[3664130309] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156702_3584054.ogg]], lengthInSeconds = 10.23 },
+	[1693877061] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156703_3584055.ogg]], lengthInSeconds = 5.18 },
+	[2003372965] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156704_3584056.ogg]], lengthInSeconds = 5.45 },
+	[1604547173] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156705_3584057.ogg]], lengthInSeconds = 4.91 },
+	[1664476125] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156706_3584058.ogg]], lengthInSeconds = 8.62 },
+	[4114235125] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156707_3584059.ogg]], lengthInSeconds = 7.11 },
+	[3968623954] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156708_3584060.ogg]], lengthInSeconds = 5.24 },
+	[2983886607] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156709_3584061.ogg]], lengthInSeconds = 5.65 },
+	[1800827584] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156714_3584066.ogg]], lengthInSeconds = 4.65 },
+	[363773934] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156717_3584069.ogg]], lengthInSeconds = 4.96 },
+	[4161015957] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156965_3586039.ogg]], lengthInSeconds = 9.52 },
+	[548359317] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\vo_156966_3586040.ogg]], lengthInSeconds = 5.59 },
+	[2634656225] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156967_3586041.ogg]], lengthInSeconds = 5.1 },
+	[1358807062] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\vo_156980_3586102.ogg]], lengthInSeconds = 5.39 },
+	[371392505] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\vo_156739_3584222.ogg]], lengthInSeconds = 3.68 },
+	[2747343274] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\vo_156740_3584223.ogg]], lengthInSeconds = 3.99 },
+	[758612313] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156968_3586042.ogg]], lengthInSeconds = 4.57 },
+	[4271080230] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\vo_156981_3586103.ogg]], lengthInSeconds = 5.4 },
+	[1318902499] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156969_3586043.ogg]], lengthInSeconds = 4.74 },
 }
 
 
@@ -197,17 +234,19 @@ voiceOverData.MuteDialogs = {
 	-- Private Cole
 	3486957, 3486958, 3488623, 3486959, 3486966,
 	-- Warlord Breka Grimaxe
-	3586023, 3586024, 3586025, 3586026, 3586027, 3586028,
+	3586023, 3586024, 3586025, 3586026, 3586027, 3586028, 3586029, 3586030, 3586032, 3586034, 3586035, 3586037, 3586038, 3585797, 3584039, 3584040, 3584041, 3584042, 3584043, 3584052, 3584053, 3584054, 3584055, 3584056, 3584057, 3584058, 3584059, 3584060, 3584061, 3584066, 3584069, 3586039, 3586041, 3586042, 3586043,
 	-- Grunt Throg
 	3586095, 3586096, 3586097, 3586098, 3586099,
+	-- Won'sa
+	3586031, 3586033, 3586036, 3586040,
+	-- Mithdran Dawntracker
+	3586102, 3584222, 3584223, 3586103,
 }
 
 
 voiceOverData.MuteCinematics = {
 	-- 
-	3486924, 3486925, 3486926, 3486934,
-	-- 
-	3584836, 3636985, 3636986, 3636987,
+	3486924, 3486925, 3486926, 3486934, 3584836, 3636985, 3636986, 3636987,
 }
 
 ns.VoiceOverData = voiceOverData
