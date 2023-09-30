@@ -26,6 +26,14 @@ function internal.NormalizeStringAndExtractNumerics(text)
             return string.format("{color:%s|%s}", string.char(#colors + 64), title)
         end)
 
+    local unclosedColors = {}
+    text = string.gsub(text,
+        "(%|[cC][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])",
+        function(color)
+            table.insert(unclosedColors, color)
+            return string.format("color:%s", string.char(#unclosedColors + 64))
+        end)
+
     local numbers = {}
     text, numbers = ExtractNumericValues(text)
 
@@ -35,6 +43,10 @@ function internal.NormalizeStringAndExtractNumerics(text)
 
     for i = 1, #colors do
         text = text:gsub(string.format("{color:%s", string.char(i + 64)), "{" .. colors[i])
+    end
+
+    for i = 1, #unclosedColors do
+        text = text:gsub(string.format("color:%s", string.char(i + 64)), unclosedColors[i])
     end
 
     return text, numbers
