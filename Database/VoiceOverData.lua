@@ -45,6 +45,9 @@ voiceOverData.Dialogs = {
 	[592587531] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_152858_3486994.ogg]], lengthInSeconds = 4.6 },
 	[4201528573] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\vo_152854_3486982.ogg]], lengthInSeconds = 2.12 },
 	[2881130621] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\vo_152857_3486991.ogg]], lengthInSeconds = 2.76 },
+	[604366029] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\alaria\vo_152850_3486969.ogg]], lengthInSeconds = 3.12 },
+	[2195208358] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\alaria\vo_152851_3486970.ogg]], lengthInSeconds = 4.5 },
+	[3433526274] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\alaria\vo_152852_3486971.ogg]], lengthInSeconds = 4.46 },
 	[4229318943] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\vo_152855_3486983.ogg]], lengthInSeconds = 4.24 },
 	[3081143028] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\vo_152920_3488692.ogg]], lengthInSeconds = 3.33 },
 	[136293607] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\vo_152921_3488693.ogg]], lengthInSeconds = 4.25 },
@@ -298,6 +301,8 @@ voiceOverData.MuteDialogs = {
 	3486982, 3486983, 3488692, 3488693, 3486984,
 	-- Kee-La
 	3486991, 3488806, 3488807, 3488808, 3488809,
+	-- Alaria
+	3486969, 3486970, 3486971,
 	-- Lana Jordan
 	3574371,
 	-- Mithdran Dawntracker
