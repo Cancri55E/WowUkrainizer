@@ -43,12 +43,17 @@ voiceOverData.Dialogs = {
 	[4279207447] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156953_3586027.ogg]], lengthInSeconds = 1.93 },
 	[1466862686] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156954_3586028.ogg]], lengthInSeconds = 4.81 },
 	[592587531] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_152858_3486994.ogg]], lengthInSeconds = 4.6 },
+	[2881130621] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\vo_152857_3486991.ogg]], lengthInSeconds = 2.76 },
 	[1633161835] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_153011_3488947.ogg]], lengthInSeconds = 2.57 },
 	[2672549074] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_153012_3488948.ogg]], lengthInSeconds = 3.33 },
 	[3020079399] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_153013_3488949.ogg]], lengthInSeconds = 3.52 },
 	[168417599] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_153014_3488950.ogg]], lengthInSeconds = 4.35 },
 	[2576202347] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_153015_3488951.ogg]], lengthInSeconds = 2.92 },
 	[3430280186] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_153016_3488952.ogg]], lengthInSeconds = 4.4 },
+	[1925102631] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\vo_152962_3488806.ogg]], lengthInSeconds = 3.51 },
+	[3820301923] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\vo_152963_3488807.ogg]], lengthInSeconds = 1.68 },
+	[4105945012] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\vo_152964_3488808.ogg]], lengthInSeconds = 1.69 },
+	[2183940547] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\vo_152965_3488809.ogg]], lengthInSeconds = 2.02 },
 	[87485479] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156955_3586029.ogg]], lengthInSeconds = 7.86 },
 	[1407848859] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\vo_155934_3574371.ogg]], lengthInSeconds = 5.18 },
 	[996734954] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\vo_156978_3586100.ogg]], lengthInSeconds = 4.11 },
@@ -146,6 +151,10 @@ voiceOverData.Emotions = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\greetings_01_159424_3488941.ogg]], lengthInSeconds = 2.58 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\greetings_02_159424_3488942.ogg]], lengthInSeconds = 3.36 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\greetings_03_159424_3488943.ogg]], lengthInSeconds = 2.56 }, },
 	[159425] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\pissed_01_159425_3488944.ogg]], lengthInSeconds = 2.7 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\pissed_02_159425_3488945.ogg]], lengthInSeconds = 2.64 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\pissed_03_159425_3488946.ogg]], lengthInSeconds = 3.82 }, },
+	[158058] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\emotions\farewells_01_158058_3489475.ogg]], lengthInSeconds = 1.37 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\emotions\farewells_02_158058_3489476.ogg]], lengthInSeconds = 2.32 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\emotions\farewells_03_158058_3489477.ogg]], lengthInSeconds = 2.26 }, },
+	[158057] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\emotions\greetings_01_158057_3489478.ogg]], lengthInSeconds = 2.02 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\emotions\greetings_02_158057_3489479.ogg]], lengthInSeconds = 1.43 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\emotions\greetings_03_158057_3489480.ogg]], lengthInSeconds = 1.72 }, },
 	[158059] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\emotions\greetings_01_158059_3574367.ogg]], lengthInSeconds = 4.21 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\emotions\greetings_02_158059_3574368.ogg]], lengthInSeconds = 3.04 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\emotions\greetings_03_158059_3574369.ogg]], lengthInSeconds = 2.9 }, },
 	[158061] = {
@@ -246,6 +255,10 @@ voiceOverData.MuteEmotions = {
 	3488941, 3488942, 3488943,
 	-- 159425
 	3488944, 3488945, 3488946,
+	-- 158058
+	3489475, 3489476, 3489477,
+	-- 158057
+	3489478, 3489479, 3489480,
 	-- 158059
 	3574367, 3574368, 3574369,
 	-- 158061
@@ -276,6 +289,8 @@ voiceOverData.MuteDialogs = {
 	3586095, 3586096, 3586097, 3586098, 3586099,
 	-- Bjorn Stouthands
 	3486994, 3488947, 3488948, 3488949, 3488950, 3488951, 3488952,
+	-- Kee-La
+	3486991, 3488806, 3488807, 3488808, 3488809,
 	-- Lana Jordan
 	3574371,
 	-- Mithdran Dawntracker
