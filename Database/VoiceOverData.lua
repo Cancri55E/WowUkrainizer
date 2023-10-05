@@ -43,7 +43,12 @@ voiceOverData.Dialogs = {
 	[4279207447] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156953_3586027.ogg]], lengthInSeconds = 1.93 },
 	[1466862686] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156954_3586028.ogg]], lengthInSeconds = 4.81 },
 	[592587531] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_152858_3486994.ogg]], lengthInSeconds = 4.6 },
+	[4201528573] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\vo_152854_3486982.ogg]], lengthInSeconds = 2.12 },
 	[2881130621] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\vo_152857_3486991.ogg]], lengthInSeconds = 2.76 },
+	[4229318943] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\vo_152855_3486983.ogg]], lengthInSeconds = 4.24 },
+	[3081143028] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\vo_152920_3488692.ogg]], lengthInSeconds = 3.33 },
+	[136293607] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\vo_152921_3488693.ogg]], lengthInSeconds = 4.25 },
+	[4072960736] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\vo_152856_3486984.ogg]], lengthInSeconds = 4.83 },
 	[1633161835] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_153011_3488947.ogg]], lengthInSeconds = 2.57 },
 	[2672549074] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_153012_3488948.ogg]], lengthInSeconds = 3.33 },
 	[3020079399] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\vo_153013_3488949.ogg]], lengthInSeconds = 3.52 },
@@ -289,6 +294,8 @@ voiceOverData.MuteDialogs = {
 	3586095, 3586096, 3586097, 3586098, 3586099,
 	-- Bjorn Stouthands
 	3486994, 3488947, 3488948, 3488949, 3488950, 3488951, 3488952,
+	-- Austin Huxworth
+	3486982, 3486983, 3488692, 3488693, 3486984,
 	-- Kee-La
 	3486991, 3488806, 3488807, 3488808, 3488809,
 	-- Lana Jordan
