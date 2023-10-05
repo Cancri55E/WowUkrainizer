@@ -159,6 +159,10 @@ voiceOverData.Emotions = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\greetings_01_159424_3488941.ogg]], lengthInSeconds = 2.58 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\greetings_02_159424_3488942.ogg]], lengthInSeconds = 3.36 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\greetings_03_159424_3488943.ogg]], lengthInSeconds = 2.56 }, },
 	[159425] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\pissed_01_159425_3488944.ogg]], lengthInSeconds = 2.7 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\pissed_02_159425_3488945.ogg]], lengthInSeconds = 2.64 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bjorn_stouthands\emotions\pissed_03_159425_3488946.ogg]], lengthInSeconds = 3.82 }, },
+	[161363] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\emotions\farewells_01_161363_3489612.ogg]], lengthInSeconds = 1.19 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\emotions\farewells_02_161363_3489613.ogg]], lengthInSeconds = 1.54 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\emotions\farewells_03_161363_3489614.ogg]], lengthInSeconds = 1.25 }, },
+	[161362] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\emotions\greetings_01_161362_3489615.ogg]], lengthInSeconds = 1.55 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\emotions\greetings_02_161362_3489616.ogg]], lengthInSeconds = 1.32 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\austin_huxworth\emotions\greetings_03_161362_3489617.ogg]], lengthInSeconds = 2.15 }, },
 	[158058] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\emotions\farewells_01_158058_3489475.ogg]], lengthInSeconds = 1.37 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\emotions\farewells_02_158058_3489476.ogg]], lengthInSeconds = 2.32 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\emotions\farewells_03_158058_3489477.ogg]], lengthInSeconds = 2.26 }, },
 	[158057] = {
@@ -263,6 +267,10 @@ voiceOverData.MuteEmotions = {
 	3488941, 3488942, 3488943,
 	-- 159425
 	3488944, 3488945, 3488946,
+	-- 161363
+	3489612, 3489613, 3489614,
+	-- 161362
+	3489615, 3489616, 3489617,
 	-- 158058
 	3489475, 3489476, 3489477,
 	-- 158057
