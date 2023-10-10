@@ -63,7 +63,7 @@ voiceOverData.Dialogs = {
 	[4105945012] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\vo_152964_3488808.ogg]], lengthInSeconds = 2.02 },
 	[2183940547] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\kee-la\vo_152965_3488809.ogg]], lengthInSeconds = 2.06 },
 	[87485479] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156955_3586029.ogg]], lengthInSeconds = 7.86 },
-	[1407848859] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\vo_155934_3574371.ogg]], lengthInSeconds = 5.18 },
+	[1407848859] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\vo_155934_3574371.ogg]], lengthInSeconds = 5.35 },
 	[996734954] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\mithdran_dawntracker\vo_156978_3586100.ogg]], lengthInSeconds = 3.59 },
 	[1906288526] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\bo\vo_156979_3586101.ogg]], lengthInSeconds = 3.69 },
 	[1789811370] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\warlord_breka_grimaxe\vo_156956_3586030.ogg]], lengthInSeconds = 5.83 },
