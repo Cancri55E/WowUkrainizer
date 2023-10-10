@@ -228,6 +228,7 @@ voiceOverData.NpcEmotions = {
 	[157043] = { Farewells = 158058, Greetings = 158057, },
 	[157046] = { Farewells = 161363, Greetings = 161362, },
 	[157044] = { Farewells = 159423, Greetings = 159424, Pissed = 159425 },
+	[175031] = { Farewells = 169658, Greetings = 169659, },
 }
 
 
