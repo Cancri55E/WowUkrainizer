@@ -148,7 +148,7 @@ function translator:initialize()
         hooksecurefunc(_G["Plater"], "UpdatePlateText", function(plateFrame)
             if (plateFrame.ActorTitleSpecial:IsVisible()) then
                 local titleText = plateFrame.ActorTitleSpecial:GetText():match("<(.-)>")
-                plateFrame.ActorTitleSpecial:SetText("<" .. GetUnitSubnameOrDefault(titleText) .. ">")
+                plateFrame.ActorTitleSpecial:SetText("<" .. GetUnitSubnameOrDefault(titleText, UnitSex("target")) .. ">")
             end
         end)
     end
