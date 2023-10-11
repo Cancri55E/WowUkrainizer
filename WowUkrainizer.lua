@@ -8,6 +8,11 @@ local SetFont = ns.FontStringExtensions.SetFont
 
 local translators = {
     {
+        name = "MainFrameTranslator",
+        args = nil,
+        isEnabled = function() return true end
+    },
+    {
         name = "ClassTalentFrameTranslator",
         args = nil,
         isEnabled = function()
