@@ -143,6 +143,8 @@ do
             return getFormattedValueOrDefault(ns._db.SpellbookFrameLines, default)
         elseif (type == "class_talent") then
             return getFormattedValueOrDefault(ns._db.ClassTalentFrameLines, default)
+        elseif (type == "main") then
+            return getFormattedValueOrDefault(ns._db.MainFrameLines, default)
         end
     end
 
