@@ -32,8 +32,7 @@ local function updateChatBubbleMessage(chatBubbles)
             local fontString = getFontString(chatBubble);
             if (fontString) then
                 local message = fontString:GetText() or "";
-                local translatedMsg, msgHash = GetDialogText(message)
-                ns.VoiceOverDirector:PlayDialog(msgHash, false, "Dialog")
+                local translatedMsg = GetDialogText(message)
                 if (settingsProvider.IsNeedTranslateDialogText()) then
                     SetFontStringText(fontString, translatedMsg)
                 end
@@ -58,7 +57,9 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
     end
 
     local translatedAuthor = GetUnitNameOrDefault(author)
-    local translatedMsg = GetDialogText(msg)
+    local translatedMsg, msgHash = GetDialogText(msg)
+
+    ns.VoiceOverDirector:PlayDialog(msgHash, false, "Dialog", author)
 
     if (msg == translatedMsg) then
         local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)

@@ -137,11 +137,15 @@ function voiceOverDirector:StopImmediately()
     self.dialogIsPlaying = false
 end
 
-function voiceOverDirector:PlayDialog(hash, isCinematic, channel)
+function voiceOverDirector:PlayDialog(hash, isCinematic, channel, author)
+    local function GetDialogData()
+        return VoiceOverData.Dialogs[author] and VoiceOverData.Dialogs[author][hash] or nil
+    end
+
     if (isCinematic and not settingsProvider.IsNeedTranslateCinematicVoiceOver()) then return end
     if (not isCinematic and not settingsProvider.IsNeedTranslateDialogVoiceOver()) then return end
 
-    local voData = isCinematic and VoiceOverData.Cinematics[hash] or VoiceOverData.Dialogs[hash]
+    local voData = isCinematic and VoiceOverData.Cinematics[hash] or GetDialogData()
     if (voData) then
         self:StopImmediately()
 
