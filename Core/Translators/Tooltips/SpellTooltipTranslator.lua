@@ -426,7 +426,6 @@ local function addUntranslatedSpellToDataStorage(spellId, translatedTooltipLines
         local isValueInTable = IsValueInTable(spellInfo, formattedDesc, "desc")
         if (not isValueInTable) then
             table.insert(spellInfo, { build = build, desc = formattedDesc })
-            print('Untranslated spell descriptions added to database: ', originalName, spellId)
         end
     end
 end

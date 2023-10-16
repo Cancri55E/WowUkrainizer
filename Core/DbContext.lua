@@ -53,8 +53,14 @@ do
         return getValueOrDefault(ns._db.UnitNames, default)
     end
 
-    function repository.GetUnitSubnameOrDefault(default)
-        return getValueOrDefault(ns._db.UnitSubnames, default)
+    function repository.GetUnitSubnameOrDefault(default, gender)
+        return getValueOrDefault(ns._db.UnitSubnames, default):gsub("{sex|(.-)|(.-)}", function(male, female)
+            if (gender == 3) then
+                return female
+            else
+                return male
+            end
+        end)
     end
 
     function repository.GetUnitTypeOrDefault(default)
@@ -146,6 +152,8 @@ do
             return getFormattedValueOrDefault(ns._db.SpellbookFrameLines, default)
         elseif (type == "class_talent") then
             return getFormattedValueOrDefault(ns._db.ClassTalentFrameLines, default)
+        elseif (type == "main") then
+            return getFormattedValueOrDefault(ns._db.MainFrameLines, default)
         end
     end
 

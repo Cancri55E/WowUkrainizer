@@ -133,7 +133,8 @@ function translator:initialize()
 
     hooksecurefunc("CompactUnitFrame_UpdateName", function(control)
         if (not self:IsEnabled()) then return end
-        if (StartsWith(control.displayedUnit, "nameplate")) then
+        if (not ShouldShowName(control)) then return end
+        if (StartsWith(control.displayedUnit, "nameplate")) and control.name and (type(control.name.GetText) == "function") then
             control.name:SetText(GetUnitNameOrDefault(control.name:GetText()))
         end
     end)
@@ -147,7 +148,7 @@ function translator:initialize()
         hooksecurefunc(_G["Plater"], "UpdatePlateText", function(plateFrame)
             if (plateFrame.ActorTitleSpecial:IsVisible()) then
                 local titleText = plateFrame.ActorTitleSpecial:GetText():match("<(.-)>")
-                plateFrame.ActorTitleSpecial:SetText("<" .. GetUnitSubnameOrDefault(titleText) .. ">")
+                plateFrame.ActorTitleSpecial:SetText("<" .. GetUnitSubnameOrDefault(titleText, UnitSex("target")) .. ">")
             end
         end)
     end
