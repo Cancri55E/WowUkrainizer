@@ -67,7 +67,14 @@ local translators = {
             return
                 WowUkrainizer_Options.TranslateNpcMessages
         end
-    }
+    },
+    {
+        name = "QuestTranslator",
+        args = nil,
+        isEnabled = function()
+            return true
+        end
+    },
 }
 
 local initialized = false

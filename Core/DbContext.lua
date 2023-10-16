@@ -177,4 +177,19 @@ do
     dbContext.NpcDialogs = repository
 end
 
+-- Gossips
+do
+    local repository = {}
+
+    function repository.GetGossipTitle(default)
+        return getValueOrDefault(ns._db.GossipTitles, default)
+    end
+
+    function repository.GetGossipOptionText(default)
+        return getValueOrDefault(ns._db.GossipOptions, default)
+    end
+
+    dbContext.Gossips = repository
+end
+
 ns.DbContext = dbContext

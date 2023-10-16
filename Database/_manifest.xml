@@ -7,4 +7,5 @@
 	<Script file="Frames.lua"/>
 	<Script file="Subtitles.lua"/>
 	<Script file="DialogTexts.lua"/>
+	<Script file="Gossips.lua"/>
 </Ui>
