@@ -192,4 +192,50 @@ do
     dbContext.Gossips = repository
 end
 
+-- Quests
+do
+    local QUEST_TITLE = 1
+    local QUEST_DESCRIPTION = 2
+    local QUEST_OBJECTIVES_TEXT = 3
+    local QUEST_TARGET_NAME = 4
+    local QUEST_TARGET_DESCRIPTION = 5
+    local QUEST_PROGRESS_TEXT = 6
+    local QUEST_COMPLETED_TEXT = 7
+    local repository = {}
+
+    function repository.GetQuestObjectives(questId)
+        return ns._db.QuestObjectives[questId]
+    end
+
+    function repository.GetQuestProgressText(questId)
+        local data = ns._db.Quests[questId]
+        if (not data) then return end
+
+        return data[QUEST_PROGRESS_TEXT]
+    end
+
+    function repository.GetQuestCompleteText(questId)
+        local data = ns._db.Quests[questId]
+        if (not data) then return end
+
+        return data[QUEST_COMPLETED_TEXT]
+    end
+
+    function repository.GetQuestData(questId)
+        local data = ns._db.Quests[questId]
+        if (not data) then return end
+
+        return {
+            Title = data[QUEST_TITLE],
+            Description = data[QUEST_DESCRIPTION],
+            ObjectivesText = data[QUEST_OBJECTIVES_TEXT],
+            Objectives = ns._db.QuestObjectives[questId],
+            TargetName = data[QUEST_TARGET_NAME],
+            TargetDescription = data[QUEST_TARGET_DESCRIPTION],
+        }
+    end
+
+    dbContext.Quests = repository
+end
+
 ns.DbContext = dbContext
