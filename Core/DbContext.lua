@@ -194,13 +194,13 @@ end
 
 -- Quests
 do
-    local QUEST_TITLE = 1
-    local QUEST_DESCRIPTION = 2
-    local QUEST_OBJECTIVES_TEXT = 3
-    local QUEST_TARGET_NAME = 4
-    local QUEST_TARGET_DESCRIPTION = 5
-    local QUEST_PROGRESS_TEXT = 6
-    local QUEST_COMPLETED_TEXT = 7
+    local QUEST_TITLE = ns.QUEST_TITLE
+    local QUEST_DESCRIPTION = ns.QUEST_DESCRIPTION
+    local QUEST_OBJECTIVES_TEXT = ns.QUEST_OBJECTIVES_TEXT
+    local QUEST_TARGET_NAME = ns.QUEST_TARGET_NAME
+    local QUEST_TARGET_DESCRIPTION = ns.QUEST_TARGET_DESCRIPTION
+    local QUEST_PROGRESS_TEXT = ns.QUEST_PROGRESS_TEXT
+    local QUEST_COMPLETED_TEXT = ns.QUEST_COMPLETED_TEXT
     local repository = {}
 
     function repository.GetQuestObjectives(questId)
@@ -210,15 +210,19 @@ do
     function repository.GetQuestProgressText(questId)
         local data = ns._db.Quests[questId]
         if (not data) then return end
-
         return data[QUEST_PROGRESS_TEXT]
     end
 
     function repository.GetQuestCompleteText(questId)
         local data = ns._db.Quests[questId]
         if (not data) then return end
-
         return data[QUEST_COMPLETED_TEXT]
+    end
+
+    function repository.GetQuestTitle(questId)
+        local data = ns._db.Quests[questId]
+        if (not data) then return end
+        return data[QUEST_TITLE]
     end
 
     function repository.GetQuestData(questId)

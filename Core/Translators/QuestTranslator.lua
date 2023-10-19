@@ -5,6 +5,8 @@ local eventHandler = ns.EventHandler:new()
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetGossipTitle = ns.DbContext.Gossips.GetGossipTitle
 local GetGossipOptionText = ns.DbContext.Gossips.GetGossipOptionText
+local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
+local GetQuestData = ns.DbContext.Quests.GetQuestData
 
 local translator = class("QuestTranslator", ns.Translators.BaseTranslator)
 ns.Translators.QuestTranslator = translator
@@ -27,12 +29,14 @@ local debug_option_3_tr =
 "Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут."
 
 local function OnGossipShow()
+    print("OnGossipShow")
     local title = GossipFrameTitleText:GetText();
     GossipFrameTitleText:SetText(GetUnitNameOrDefault(title));
 
     local optionHeightOffset = 0
     for _, childFrame in GossipFrame.GreetingPanel.ScrollBox:EnumerateFrames() do
-        local buttonType = childFrame:GetElementData().buttonType
+        local data = childFrame:GetElementData()
+        local buttonType = data.buttonType
         if (buttonType == GOSSIP_BUTTON_TYPE_TITLE) then
             --
             local currentHeight = childFrame.GreetingText:GetHeight()
@@ -62,8 +66,16 @@ local function OnGossipShow()
             --     childFrame:SetText(debug_option_3_tr)
             -- end
             --
-            childFrame:SetText(GetGossipOptionText(childFrame:GetText()))
-            childFrame:Resize();
+            if (buttonType == GOSSIP_BUTTON_TYPE_OPTION) then
+                childFrame:SetText(GetGossipOptionText(childFrame:GetText()))
+                childFrame:Resize();
+            else
+                local translatedTitle = GetQuestTitle(tonumber(data.info.questID))
+                if (translatedTitle) then
+                    childFrame:SetText(translatedTitle)
+                    childFrame:Resize();
+                end
+            end
 
             local currentHeightOffset = childFrame:GetHeight() - currentHeight
             if (currentHeightOffset < 1) then currentHeightOffset = 0 end
@@ -77,10 +89,62 @@ local function OnGossipShow()
 end
 
 function translator:initialize()
-    GossipFrame.GreetingPanel.GoodbyeButton:SetText("Прощавай"); -- goodbye
+    -- Gossip Frame
+    GossipFrame.GreetingPanel.GoodbyeButton:SetText("Прощавай"); -- Goodbye
+    GossipFrame.GreetingPanel.GoodbyeButton:FitToText();
+    eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
 
+    -- Quest Frame
+    QuestFrameAcceptButton:SetText("Прийняти"); -- Accept
+    QuestFrameAcceptButton:FitToText();
+    QuestFrameDeclineButton:SetText("Відмовитись"); -- Decline
+    QuestFrameDeclineButton:FitToText();
+    QuestFrameCompleteQuestButton:SetText("Завершити завдання"); -- Complete Quest
+    QuestFrameCompleteQuestButton:FitToText();
+    QuestInfoRewardsFrame.Header:SetText("Винагорода"); -- Rewards
+    QuestInfoRewardsFrame.XPFrame.ReceiveText:SetText("Досвід:") -- Experiense:
+    QuestInfoObjectivesHeader:SetText("Цілі завдання") -- Quest Objectives
+
+    -- Objectives Frame
+    ObjectiveTrackerFrame.HeaderMenu.Title:SetText("Задачі") -- Objectives
+    ObjectiveTrackerBlocksFrame.AchievementHeader.Text:SetText("Досягнення") -- Achievements
+    ObjectiveTrackerBlocksFrame.AdventureHeader.Text:SetText("Колекції") -- Collections
+    ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text:SetText("Кампанія") -- Campaign
+    ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text:SetText("Щоденник мандрівника") -- Traveler's Log
+    ObjectiveTrackerBlocksFrame.ProfessionHeader.Text:SetText("Професія") -- Profession
+    ObjectiveTrackerBlocksFrame.ScenarioHeader.Text:SetText("Сценарій") -- Scenario
+
+    ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", function()
+        print("ObjectiveTrackerBlocksFrame.ProfessionHeader:HookScript")
+        ObjectiveTrackerBlocksFrame.QuestHeader.Text:SetText("Завдання")
+    end)
     eventHandler:Register(function()
-        if (not self:IsEnabled()) then return end
-        OnGossipShow()
-    end, "GOSSIP_SHOW", "GOSSIP_CLOSED")
+        print("QUEST_SESSION_JOINED or QUEST_SESSION_LEFT")
+        ObjectiveTrackerBlocksFrame.QuestHeader.Text:SetText("Завдання")
+    end, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
+
+    QuestFrame:HookScript("OnShow", function()
+        QuestInfoRewardsFrame.ItemChooseText:SetText("Ти зможеш вибрати одну з цих винагород:"); -- You will be ableІ to choose one of these rewards:
+        QuestInfoRewardsFrame.ItemReceiveText:SetText("Ти отримаєш:"); -- You will receive: or You will also receive:
+        -- Completing this quest while in Party Sync may reward:
+        QuestInfoRewardsFrame.QuestSessionBonusReward:SetText(
+            "Проходження цього завдання в режимі синхронізації групи передбачає винагороду:");
+
+        local questID = GetQuestID();
+        if (questID) then
+            print("QuestFrame:OnShow", questID)
+
+            local questData = GetQuestData(questID)
+            if (not questData) then return end
+
+            if (questData.Title) then QuestInfoTitleHeader:SetText(questData.Title) end
+            if (questData.Description) then QuestInfoDescriptionText:SetText(questData.Description) end
+            if (questData.ObjectivesText) then QuestInfoObjectivesText:SetText(questData.ObjectivesText) end
+            if (QuestModelScene:IsVisible()) then
+                print("QuestModelScene:IsVisible")
+                if (questData.TargetName) then QuestNPCModelNameText:SetText(questData.TargetName) end
+                if (questData.TargetDescription) then QuestNPCModelText:SetText(questData.TargetDescription) end
+            end
+        end
+    end);
 end
