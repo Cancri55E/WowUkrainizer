@@ -7,6 +7,7 @@ local GetGossipTitle = ns.DbContext.Gossips.GetGossipTitle
 local GetGossipOptionText = ns.DbContext.Gossips.GetGossipOptionText
 local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
 local GetQuestData = ns.DbContext.Quests.GetQuestData
+local GetQuestObjectives = ns.DbContext.Quests.GetQuestObjectives
 
 local translator = class("QuestTranslator", ns.Translators.BaseTranslator)
 ns.Translators.QuestTranslator = translator
@@ -28,7 +29,7 @@ local debug_option_3 = "I'd like to try the Reverse course."
 local debug_option_3_tr =
 "Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут."
 
-local function OnGossipShow()
+local function onGossipShow()
     print("OnGossipShow")
     local title = GossipFrameTitleText:GetText();
     GossipFrameTitleText:SetText(GetUnitNameOrDefault(title));
@@ -88,11 +89,72 @@ local function OnGossipShow()
     end
 end
 
+local function onQuestFrameShow()
+    QuestInfoRewardsFrame.ItemChooseText:SetText("Ти зможеш вибрати одну з цих винагород:"); -- You will be ableІ to choose one of these rewards:
+    QuestInfoRewardsFrame.ItemReceiveText:SetText("Ти отримаєш:"); -- You will receive: or You will also receive:
+    -- Completing this quest while in Party Sync may reward:
+    QuestInfoRewardsFrame.QuestSessionBonusReward:SetText(
+        "Проходження цього завдання в режимі синхронізації групи передбачає винагороду:");
+
+    local questID = GetQuestID();
+    if (questID) then
+        print("QuestFrame:OnShow", questID)
+
+        local questData = GetQuestData(questID)
+        if (not questData) then return end
+
+        if (questData.Title) then QuestInfoTitleHeader:SetText(questData.Title) end
+        if (questData.Description) then QuestInfoDescriptionText:SetText(questData.Description) end
+        if (questData.ObjectivesText) then QuestInfoObjectivesText:SetText(questData.ObjectivesText) end
+        if (QuestModelScene:IsVisible()) then
+            if (questData.TargetName) then QuestNPCModelNameText:SetText(questData.TargetName) end
+            if (questData.TargetDescription) then QuestNPCModelText:SetText(questData.TargetDescription) end
+        end
+    end
+end
+
+local function onUpdateQuestTrackerModule(module)
+    for questID, questObjectiveBlock in pairs(module.usedBlocks["ObjectiveTrackerBlockTemplate"]) do
+        print("Q: ", questID)
+        local questData = GetQuestData(tonumber(questID))
+        if (questData and questData.Title) then
+            questObjectiveBlock.HeaderText:SetText(questData.Title)
+        end
+
+        local objectives = GetQuestObjectives(tonumber(questID))
+
+        for objectiveID, objectiveFrame in pairs(questObjectiveBlock.lines) do
+            if (objectiveID == 'QuestComplete') then
+                if (objectiveFrame.Text:GetText() == 'Ready for turn-in') then
+                    objectiveFrame.Text:SetText('Можна здавати') -- TODO: Move to constants 'Ready for turn-in' and 'Можна здавати'
+                elseif (not objectives and questData.ObjectivesText) then
+                    objectiveFrame.Text:SetText(questData.ObjectivesText)
+                end
+            else
+                local objectiveText = objectives and objectives[tonumber(objectiveID)]
+                if (objectiveText) then
+                    local originalText = objectiveFrame.Text:GetText()
+                    local progressText = string.match(originalText, "^(%d+/%d+)")
+                    if (progressText) then
+                        objectiveFrame.Text:SetText(progressText .. " " .. objectiveText)
+                    else
+                        objectiveFrame.Text:SetText(objectiveText)
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function onObjectiveTrackerQuestHeaderUpdated()
+    ObjectiveTrackerBlocksFrame.QuestHeader.Text:SetText("Завдання") -- Quest
+end
+
 function translator:initialize()
     -- Gossip Frame
     GossipFrame.GreetingPanel.GoodbyeButton:SetText("Прощавай"); -- Goodbye
     GossipFrame.GreetingPanel.GoodbyeButton:FitToText();
-    eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
+    eventHandler:Register(onGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
 
     -- Quest Frame
     QuestFrameAcceptButton:SetText("Прийняти"); -- Accept
@@ -114,37 +176,11 @@ function translator:initialize()
     ObjectiveTrackerBlocksFrame.ProfessionHeader.Text:SetText("Професія") -- Profession
     ObjectiveTrackerBlocksFrame.ScenarioHeader.Text:SetText("Сценарій") -- Scenario
 
-    ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", function()
-        print("ObjectiveTrackerBlocksFrame.ProfessionHeader:HookScript")
-        ObjectiveTrackerBlocksFrame.QuestHeader.Text:SetText("Завдання")
-    end)
-    eventHandler:Register(function()
-        print("QUEST_SESSION_JOINED or QUEST_SESSION_LEFT")
-        ObjectiveTrackerBlocksFrame.QuestHeader.Text:SetText("Завдання")
-    end, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
+    ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", onObjectiveTrackerQuestHeaderUpdated)
+    eventHandler:Register(onObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
 
-    QuestFrame:HookScript("OnShow", function()
-        QuestInfoRewardsFrame.ItemChooseText:SetText("Ти зможеш вибрати одну з цих винагород:"); -- You will be ableІ to choose one of these rewards:
-        QuestInfoRewardsFrame.ItemReceiveText:SetText("Ти отримаєш:"); -- You will receive: or You will also receive:
-        -- Completing this quest while in Party Sync may reward:
-        QuestInfoRewardsFrame.QuestSessionBonusReward:SetText(
-            "Проходження цього завдання в режимі синхронізації групи передбачає винагороду:");
+    QuestFrame:HookScript("OnShow", onQuestFrameShow);
 
-        local questID = GetQuestID();
-        if (questID) then
-            print("QuestFrame:OnShow", questID)
-
-            local questData = GetQuestData(questID)
-            if (not questData) then return end
-
-            if (questData.Title) then QuestInfoTitleHeader:SetText(questData.Title) end
-            if (questData.Description) then QuestInfoDescriptionText:SetText(questData.Description) end
-            if (questData.ObjectivesText) then QuestInfoObjectivesText:SetText(questData.ObjectivesText) end
-            if (QuestModelScene:IsVisible()) then
-                print("QuestModelScene:IsVisible")
-                if (questData.TargetName) then QuestNPCModelNameText:SetText(questData.TargetName) end
-                if (questData.TargetDescription) then QuestNPCModelText:SetText(questData.TargetDescription) end
-            end
-        end
-    end);
+    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", onUpdateQuestTrackerModule)
+    hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", onUpdateQuestTrackerModule)
 end
