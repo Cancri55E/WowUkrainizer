@@ -29,6 +29,37 @@ local debug_option_3 = "I'd like to try the Reverse course."
 local debug_option_3_tr =
 "Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут."
 
+local function translteObjectives(objectiveFrames, questData, objectives)
+    for objectiveID, objectiveFrame in pairs(objectiveFrames) do
+        local uiObject = nil
+
+        if (objectiveFrame:IsObjectType("FontString")) then
+            uiObject = objectiveFrame
+        else
+            uiObject = objectiveFrame.Text
+        end
+
+        if (objectiveID == 'QuestComplete') then
+            if (uiObject:GetText() == 'Ready for turn-in') then
+                uiObject:SetText('Можна здавати') -- TODO: Move to constants 'Ready for turn-in' and 'Можна здавати'
+            elseif (not objectives and questData.ObjectivesText) then
+                uiObject:SetText(questData.ObjectivesText)
+            end
+        else
+            local objectiveText = objectives and objectives[tonumber(objectiveID)]
+            if (objectiveText) then
+                local originalText = uiObject:GetText()
+                local progressText = string.match(originalText, "^(%d+/%d+)")
+                if (progressText) then
+                    uiObject:SetText(progressText .. " " .. objectiveText)
+                else
+                    uiObject:SetText(objectiveText)
+                end
+            end
+        end
+    end
+end
+
 local function onGossipShow()
     print("OnGossipShow")
     local title = GossipFrameTitleText:GetText();
@@ -89,16 +120,20 @@ local function onGossipShow()
     end
 end
 
-local function onQuestFrameShow()
+local function onQuestFrameShow(frame)
     QuestInfoRewardsFrame.ItemChooseText:SetText("Ти зможеш вибрати одну з цих винагород:"); -- You will be ableІ to choose one of these rewards:
     QuestInfoRewardsFrame.ItemReceiveText:SetText("Ти отримаєш:"); -- You will receive: or You will also receive:
     -- Completing this quest while in Party Sync may reward:
     QuestInfoRewardsFrame.QuestSessionBonusReward:SetText(
         "Проходження цього завдання в режимі синхронізації групи передбачає винагороду:");
 
-    local questID = GetQuestID();
-    if (questID) then
-        print("QuestFrame:OnShow", questID)
+    local questID = frame.questID
+    if (not questID) then
+        questID = GetQuestID();
+    end
+
+    if (questID and questID ~= 0) then
+        print("QuestFrame or QuestLogPopupDetailFrame Show for quest ", questID)
 
         local questData = GetQuestData(questID)
         if (not questData) then return end
@@ -109,6 +144,11 @@ local function onQuestFrameShow()
         if (QuestModelScene:IsVisible()) then
             if (questData.TargetName) then QuestNPCModelNameText:SetText(questData.TargetName) end
             if (questData.TargetDescription) then QuestNPCModelText:SetText(questData.TargetDescription) end
+        end
+
+        if (QuestInfoObjectivesFrame:IsVisible()) then
+            local objectives = GetQuestObjectives(tonumber(questID))
+            translteObjectives(QuestInfoObjectivesFrame.Objectives, questData, objectives)
         end
     end
 end
@@ -122,27 +162,7 @@ local function onUpdateQuestTrackerModule(module)
         end
 
         local objectives = GetQuestObjectives(tonumber(questID))
-
-        for objectiveID, objectiveFrame in pairs(questObjectiveBlock.lines) do
-            if (objectiveID == 'QuestComplete') then
-                if (objectiveFrame.Text:GetText() == 'Ready for turn-in') then
-                    objectiveFrame.Text:SetText('Можна здавати') -- TODO: Move to constants 'Ready for turn-in' and 'Можна здавати'
-                elseif (not objectives and questData.ObjectivesText) then
-                    objectiveFrame.Text:SetText(questData.ObjectivesText)
-                end
-            else
-                local objectiveText = objectives and objectives[tonumber(objectiveID)]
-                if (objectiveText) then
-                    local originalText = objectiveFrame.Text:GetText()
-                    local progressText = string.match(originalText, "^(%d+/%d+)")
-                    if (progressText) then
-                        objectiveFrame.Text:SetText(progressText .. " " .. objectiveText)
-                    else
-                        objectiveFrame.Text:SetText(objectiveText)
-                    end
-                end
-            end
-        end
+        translteObjectives(questObjectiveBlock.lines, questData, objectives)
     end
 end
 
@@ -150,10 +170,27 @@ local function onObjectiveTrackerQuestHeaderUpdated()
     ObjectiveTrackerBlocksFrame.QuestHeader.Text:SetText("Завдання") -- Quest
 end
 
+local function updateQuestDetailsButtons()
+    local text = QuestMapFrame.DetailsFrame.TrackButton:GetText()
+    local translatedText = ''
+    if (text == TRACK_QUEST_ABBREV) then
+        translatedText = "Відстежувати"
+    else
+        translatedText = "Не відстежувати"
+    end
+
+    QuestMapFrame.DetailsFrame.TrackButton:SetText(translatedText);
+    QuestMapFrame.DetailsFrame.TrackButton:FitToText();
+
+    QuestLogPopupDetailFrame.TrackButton:SetText(translatedText);
+    QuestLogPopupDetailFrame.TrackButton:FitToText();
+end
+
 function translator:initialize()
     -- Gossip Frame
     GossipFrame.GreetingPanel.GoodbyeButton:SetText("Прощавай"); -- Goodbye
     GossipFrame.GreetingPanel.GoodbyeButton:FitToText();
+
     eventHandler:Register(onGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
 
     -- Quest Frame
@@ -167,6 +204,8 @@ function translator:initialize()
     QuestInfoRewardsFrame.XPFrame.ReceiveText:SetText("Досвід:") -- Experiense:
     QuestInfoObjectivesHeader:SetText("Цілі завдання") -- Quest Objectives
 
+    QuestFrame:HookScript("OnShow", onQuestFrameShow);
+
     -- Objectives Frame
     ObjectiveTrackerFrame.HeaderMenu.Title:SetText("Задачі") -- Objectives
     ObjectiveTrackerBlocksFrame.AchievementHeader.Text:SetText("Досягнення") -- Achievements
@@ -178,9 +217,16 @@ function translator:initialize()
 
     ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", onObjectiveTrackerQuestHeaderUpdated)
     eventHandler:Register(onObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
-
-    QuestFrame:HookScript("OnShow", onQuestFrameShow);
-
     hooksecurefunc(QUEST_TRACKER_MODULE, "Update", onUpdateQuestTrackerModule)
     hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", onUpdateQuestTrackerModule)
+
+    -- Quest popup
+    QuestLogPopupDetailFrame.ShowMapButton.Text:SetText("Показати карту"); -- Show Map
+    QuestLogPopupDetailFrame.AbandonButton:SetText("Bідмовитися"); -- Abandon
+    QuestLogPopupDetailFrame.AbandonButton:FitToText();
+    QuestLogPopupDetailFrame.ShareButton:SetText("Поділитися"); -- Share
+    QuestLogPopupDetailFrame.ShareButton:FitToText();
+
+    QuestLogPopupDetailFrame:HookScript("OnShow", onQuestFrameShow);
+    hooksecurefunc("QuestMapFrame_UpdateQuestDetailsButtons", updateQuestDetailsButtons)
 end
