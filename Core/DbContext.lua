@@ -145,6 +145,8 @@ do
             return getFormattedValueOrDefault(ns._db.ClassTalentFrameLines, default)
         elseif (type == "main") then
             return getFormattedValueOrDefault(ns._db.MainFrameLines, default)
+        elseif (type == "quest") then
+            return getFormattedValueOrDefault(ns._db.QuestFrameLines, default)
         end
     end
 
@@ -199,12 +201,32 @@ do
     local QUEST_OBJECTIVES_TEXT = ns.QUEST_OBJECTIVES_TEXT
     local QUEST_TARGET_NAME = ns.QUEST_TARGET_NAME
     local QUEST_TARGET_DESCRIPTION = ns.QUEST_TARGET_DESCRIPTION
+    local QUEST_LOG_COMPLETION_TEXT = ns.QUEST_LOG_COMPLETION_TEXT
     local QUEST_PROGRESS_TEXT = ns.QUEST_PROGRESS_TEXT
     local QUEST_COMPLETED_TEXT = ns.QUEST_COMPLETED_TEXT
     local repository = {}
 
-    function repository.GetQuestObjectives(questId)
-        return ns._db.QuestObjectives[questId]
+    function repository.GetQuestObjective(questId, default)
+        if (not default) then return default end
+
+        local objectives = ns._db.QuestObjectives[questId]
+        if (not objectives) then return default end
+
+        local progressText = nil
+        local objectiveText = default
+        if (string.match(objectiveText, "^(%d+/%d+)%s+")) then
+            objectiveText:gsub("^(%d+/%d+)(.*)", function(p, o)
+                progressText = p
+                objectiveText = o
+            end)
+        end
+
+        local translatedObjectiveText = getValueOrDefault(objectives, objectiveText)
+        if (progressText) then
+            return progressText .. " " .. translatedObjectiveText
+        else
+            return translatedObjectiveText
+        end
     end
 
     function repository.GetQuestProgressText(questId)
@@ -230,10 +252,12 @@ do
         if (not data) then return end
 
         return {
+            ID = questId,
             Title = data[QUEST_TITLE],
             Description = data[QUEST_DESCRIPTION],
             ObjectivesText = data[QUEST_OBJECTIVES_TEXT],
-            Objectives = ns._db.QuestObjectives[questId],
+            ContainsObjectives = ns._db.QuestObjectives[questId] ~= nil,
+            CompletionText = data[QUEST_LOG_COMPLETION_TEXT],
             TargetName = data[QUEST_TARGET_NAME],
             TargetDescription = data[QUEST_TARGET_DESCRIPTION],
         }
