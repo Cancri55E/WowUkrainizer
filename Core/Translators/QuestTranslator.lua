@@ -29,35 +29,47 @@ local debug_option_3 = "I'd like to try the Reverse course."
 local debug_option_3_tr =
 "Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут."
 
-local function translteObjectives(objectiveFrames, questData, objectives)
-    for objectiveID, objectiveFrame in pairs(objectiveFrames) do
-        local uiObject = nil
+local function QuestInfo_GetQuestID()
+    if (QuestInfoFrame.questLog) then
+        return C_QuestLog.GetSelectedQuest();
+    else
+        return GetQuestID();
+    end
+end
 
-        if (objectiveFrame:IsObjectType("FontString")) then
-            uiObject = objectiveFrame
-        else
-            uiObject = objectiveFrame.Text
-        end
+function TryCallAPIFn(fnName, value)
+    -- this function is helper fn to get table type from wow api.
+    -- if there is GetObjectType then we will return it.
+    -- returns Button, Frame or something like this
 
-        if (objectiveID == 'QuestComplete') then
-            if (uiObject:GetText() == 'Ready for turn-in') then
-                uiObject:SetText('Можна здавати') -- TODO: Move to constants 'Ready for turn-in' and 'Можна здавати'
-            elseif (not objectives and questData.ObjectivesText) then
-                uiObject:SetText(questData.ObjectivesText)
-            end
-        else
-            local objectiveText = objectives and objectives[tonumber(objectiveID)]
-            if (objectiveText) then
-                local originalText = uiObject:GetText()
-                local progressText = string.match(originalText, "^(%d+/%d+)")
-                if (progressText) then
-                    uiObject:SetText(progressText .. " " .. objectiveText)
-                else
-                    uiObject:SetText(objectiveText)
-                end
-            end
+    -- VALIDATION
+    if type(value) ~= "table" then
+        return
+    end
+
+    -- VALIDATION FIX if __index is function we don't want to execute it
+    -- Example in ACP.L
+    local metatable = getmetatable(value)
+    if metatable and type(metatable) == "table" and type(metatable.__index) == "function" then
+        return
+    end
+
+    -- VALIDATION is forbidden from wow api
+    if value.IsForbidden then
+        local ok, forbidden = pcall(value.IsForbidden, value)
+        if not ok or (ok and forbidden) then
+            return
         end
     end
+
+    local fn = value[fnName]
+    -- VALIDATION has WoW API
+    if not fn or type(fn) ~= "function" then
+        return
+    end
+
+    -- MAIN PART:
+    return pcall(fn, value)
 end
 
 local function onGossipShow()
@@ -120,49 +132,75 @@ local function onGossipShow()
     end
 end
 
-local function onQuestFrameShow(frame)
-    QuestInfoRewardsFrame.ItemChooseText:SetText("Ти зможеш вибрати одну з цих винагород:"); -- You will be ableІ to choose one of these rewards:
-    QuestInfoRewardsFrame.ItemReceiveText:SetText("Ти отримаєш:"); -- You will receive: or You will also receive:
-    -- Completing this quest while in Party Sync may reward:
-    QuestInfoRewardsFrame.QuestSessionBonusReward:SetText(
-        "Проходження цього завдання в режимі синхронізації групи передбачає винагороду:");
+local function translteObjectives(objectiveFrames, objectivesText, objectives)
+    for objectiveID, objectiveFrame in pairs(objectiveFrames) do
+        local uiObject = nil
 
-    local questID = frame.questID
-    if (not questID) then
-        questID = GetQuestID();
-    end
-
-    if (questID and questID ~= 0) then
-        print("QuestFrame or QuestLogPopupDetailFrame Show for quest ", questID)
-
-        local questData = GetQuestData(questID)
-        if (not questData) then return end
-
-        if (questData.Title) then QuestInfoTitleHeader:SetText(questData.Title) end
-        if (questData.Description) then QuestInfoDescriptionText:SetText(questData.Description) end
-        if (questData.ObjectivesText) then QuestInfoObjectivesText:SetText(questData.ObjectivesText) end
-        if (QuestModelScene:IsVisible()) then
-            if (questData.TargetName) then QuestNPCModelNameText:SetText(questData.TargetName) end
-            if (questData.TargetDescription) then QuestNPCModelText:SetText(questData.TargetDescription) end
+        if (objectiveFrame:IsObjectType("FontString")) then
+            uiObject = objectiveFrame
+        else
+            uiObject = objectiveFrame.Text
         end
 
-        if (QuestInfoObjectivesFrame:IsVisible()) then
-            local objectives = GetQuestObjectives(tonumber(questID))
-            translteObjectives(QuestInfoObjectivesFrame.Objectives, questData, objectives)
+        if (objectiveID == 'QuestComplete') then
+            if (uiObject:GetText() == 'Ready for turn-in') then
+                uiObject:SetText('Можна здавати') -- TODO: Move to constants 'Ready for turn-in' and 'Можна здавати'
+            elseif (not objectives and objectivesText) then
+                uiObject:SetText(objectivesText)
+            end
+        else
+            local objectiveText = objectives and objectives[tonumber(objectiveID)]
+            if (objectiveText) then
+                local originalText = uiObject:GetText()
+                local progressText = string.match(originalText, "^(%d+/%d+)")
+                if (progressText) then
+                    uiObject:SetText(progressText .. " " .. objectiveText)
+                else
+                    uiObject:SetText(objectiveText)
+                end
+            end
+        end
+        local uiForTranslation = nil
+        if (objectiveFrame:IsObjectType("FontString")) then
+            uiForTranslation = objectiveFrame
+        else
+            uiForTranslation = objectiveFrame.Text
+        end
+
+        if (objectiveID == 'QuestComplete') then
+            if (uiForTranslation:GetText() == QUEST_WATCH_QUEST_READY) then
+                uiForTranslation:SetText('Можна здавати') -- TODO: Move to constants 'Ready for turn-in' and 'Можна здавати'
+            elseif (not objectives and objectivesText) then
+                uiForTranslation:SetText(objectivesText)
+            end
+        else
+            local objectiveText = objectives and objectives[tonumber(objectiveID)]
+            if (objectiveText) then
+                local originalText = uiForTranslation:GetText()
+                local progressText = string.match(originalText, "^(%d+/%d+)")
+                if (progressText) then
+                    uiForTranslation:SetText(progressText .. " " .. objectiveText)
+                else
+                    uiForTranslation:SetText(objectiveText)
+                end
+            end
         end
     end
 end
 
-local function onUpdateQuestTrackerModule(module)
-    for questID, questObjectiveBlock in pairs(module.usedBlocks["ObjectiveTrackerBlockTemplate"]) do
-        print("Q: ", questID)
+local function updateTrackerModule(module)
+    print("onUpdateQuestTrackerModule")
+    local objectiveTrackerBlockTemplate = module.usedBlocks["ObjectiveTrackerBlockTemplate"]
+    if (not objectiveTrackerBlockTemplate) then return end
+
+    for questID, questObjectiveBlock in pairs(objectiveTrackerBlockTemplate) do
         local questData = GetQuestData(tonumber(questID))
         if (questData and questData.Title) then
             questObjectiveBlock.HeaderText:SetText(questData.Title)
         end
 
         local objectives = GetQuestObjectives(tonumber(questID))
-        translteObjectives(questObjectiveBlock.lines, questData, objectives)
+        translteObjectives(questObjectiveBlock.lines, questData and questData.ObjectivesText, objectives)
     end
 end
 
@@ -200,11 +238,13 @@ function translator:initialize()
     QuestFrameDeclineButton:FitToText();
     QuestFrameCompleteQuestButton:SetText("Завершити завдання"); -- Complete Quest
     QuestFrameCompleteQuestButton:FitToText();
+
     QuestInfoRewardsFrame.Header:SetText("Винагорода"); -- Rewards
     QuestInfoRewardsFrame.XPFrame.ReceiveText:SetText("Досвід:") -- Experiense:
     QuestInfoObjectivesHeader:SetText("Цілі завдання") -- Quest Objectives
+    QuestInfoDescriptionHeader:SetText("Опис") -- Quest Objectives
 
-    QuestFrame:HookScript("OnShow", onQuestFrameShow);
+    --QuestFrame:HookScript("OnShow", onQuestFrameShow);
 
     -- Objectives Frame
     ObjectiveTrackerFrame.HeaderMenu.Title:SetText("Задачі") -- Objectives
@@ -217,8 +257,8 @@ function translator:initialize()
 
     ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", onObjectiveTrackerQuestHeaderUpdated)
     eventHandler:Register(onObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
-    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", onUpdateQuestTrackerModule)
-    hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", onUpdateQuestTrackerModule)
+    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", updateTrackerModule)
+    hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", updateTrackerModule)
 
     -- Quest popup
     QuestLogPopupDetailFrame.ShowMapButton.Text:SetText("Показати карту"); -- Show Map
@@ -227,6 +267,63 @@ function translator:initialize()
     QuestLogPopupDetailFrame.ShareButton:SetText("Поділитися"); -- Share
     QuestLogPopupDetailFrame.ShareButton:FitToText();
 
-    QuestLogPopupDetailFrame:HookScript("OnShow", onQuestFrameShow);
+    hooksecurefunc("QuestInfo_Display", function(template, parentFrame)
+        local questID = QuestInfo_GetQuestID()
+        print("Quest ID: ", questID)
+
+        if (not questID or questID == 0) then return end
+
+        local questData = GetQuestData(questID)
+        local objectives = GetQuestObjectives(questID)
+
+        if (not questData and not objectives) then return end
+
+        local elementsTable = template.elements;
+        for i = 1, #elementsTable, 3 do
+            local shownFrame, bottomShownFrame = elementsTable[i](parentFrame);
+            if (shownFrame) then
+                local _, name = TryCallAPIFn("GetName", shownFrame)
+                local logRow = "index: " .. i .. " Name: " .. name
+                print(logRow)
+
+                DevTool:AddData(shownFrame, logRow)
+                DevTool:AddData(bottomShownFrame, logRow)
+
+                if (name == "QuestInfoTitleHeader") then
+                    if (questData and questData.Title) then QuestInfoTitleHeader:SetText(questData.Title) end
+                elseif (name == "QuestInfoObjectivesText") then
+                    if (questData and questData.ObjectivesText) then
+                        QuestInfoObjectivesText:SetText(questData.ObjectivesText)
+                    end
+                elseif (name == "QuestInfoObjectivesFrame") then
+                    if (objectives) then
+                        translteObjectives(QuestInfoObjectivesFrame.Objectives, questData and questData.ObjectivesText,
+                            objectives)
+                    end
+                elseif (name == "QuestInfoDescriptionHeader") then
+                    -- ignore
+                elseif (name == "QuestInfoDescriptionText") then
+                    if (questData and questData.Description) then QuestInfoDescriptionText:SetText(questData.Description) end
+                elseif (name == "QuestInfoSpacerFrame") then
+                    -- ignore
+                elseif (name == "QuestInfoRewardsFrame") then
+                    QuestInfoRewardsFrame.ItemChooseText:SetText("Ти зможеш вибрати одну з цих винагород:"); -- You will be ableІ to choose one of these rewards:
+                    QuestInfoRewardsFrame.ItemReceiveText:SetText("Ти отримаєш:"); -- You will receive: or You will also receive:
+                    -- Completing this quest while in Party Sync may reward:
+                    QuestInfoRewardsFrame.QuestSessionBonusReward:SetText(
+                        "Проходження цього завдання в режимі синхронізації групи передбачає винагороду:");
+                elseif (name == "MapQuestInfoRewardsFrame") then
+                end
+            end
+        end
+
+        -- TODO: check and move to right place
+        if (QuestModelScene:IsVisible()) then
+            if (not questData) then return end
+            if (questData.TargetName) then QuestNPCModelNameText:SetText(questData.TargetName) end
+            if (questData.TargetDescription) then QuestNPCModelText:SetText(questData.TargetDescription) end
+        end
+    end)
+
     hooksecurefunc("QuestMapFrame_UpdateQuestDetailsButtons", updateQuestDetailsButtons)
 end
