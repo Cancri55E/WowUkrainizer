@@ -216,6 +216,23 @@ voiceOverData.Dialogs = {
 		[3925226213] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\vo_156962_3586036.ogg]], lengthInSeconds = 2.92 },
 		[548359317] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\vo_156966_3586040.ogg]], lengthInSeconds = 5.59 }
 	},
+	["Quilboar Geomancer"] = {
+		[1098619903] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150288_3434361.ogg]], lengthInSeconds = 5.16 },
+		[3291600494] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150276_3434349.ogg]], lengthInSeconds = 3.4 },
+		[2348072266] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150281_3434354.ogg]], lengthInSeconds = 2.96 },
+		[2215932913] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150283_3434356.ogg]], lengthInSeconds = 4.54 },
+		[1953378081] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150282_3434355.ogg]], lengthInSeconds = 4.34 },
+		[4169030487] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150285_3434358.ogg]], lengthInSeconds = 5.02 },
+		[3924124501] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150284_3434357.ogg]], lengthInSeconds = 3.97 }
+	},
+	["Quilboar Warrior"] = {
+		[2466197026] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150286_3434359.ogg]], lengthInSeconds = 6.03 },
+		[1589782772] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150278_3434351.ogg]], lengthInSeconds = 5.45 },
+		[1792652579] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150287_3434360.ogg]], lengthInSeconds = 6.93 },
+		[3461568029] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150279_3434352.ogg]], lengthInSeconds = 3.71 },
+		[1780890098] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150280_3434353.ogg]], lengthInSeconds = 2.65 },
+		[3427178171] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150277_3434350.ogg]], lengthInSeconds = 3.61 }
+	},
 }
 
 
@@ -430,6 +447,10 @@ voiceOverData.MuteDialogs = {
 	3586101,
 	-- Won'sa
 	3586031, 3586033, 3586036, 3586040,
+	-- Quilboar Geomancer
+	3434361, 3434349, 3434354, 3434356, 3434355, 3434358, 3434357,
+	-- Quilboar Warrior
+	3434359, 3434351, 3434360, 3434352, 3434353, 3434350,
 }
 
 
