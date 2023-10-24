@@ -253,6 +253,10 @@ voiceOverData.Dialogs = {
 		[2331823855] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_overseer\vo_150273_3434346.ogg]], lengthInSeconds = 6.62 },
 		[3704386408] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_overseer\vo_150271_3434344.ogg]], lengthInSeconds = 5.59 }
 	},
+	["Ogre Taskmaster"] = {
+		[3173434127] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_overseer\vo_150270_3434343.ogg]], lengthInSeconds = 3.3 },
+		[4204001605] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_overseer\vo_150272_3434345.ogg]], lengthInSeconds = 4.88 }
+	},
 	["Ogre Shadowcaster"] = {
 		[85611352] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150266_3434339.ogg]], lengthInSeconds = 4.98 },
 		[604591154] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150265_3434338.ogg]], lengthInSeconds = 4.72 },
@@ -502,6 +506,8 @@ voiceOverData.MuteDialogs = {
 	3434361, 3434349, 3434359, 3434354, 3434356, 3434355, 3434358, 3434351, 3434360, 3434352, 3434353, 3434350, 3434357,
 	-- Ogre Overseer
 	3434342, 3434347, 3434348, 3434346, 3434344,
+	-- Ogre Taskmaster
+	3434343, 3434345,
 	-- Ogre Shadowcaster, Ogre Brute
 	3434339, 3434338, 3463237, 3434334, 3434330, 3434340, 3434333, 3434332, 3434331, 3434336, 3434335, 3463238, 3434337,
 	-- Ogre Shadowcaster
