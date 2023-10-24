@@ -246,6 +246,44 @@ voiceOverData.Dialogs = {
 		[3427178171] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150277_3434350.ogg]], lengthInSeconds = 3.61 },
 		[3924124501] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\quilboar_exiles_rich\vo_150284_3434357.ogg]], lengthInSeconds = 3.97 }
 	},
+	["Ogre Overseer"] = {
+		[315479631] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_overseer\vo_150269_3434342.ogg]], lengthInSeconds = 2.34 },
+		[4036642164] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_overseer\vo_150274_3434347.ogg]], lengthInSeconds = 3.88 },
+		[2257026342] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_overseer\vo_150275_3434348.ogg]], lengthInSeconds = 3.95 },
+		[2331823855] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_overseer\vo_150273_3434346.ogg]], lengthInSeconds = 6.62 },
+		[3704386408] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_overseer\vo_150271_3434344.ogg]], lengthInSeconds = 5.59 }
+	},
+	["Ogre Shadowcaster"] = {
+		[85611352] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150266_3434339.ogg]], lengthInSeconds = 4.98 },
+		[604591154] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150265_3434338.ogg]], lengthInSeconds = 4.72 },
+		[2194113830] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_151447_3463237.ogg]], lengthInSeconds = 4.29 },
+		[1492035905] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150261_3434334.ogg]], lengthInSeconds = 6.29 },
+		[3337352494] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150257_3434330.ogg]], lengthInSeconds = 3.09 },
+		[546081876] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150267_3434340.ogg]], lengthInSeconds = 4.58 },
+		[2213853354] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150260_3434333.ogg]], lengthInSeconds = 4.58 },
+		[621628913] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150259_3434332.ogg]], lengthInSeconds = 2.94 },
+		[1735222859] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150258_3434331.ogg]], lengthInSeconds = 3.75 },
+		[765947677] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150263_3434336.ogg]], lengthInSeconds = 5.49 },
+		[2027966518] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150262_3434335.ogg]], lengthInSeconds = 3.8 },
+		[2838492484] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_151448_3463238.ogg]], lengthInSeconds = 1.79 },
+		[283987963] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150264_3434337.ogg]], lengthInSeconds = 4.2 },
+		[3851334535] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150268_3434341.ogg]], lengthInSeconds = 9.67 }
+	},
+	["Ogre Brute"] = {
+		[85611352] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150266_3434339.ogg]], lengthInSeconds = 4.98 },
+		[604591154] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150265_3434338.ogg]], lengthInSeconds = 4.72 },
+		[2194113830] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_151447_3463237.ogg]], lengthInSeconds = 4.29 },
+		[1492035905] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150261_3434334.ogg]], lengthInSeconds = 6.29 },
+		[3337352494] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150257_3434330.ogg]], lengthInSeconds = 3.09 },
+		[546081876] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150267_3434340.ogg]], lengthInSeconds = 4.58 },
+		[2213853354] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150260_3434333.ogg]], lengthInSeconds = 4.58 },
+		[621628913] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150259_3434332.ogg]], lengthInSeconds = 2.94 },
+		[1735222859] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150258_3434331.ogg]], lengthInSeconds = 3.75 },
+		[765947677] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150263_3434336.ogg]], lengthInSeconds = 5.49 },
+		[2027966518] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150262_3434335.ogg]], lengthInSeconds = 3.8 },
+		[2838492484] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_151448_3463238.ogg]], lengthInSeconds = 1.79 },
+		[283987963] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150264_3434337.ogg]], lengthInSeconds = 4.2 }
+	},
 }
 
 
@@ -462,6 +500,12 @@ voiceOverData.MuteDialogs = {
 	3586031, 3586033, 3586036, 3586040,
 	-- Quilboar Geomancer, Quilboar Warrior
 	3434361, 3434349, 3434359, 3434354, 3434356, 3434355, 3434358, 3434351, 3434360, 3434352, 3434353, 3434350, 3434357,
+	-- Ogre Overseer
+	3434342, 3434347, 3434348, 3434346, 3434344,
+	-- Ogre Shadowcaster, Ogre Brute
+	3434339, 3434338, 3463237, 3434334, 3434330, 3434340, 3434333, 3434332, 3434331, 3434336, 3434335, 3463238, 3434337,
+	-- Ogre Shadowcaster
+	3434341,
 }
 
 
