@@ -1,5 +1,8 @@
 local _, ns = ...;
 
+local _G = _G
+
+local settingsProvider = ns.SettingsProvider:new()
 local eventHandler = ns.EventHandler:new()
 
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
@@ -29,16 +32,39 @@ ns.Translators.QuestTranslator = translator
 -- local debug_option_3_tr =
 -- "Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут.Я хочу спробувати зворотній маршрут."
 
-local function getQuestFrameTranslationOrDefault(default)
-    return ns.DbContext.Frames.GetTranslationOrDefault("quest", default)
-end
-
 local function getQuestID()
     if (QuestInfoFrame.questLog) then
         return C_QuestLog.GetSelectedQuest();
     else
         return GetQuestID();
     end
+end
+
+_G.StaticPopupDialogs["WowUkrainizer_WowheadLink"] = {
+    text = "Натисніть Ctrl+C, щоб скопіювати URL-адресу в буфер обміну",
+    hasEditBox = 1,
+    button1 = "Гаразд",
+    OnShow = function(self)
+        local questID = getQuestID()
+        if questID and questID ~= 0 then
+            local box = getglobal(self:GetName() .. "EditBox")
+            if box then
+                box:SetWidth(275)
+                box:SetText("https://www.wowhead.com/quest=" .. questID)
+                box:HighlightText()
+                box:SetFocus()
+            end
+        end
+    end,
+
+    EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
+    timeout = 0,
+    whileDead = 1,
+    hideOnEscape = 1
+}
+
+local function getQuestFrameTranslationOrDefault(default)
+    return ns.DbContext.Frames.GetTranslationOrDefault("quest", default)
 end
 
 function TryCallAPIFn(fnName, value)
@@ -88,7 +114,6 @@ local function TranslteQuestObjective(objectiveFrame, questData)
         else
             local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questData.ID)
             local completionText = GetQuestLogCompletionText(questLogIndex)
-
             if (completionText and questData.CompletionText) then
                 objectiveFrame:SetText(questData.CompletionText)
             elseif ((not completionText and not questData.ContainsObjectives) and questData.ObjectivesText) then
@@ -365,6 +390,11 @@ local function UpdateTrackerModule(module)
     if (not objectiveTrackerBlockTemplate) then return end
 
     for questID, questObjectiveBlock in pairs(objectiveTrackerBlockTemplate) do
+        local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID)
+        local completionText = GetQuestLogCompletionText(questLogIndex)
+        local questDescription, questObjectives = GetQuestLogQuestText(questLogIndex)
+        print(questDescription, questObjectives, completionText)
+
         local questData = GetQuestData(tonumber(questID))
         if (questData and questData.Title) then
             questObjectiveBlock.HeaderText:SetText(questData.Title)
@@ -401,7 +431,15 @@ local function ShowQuestPortrait()
     if (questData.TargetDescription) then QuestNPCModelText:SetText(questData.TargetDescription) end
 end
 
+local ACTIVE_TEMPLATE;
+local ACTIVE_PARENT_FRAME;
+
 local function DisplayQuestInfo(template, parentFrame)
+    ACTIVE_TEMPLATE = template
+    ACTIVE_PARENT_FRAME = parentFrame
+
+    if (not WowUkrainizer_Options.TranslateQuestText) then return end
+
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
 
@@ -439,7 +477,57 @@ local function DisplayQuestInfo(template, parentFrame)
     end
 end
 
+local function GetCampaignTooltipFromQuestMapLog()
+    -- DevTool: ChapterTitle - (4) FontString 'Campaign Progress0/3 Chapters' table: 00000139E4425670
+    -- DevTool: Description - (4) FontString 'Trouble in Tiragarde SoundDarkness of DrustvarSecrets of Stormsong Valley' table: 00000139E4425710
+    -- DevTool: Title - (3) FontString 'Battle for Azeroth' table: 00000139E44255D0
+    -- if (not _G.WowUkrainizerData) then _G.WowUkrainizerData = {} end
+    -- if (not _G.WowUkrainizerData.QuestData) then _G.WowUkrainizerData.QuestData = {} end
+    -- if (not _G.WowUkrainizerData.QuestData.CampaignTooltip) then _G.WowUkrainizerData.QuestData.CampaignTooltip = {} end
+    -- _G.WowUkrainizerData.QuestData.CampaignTooltip.Title = QuestScrollFrame.CampaignTooltip.Title:GetText()
+    -- _G.WowUkrainizerData.QuestData.CampaignTooltip.Description = QuestScrollFrame.CampaignTooltip.Description:GetText()
+    -- _G.WowUkrainizerData.QuestData.CampaignTooltip.ChapterTitle = QuestScrollFrame.CampaignTooltip.ChapterTitle:GetText()
+end
+
+local function InitializeCommandButtons()
+    local prefix = "UI-HUD-MicroMenu-";
+    local name = "Shop";
+
+    QuestFrameSwitchTranslationButton = CreateFrame("Button", nil, QuestFrame, "UIPanelButtonTemplate");
+    QuestFrameSwitchTranslationButton:SetSize(100, 24);
+    if (WowUkrainizer_Options.TranslateQuestText) then
+        QuestFrameSwitchTranslationButton:SetText("Оригінал");
+    else
+        QuestFrameSwitchTranslationButton:SetText("Переклад");
+    end
+    QuestFrameSwitchTranslationButton:ClearAllPoints();
+    QuestFrameSwitchTranslationButton:SetPoint("TOPRIGHT", QuestFrame, "TOPRIGHT", -34, -30);
+    QuestFrameSwitchTranslationButton:SetScript("OnMouseDown", function(_)
+        WowUkrainizer_Options.TranslateQuestText = not WowUkrainizer_Options.TranslateQuestText
+        if (WowUkrainizer_Options.TranslateQuestText) then
+            QuestFrameSwitchTranslationButton:SetText("Оригінал");
+        else
+            QuestFrameSwitchTranslationButton:SetText("Переклад");
+        end
+
+        QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
+            QuestInfoFrame.mapView)
+    end)
+    QuestFrameSwitchTranslationButton:Show();
+
+    WowheadButton = CreateFrame("Button", nil, QuestFrame, "UIPanelButtonTemplate");
+    WowheadButton:SetSize(24, 24);
+    WowheadButton:ClearAllPoints();
+    WowheadButton:SetPoint("TOPRIGHT", QuestFrame, "TOPRIGHT", -6, -30);
+    WowheadButton:SetNormalAtlas(prefix .. name .. "-Up");
+    WowheadButton:SetPushedAtlas(prefix .. name .. "-Down");
+    WowheadButton:SetScript("OnMouseDown", function(_) _G.StaticPopup_Show("WowUkrainizer_WowheadLink") end)
+    WowheadButton:Show();
+end
+
 function translator:initialize()
+    InitializeCommandButtons()
+
     -- Gossip Frame
     GossipFrame.GreetingPanel.GoodbyeButton:SetText("Прощавай"); -- Goodbye
     GossipFrame.GreetingPanel.GoodbyeButton:FitToText();
@@ -503,4 +591,11 @@ function translator:initialize()
     hooksecurefunc("QuestMapFrame_UpdateQuestDetailsButtons", UpdateQuestDetailsButtons)
     hooksecurefunc("QuestLogQuests_Update", OnQuestLogQuestsUpdate)
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", OnQuestMapLogTitleButtonTooltipShow)
+
+    hooksecurefunc("QuestMapLog_GetCampaignTooltip", GetCampaignTooltipFromQuestMapLog)
+
+    QuestScrollFrame.CampaignTooltip.CompleteRewardText:SetText("Закінчення цієї глави дасть вам винагороду:") -- WAR_CAMPAIGN_CHAPTER_REWARD_TEXT
+
+    -- ns.QuestDump.FindCompaign()
+    -- ns.QuestDump.DumpQuestObjectiveInfo(55184)
 end
