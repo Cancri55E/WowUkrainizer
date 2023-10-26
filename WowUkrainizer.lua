@@ -5,6 +5,7 @@ local eventHandler = ns.EventHandler:new()
 local settingsProvider = ns.SettingsProvider:new()
 
 local SetFont = ns.FontStringExtensions.SetFont
+local SetFontH = ns.FontStringExtensions.SetFontH
 
 local translators = {
     {
@@ -94,28 +95,47 @@ local function setGameFonts()
     local useDefaultFonts, fontName, fontScale, tooltipHeaderFontScale, tooltipFontScale =
         settingsProvider.GetFontSettings()
 
-    if useDefaultFonts then return end
+    if not useDefaultFonts then
+        local fontElements = {
+            { element = SystemFont_Shadow_Med1,   scale = fontScale },
+            { element = SystemFont_Shadow_Small,  scale = fontScale },
+            { element = SystemFont_Shadow_Med2,   scale = fontScale },
+            { element = SystemFont_Shadow_Large2, scale = fontScale },
+            { element = Game30Font,               scale = fontScale },
+        }
 
-    local fontElements = {
-        { element = SystemFont_Shadow_Med1,   scale = fontScale },
-        { element = SystemFont_Shadow_Small,  scale = fontScale },
-        { element = SystemFont_Shadow_Med2,   scale = fontScale },
-        { element = SystemFont_Shadow_Large2, scale = fontScale },
-        { element = Game30Font,               scale = fontScale },
-    }
+        local tooltipElements = {
+            { element = GameTooltipHeader, scale = tooltipHeaderFontScale },
+            { element = Tooltip_Med,       scale = tooltipFontScale },
+            { element = Tooltip_Small,     scale = tooltipFontScale },
+        }
 
-    local tooltipElements = {
-        { element = GameTooltipHeader, scale = tooltipHeaderFontScale },
-        { element = Tooltip_Med,       scale = tooltipFontScale },
-        { element = Tooltip_Small,     scale = tooltipFontScale },
-    }
+        for _, fontElement in ipairs(fontElements) do
+            SetFont(fontElement.element, fontName, fontElement.scale)
+        end
 
-    for _, fontElement in ipairs(fontElements) do
-        SetFont(fontElement.element, fontName, fontElement.scale)
+        for _, tooltipElement in ipairs(tooltipElements) do
+            SetFont(tooltipElement.element, fontName, tooltipElement.scale)
+        end
     end
 
-    for _, tooltipElement in ipairs(tooltipElements) do
-        SetFont(tooltipElement.element, fontName, tooltipElement.scale)
+    local questTitleFont = settingsProvider.GetQuestTitleFontFile()
+    local questFont = settingsProvider.GetQuestFontFile()
+    local questElements = {
+        { element = QuestFont_Large,              name = questTitleFont, height = 15 },
+        { element = QuestFont_Huge,               name = questTitleFont, height = 18 },
+        { element = QuestFont_30,                 name = questTitleFont, height = 30 },
+        { element = QuestFont_39,                 name = questTitleFont, height = 39 },
+        { element = QuestFont_Outline_Huge,       name = questTitleFont, height = 18 },
+        { element = QuestFont_Super_Huge,         name = questTitleFont, height = 24 },
+        { element = QuestFont_Super_Huge_Outline, name = questTitleFont, height = 24 },
+        { element = QuestFont_Enormous,           name = questTitleFont, height = 30 },
+        { element = QuestFont_Shadow_Small,       name = questTitleFont, height = 14 },
+        { element = SystemFont_Med2,              name = questFont,      height = 13 },
+    }
+
+    for _, fontElement in ipairs(questElements) do
+        SetFontH(fontElement.element, fontElement.name, fontElement.height)
     end
 end
 

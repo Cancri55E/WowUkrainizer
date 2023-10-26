@@ -15,3 +15,8 @@ function internal.SetFont(fontString, fontName, scale)
     local _, height, flags = fontString:GetFont()
     fontString:SetFont(fontName, height * scale, flags)
 end
+
+function internal.SetFontH(fontString, fontName, height)
+    local _, _, flags = fontString:GetFont()
+    fontString:SetFont(fontName, height, flags)
+end

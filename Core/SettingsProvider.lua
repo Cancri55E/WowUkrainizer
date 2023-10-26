@@ -633,7 +633,17 @@ function settingsProvider:Reset()
     ReloadUI()
 end
 
-function settingsProvider.GetDefaultFontFile() return [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]] end
+function settingsProvider.GetQuestTitleFontFile()
+    return [[Interface\AddOns\WowUkrainizer\assets\Classic_UA_Morpheus.ttf]]
+end
+
+function settingsProvider.GetQuestFontFile()
+    return [[Interface\AddOns\WowUkrainizer\assets\Classic_UA_FRIZQT.ttf]]
+end
+
+function settingsProvider.GetDefaultFontFile()
+    return [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]]
+end
 
 function settingsProvider.GetDefaultOptions() return defaultOptions end
 
