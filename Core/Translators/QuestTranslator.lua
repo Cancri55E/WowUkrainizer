@@ -12,9 +12,11 @@ local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
 local GetQuestData = ns.DbContext.Quests.GetQuestData
 local GetQuestObjective = ns.DbContext.Quests.GetQuestObjective
 
+local FACTION_ALLIANCE = ns.FACTION_ALLIANCE
+local FACTION_HORDE = ns.FACTION_HORDE
+
 local ACTIVE_TEMPLATE;
 local ACTIVE_PARENT_FRAME;
-local switchObjectivesTranslationButton
 
 local translator = class("QuestTranslator", ns.Translators.BaseTranslator)
 ns.Translators.QuestTranslator = translator
@@ -71,6 +73,29 @@ local function getQuestFrameTranslationOrDefault(default)
     return ns.DbContext.Frames.GetTranslationOrDefault("quest", default)
 end
 
+local function translateFontString(fontString)
+    if (not fontString.GetText or fontString.SetText) then return end
+    local text = fontString.GetText()
+    local translateText = getQuestFrameTranslationOrDefault(text)
+    if (text ~= translateText) then
+        fontString:SetText(translateText)
+    end
+end
+
+local function translateButton(button, width, height)
+    translateFontString(button)
+    if (width and height) then
+        button:SetSize(width, height)
+    else
+        button:FitToText()
+        if (width) then
+            button:SetSize(width, button:GetHeight())
+        elseif (height) then
+            button:SetSize(button:GetWidth(), 24)
+        end
+    end
+end
+
 function TryCallAPIFn(fnName, value)
     -- this function is helper fn to get table type from wow api.
     -- if there is GetObjectType then we will return it.
@@ -114,7 +139,7 @@ local function TranslteQuestObjective(objectiveFrame, questData)
 
     if (isComplete) then
         if (text == QUEST_WATCH_QUEST_READY) then
-            objectiveFrame:SetText('Можна здавати') -- TODO: Move to constants 'Можна здавати'
+            objectiveFrame:SetText(getQuestFrameTranslationOrDefault(QUEST_WATCH_QUEST_READY))
         else
             local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questData.ID)
             local completionText = GetQuestLogCompletionText(questLogIndex)
@@ -148,34 +173,18 @@ local function OnGossipShow()
         local data = childFrame:GetElementData()
         local buttonType = data.buttonType
         if (buttonType == GOSSIP_BUTTON_TYPE_TITLE) then
-            --
             local currentHeight = childFrame.GreetingText:GetHeight()
-            --
-            --childFrame.GreetingText:SetText(debug_title)
             childFrame.GreetingText:SetText(GetGossipTitle(childFrame.GreetingText:GetText()))
-            --
             optionHeightOffset = childFrame.GreetingText:GetHeight() - currentHeight
             if (optionHeightOffset < 1) then optionHeightOffset = 0 end
-            --
         elseif (buttonType == GOSSIP_BUTTON_TYPE_OPTION or buttonType == GOSSIP_BUTTON_TYPE_ACTIVE_QUEST or buttonType == GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST) then
-            --
             if (optionHeightOffset > 0) then
                 local point, relativeTo, relativePoint, xOfs, yOfs = childFrame:GetPoint(1)
                 childFrame:ClearAllPoints()
                 childFrame:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs - optionHeightOffset)
             end
-            --
+
             local currentHeight = childFrame:GetHeight()
-            --
-            -- local text = childFrame:GetText();
-            -- if (text == debug_option_1) then
-            --     childFrame:SetText(debug_option_1_tr)
-            -- elseif (text == debug_option_2) then
-            --     childFrame:SetText(debug_option_2_tr)
-            -- elseif (text == debug_option_3) then
-            --     childFrame:SetText(debug_option_3_tr)
-            -- end
-            --
             if (buttonType == GOSSIP_BUTTON_TYPE_OPTION) then
                 childFrame:SetText(GetGossipOptionText(childFrame:GetText()))
                 childFrame:Resize();
@@ -193,13 +202,12 @@ local function OnGossipShow()
             if (currentHeightOffset > 0) then
                 optionHeightOffset = optionHeightOffset + currentHeightOffset;
             end
-            --
         end
     end
 end
 
 local function OnObjectiveTrackerQuestHeaderUpdated()
-    ObjectiveTrackerBlocksFrame.QuestHeader.Text:SetText("Завдання") -- Quest
+    translateFontString(ObjectiveTrackerBlocksFrame.QuestHeader.Text)
 end
 
 local function OnQuestMapLogTitleButtonTooltipShow(button)
@@ -238,7 +246,7 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
     -- quest tag
     local tagInfo = C_QuestLog.GetQuestTagInfo(questID);
     if (tagInfo) then
-        local tagName = tagInfo.tagName;
+        local tagName = tagInfo.tagName; -- TODO:
         local factionGroup = GetQuestFactionGroup(questID);
         -- Faction-specific account quests have additional info in the tooltip
         if (tagInfo.tagID == Enum.QuestTag.Account and factionGroup) then
@@ -259,7 +267,6 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
             end
         end
 
-        -- TODO: Translate TAG INFO ?
         QuestUtils_AddQuestTagLineToTooltip(GameTooltip, tagName, overrideQuestTag, tagInfo.worldQuestType,
             NORMAL_FONT_COLOR);
     end
@@ -304,7 +311,7 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
                 local color = HIGHLIGHT_FONT_COLOR;
                 if (finished) then
                     color = GRAY_FONT_COLOR;
-                end
+                end -- TODO: ?
                 GameTooltip:AddLine(QUEST_DASH .. GetQuestObjective(questID, text), color.r, color.g, color.b,
                     true);
                 needsSeparator = true;
@@ -336,7 +343,7 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
 
         local omitTitle = true;
         local ignoreActivePlayer = true;
-        GameTooltip:SetQuestPartyProgress(questID, omitTitle, ignoreActivePlayer); -- TODO: Translate?
+        GameTooltip:SetQuestPartyProgress(questID, omitTitle, ignoreActivePlayer);
     end
 
     GameTooltip:Show();
@@ -394,19 +401,8 @@ local function UpdateTrackerModule(module)
 end
 
 local function UpdateQuestDetailsButtons()
-    local text = QuestMapFrame.DetailsFrame.TrackButton:GetText()
-    local translatedText = ''
-    if (text == TRACK_QUEST_ABBREV) then
-        translatedText = "Відстежувати"
-    else
-        translatedText = "Не відстежувати"
-    end
-
-    QuestMapFrame.DetailsFrame.TrackButton:SetText(translatedText);
-    QuestMapFrame.DetailsFrame.TrackButton:SetSize(110, 22)
-
-    QuestLogPopupDetailFrame.TrackButton:SetText(translatedText);
-    QuestLogPopupDetailFrame.TrackButton:FitToText();
+    translateButton(QuestMapFrame.DetailsFrame.TrackButton, 110, 22);
+    translateButton(QuestLogPopupDetailFrame.TrackButton);
 end
 
 local function ShowQuestPortrait()
@@ -463,19 +459,16 @@ local function DisplayQuestInfo(template, parentFrame)
             elseif (name == "QuestInfoSpacerFrame") then
                 -- ignore
             elseif (name == "QuestInfoRewardsFrame") then
-                QuestInfoRewardsFrame.ItemChooseText:SetText("Ти зможеш вибрати одну з цих винагород:"); -- You will be ableІ to choose one of these rewards:
-                QuestInfoRewardsFrame.ItemReceiveText:SetText("Ти отримаєш:"); -- You will receive: or You will also receive:
-                -- Completing this quest while in Party Sync may reward:
-                QuestInfoRewardsFrame.QuestSessionBonusReward:SetText(
-                    "Проходження цього завдання в режимі синхронізації групи передбачає винагороду:");
+                translateFontString(QuestInfoRewardsFrame.ItemChooseText)
+                translateFontString(QuestInfoRewardsFrame.ItemReceiveText)
+                translateFontString(QuestInfoRewardsFrame.QuestSessionBonusReward);
             elseif (name == "MapQuestInfoRewardsFrame") then
                 -- ignore
-                QuestInfoFrame.rewardsFrame.ItemChooseText:SetText("Ти отримаєш:") -- You will receive:
-                QuestInfoFrame.rewardsFrame.ItemReceiveText:SetText("Ти також отримаєш:") -- You will also receive:
-                QuestInfoFrame.rewardsFrame.PlayerTitleText:SetText("Ви отримаєте титул:") -- You shall be granted the title:
-                QuestInfoFrame.rewardsFrame.QuestSessionBonusReward:SetText(
-                    "При виконання цього квесту в режимі Party Sync дасть можливість отримати винагороду:") -- Completing this quest while in Party Sync may reward:
-                QuestInfoFrame.rewardsFrame.WarModeBonusFrame:SetText("Бонус від режиму війни") -- War Mode Bonus
+                translateFontString(QuestInfoFrame.rewardsFrame.ItemChooseText)
+                translateFontString(QuestInfoFrame.rewardsFrame.ItemReceiveText)
+                translateFontString(QuestInfoFrame.rewardsFrame.PlayerTitleText)
+                translateFontString(QuestInfoFrame.rewardsFrame.QuestSessionBonusReward)
+                translateFontString(QuestInfoFrame.rewardsFrame.WarModeBonusFrame)
             end
         end
     end
@@ -539,78 +532,48 @@ local function InitializeCommandButtons()
     CreateWowheadButton(QuestMapDetailsScrollFrame, 12, 30)
 end
 
-local function OnObjectiveTrackerMinimizeButtonClick()
-    print("OnObjectiveTrackerMinimizeButtonOnClick")
-    if (not switchObjectivesTranslationButton) then return end
-    if (ObjectiveTrackerFrame.collapsed) then
-        switchObjectivesTranslationButton:Hide()
-    else
-        switchObjectivesTranslationButton:Show()
-    end
-end
-
 function translator:initialize()
     InitializeCommandButtons()
 
     -- Gossip Frame
-    GossipFrame.GreetingPanel.GoodbyeButton:SetText("Прощавай"); -- Goodbye
-    GossipFrame.GreetingPanel.GoodbyeButton:FitToText();
+    translateButton(GossipFrame.GreetingPanel.GoodbyeButton)
     eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
 
     -- Quest Frame
-    QuestFrameAcceptButton:SetText("Прийняти"); -- Accept
-    QuestFrameAcceptButton:FitToText();
-    QuestFrameDeclineButton:SetText("Відмовитись"); -- Decline
-    QuestFrameDeclineButton:FitToText();
-    QuestFrameCompleteQuestButton:SetText("Завершити завдання"); -- Complete Quest
-    QuestFrameCompleteQuestButton:FitToText();
-    QuestInfoRewardsFrame.Header:SetText("Винагорода"); -- Rewards
-    QuestInfoRewardsFrame.XPFrame.ReceiveText:SetText("Досвід:") -- Experiense:
-    QuestInfoObjectivesHeader:SetText("Цілі завдання") -- Quest Objectives
-    QuestInfoDescriptionHeader:SetText("Опис") -- Quest Objectives
+    translateButton(QuestFrameAcceptButton)
+    translateButton(QuestFrameDeclineButton)
+    translateButton(QuestFrameCompleteQuestButton)
+    translateFontString(QuestInfoRewardsFrame.Header)
+    translateFontString(QuestInfoRewardsFrame.XPFrame.ReceiveText)
+    translateFontString(QuestInfoObjectivesHeader)
+    translateFontString(QuestInfoDescriptionHeader)
 
     -- Objectives Frame
-    ObjectiveTrackerFrame.HeaderMenu.Title:SetText("Задачі") -- Objectives
-    ObjectiveTrackerBlocksFrame.AchievementHeader.Text:SetText("Досягнення") -- Achievements
-    ObjectiveTrackerBlocksFrame.AdventureHeader.Text:SetText("Колекції") -- Collections
-    ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text:SetText("Кампанія") -- Campaign
-    ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text:SetText("Щоденник мандрівника") -- Traveler's Log
-    ObjectiveTrackerBlocksFrame.ProfessionHeader.Text:SetText("Професія") -- Profession
-    ObjectiveTrackerBlocksFrame.ScenarioHeader.Text:SetText("Сценарій") -- Scenario
-
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript("OnClick", OnObjectiveTrackerMinimizeButtonClick)
-    ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
-    eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
-    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
-    hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
+    translateFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
+    translateFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
+    translateFontString(ObjectiveTrackerBlocksFrame.AdventureHeader.Text)
+    translateFontString(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text)
+    translateFontString(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text)
+    translateFontString(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text)
+    translateFontString(ObjectiveTrackerBlocksFrame.ScenarioHeader.Text)
 
     -- Quest popup
-    QuestLogPopupDetailFrame.ShowMapButton.Text:SetText("Показати карту"); -- Show Map
-    QuestLogPopupDetailFrame.AbandonButton:SetText("Bідмовитися"); -- Abandon
-    QuestLogPopupDetailFrame.AbandonButton:FitToText();
-    QuestLogPopupDetailFrame.ShareButton:SetText("Поділитися"); -- Share
-    QuestLogPopupDetailFrame.ShareButton:FitToText();
+    translateFontString(QuestLogPopupDetailFrame.ShowMapButton.Text)
+    translateButton(QuestLogPopupDetailFrame.AbandonButton)
+    translateButton(QuestLogPopupDetailFrame.ShareButton)
 
     -- Quest map
-    MapQuestInfoRewardsFrame.TitleFrame.Name:SetText("Винагорода"); -- Rewards
-
+    translateFontString(MapQuestInfoRewardsFrame.TitleFrame.Name)
     for _, region in ipairs({ QuestMapFrame.DetailsFrame.RewardsFrame:GetRegions() }) do
         if region:GetObjectType() == "FontString" then
-            if (region:GetText() == "Rewards") then
-                region:SetText("Винагорода")
-            end
+            translateFontString(region)
         end
     end
+    translateButton(QuestMapFrame.DetailsFrame.AbandonButton, 90, 22)
+    translateButton(QuestMapFrame.DetailsFrame.ShareButton, 90, 22)
+    translateButton(QuestMapFrame.DetailsFrame.BackButton, nil, 24)
 
-    QuestMapFrame.DetailsFrame.AbandonButton:SetText("Bідмовитися"); -- Abandon
-    QuestMapFrame.DetailsFrame.AbandonButton:SetSize(90, 22)
-
-    QuestMapFrame.DetailsFrame.ShareButton:SetText("Поділитися"); -- Share
-    QuestMapFrame.DetailsFrame.ShareButton:SetSize(90, 22)
-
-    QuestMapFrame.DetailsFrame.BackButton:SetText("Повернутись"); -- Back
-    QuestMapFrame.DetailsFrame.BackButton:FitToText();
-    QuestMapFrame.DetailsFrame.BackButton:SetSize(QuestMapFrame.DetailsFrame.BackButton:GetWidth(), 24)
+    translateFontString(QuestScrollFrame.CampaignTooltip.CompleteRewardText)
 
     hooksecurefunc("QuestInfo_Display", DisplayQuestInfo)
     hooksecurefunc("QuestFrame_ShowQuestPortrait", ShowQuestPortrait)
@@ -618,6 +581,9 @@ function translator:initialize()
     hooksecurefunc("QuestLogQuests_Update", OnQuestLogQuestsUpdate)
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", OnQuestMapLogTitleButtonTooltipShow)
     hooksecurefunc("QuestMapLog_GetCampaignTooltip", GetCampaignTooltipFromQuestMapLog)
-
-    QuestScrollFrame.CampaignTooltip.CompleteRewardText:SetText("Закінчення цієї глави дасть вам винагороду:") -- WAR_CAMPAIGN_CHAPTER_REWARD_TEXT
+    --
+    ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
+    eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
+    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
+    hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
 end

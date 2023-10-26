@@ -1,6 +1,9 @@
 local _, ns = ...;
 
 -- Constants
+ns.FACTION_ALLIANCE = "Альянс"
+ns.FACTION_HORDE = "Орда"
+
 ns.LEVEL_TRANSLATION = "Рівень"
 ns.PAGE_TRANSLATION = "Сторінка"
 ns.LEADER_TRANSLATION = "Ватажок"
