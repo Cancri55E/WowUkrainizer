@@ -2,7 +2,6 @@ local _, ns = ...;
 
 local _G = _G
 
-local settingsProvider = ns.SettingsProvider:new()
 local eventHandler = ns.EventHandler:new()
 
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
@@ -11,16 +10,48 @@ local GetGossipOptionText = ns.DbContext.Gossips.GetGossipOptionText
 local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
 local GetQuestData = ns.DbContext.Quests.GetQuestData
 local GetQuestObjective = ns.DbContext.Quests.GetQuestObjective
+local GetQuestRewardText = ns.DbContext.Quests.GetQuestRewardText
 local GetQuestProgressText = ns.DbContext.Quests.GetQuestProgressText
 
 local FACTION_ALLIANCE = ns.FACTION_ALLIANCE
 local FACTION_HORDE = ns.FACTION_HORDE
+
+local ABANDON_QUEST_CONFIRM_UA = ns.ABANDON_QUEST_CONFIRM_UA
+local YES_UA = ns.YES_UA
+local NO_UA = ns.NO_UA
 
 local ACTIVE_TEMPLATE;
 local ACTIVE_PARENT_FRAME;
 
 local translator = class("QuestTranslator", ns.Translators.BaseTranslator)
 ns.Translators.QuestTranslator = translator
+
+local function getQuestFrameTranslationOrDefault(default)
+    return ns.DbContext.Frames.GetTranslationOrDefault("quest", default)
+end
+
+local function translateFontString(fontString)
+    if (not fontString.GetText or not fontString.SetText) then return end
+    local text = fontString:GetText()
+    local translateText = getQuestFrameTranslationOrDefault(text)
+    if (text ~= translateText) then
+        fontString:SetText(translateText)
+    end
+end
+
+local function translateButton(button, width, height)
+    translateFontString(button.Text)
+    if (width and height) then
+        button:SetSize(width, height)
+    else
+        button:FitToText()
+        if (width) then
+            button:SetSize(width, button:GetHeight())
+        elseif (height) then
+            button:SetSize(button:GetWidth(), 24)
+        end
+    end
+end
 
 local function getQuestID()
     if (QuestInfoFrame.questLog) then
@@ -52,33 +83,6 @@ _G.StaticPopupDialogs["WowUkrainizer_WowheadLink"] = {
     whileDead = 1,
     hideOnEscape = 1
 }
-
-local function getQuestFrameTranslationOrDefault(default)
-    return ns.DbContext.Frames.GetTranslationOrDefault("quest", default)
-end
-
-local function translateFontString(fontString)
-    if (not fontString.GetText or fontString.SetText) then return end
-    local text = fontString.GetText()
-    local translateText = getQuestFrameTranslationOrDefault(text)
-    if (text ~= translateText) then
-        fontString:SetText(translateText)
-    end
-end
-
-local function translateButton(button, width, height)
-    translateFontString(button)
-    if (width and height) then
-        button:SetSize(width, height)
-    else
-        button:FitToText()
-        if (width) then
-            button:SetSize(width, button:GetHeight())
-        elseif (height) then
-            button:SetSize(button:GetWidth(), 24)
-        end
-    end
-end
 
 function TryCallAPIFn(fnName, value)
     -- this function is helper fn to get table type from wow api.
@@ -406,6 +410,9 @@ local function DisplayQuestInfo(template, parentFrame)
         ACTIVE_PARENT_FRAME = parentFrame
     end
 
+    local title = QuestFrameTitleText:GetText();
+    QuestFrameTitleText:SetText(GetUnitNameOrDefault(title));
+
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
 
@@ -443,6 +450,12 @@ local function DisplayQuestInfo(template, parentFrame)
             elseif (name == "QuestInfoSpacerFrame") then
                 -- ignore
             elseif (name == "QuestInfoRewardsFrame") then
+                if (WowUkrainizer_Options.TranslateQuestText) then
+                    local rewardText = GetQuestRewardText(questID)
+                    if (rewardText) then
+                        QuestInfoRewardText:SetText(rewardText)
+                    end
+                end
                 translateFontString(QuestInfoRewardsFrame.ItemChooseText)
                 translateFontString(QuestInfoRewardsFrame.ItemReceiveText)
                 translateFontString(QuestInfoRewardsFrame.QuestSessionBonusReward);
@@ -472,6 +485,9 @@ local function GetCampaignTooltipFromQuestMapLog()
 end
 
 local function OnQuestFrameProgressPanelShow(_)
+    local title = QuestFrameTitleText:GetText();
+    QuestFrameTitleText:SetText(GetUnitNameOrDefault(title));
+
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
 
@@ -485,6 +501,31 @@ local function OnQuestFrameProgressPanelShow(_)
         if (progressText) then
             QuestProgressText:SetText(progressText)
         end
+    end
+end
+
+local function OnStaticPopupShow(which, text_arg1, text_arg2, data, insertedFrame)
+    local function findStaticPopup()
+        for index = 1, STATICPOPUP_NUMDIALOGS, 1 do
+            local frame = _G["StaticPopup" .. index];
+            if (frame:IsShown() and (frame.which == which)) then
+                return frame
+            end
+        end
+    end
+
+    if (which == "ABANDON_QUEST") then
+        local questId = getQuestID()
+        if (not questId or questId == 0) then return end
+
+        local frame = findStaticPopup()
+        if (not frame) then return end
+
+        frame.text:SetFormattedText(ABANDON_QUEST_CONFIRM_UA, GetQuestTitle(questId) or text_arg1, text_arg2)
+        frame.button1.Text:SetText(YES_UA)
+        frame.button2.Text:SetText(NO_UA)
+
+        StaticPopup_Resize(frame, which);
     end
 end
 
@@ -506,7 +547,6 @@ local function InitializeCommandButtons()
             else
                 button:SetText("Переклад");
             end
-
             func()
         end)
         button:Show();
@@ -601,9 +641,11 @@ function translator:initialize()
 
     QuestFrameProgressPanel:HookScript("OnShow", OnQuestFrameProgressPanelShow)
     hooksecurefunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
-    --
+
     ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
     eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
     hooksecurefunc(QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
     hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
+
+    hooksecurefunc("StaticPopup_Show", OnStaticPopupShow)
 end

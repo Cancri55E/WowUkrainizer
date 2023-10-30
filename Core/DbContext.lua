@@ -146,7 +146,7 @@ do
         elseif (type == "main") then
             return getFormattedValueOrDefault(ns._db.MainFrameLines, default)
         elseif (type == "quest") then
-            return getFormattedValueOrDefault(ns._db.QuestFrameLines, default)
+            return getValueOrDefault(ns._db.QuestFrameLines, default)
         end
     end
 
@@ -196,35 +196,36 @@ end
 
 -- Quests
 do
-    local PlayerData = ns.PlayerData
+    local QUEST_TITLE = 1
+    local QUEST_DESCRIPTION = 2
+    local QUEST_OBJECTIVES_TEXT = 3
+    local QUEST_TARGET_NAME = 4
+    local QUEST_TARGET_DESCRIPTION = 5
+    local QUEST_COMPLETED_TARGET_NAME = 6
+    local QUEST_COMPLETED_TARGET_DESCRIPTION = 7
+    local QUEST_LOG_COMPLETION_TEXT = 8
+    local QUEST_REWARD_TEXT = 9
+    local QUEST_COMPLETED_TEXT = 10
+    local QUEST_AREA_DESCRIPTION = 11
 
-    local QUEST_TITLE = ns.QUEST_TITLE
-    local QUEST_DESCRIPTION = ns.QUEST_DESCRIPTION
-    local QUEST_OBJECTIVES_TEXT = ns.QUEST_OBJECTIVES_TEXT
-    local QUEST_TARGET_NAME = ns.QUEST_TARGET_NAME
-    local QUEST_TARGET_DESCRIPTION = ns.QUEST_TARGET_DESCRIPTION
-    local QUEST_COMPLETED_TARGET_NAME = ns.QUEST_COMPLETED_TARGET_NAME
-    local QUEST_COMPLETED_TARGET_DESCRIPTION = ns.QUEST_COMPLETED_TARGET_DESCRIPTION
-    local QUEST_LOG_COMPLETION_TEXT = ns.QUEST_LOG_COMPLETION_TEXT
-    local QUEST_PROGRESS_TEXT = ns.QUEST_PROGRESS_TEXT
-    local QUEST_COMPLETED_TEXT = ns.QUEST_COMPLETED_TEXT
-    local QUEST_AREA_DESCRIPTION = ns.QUEST_AREA_DESCRIPTION
     local repository = {}
 
     local function normalizeQuestString(text)
         if text == nil or text == "" then return text end
 
+        local playerData = ns.PlayerData
+
         text = string.gsub(text, "%$[nN]", function(_)
-            return PlayerData.Name
+            return playerData.Name
         end)
 
         text = string.gsub(text, "%$[rR]", function(marker) -- TODO: case like class
-            if (marker == "$R") then return string.upper(PlayerData.Race) end
-            return PlayerData.Race
+            if (marker == "$R") then return string.upper(playerData.Race) end
+            return playerData.Race
         end)
 
         text = string.gsub(text, "%$[cC]", function(marker)
-            local classStr = dbContext.Units.GetClass(PlayerData.Class, 1, PlayerData.Gender)
+            local classStr = dbContext.Units.GetClass(playerData.Class, 1, playerData.Gender)
 
             if (marker == "$C") then return string.upper(classStr) end
             return classStr
@@ -248,14 +249,14 @@ do
                 case = 7
             end
 
-            local classStr = dbContext.Units.GetClass(PlayerData.Class, case, PlayerData.Gender)
+            local classStr = dbContext.Units.GetClass(playerData.Class, case, playerData.Gender)
 
             if (marker == "$C") then return string.upper(classStr) end
             return classStr
         end)
 
         text = string.gsub(text, "{sex|(.-)|(.-)}", function(male, female)
-            if (PlayerData.Gender == 3) then
+            if (playerData.Gender == 3) then
                 return female
             else
                 return male
@@ -288,13 +289,13 @@ do
         end
     end
 
-    function repository.GetQuestProgressText(questId)
+    function repository.GetQuestRewardText(questId)
         local data = ns._db.Quests[questId]
         if (not data) then return end
-        return normalizeQuestString(data[QUEST_PROGRESS_TEXT])
+        return normalizeQuestString(data[QUEST_REWARD_TEXT])
     end
 
-    function repository.GetQuestCompleteText(questId)
+    function repository.GetQuestProgressText(questId)
         local data = ns._db.Quests[questId]
         if (not data) then return end
         return normalizeQuestString(data[QUEST_COMPLETED_TEXT])
