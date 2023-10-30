@@ -212,9 +212,7 @@ do
     local repository = {}
 
     local function normalizeQuestString(text)
-        if text == nil or text == "" then
-            return text
-        end
+        if text == nil or text == "" then return text end
 
         text = string.gsub(text, "%$[nN]", function(_)
             return PlayerData.Name
@@ -263,6 +261,8 @@ do
                 return male
             end
         end)
+
+        return text
     end
 
     function repository.GetQuestObjective(questId, default)
@@ -309,7 +309,6 @@ do
     function repository.GetQuestData(questId)
         local data = ns._db.Quests[questId]
         if (not data) then return end
-
         return {
             ID = questId,
             Title = data[QUEST_TITLE],

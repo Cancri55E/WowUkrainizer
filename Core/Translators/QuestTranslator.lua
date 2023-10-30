@@ -11,6 +11,7 @@ local GetGossipOptionText = ns.DbContext.Gossips.GetGossipOptionText
 local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
 local GetQuestData = ns.DbContext.Quests.GetQuestData
 local GetQuestObjective = ns.DbContext.Quests.GetQuestObjective
+local GetQuestProgressText = ns.DbContext.Quests.GetQuestProgressText
 
 local FACTION_ALLIANCE = ns.FACTION_ALLIANCE
 local FACTION_HORDE = ns.FACTION_HORDE
@@ -470,8 +471,25 @@ local function GetCampaignTooltipFromQuestMapLog()
     -- _G.WowUkrainizerData.QuestData.CampaignTooltip.ChapterTitle = QuestScrollFrame.CampaignTooltip.ChapterTitle:GetText()
 end
 
+local function OnQuestFrameProgressPanelShow(_)
+    local questID = getQuestID()
+    if (not questID or questID == 0) then return end
+
+    if (WowUkrainizer_Options.TranslateQuestText) then
+        local title = GetQuestTitle(questID)
+        if (title) then
+            QuestProgressTitleText:SetText(title)
+        end
+
+        local progressText = GetQuestProgressText(questID)
+        if (progressText) then
+            QuestProgressText:SetText(progressText)
+        end
+    end
+end
+
 local function InitializeCommandButtons()
-    local function CreateSwitchTranslationButton(parentFrame, offsetX, offsetY)
+    local function CreateSwitchTranslationButton(parentFrame, func, offsetX, offsetY)
         local button = CreateFrame("Button", nil, parentFrame, "UIPanelButtonTemplate");
         button:SetSize(90, 24);
         if (WowUkrainizer_Options.TranslateQuestText) then
@@ -488,8 +506,8 @@ local function InitializeCommandButtons()
             else
                 button:SetText("Переклад");
             end
-            QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
-                QuestInfoFrame.mapView)
+
+            func()
         end)
         button:Show();
     end
@@ -505,13 +523,26 @@ local function InitializeCommandButtons()
         button:Show();
     end
 
-    CreateSwitchTranslationButton(QuestFrame, -34, -30)
+    CreateSwitchTranslationButton(QuestFrame, function()
+        if (QuestFrameProgressPanel:IsShown()) then
+            QuestFrameProgressPanel_OnShow(QuestFrameProgressPanel)
+        else
+            QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
+                QuestInfoFrame.mapView)
+        end
+    end, -34, -30)
     CreateWowheadButton(QuestFrame, -6, -30)
 
-    CreateSwitchTranslationButton(QuestLogPopupDetailFrame, -194, -28)
+    CreateSwitchTranslationButton(QuestLogPopupDetailFrame, function()
+        QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
+            QuestInfoFrame.mapView)
+    end, -194, -28)
     CreateWowheadButton(QuestLogPopupDetailFrame, -166, -28)
 
-    CreateSwitchTranslationButton(QuestMapDetailsScrollFrame, -16, 30)
+    CreateSwitchTranslationButton(QuestMapDetailsScrollFrame, function()
+        QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
+            QuestInfoFrame.mapView)
+    end, -16, 30)
     CreateWowheadButton(QuestMapDetailsScrollFrame, 12, 30)
 end
 
@@ -526,10 +557,13 @@ function translator:initialize()
     translateButton(QuestFrameAcceptButton)
     translateButton(QuestFrameDeclineButton)
     translateButton(QuestFrameCompleteQuestButton)
+    translateButton(QuestFrameCompleteButton)
+    translateButton(QuestFrameGoodbyeButton)
     translateFontString(QuestInfoRewardsFrame.Header)
     translateFontString(QuestInfoRewardsFrame.XPFrame.ReceiveText)
     translateFontString(QuestInfoObjectivesHeader)
     translateFontString(QuestInfoDescriptionHeader)
+    translateFontString(QuestProgressRequiredItemsText)
 
     -- Objectives Frame
     translateFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
@@ -564,6 +598,9 @@ function translator:initialize()
     hooksecurefunc("QuestLogQuests_Update", OnQuestLogQuestsUpdate)
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", OnQuestMapLogTitleButtonTooltipShow)
     hooksecurefunc("QuestMapLog_GetCampaignTooltip", GetCampaignTooltipFromQuestMapLog)
+
+    QuestFrameProgressPanel:HookScript("OnShow", OnQuestFrameProgressPanelShow)
+    hooksecurefunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
     --
     ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
     eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
