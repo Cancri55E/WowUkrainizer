@@ -159,6 +159,13 @@ local function initializeAddon()
 end
 
 local function OnPlayerLogin()
+    ns.PlayerData = {
+        Name = GetUnitName("player"),
+        Race = UnitRace("player"),
+        Class = UnitClass("player"),
+        Gender = UnitSex("player")
+    }
+
     settingsProvider:Load()
     createInterfaceOptions()
     setGameFonts();

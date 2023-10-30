@@ -36,7 +36,7 @@ do
 
     local function calcIndex(index, gender)
         if (not index or not gender) then return 1 end
-        gender = 2 -- hook until table with translations not complited
+        --gender = 2 -- hook until table with translations not complited
         return index * 2 - (3 - gender)
     end
 
@@ -196,15 +196,74 @@ end
 
 -- Quests
 do
+    local PlayerData = ns.PlayerData
+
     local QUEST_TITLE = ns.QUEST_TITLE
     local QUEST_DESCRIPTION = ns.QUEST_DESCRIPTION
     local QUEST_OBJECTIVES_TEXT = ns.QUEST_OBJECTIVES_TEXT
     local QUEST_TARGET_NAME = ns.QUEST_TARGET_NAME
     local QUEST_TARGET_DESCRIPTION = ns.QUEST_TARGET_DESCRIPTION
+    local QUEST_COMPLETED_TARGET_NAME = ns.QUEST_COMPLETED_TARGET_NAME
+    local QUEST_COMPLETED_TARGET_DESCRIPTION = ns.QUEST_COMPLETED_TARGET_DESCRIPTION
     local QUEST_LOG_COMPLETION_TEXT = ns.QUEST_LOG_COMPLETION_TEXT
     local QUEST_PROGRESS_TEXT = ns.QUEST_PROGRESS_TEXT
     local QUEST_COMPLETED_TEXT = ns.QUEST_COMPLETED_TEXT
+    local QUEST_AREA_DESCRIPTION = ns.QUEST_AREA_DESCRIPTION
     local repository = {}
+
+    local function normalizeQuestString(text)
+        if text == nil or text == "" then
+            return text
+        end
+
+        text = string.gsub(text, "%$[nN]", function(_)
+            return PlayerData.Name
+        end)
+
+        text = string.gsub(text, "%$[rR]", function(marker) -- TODO: case like class
+            if (marker == "$R") then return string.upper(PlayerData.Race) end
+            return PlayerData.Race
+        end)
+
+        text = string.gsub(text, "%$[cC]", function(marker)
+            local classStr = dbContext.Units.GetClass(PlayerData.Class, 1, PlayerData.Gender)
+
+            if (marker == "$C") then return string.upper(classStr) end
+            return classStr
+        end)
+
+        text = string.gsub(text, "%$[cC]:(.)", function(marker, caseLetter)
+            local case = 1
+            if (caseLetter == 'н' or caseLetter == 'Н') then
+                case = 1
+            elseif (caseLetter == 'р' or caseLetter == 'Р') then
+                case = 2
+            elseif (caseLetter == 'д' or caseLetter == 'Д') then
+                case = 3
+            elseif (caseLetter == 'з' or caseLetter == 'З') then
+                case = 4
+            elseif (caseLetter == 'о' or caseLetter == 'О') then
+                case = 5
+            elseif (caseLetter == 'м' or caseLetter == 'М') then
+                case = 6
+            elseif (caseLetter == 'к' or caseLetter == 'К') then
+                case = 7
+            end
+
+            local classStr = dbContext.Units.GetClass(PlayerData.Class, case, PlayerData.Gender)
+
+            if (marker == "$C") then return string.upper(classStr) end
+            return classStr
+        end)
+
+        text = string.gsub(text, "{sex|(.-)|(.-)}", function(male, female)
+            if (PlayerData.Gender == 3) then
+                return female
+            else
+                return male
+            end
+        end)
+    end
 
     function repository.GetQuestObjective(questId, default)
         if (not default) then return default end
@@ -221,7 +280,7 @@ do
             end)
         end
 
-        local translatedObjectiveText = getValueOrDefault(objectives, objectiveText)
+        local translatedObjectiveText = normalizeQuestString(getValueOrDefault(objectives, objectiveText))
         if (progressText) then
             return progressText .. " " .. translatedObjectiveText
         else
@@ -232,13 +291,13 @@ do
     function repository.GetQuestProgressText(questId)
         local data = ns._db.Quests[questId]
         if (not data) then return end
-        return data[QUEST_PROGRESS_TEXT]
+        return normalizeQuestString(data[QUEST_PROGRESS_TEXT])
     end
 
     function repository.GetQuestCompleteText(questId)
         local data = ns._db.Quests[questId]
         if (not data) then return end
-        return data[QUEST_COMPLETED_TEXT]
+        return normalizeQuestString(data[QUEST_COMPLETED_TEXT])
     end
 
     function repository.GetQuestTitle(questId)
@@ -254,12 +313,15 @@ do
         return {
             ID = questId,
             Title = data[QUEST_TITLE],
-            Description = data[QUEST_DESCRIPTION],
-            ObjectivesText = data[QUEST_OBJECTIVES_TEXT],
+            Description = normalizeQuestString(data[QUEST_DESCRIPTION]),
+            ObjectivesText = normalizeQuestString(data[QUEST_OBJECTIVES_TEXT]),
             ContainsObjectives = ns._db.QuestObjectives[questId] ~= nil,
             CompletionText = data[QUEST_LOG_COMPLETION_TEXT],
             TargetName = data[QUEST_TARGET_NAME],
             TargetDescription = data[QUEST_TARGET_DESCRIPTION],
+            TargetCompletedName = data[QUEST_COMPLETED_TARGET_NAME],
+            TargetCompletedDescription = data[QUEST_COMPLETED_TARGET_DESCRIPTION],
+            AreaDescription = data[QUEST_AREA_DESCRIPTION],
         }
     end
 
