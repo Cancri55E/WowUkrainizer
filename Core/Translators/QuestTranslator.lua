@@ -119,7 +119,7 @@ function TryCallAPIFn(fnName, value)
     return pcall(fn, value)
 end
 
-local function TranslteQuestObjective(objectiveFrame, questData)
+local function TranslteQuestObjective(objectiveFrame, questData, isQuestFrame)
     if (not questData) then return end
 
     local text = objectiveFrame:GetText()
@@ -129,12 +129,16 @@ local function TranslteQuestObjective(objectiveFrame, questData)
         if (text == QUEST_WATCH_QUEST_READY) then
             objectiveFrame:SetText(getQuestFrameTranslationOrDefault(QUEST_WATCH_QUEST_READY))
         else
-            local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questData.ID)
-            local completionText = GetQuestLogCompletionText(questLogIndex)
-            if (completionText and questData.CompletionText) then
-                objectiveFrame:SetText(questData.CompletionText)
-            elseif ((not completionText and not questData.ContainsObjectives) and questData.ObjectivesText) then
-                objectiveFrame:SetText(questData.ObjectivesText)
+            if (isQuestFrame) then
+                objectiveFrame:SetText(GetQuestObjective(questData.ID, text))
+            else
+                local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questData.ID)
+                local completionText = GetQuestLogCompletionText(questLogIndex)
+                if (completionText and questData.CompletionText) then
+                    objectiveFrame:SetText(questData.CompletionText)
+                elseif ((not completionText and not questData.ContainsObjectives) and questData.ObjectivesText) then
+                    objectiveFrame:SetText(questData.ObjectivesText)
+                end
             end
         end
 
@@ -144,11 +148,11 @@ local function TranslteQuestObjective(objectiveFrame, questData)
     objectiveFrame:SetText(GetQuestObjective(questData.ID, text))
 end
 
-local function TranslteQuestObjectives(objectiveFrames, questData)
+local function TranslteQuestObjectives(objectiveFrames, questData, isOnQuestFrame)
     if (not questData) then return end
 
     for _, objectiveFrame in pairs(objectiveFrames) do
-        TranslteQuestObjective(objectiveFrame.Text or objectiveFrame, questData)
+        TranslteQuestObjective(objectiveFrame.Text or objectiveFrame, questData, isOnQuestFrame)
     end
 end
 
@@ -346,7 +350,7 @@ local function OnQuestLogQuestsUpdate()
     end
 
     for objectiveFramePool in QuestScrollFrame.objectiveFramePool:EnumerateActive() do
-        TranslteQuestObjective(objectiveFramePool.Text, GetQuestData(objectiveFramePool.questID))
+        TranslteQuestObjective(objectiveFramePool.Text, GetQuestData(objectiveFramePool.questID), false)
     end
 
     -- local i = 1
@@ -384,7 +388,7 @@ local function UpdateTrackerModule(module)
         if (questData and questData.Title) then
             questObjectiveBlock.HeaderText:SetText(questData.Title)
         end
-        TranslteQuestObjectives(questObjectiveBlock.lines, questData)
+        TranslteQuestObjectives(questObjectiveBlock.lines, questData, false)
     end
 end
 
@@ -437,7 +441,7 @@ local function DisplayQuestInfo(template, parentFrame)
                 end
             elseif (name == "QuestInfoObjectivesFrame") then
                 if (WowUkrainizer_Options.TranslateQuestText) then
-                    TranslteQuestObjectives(QuestInfoObjectivesFrame.Objectives, questData)
+                    TranslteQuestObjectives(QuestInfoObjectivesFrame.Objectives, questData, true)
                 end
             elseif (name == "QuestInfoDescriptionHeader") then
                 -- ignore

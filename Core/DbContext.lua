@@ -273,19 +273,29 @@ do
         if (not objectives) then return default end
 
         local progressText = nil
+        local completeText = nil
         local objectiveText = default
-        if (string.match(objectiveText, "^(%d+/%d+)%s+")) then
+        objectiveText:gsub("^(%d+/%d+)(.*)%s*(%b())%s*$", function(p, o, c)
+            progressText = p
+            objectiveText = o
+            completeText = c
+        end)
+        if (not completeText) then
             objectiveText:gsub("^(%d+/%d+)(.*)", function(p, o)
                 progressText = p
                 objectiveText = o
             end)
         end
 
-        local translatedObjectiveText = normalizeQuestString(getValueOrDefault(objectives, objectiveText))
-        if (progressText) then
-            return progressText .. " " .. translatedObjectiveText
-        else
-            return translatedObjectiveText
+        local translatedObjectiveText = getValueOrDefault(objectives, objectiveText)
+        if (translatedObjectiveText ~= objectiveText) then
+            if (progressText) then
+                translatedObjectiveText = progressText .. " " .. translatedObjectiveText
+            end
+            if (completeText) then
+                translatedObjectiveText = translatedObjectiveText .. " (Виконано)"
+            end
+            return normalizeQuestString(translatedObjectiveText)
         end
     end
 
