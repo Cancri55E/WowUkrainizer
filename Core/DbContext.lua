@@ -288,15 +288,13 @@ do
         end
 
         local translatedObjectiveText = getValueOrDefault(objectives, objectiveText)
-        if (translatedObjectiveText ~= objectiveText) then
-            if (progressText) then
-                translatedObjectiveText = progressText .. " " .. translatedObjectiveText
-            end
-            if (completeText) then
-                translatedObjectiveText = translatedObjectiveText .. " (Виконано)"
-            end
-            return normalizeQuestString(translatedObjectiveText)
+        if (progressText) then
+            translatedObjectiveText = progressText .. " " .. translatedObjectiveText
         end
+        if (completeText) then
+            translatedObjectiveText = translatedObjectiveText .. " (Виконано)"
+        end
+        return normalizeQuestString(translatedObjectiveText)
     end
 
     function repository.GetQuestRewardText(questId)

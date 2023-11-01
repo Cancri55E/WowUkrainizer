@@ -30,7 +30,7 @@ local function getQuestFrameTranslationOrDefault(default)
     return ns.DbContext.Frames.GetTranslationOrDefault("quest", default)
 end
 
-local function translateFontString(fontString)
+local function translateUIFontString(fontString)
     if (not fontString.GetText or not fontString.SetText) then return end
     local text = fontString:GetText()
     local translateText = getQuestFrameTranslationOrDefault(text)
@@ -40,7 +40,7 @@ local function translateFontString(fontString)
 end
 
 local function translateButton(button, width, height)
-    translateFontString(button.Text)
+    translateUIFontString(button.Text)
     if (width and height) then
         button:SetSize(width, height)
     else
@@ -51,6 +51,12 @@ local function translateButton(button, width, height)
             button:SetSize(button:GetWidth(), 24)
         end
     end
+end
+
+local function setText(fontString, text)
+    local originalHeight = fontString:GetHeight()
+    fontString:SetText(text)
+    return originalHeight, fontString:GetHeight()
 end
 
 local function getQuestID()
@@ -120,40 +126,49 @@ function TryCallAPIFn(fnName, value)
 end
 
 local function TranslteQuestObjective(objectiveFrame, questData, isQuestFrame)
-    if (not questData) then return end
+    local originalHeight = objectiveFrame:GetHeight()
+    if (not questData) then return originalHeight end
 
     local text = objectiveFrame:GetText()
     local isComplete = C_QuestLog.IsComplete(questData.ID);
 
+    local translatedText = nil
     if (isComplete) then
         if (text == QUEST_WATCH_QUEST_READY) then
-            objectiveFrame:SetText(getQuestFrameTranslationOrDefault(QUEST_WATCH_QUEST_READY))
+            translatedText = getQuestFrameTranslationOrDefault(QUEST_WATCH_QUEST_READY)
         else
-            if (isQuestFrame) then
-                objectiveFrame:SetText(GetQuestObjective(questData.ID, text))
-            else
+            if (not isQuestFrame) then
                 local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questData.ID)
                 local completionText = GetQuestLogCompletionText(questLogIndex)
                 if (completionText and questData.CompletionText) then
-                    objectiveFrame:SetText(questData.CompletionText)
+                    translatedText = questData.CompletionText
                 elseif ((not completionText and not questData.ContainsObjectives) and questData.ObjectivesText) then
-                    objectiveFrame:SetText(questData.ObjectivesText)
+                    translatedText = questData.ObjectivesText
                 end
             end
         end
-
-        return
     end
 
-    objectiveFrame:SetText(GetQuestObjective(questData.ID, text))
+    if (not translatedText) then
+        translatedText = GetQuestObjective(questData.ID, text)
+    end
+
+    return setText(objectiveFrame, translatedText)
 end
 
 local function TranslteQuestObjectives(objectiveFrames, questData, isOnQuestFrame)
     if (not questData) then return end
 
-    for _, objectiveFrame in pairs(objectiveFrames) do
-        TranslteQuestObjective(objectiveFrame.Text or objectiveFrame, questData, isOnQuestFrame)
+    local results = {}
+    for index, objectiveFrame in pairs(objectiveFrames) do
+        local original, current = TranslteQuestObjective(objectiveFrame.Text or objectiveFrame, questData, isOnQuestFrame)
+        if (current) then
+            objectiveFrame:SetHeight(current)
+            results[index] = { original, current }
+        end
     end
+
+    return results
 end
 
 local function OnGossipShow()
@@ -199,7 +214,7 @@ local function OnGossipShow()
 end
 
 local function OnObjectiveTrackerQuestHeaderUpdated()
-    translateFontString(ObjectiveTrackerBlocksFrame.QuestHeader.Text)
+    translateUIFontString(ObjectiveTrackerBlocksFrame.QuestHeader.Text)
 end
 
 local function OnQuestMapLogTitleButtonTooltipShow(button)
@@ -304,7 +319,8 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
                 if (finished) then
                     color = GRAY_FONT_COLOR;
                 end -- TODO: ?
-                GameTooltip:AddLine(QUEST_DASH .. GetQuestObjective(questID, text), color.r, color.g, color.b,
+                local translatedText = GetQuestObjective(questID, text)
+                GameTooltip:AddLine(QUEST_DASH .. translatedText or text, color.r, color.g, color.b,
                     true);
                 needsSeparator = true;
             end
@@ -342,16 +358,40 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
 end
 
 local function OnQuestLogQuestsUpdate()
+    local updatedHeight = {}
+
     for titleFrame in QuestScrollFrame.titleFramePool:EnumerateActive() do
-        local translatedTitle = GetQuestTitle(titleFrame.questID)
+        local questID = titleFrame.questID
+        if (not updatedHeight[questID]) then updatedHeight[questID] = 0 end
+
+        local translatedTitle = GetQuestTitle(questID)
         if (translatedTitle) then
             titleFrame.Text:SetText(translatedTitle)
         end
+        updatedHeight[questID] = updatedHeight[questID] + titleFrame.Text:GetHeight() + 2
     end
 
     for objectiveFramePool in QuestScrollFrame.objectiveFramePool:EnumerateActive() do
-        TranslteQuestObjective(objectiveFramePool.Text, GetQuestData(objectiveFramePool.questID), false)
+        local questID = objectiveFramePool.questID
+        if (not updatedHeight[questID]) then updatedHeight[questID] = 0 end
+        local _, current = TranslteQuestObjective(objectiveFramePool.Text, GetQuestData(questID), false)
+        if (current) then
+            objectiveFramePool:SetHeight(current)
+            updatedHeight[questID] = updatedHeight[questID] + current + 4
+        end
     end
+
+    for key, ChildFrame in pairs(QuestScrollFrame.Contents:GetLayoutChildren()) do
+        local questID = ChildFrame.questID
+        if (questID) then
+            local height = updatedHeight[questID]
+            if (height and ChildFrame:GetHeight() < height) then
+                ChildFrame:SetHeight(height)
+            end
+        end
+    end
+
+    QuestScrollFrame.Contents:Layout();
 
     -- local i = 1
     -- for headerFramePool in QuestScrollFrame.headerFramePool:EnumerateActive() do
@@ -384,11 +424,29 @@ local function UpdateTrackerModule(module)
     if (not objectiveTrackerBlockTemplate) then return end
 
     for questID, questObjectiveBlock in pairs(objectiveTrackerBlockTemplate) do
+        local block = module:GetBlock(questID);
+
+        local blockHeight;
         local questData = GetQuestData(tonumber(questID))
         if (questData and questData.Title) then
-            questObjectiveBlock.HeaderText:SetText(questData.Title)
+            _, blockHeight = setText(questObjectiveBlock.HeaderText, questData.Title)
         end
-        TranslteQuestObjectives(questObjectiveBlock.lines, questData, false)
+
+        local objectivesHeights = TranslteQuestObjectives(questObjectiveBlock.lines, questData, false)
+
+        for _, line in pairs(questObjectiveBlock.lines) do
+            line:SetHeight(line.Text:GetHeight())
+        end
+
+        if (objectivesHeights) then
+            for i = 1, #objectivesHeights, 1 do
+                blockHeight = blockHeight + objectivesHeights[i][2] + block.module.lineSpacing
+            end
+        end
+
+        if (blockHeight and block:GetHeight() < blockHeight) then
+            block:SetHeight(blockHeight)
+        end
     end
 end
 
@@ -460,16 +518,16 @@ local function DisplayQuestInfo(template, parentFrame)
                         QuestInfoRewardText:SetText(rewardText)
                     end
                 end
-                translateFontString(QuestInfoRewardsFrame.ItemChooseText)
-                translateFontString(QuestInfoRewardsFrame.ItemReceiveText)
-                translateFontString(QuestInfoRewardsFrame.QuestSessionBonusReward);
+                translateUIFontString(QuestInfoRewardsFrame.ItemChooseText)
+                translateUIFontString(QuestInfoRewardsFrame.ItemReceiveText)
+                translateUIFontString(QuestInfoRewardsFrame.QuestSessionBonusReward);
             elseif (name == "MapQuestInfoRewardsFrame") then
                 -- ignore
-                translateFontString(QuestInfoFrame.rewardsFrame.ItemChooseText)
-                translateFontString(QuestInfoFrame.rewardsFrame.ItemReceiveText)
-                translateFontString(QuestInfoFrame.rewardsFrame.PlayerTitleText)
-                translateFontString(QuestInfoFrame.rewardsFrame.QuestSessionBonusReward)
-                translateFontString(QuestInfoFrame.rewardsFrame.WarModeBonusFrame)
+                translateUIFontString(QuestInfoFrame.rewardsFrame.ItemChooseText)
+                translateUIFontString(QuestInfoFrame.rewardsFrame.ItemReceiveText)
+                translateUIFontString(QuestInfoFrame.rewardsFrame.PlayerTitleText)
+                translateUIFontString(QuestInfoFrame.rewardsFrame.QuestSessionBonusReward)
+                translateUIFontString(QuestInfoFrame.rewardsFrame.WarModeBonusFrame)
             end
         end
     end
@@ -603,38 +661,38 @@ function translator:initialize()
     translateButton(QuestFrameCompleteQuestButton)
     translateButton(QuestFrameCompleteButton)
     translateButton(QuestFrameGoodbyeButton)
-    translateFontString(QuestInfoRewardsFrame.Header)
-    translateFontString(QuestInfoRewardsFrame.XPFrame.ReceiveText)
-    translateFontString(QuestInfoObjectivesHeader)
-    translateFontString(QuestInfoDescriptionHeader)
-    translateFontString(QuestProgressRequiredItemsText)
+    translateUIFontString(QuestInfoRewardsFrame.Header)
+    translateUIFontString(QuestInfoRewardsFrame.XPFrame.ReceiveText)
+    translateUIFontString(QuestInfoObjectivesHeader)
+    translateUIFontString(QuestInfoDescriptionHeader)
+    translateUIFontString(QuestProgressRequiredItemsText)
 
     -- Objectives Frame
-    translateFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
-    translateFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
-    translateFontString(ObjectiveTrackerBlocksFrame.AdventureHeader.Text)
-    translateFontString(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text)
-    translateFontString(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text)
-    translateFontString(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text)
-    translateFontString(ObjectiveTrackerBlocksFrame.ScenarioHeader.Text)
+    translateUIFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
+    translateUIFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
+    translateUIFontString(ObjectiveTrackerBlocksFrame.AdventureHeader.Text)
+    translateUIFontString(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text)
+    translateUIFontString(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text)
+    translateUIFontString(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text)
+    translateUIFontString(ObjectiveTrackerBlocksFrame.ScenarioHeader.Text)
 
     -- Quest popup
-    translateFontString(QuestLogPopupDetailFrame.ShowMapButton.Text)
+    translateUIFontString(QuestLogPopupDetailFrame.ShowMapButton.Text)
     translateButton(QuestLogPopupDetailFrame.AbandonButton)
     translateButton(QuestLogPopupDetailFrame.ShareButton)
 
     -- Quest map
-    translateFontString(MapQuestInfoRewardsFrame.TitleFrame.Name)
+    translateUIFontString(MapQuestInfoRewardsFrame.TitleFrame.Name)
     for _, region in ipairs({ QuestMapFrame.DetailsFrame.RewardsFrame:GetRegions() }) do
         if region:GetObjectType() == "FontString" then
-            translateFontString(region)
+            translateUIFontString(region)
         end
     end
     translateButton(QuestMapFrame.DetailsFrame.AbandonButton, 90, 22)
     translateButton(QuestMapFrame.DetailsFrame.ShareButton, 90, 22)
     translateButton(QuestMapFrame.DetailsFrame.BackButton, nil, 24)
 
-    translateFontString(QuestScrollFrame.CampaignTooltip.CompleteRewardText)
+    translateUIFontString(QuestScrollFrame.CampaignTooltip.CompleteRewardText)
 
     hooksecurefunc("QuestInfo_Display", DisplayQuestInfo)
     hooksecurefunc("QuestFrame_ShowQuestPortrait", ShowQuestPortrait)
