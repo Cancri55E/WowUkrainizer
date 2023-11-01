@@ -4,5 +4,4 @@
 	<Include file="Database\_manifest.xml"/>
 	<Include file="Core\_manifest.xml"/>
     <Script file="WowUkrainizer.lua"/>
-    <Script file="quest_dump.lua"/>
 </Ui>

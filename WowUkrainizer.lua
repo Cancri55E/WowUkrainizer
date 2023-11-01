@@ -73,7 +73,7 @@ local translators = {
         name = "QuestTranslator",
         args = nil,
         isEnabled = function()
-            return true
+            return WowUkrainizer_Options.TranslateQuestAndObjectivesFrame
         end
     },
 }
