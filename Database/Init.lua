@@ -1,6 +1,9 @@
 local _, ns = ...;
 
 -- Constants
+ns.FACTION_ALLIANCE = "Альянс"
+ns.FACTION_HORDE = "Орда"
+
 ns.LEVEL_TRANSLATION = "Рівень"
 ns.PAGE_TRANSLATION = "Сторінка"
 ns.LEADER_TRANSLATION = "Ватажок"
@@ -17,5 +20,9 @@ ns.TALENT_UPGRADE_TRANSLATION = "Оновлення"
 ns.PET_LEVEL_TRANSLATION = "Супутник {1} рівня"
 ns.PET_CAPTURABLE_TRANSLATION = "Mожна приручити"
 ns.PET_COLLECTED_TRANSLATION = "Зібрано ({1}/{2})"
+
+ns.ABANDON_QUEST_CONFIRM_UA = "Відмовитися від \"%s\"?"
+ns.YES_UA = "Так"
+ns.NO_UA = "Ні"
 
 ns._db = {}

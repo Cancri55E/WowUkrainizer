@@ -36,7 +36,7 @@ do
 
     local function calcIndex(index, gender)
         if (not index or not gender) then return 1 end
-        gender = 2 -- hook until table with translations not complited
+        --gender = 2 -- hook until table with translations not complited
         return index * 2 - (3 - gender)
     end
 
@@ -145,6 +145,8 @@ do
             return getFormattedValueOrDefault(ns._db.ClassTalentFrameLines, default)
         elseif (type == "main") then
             return getFormattedValueOrDefault(ns._db.MainFrameLines, default)
+        elseif (type == "quest") then
+            return getValueOrDefault(ns._db.QuestFrameLines, default)
         end
     end
 
@@ -175,6 +177,163 @@ do
     end
 
     dbContext.NpcDialogs = repository
+end
+
+-- Gossips
+do
+    local repository = {}
+
+    function repository.GetGossipTitle(default)
+        return getValueOrDefault(ns._db.GossipTitles, default)
+    end
+
+    function repository.GetGossipOptionText(default)
+        return getValueOrDefault(ns._db.GossipOptions, default)
+    end
+
+    dbContext.Gossips = repository
+end
+
+-- Quests
+do
+    local QUEST_TITLE = 1
+    local QUEST_DESCRIPTION = 2
+    local QUEST_OBJECTIVES_TEXT = 3
+    local QUEST_TARGET_NAME = 4
+    local QUEST_TARGET_DESCRIPTION = 5
+    local QUEST_COMPLETED_TARGET_NAME = 6
+    local QUEST_COMPLETED_TARGET_DESCRIPTION = 7
+    local QUEST_LOG_COMPLETION_TEXT = 8
+    local QUEST_REWARD_TEXT = 9
+    local QUEST_COMPLETED_TEXT = 10
+    local QUEST_AREA_DESCRIPTION = 11
+
+    local repository = {}
+
+    local function normalizeQuestString(text)
+        if text == nil or text == "" then return text end
+
+        local playerData = ns.PlayerData
+
+        text = string.gsub(text, "%$[nN]", function(_)
+            return playerData.Name
+        end)
+
+        text = string.gsub(text, "%$[rR]", function(marker) -- TODO: case like class
+            if (marker == "$R") then return string.upper(playerData.Race) end
+            return playerData.Race
+        end)
+
+        text = string.gsub(text, "%$[cC]", function(marker)
+            local classStr = dbContext.Units.GetClass(playerData.Class, 1, playerData.Gender)
+
+            if (marker == "$C") then return string.upper(classStr) end
+            return classStr
+        end)
+
+        text = string.gsub(text, "%$[cC]:(.)", function(marker, caseLetter)
+            local case = 1
+            if (caseLetter == 'н' or caseLetter == 'Н') then
+                case = 1
+            elseif (caseLetter == 'р' or caseLetter == 'Р') then
+                case = 2
+            elseif (caseLetter == 'д' or caseLetter == 'Д') then
+                case = 3
+            elseif (caseLetter == 'з' or caseLetter == 'З') then
+                case = 4
+            elseif (caseLetter == 'о' or caseLetter == 'О') then
+                case = 5
+            elseif (caseLetter == 'м' or caseLetter == 'М') then
+                case = 6
+            elseif (caseLetter == 'к' or caseLetter == 'К') then
+                case = 7
+            end
+
+            local classStr = dbContext.Units.GetClass(playerData.Class, case, playerData.Gender)
+
+            if (marker == "$C") then return string.upper(classStr) end
+            return classStr
+        end)
+
+        text = string.gsub(text, "{sex|(.-)|(.-)}", function(male, female)
+            if (playerData.Gender == 3) then
+                return female
+            else
+                return male
+            end
+        end)
+
+        return text
+    end
+
+    function repository.GetQuestObjective(questId, default)
+        if (not default) then return default end
+
+        local objectives = ns._db.QuestObjectives[questId]
+        if (not objectives) then return default end
+
+        local progressText = nil
+        local completeText = nil
+        local objectiveText = default
+        objectiveText:gsub("^(%d+/%d+)(.*)%s*(%b())%s*$", function(p, o, c)
+            progressText = p
+            objectiveText = o
+            completeText = c
+        end)
+        if (not completeText) then
+            objectiveText:gsub("^(%d+/%d+)(.*)", function(p, o)
+                progressText = p
+                objectiveText = o
+            end)
+        end
+
+        local translatedObjectiveText = getValueOrDefault(objectives, objectiveText)
+        if (progressText) then
+            translatedObjectiveText = progressText .. " " .. translatedObjectiveText
+        end
+        if (completeText) then
+            translatedObjectiveText = translatedObjectiveText .. " (Виконано)"
+        end
+        return normalizeQuestString(translatedObjectiveText)
+    end
+
+    function repository.GetQuestRewardText(questId)
+        local data = ns._db.Quests[questId]
+        if (not data) then return end
+        return normalizeQuestString(data[QUEST_REWARD_TEXT])
+    end
+
+    function repository.GetQuestProgressText(questId)
+        local data = ns._db.Quests[questId]
+        if (not data) then return end
+        return normalizeQuestString(data[QUEST_COMPLETED_TEXT])
+    end
+
+    function repository.GetQuestTitle(questId)
+        local data = ns._db.Quests[questId]
+        if (not data) then return end
+        return data[QUEST_TITLE]
+    end
+
+    function repository.GetQuestData(questId)
+        local data = ns._db.Quests[questId]
+        if (not data) then return end
+        return {
+            ID = questId,
+            Title = data[QUEST_TITLE],
+            Description = normalizeQuestString(data[QUEST_DESCRIPTION]),
+            ObjectivesText = normalizeQuestString(data[QUEST_OBJECTIVES_TEXT]),
+            ContainsObjectives = ns._db.QuestObjectives[questId] ~= nil,
+            CompletionText = data[QUEST_LOG_COMPLETION_TEXT],
+            TargetName = data[QUEST_TARGET_NAME],
+            TargetDescription = data[QUEST_TARGET_DESCRIPTION],
+            TargetCompletedName = data[QUEST_COMPLETED_TARGET_NAME],
+            TargetCompletedDescription = data[QUEST_COMPLETED_TARGET_DESCRIPTION],
+            AreaDescription = data[QUEST_AREA_DESCRIPTION],
+        }
+    end
+
+    dbContext.Quests = repository
 end
 
 ns.DbContext = dbContext

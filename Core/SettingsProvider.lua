@@ -15,6 +15,7 @@ local defaultOptions = {
     -- General
     TranslateClassTalentsFrame = true,
     TranslateSpellbookFrame = true,
+    TranslateQuestAndObjectivesFrame = true,
     TranslateNameplatesAndUnitFrames = true,
     SpellNameLangInSpellbook = "ua",
     HighlightSpellNameInDescription = true,
@@ -58,6 +59,10 @@ function settingsProvider:Load()
 
     if (WowUkrainizer_Options.TranslateNameplatesAndUnitFrames == nil) then
         WowUkrainizer_Options.TranslateNameplatesAndUnitFrames = def.TranslateNameplatesAndUnitFrames
+    end
+
+    if (WowUkrainizer_Options.TranslateQuestAndObjectivesFrame == nil) then
+        WowUkrainizer_Options.TranslateQuestAndObjectivesFrame = def.TranslateQuestAndObjectivesFrame
     end
 
     WowUkrainizer_Options.SpellNameLangInSpellbook =
@@ -219,6 +224,16 @@ function settingsProvider:Build()
                                 disabled = function()
                                     return not WowUkrainizer_Options.TranslateSpellbookFrame
                                 end,
+                            },
+
+                            TranslateQuestAndObjectivesFrame = {
+                                type = "toggle",
+                                name = "Перекладати завдання",
+                                desc = "",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 3.6,
+                                get = function(_) return WowUkrainizer_Options.TranslateQuestAndObjectivesFrame end,
+                                set = function(_, value) WowUkrainizer_Options.TranslateQuestAndObjectivesFrame = value end,
                             },
 
                             TranslateNameplatesAndUnitFrames = {
@@ -633,7 +648,17 @@ function settingsProvider:Reset()
     ReloadUI()
 end
 
-function settingsProvider.GetDefaultFontFile() return [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]] end
+function settingsProvider.GetQuestTitleFontFile()
+    return [[Interface\AddOns\WowUkrainizer\assets\Classic_UA_Morpheus.ttf]]
+end
+
+function settingsProvider.GetQuestFontFile()
+    return [[Interface\AddOns\WowUkrainizer\assets\Classic_UA_FRIZQT.ttf]]
+end
+
+function settingsProvider.GetDefaultFontFile()
+    return [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]]
+end
 
 function settingsProvider.GetDefaultOptions() return defaultOptions end
 
@@ -654,6 +679,7 @@ function settingsProvider.GetTranslatorsState()
     return {
         translateClassTalentsFrame = WowUkrainizer_Options.TranslateClassTalentsFrame,
         translateSpellbookFrame = WowUkrainizer_Options.TranslateSpellbookFrame,
+        TranslateQuestAndObjectivesFrame = WowUkrainizer_Options.TranslateQuestAndObjectivesFrame,
         translateNameplatesAndUnitFrames = WowUkrainizer_Options.TranslateNameplatesAndUnitFrames,
         translateSpellTooltips = WowUkrainizer_Options.TranslateSpellTooltips,
         translateUnitTooltips = WowUkrainizer_Options.TranslateUnitTooltips,
