@@ -266,6 +266,8 @@ do
         return text
     end
 
+    function repository.ContainsQuestData(questId) return ns._db.Quests[questId] ~= nil end
+
     function repository.GetQuestObjective(questId, default)
         if (not default) then return default end
 

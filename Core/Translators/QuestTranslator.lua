@@ -12,6 +12,7 @@ local GetQuestData = ns.DbContext.Quests.GetQuestData
 local GetQuestObjective = ns.DbContext.Quests.GetQuestObjective
 local GetQuestRewardText = ns.DbContext.Quests.GetQuestRewardText
 local GetQuestProgressText = ns.DbContext.Quests.GetQuestProgressText
+local ContainsQuestData = ns.DbContext.Quests.ContainsQuestData
 
 local FACTION_ALLIANCE = ns.FACTION_ALLIANCE
 local FACTION_HORDE = ns.FACTION_HORDE
@@ -22,6 +23,10 @@ local NO_UA = ns.NO_UA
 
 local ACTIVE_TEMPLATE;
 local ACTIVE_PARENT_FRAME;
+
+local questFrameSwitchTranslationButton
+local questPopupFrameSwitchTranslationButton
+local questMapDetailsFrameSwitchTranslationButton
 
 local translator = class("QuestTranslator", ns.Translators.BaseTranslator)
 ns.Translators.QuestTranslator = translator
@@ -48,15 +53,9 @@ local function translateButton(button, width, height)
         if (width) then
             button:SetSize(width, button:GetHeight())
         elseif (height) then
-            button:SetSize(button:GetWidth(), 24)
+            button:SetSize(button:GetWidth(), height)
         end
     end
-end
-
-local function setText(fontString, text)
-    local originalHeight = fontString:GetHeight()
-    fontString:SetText(text)
-    return originalHeight, fontString:GetHeight()
 end
 
 local function getQuestID()
@@ -64,6 +63,18 @@ local function getQuestID()
         return C_QuestLog.GetSelectedQuest();
     else
         return GetQuestID();
+    end
+end
+
+local function showCommandButtonsForQuest(questID)
+    if (ContainsQuestData(questID)) then
+        questFrameSwitchTranslationButton:Show()
+        questPopupFrameSwitchTranslationButton:Show()
+        questMapDetailsFrameSwitchTranslationButton:Show()
+    else
+        questFrameSwitchTranslationButton:Hide()
+        questPopupFrameSwitchTranslationButton:Hide()
+        questMapDetailsFrameSwitchTranslationButton:Hide()
     end
 end
 
@@ -153,22 +164,23 @@ local function TranslteQuestObjective(objectiveFrame, questData, isQuestFrame)
         translatedText = GetQuestObjective(questData.ID, text)
     end
 
-    return setText(objectiveFrame, translatedText)
+    objectiveFrame:SetText(translatedText)
+    return objectiveFrame:GetHeight()
 end
 
 local function TranslteQuestObjectives(objectiveFrames, questData, isOnQuestFrame)
-    if (not questData) then return end
+    if (not questData) then return 0 end
 
-    local results = {}
-    for index, objectiveFrame in pairs(objectiveFrames) do
-        local original, current = TranslteQuestObjective(objectiveFrame.Text or objectiveFrame, questData, isOnQuestFrame)
-        if (current) then
-            objectiveFrame:SetHeight(current)
-            results[index] = { original, current }
+    local questObjectiveHeight = 0
+    for _, objectiveFrame in pairs(objectiveFrames) do
+        local objectiveHeight = TranslteQuestObjective(objectiveFrame.Text or objectiveFrame, questData, isOnQuestFrame)
+        if (objectiveHeight) then
+            objectiveFrame:SetHeight(objectiveHeight)
+            questObjectiveHeight = questObjectiveHeight + objectiveHeight
         end
     end
 
-    return results
+    return questObjectiveHeight
 end
 
 local function OnGossipShow()
@@ -374,14 +386,14 @@ local function OnQuestLogQuestsUpdate()
     for objectiveFramePool in QuestScrollFrame.objectiveFramePool:EnumerateActive() do
         local questID = objectiveFramePool.questID
         if (not updatedHeight[questID]) then updatedHeight[questID] = 0 end
-        local _, current = TranslteQuestObjective(objectiveFramePool.Text, GetQuestData(questID), false)
-        if (current) then
-            objectiveFramePool:SetHeight(current)
-            updatedHeight[questID] = updatedHeight[questID] + current + 4
+        local objectiveHeight = TranslteQuestObjective(objectiveFramePool.Text, GetQuestData(questID), false)
+        if (objectiveHeight > 0) then
+            objectiveFramePool:SetHeight(objectiveHeight)
+            updatedHeight[questID] = updatedHeight[questID] + objectiveHeight + 4
         end
     end
 
-    for key, ChildFrame in pairs(QuestScrollFrame.Contents:GetLayoutChildren()) do
+    for _, ChildFrame in pairs(QuestScrollFrame.Contents:GetLayoutChildren()) do
         local questID = ChildFrame.questID
         if (questID) then
             local height = updatedHeight[questID]
@@ -426,10 +438,11 @@ local function UpdateTrackerModule(module)
     for questID, questObjectiveBlock in pairs(objectiveTrackerBlockTemplate) do
         local block = module:GetBlock(questID);
 
-        local blockHeight;
+        local blockHeight = 0;
         local questData = GetQuestData(tonumber(questID))
         if (questData and questData.Title) then
-            _, blockHeight = setText(questObjectiveBlock.HeaderText, questData.Title)
+            questObjectiveBlock.HeaderText:SetText(questData.Title)
+            blockHeight = questObjectiveBlock.HeaderText:GetHeight()
         end
 
         local objectivesHeights = TranslteQuestObjectives(questObjectiveBlock.lines, questData, false)
@@ -438,13 +451,9 @@ local function UpdateTrackerModule(module)
             line:SetHeight(line.Text:GetHeight())
         end
 
-        if (objectivesHeights) then
-            for i = 1, #objectivesHeights, 1 do
-                blockHeight = blockHeight + objectivesHeights[i][2] + block.module.lineSpacing
-            end
-        end
+        blockHeight = blockHeight + objectivesHeights + (block.module.lineSpacing * #questObjectiveBlock.lines)
 
-        if (blockHeight and block:GetHeight() < blockHeight) then
+        if (block:GetHeight() < blockHeight) then
             block:SetHeight(blockHeight)
         end
     end
@@ -477,6 +486,8 @@ local function DisplayQuestInfo(template, parentFrame)
 
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
+
+    showCommandButtonsForQuest(questID)
 
     local questData = GetQuestData(questID)
 
@@ -553,6 +564,8 @@ local function OnQuestFrameProgressPanelShow(_)
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
 
+    showCommandButtonsForQuest(questID)
+
     if (WowUkrainizer_Options.TranslateQuestText) then
         local title = GetQuestTitle(questID)
         if (title) then
@@ -566,7 +579,7 @@ local function OnQuestFrameProgressPanelShow(_)
     end
 end
 
-local function OnStaticPopupShow(which, text_arg1, text_arg2, data, insertedFrame)
+local function OnStaticPopupShow(which, text_arg1, text_arg2)
     local function findStaticPopup()
         for index = 1, STATICPOPUP_NUMDIALOGS, 1 do
             local frame = _G["StaticPopup" .. index];
@@ -592,7 +605,7 @@ local function OnStaticPopupShow(which, text_arg1, text_arg2, data, insertedFram
 end
 
 local function InitializeCommandButtons()
-    local function CreateSwitchTranslationButton(parentFrame, func, offsetX, offsetY)
+    local function CreateSwitchTranslationButton(parentFrame, onClickFunc, offsetX, offsetY)
         local button = CreateFrame("Button", nil, parentFrame, "UIPanelButtonTemplate");
         button:SetSize(90, 24);
         if (WowUkrainizer_Options.TranslateQuestText) then
@@ -609,9 +622,10 @@ local function InitializeCommandButtons()
             else
                 button:SetText("Переклад");
             end
-            func()
+            onClickFunc()
         end)
         button:Show();
+        return button
     end
 
     local function CreateWowheadButton(parentFrame, offsetX, offsetY)
@@ -625,7 +639,7 @@ local function InitializeCommandButtons()
         button:Show();
     end
 
-    CreateSwitchTranslationButton(QuestFrame, function()
+    questFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestFrame, function()
         if (QuestFrameProgressPanel:IsShown()) then
             QuestFrameProgressPanel_OnShow(QuestFrameProgressPanel)
         else
@@ -635,13 +649,13 @@ local function InitializeCommandButtons()
     end, -34, -30)
     CreateWowheadButton(QuestFrame, -6, -30)
 
-    CreateSwitchTranslationButton(QuestLogPopupDetailFrame, function()
+    questPopupFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestLogPopupDetailFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
     end, -194, -28)
     CreateWowheadButton(QuestLogPopupDetailFrame, -166, -28)
 
-    CreateSwitchTranslationButton(QuestMapDetailsScrollFrame, function()
+    questMapDetailsFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestMapDetailsScrollFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
     end, -16, 30)
@@ -653,8 +667,6 @@ function translator:initialize()
 
     -- Gossip Frame
     translateButton(GossipFrame.GreetingPanel.GoodbyeButton)
-    eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
-
     -- Quest Frame
     translateButton(QuestFrameAcceptButton)
     translateButton(QuestFrameDeclineButton)
@@ -666,7 +678,6 @@ function translator:initialize()
     translateUIFontString(QuestInfoObjectivesHeader)
     translateUIFontString(QuestInfoDescriptionHeader)
     translateUIFontString(QuestProgressRequiredItemsText)
-
     -- Objectives Frame
     translateUIFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
     translateUIFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
@@ -675,12 +686,10 @@ function translator:initialize()
     translateUIFontString(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text)
     translateUIFontString(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text)
     translateUIFontString(ObjectiveTrackerBlocksFrame.ScenarioHeader.Text)
-
     -- Quest popup
     translateUIFontString(QuestLogPopupDetailFrame.ShowMapButton.Text)
     translateButton(QuestLogPopupDetailFrame.AbandonButton)
     translateButton(QuestLogPopupDetailFrame.ShareButton)
-
     -- Quest map
     translateUIFontString(MapQuestInfoRewardsFrame.TitleFrame.Name)
     for _, region in ipairs({ QuestMapFrame.DetailsFrame.RewardsFrame:GetRegions() }) do
@@ -691,8 +700,10 @@ function translator:initialize()
     translateButton(QuestMapFrame.DetailsFrame.AbandonButton, 90, 22)
     translateButton(QuestMapFrame.DetailsFrame.ShareButton, 90, 22)
     translateButton(QuestMapFrame.DetailsFrame.BackButton, nil, 24)
-
     translateUIFontString(QuestScrollFrame.CampaignTooltip.CompleteRewardText)
+
+    eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
+    eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
 
     hooksecurefunc("QuestInfo_Display", DisplayQuestInfo)
     hooksecurefunc("QuestFrame_ShowQuestPortrait", ShowQuestPortrait)
@@ -705,7 +716,6 @@ function translator:initialize()
     hooksecurefunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
 
     ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
-    eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
     hooksecurefunc(QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
     hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
 
