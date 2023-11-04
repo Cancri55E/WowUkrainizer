@@ -662,6 +662,131 @@ local function InitializeCommandButtons()
     CreateWowheadButton(QuestMapDetailsScrollFrame, 12, 30)
 end
 
+local ERR_QUEST_OBJECTIVE_COMPLETE_S = 302
+local ERR_QUEST_UNKNOWN_COMPLETE = 303
+local ERR_QUEST_ADD_KILL_SII = 304
+local ERR_QUEST_ADD_FOUND_SII = 305
+local ERR_QUEST_ADD_ITEM_SII = 306
+local ERR_QUEST_ADD_PLAYER_KILL_SII = 307
+
+local UIInfoMessageChange = {
+    [ERR_QUEST_OBJECTIVE_COMPLETE_S] = {},
+    [ERR_QUEST_UNKNOWN_COMPLETE] = {},
+    [ERR_QUEST_ADD_KILL_SII] = {},
+    [ERR_QUEST_ADD_FOUND_SII] = {},
+    [ERR_QUEST_ADD_ITEM_SII] = {},
+    [ERR_QUEST_ADD_PLAYER_KILL_SII] = {},
+
+}
+
+local function OnUIErrorsFrameMessageAdded(frame, message, r, g, b, a, messageType)
+    if (messageType == ERR_QUEST_OBJECTIVE_COMPLETE_S) then
+        local text = message
+        message:gsub("(.*) %(Complete%)", function(t)
+            text = t
+        end)
+
+        local translatedText = nil
+        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
+            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
+            if questID and questID > 0 then
+                local objective = GetQuestObjective(questID, text)
+                if (objective ~= text) then
+                    translatedText = objective .. " (Виконано)"
+                    break
+                end
+            end
+        end
+
+        if (not translatedText) then return end
+
+        table.insert(UIInfoMessageChange[ERR_QUEST_OBJECTIVE_COMPLETE_S],
+            { text = message, translatedText = translatedText })
+    end
+
+    if (messageType == ERR_QUEST_ADD_ITEM_SII or messageType == ERR_QUEST_ADD_FOUND_SII) then
+        local text = message
+        local progress = nil
+        message:gsub("(.*): (%d+/%d+)", function(o, p)
+            text = o
+            progress = p
+        end)
+
+        local translatedText = nil
+        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
+            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
+            if questID and questID > 0 then
+                local objective = GetQuestObjective(questID, text)
+                if (objective ~= text) then
+                    translatedText = objective
+                    if (progress) then translatedText = translatedText .. ": " .. progress end
+                    break
+                end
+            end
+        end
+
+        if (not translatedText) then return end
+
+        table.insert(UIInfoMessageChange[messageType], { text = message, translatedText = translatedText })
+    end
+
+    if (messageType == ERR_QUEST_ADD_KILL_SII) then
+        local text = message
+        local progress = nil
+        message:gsub("(.*) slain: (%d+/%d+)", function(o, p)
+            text = o .. " slain"
+            progress = p
+        end)
+
+        local translatedText = nil
+        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
+            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
+            if questID and questID > 0 then
+                local objective = GetQuestObjective(questID, text)
+                if (objective ~= text) then
+                    translatedText = objective
+                    if (progress) then translatedText = translatedText .. ": " .. progress end
+                    break
+                end
+            end
+        end
+
+        if (not translatedText) then return end
+
+        table.insert(UIInfoMessageChange[messageType], { text = message, translatedText = translatedText })
+    end
+
+
+    if (messageType == ERR_QUEST_UNKNOWN_COMPLETE) then
+        table.insert(UIInfoMessageChange[ERR_QUEST_UNKNOWN_COMPLETE],
+            { text = message, translatedText = "Завдання виконано." })
+    end
+
+    if (messageType == ERR_QUEST_ADD_PLAYER_KILL_SII) then
+        local translatedText = message:gsub("Players slain: (%d+/%d+)", function(progress)
+            return "Вбито гравців: " .. progress
+        end)
+        table.insert(UIInfoMessageChange[ERR_QUEST_ADD_PLAYER_KILL_SII],
+            { text = message, translatedText = translatedText })
+    end
+end
+
+local function OnUIErrorsFrameUpdated()
+    for messageType, messages in pairs(UIInfoMessageChange) do
+        if (UIErrorsFrame:HasMessageByID(messageType)) then
+            local fontString = UIErrorsFrame:GetFontStringByID(messageType)
+            if (fontString) then
+                for i = 1, #messages, 1 do
+                    if (messages[i] and fontString:GetText() == messages[i].text) then
+                        fontString:SetText(messages[i].translatedText)
+                        table.remove(messages, i)
+                    end
+                end
+            end
+        end
+    end
+end
+
 function translator:initialize()
     InitializeCommandButtons()
 
@@ -720,4 +845,11 @@ function translator:initialize()
     hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
 
     hooksecurefunc("StaticPopup_Show", OnStaticPopupShow)
+
+    -- Update yellow text when quest completed or objectives changed
+    hooksecurefunc(UIErrorsFrame, "AddMessage", OnUIErrorsFrameMessageAdded)
+    UIErrorsFrame:HookScript("OnUpdate", OnUIErrorsFrameUpdated)
+    hooksecurefunc(UIErrorsFrame, "SetScript", function(_, _, value)
+        if (not value) then UIErrorsFrame:HookScript("OnUpdate", OnUIErrorsFrameUpdated) end
+    end)
 end
