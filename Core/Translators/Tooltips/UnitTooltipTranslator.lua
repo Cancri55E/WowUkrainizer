@@ -13,6 +13,8 @@ local GetUnitSubnameOrDefault = ns.DbContext.Units.GetUnitSubnameOrDefault
 local GetUnitTypeOrDefault = ns.DbContext.Units.GetUnitTypeOrDefault
 local GetUnitRankOrDefault = ns.DbContext.Units.GetUnitRankOrDefault
 local GetUnitFractionOrDefault = ns.DbContext.Units.GetUnitFractionOrDefault
+local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
+local GetQuestObjective = ns.DbContext.Quests.GetQuestObjective
 
 local StartsWith = ns.StringExtensions.StartsWith
 local ExtractNumericValues = ns.StringExtensions.ExtractNumericValues
@@ -21,36 +23,14 @@ local InsertNumericValues = ns.StringExtensions.InsertNumericValues
 local translator = class("UnitTooltipTranslator", ns.Translators.BaseTooltipTranslator)
 ns.Translators.UnitTooltipTranslator = translator
 
-local function parseUnitTooltipLines(unitTooltipLines)
-    local function parseSubnameInfo(leftTexts, index)
-        local value = leftTexts[index]
+local function parseUnitTooltipLines(tooltipLines)
+    local function parseSubnameInfo(tooltipLine)
+        local value = tooltipLine.leftText
         local isSubname = value and value:sub(1, 9) ~= "Pet Level" and value:sub(1, 5) ~= "Level"
-        return isSubname and { index = index, value = value } or nil
+        return isSubname and { index = tooltipLine.lineIndex, value = tooltipLine.leftText } or nil
     end
 
-    local function parseRemainingInfo(leftTexts, startIndex)
-        local pvpInfo, factionInfo, capturableLineIndex, collectedInfo, leaderLineIndex
-
-        for i = startIndex, #leftTexts do
-            local str = leftTexts[i]
-
-            if str == "Capturable" then
-                capturableLineIndex = i
-            elseif StartsWith(str, "Collected") then
-                collectedInfo = { index = i, value = str }
-            elseif str == "PvP" then
-                pvpInfo = { index = i, value = str }
-            elseif not pvpInfo then
-                factionInfo = { index = i, value = str }
-            else
-                leaderLineIndex = i
-            end
-        end
-
-        return pvpInfo, factionInfo, capturableLineIndex, collectedInfo, leaderLineIndex
-    end
-
-    local function parseUnitLevelString(unitLevelString)
+    local function parseUnitLevel(unitLevelString)
         local level, unitType, rank, isPet = nil, nil, nil, false
         local stringParts = {}
 
@@ -81,31 +61,49 @@ local function parseUnitTooltipLines(unitTooltipLines)
         return level, unitType, rank, isPet
     end
 
-    local leftTexts = {}
+    local result = { name = tooltipLines[1].leftText }
 
-    for _, tooltipLine in ipairs(unitTooltipLines) do
-        table.insert(leftTexts, tooltipLine.leftText)
+    if (#tooltipLines == 1) then return result end
+
+    result.subnameInfo = parseSubnameInfo(tooltipLines[2])
+
+    local index = result.subnameInfo and 3 or 2
+
+    if (index > #tooltipLines) then return result end
+
+    local levelLine = tooltipLines[index]
+    if (levelLine) then
+        result.levelInfo = { index = index }
+        result.levelInfo.level, result.levelInfo.unitType, result.levelInfo.rank, result.levelInfo.isPet = parseUnitLevel(
+            levelLine.leftText)
     end
 
-    local tooltipInfo = { name = leftTexts[1] }
-
-    if (#leftTexts > 1) then
-        local index = 2
-
-        tooltipInfo.subnameInfo = parseSubnameInfo(leftTexts, index)
-        index = index + (tooltipInfo.subnameInfo and 1 or 0)
-
-        if (leftTexts[index]) then
-            tooltipInfo.levelInfo = { index = index }
-            tooltipInfo.levelInfo.level, tooltipInfo.levelInfo.unitType,
-            tooltipInfo.levelInfo.rank, tooltipInfo.levelInfo.isPet = parseUnitLevelString(leftTexts[index])
+    local currentQuestID = 0
+    for i = index + 1, #tooltipLines, 1 do
+        local tooltipLine = tooltipLines[i]
+        if (tooltipLine.type == Enum.TooltipDataLineType.None) then
+            local leftText = tooltipLine.leftText
+            if leftText == "Capturable" then
+                result.capturableLineIndex = i
+            elseif leftText == "Leader" then
+                result.leaderLineIndex = i
+            elseif leftText == "PvP" then
+                result.pvpInfo = { index = i, value = leftText }
+            elseif StartsWith(leftText, "Collected") then
+                result.collectedInfo = { index = i, value = leftText }
+            elseif not result.pvpInfo and not result.unitTypeOrFactionInfo then -- faction always befor pvp, if we already contains PvP then faction not exists
+                result.unitTypeOrFactionInfo = { index = i, value = leftText }
+            end
+        elseif (tooltipLine.type == Enum.TooltipDataLineType.QuestTitle) then
+            currentQuestID = math.floor(tonumber(tooltipLine.id) or 0)
+            if (not result.questsInfo) then result.questsInfo = {} end
+            result.questsInfo[currentQuestID] = { index = i, name = tooltipLine.leftText, objectives = {} }
+        elseif (tooltipLine.type == Enum.TooltipDataLineType.QuestObjective) then
+            result.questsInfo[currentQuestID].objectives[i] = tooltipLine.leftText
         end
-
-        tooltipInfo.pvpInfo, tooltipInfo.factionInfo, tooltipInfo.capturableLineIndex, tooltipInfo.collectedInfo,
-        tooltipInfo.leaderLineIndex = parseRemainingInfo(leftTexts, index + 1)
     end
 
-    return tooltipInfo
+    return result
 end
 
 function translator:ParseTooltip(tooltip, tooltipData)
@@ -114,7 +112,6 @@ function translator:ParseTooltip(tooltip, tooltipData)
         for i = 1, tooltip:NumLines() do
             self:_addFontStringToIndexLookup(i, _G["GameTooltipTextLeft" .. i])
         end
-
         return parseUnitTooltipLines(tooltipData.lines)
     end
 end
@@ -157,10 +154,15 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         })
     end
 
-    if (tooltipInfo.factionInfo) then
+    if (tooltipInfo.unitTypeOrFactionInfo) then
+        local value = tooltipInfo.unitTypeOrFactionInfo.value
+        local translatedValue = GetUnitTypeOrDefault(value)
+        if (translatedValue == value) then
+            translatedValue = GetUnitFractionOrDefault(value)
+        end
         table.insert(translatedTooltipLines, {
-            index = tooltipInfo.factionInfo.index,
-            value = GetUnitFractionOrDefault(tooltipInfo.factionInfo.value)
+            index = tooltipInfo.unitTypeOrFactionInfo.index,
+            value = translatedValue
         })
     end
 
@@ -184,6 +186,27 @@ function translator:TranslateTooltipInfo(tooltipInfo)
             index = tooltipInfo.leaderLineIndex,
             value = LEADER_TRANSLATION
         })
+    end
+
+    if (tooltipInfo.questsInfo) then
+        for questID, questInfo in pairs(tooltipInfo.questsInfo) do
+            local translatedTitle = GetQuestTitle(questID)
+            if (translatedTitle) then
+                table.insert(translatedTooltipLines, {
+                    index = questInfo.index,
+                    value = translatedTitle
+                })
+            end
+            for index, objective in pairs(questInfo.objectives) do
+                local translatedObjective = GetQuestObjective(questID, objective)
+                if (translatedObjective) then
+                    table.insert(translatedTooltipLines, {
+                        index = index,
+                        value = translatedObjective
+                    })
+                end
+            end
+        end
     end
 
     return translatedTooltipLines
