@@ -948,6 +948,30 @@ local function OnMinimapMouseoverTooltipPostCall(tooltip, tooltipData)
     end
 end
 
+local function OnToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList, button,
+                                    autoHideDelay,
+                                    overrideDisplayMode)
+    if (dropDownFrame == QuestMapQuestOptionsDropDown) then
+        local listFrameName = "DropDownList" .. level;
+        local listFrame = _G[listFrameName];
+        for i = 1, listFrame.numButtons do
+            local button = _G[listFrameName .. "Button" .. i];
+            translateUIFontString(button)
+        end
+    elseif (dropDownFrame == ObjectiveTrackerBlockDropDown) then
+        local questID = dropDownFrame.activeFrame.id
+        local title = C_QuestLog.GetTitleForQuestID(questID);
+        local translatedTitle = GetQuestTitle(questID);
+        local listFrameName = "DropDownList" .. level;
+        _G[listFrameName .. "Button1"]:SetText(translatedTitle or title)
+        local listFrame = _G[listFrameName];
+        for i = 2, listFrame.numButtons do
+            local button = _G[listFrameName .. "Button" .. i];
+            translateUIFontString(button)
+        end
+    end
+end
+
 function translator:initialize()
     InitializeCommandButtons()
 
@@ -990,6 +1014,8 @@ function translator:initialize()
 
     eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
     eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
+
+    hooksecurefunc("ToggleDropDownMenu", OnToggleDropDownMenu)
 
     hooksecurefunc("QuestInfo_Display", DisplayQuestInfo)
     hooksecurefunc("QuestFrame_ShowQuestPortrait", ShowQuestPortrait)
