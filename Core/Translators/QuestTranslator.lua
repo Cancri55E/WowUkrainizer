@@ -28,6 +28,24 @@ local questFrameSwitchTranslationButton
 local questPopupFrameSwitchTranslationButton
 local questMapDetailsFrameSwitchTranslationButton
 
+local ERR_QUEST_OBJECTIVE_COMPLETE_S = 302
+local ERR_QUEST_UNKNOWN_COMPLETE = 303
+local ERR_QUEST_ADD_KILL_SII = 304
+local ERR_QUEST_ADD_FOUND_SII = 305
+local ERR_QUEST_ADD_ITEM_SII = 306
+local ERR_QUEST_ADD_PLAYER_KILL_SII = 307
+
+local UIInfoMessageChange = {
+    [ERR_QUEST_OBJECTIVE_COMPLETE_S] = {},
+    [ERR_QUEST_UNKNOWN_COMPLETE] = {},
+    [ERR_QUEST_ADD_KILL_SII] = {},
+    [ERR_QUEST_ADD_FOUND_SII] = {},
+    [ERR_QUEST_ADD_ITEM_SII] = {},
+    [ERR_QUEST_ADD_PLAYER_KILL_SII] = {},
+}
+
+local WorldMapChildFramesCache = {}
+
 local translator = class("QuestTranslator", ns.Translators.BaseTranslator)
 ns.Translators.QuestTranslator = translator
 
@@ -580,7 +598,7 @@ local function OnQuestFrameProgressPanelShow(_)
 end
 
 local function OnStaticPopupShow(which, text_arg1, text_arg2)
-    local function findStaticPopup()
+    local function _findStaticPopup()
         for index = 1, STATICPOPUP_NUMDIALOGS, 1 do
             local frame = _G["StaticPopup" .. index];
             if (frame:IsShown() and (frame.which == which)) then
@@ -593,7 +611,7 @@ local function OnStaticPopupShow(which, text_arg1, text_arg2)
         local questId = getQuestID()
         if (not questId or questId == 0) then return end
 
-        local frame = findStaticPopup()
+        local frame = _findStaticPopup()
         if (not frame) then return end
 
         frame.text:SetFormattedText(ABANDON_QUEST_CONFIRM_UA, GetQuestTitle(questId) or text_arg1, text_arg2)
@@ -662,24 +680,7 @@ local function InitializeCommandButtons()
     CreateWowheadButton(QuestMapDetailsScrollFrame, 12, 30)
 end
 
-local ERR_QUEST_OBJECTIVE_COMPLETE_S = 302
-local ERR_QUEST_UNKNOWN_COMPLETE = 303
-local ERR_QUEST_ADD_KILL_SII = 304
-local ERR_QUEST_ADD_FOUND_SII = 305
-local ERR_QUEST_ADD_ITEM_SII = 306
-local ERR_QUEST_ADD_PLAYER_KILL_SII = 307
-
-local UIInfoMessageChange = {
-    [ERR_QUEST_OBJECTIVE_COMPLETE_S] = {},
-    [ERR_QUEST_UNKNOWN_COMPLETE] = {},
-    [ERR_QUEST_ADD_KILL_SII] = {},
-    [ERR_QUEST_ADD_FOUND_SII] = {},
-    [ERR_QUEST_ADD_ITEM_SII] = {},
-    [ERR_QUEST_ADD_PLAYER_KILL_SII] = {},
-
-}
-
-local function OnUIErrorsFrameMessageAdded(frame, message, r, g, b, a, messageType)
+local function OnUIErrorsFrameMessageAdded(_, message, _, _, _, _, messageType)
     if (messageType == ERR_QUEST_OBJECTIVE_COMPLETE_S) then
         local text = message
         message:gsub("(.*) %(Complete%)", function(t)
@@ -787,6 +788,166 @@ local function OnUIErrorsFrameUpdated()
     end
 end
 
+local function IsQuestDungeonQuest_Internal(tagID, worldQuestType) -- dublicate local function from blizzard code!
+    if worldQuestType ~= nil then
+        return WORLD_QUEST_TYPE_DUNGEON_TYPES[worldQuestType];
+    end
+    return QUEST_TAG_DUNGEON_TYPES[tagID];
+end
+
+local function GetTranslatedTooltip(frame, questID, questLogIndex, numPOITooltips)
+    local translatedObjectives = {}
+    local numObjectives = GetNumQuestLeaderBoards(questLogIndex);
+    for i = 1, numObjectives do
+        local text, _, finished;
+
+        if numPOITooltips and numPOITooltips == numObjectives then
+            local questPOIIndex = frame:GetTooltipIndex(i);
+            text, _, finished = GetQuestPOILeaderBoard(questPOIIndex, questLogIndex);
+        else
+            text, _, finished = GetQuestLogLeaderBoard(i, questLogIndex);
+        end
+
+        if text and not finished then
+            local translatedObjective = GetQuestObjective(questID, text)
+            table.insert(translatedObjectives, QUEST_DASH .. translatedObjective or text)
+        end
+    end
+
+    local translatedTitle = GetQuestTitle(questID)
+    if (not translatedTitle) then
+        translatedTitle = C_QuestLog.GetTitleForQuestID(questID);
+    else
+        translatedTitle = NORMAL_FONT_COLOR_CODE .. translatedTitle
+    end
+
+    return translatedTitle, translatedObjectives
+end
+
+local function OnWorldMapQuestPOIFrameTooltipUpdated(questPOIFrame) -- original function is QuestBlobPinMixin:UpdateTooltip()
+    local mouseX, mouseY = questPOIFrame:GetMap():GetNormalizedCursorPosition();
+    local questID, numPOITooltips = questPOIFrame:UpdateMouseOverTooltip(mouseX, mouseY);
+    local questLogIndex = questID and C_QuestLog.GetLogIndexForQuestID(questID);
+    if not questLogIndex then return end
+
+    local gameTooltipOwner = GameTooltip:GetOwner();
+    if gameTooltipOwner and gameTooltipOwner ~= questPOIFrame then return end
+    if C_QuestLog.IsThreatQuest(questID) then return end
+
+    local translatedTitle, objectives = GetTranslatedTooltip(questPOIFrame, questID, questLogIndex,
+        numPOITooltips)
+    _G["GameTooltipTextLeft1"]:SetText(translatedTitle)
+    local objectiveOffset = 1
+    local info = C_QuestLog.GetQuestTagInfo(questID);
+    if (info and IsQuestDungeonQuest_Internal(info.tagID, info.worldQuestType)) then
+        objectiveOffset = objectiveOffset + 1
+        -- TODO: Translate QuestTypeToTooltip
+        -- QuestUtils_AddQuestTypeToTooltip(GameTooltip, questID, NORMAL_FONT_COLOR);
+    end
+    for i = objectiveOffset + 1, GameTooltip:NumLines() do
+        local lineLeft = _G["GameTooltipTextLeft" .. i]
+        if (lineLeft) then
+            local objective = objectives[i - 1]
+            if (objective) then
+                lineLeft:SetText(objective)
+            end
+        end
+    end
+    GameTooltip:Show()
+end
+
+local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is QuestPinMixin:OnMouseEnter()
+    local questID = button.questID;
+    local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID);
+    local translatedTitle = GetQuestTitle(questID)
+    if (not translatedTitle) then
+        translatedTitle = C_QuestLog.GetTitleForQuestID(questID);
+    else
+        translatedTitle = NORMAL_FONT_COLOR_CODE .. translatedTitle
+    end
+    _G["GameTooltipTextLeft1"]:SetText(translatedTitle)
+    local objectiveOffset = 1
+    local info = C_QuestLog.GetQuestTagInfo(questID);
+    if (info and IsQuestDungeonQuest_Internal(info.tagID, info.worldQuestType)) then
+        objectiveOffset = objectiveOffset + 1
+        -- TODO: Translate QuestTypeToTooltip
+        -- QuestUtils_AddQuestTypeToTooltip(GameTooltip, questID, NORMAL_FONT_COLOR);
+    end
+    if C_QuestLog.ShouldDisplayTimeRemaining(questID) then
+        objectiveOffset = objectiveOffset + 1
+        -- TODO: Translate QuestTimeToTooltip
+        -- GameTooltip_CheckAddQuestTimeToTooltip(GameTooltip, questID);
+    end
+
+    local wouldShowWaypointText = questID == C_SuperTrack.GetSuperTrackedQuestID() or
+        questID == QuestMapFrame_GetFocusedQuestID();
+    local waypointText = wouldShowWaypointText and C_QuestLog.GetNextWaypointText(questID);
+    if waypointText then
+        -- TODO: Translate waypointText
+        --GameTooltip_AddColoredLine(GameTooltip, QUEST_DASH .. waypointText, HIGHLIGHT_FONT_COLOR);
+    elseif button.style == POIButtonUtil.Style.Numeric then
+        local numItemDropTooltips = GetNumQuestItemDrops(questLogIndex);
+        if numItemDropTooltips > 0 then
+            for i = 1, numItemDropTooltips do
+                local text, _, finished = GetQuestLogItemDrop(i, questLogIndex);
+                if (text and not finished) then
+                    local lineLeft = _G["GameTooltipTextLeft" .. objectiveOffset + i]
+                    if (lineLeft) then
+                        local translatedObjective = GetQuestObjective(questID, text)
+                        if (translatedObjective) then
+                            lineLeft:SetText(QUEST_DASH .. translatedObjective)
+                        end
+                    end
+                end
+            end
+        else
+            local numObjectives = GetNumQuestLeaderBoards(questLogIndex);
+            for i = 1, numObjectives do
+                local text, _, finished = GetQuestLogLeaderBoard(i, questLogIndex);
+                if (text and not finished) then
+                    local lineLeft = _G["GameTooltipTextLeft" .. objectiveOffset + i]
+                    if (lineLeft) then
+                        local translatedObjective = GetQuestObjective(questID, text)
+                        if (translatedObjective) then
+                            lineLeft:SetText(QUEST_DASH .. translatedObjective)
+                        end
+                    end
+                end
+            end
+        end
+    end
+    GameTooltip:Show();
+end
+
+local function OnMinimapMouseoverTooltipPostCall(tooltip, tooltipData)
+    if (tooltipData) then
+        local text = tooltip.TextLeft1:GetText()
+        if (not text) then return end
+
+        local title = text:gsub("(.*)|cffffffff(.*)", function(t, _) return t end)
+
+        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
+            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
+            if questID and questID > 0 then
+                if (C_QuestLog.GetTitleForQuestID(questID) == title) then
+                    local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID);
+
+                    local translatedTitle, objectives = GetTranslatedTooltip(nil, questID, questLogIndex)
+                    local textLeft1 = translatedTitle .. HIGHLIGHT_FONT_COLOR_CODE
+                    for i = 1, #objectives, 1 do
+                        textLeft1 = textLeft1 .. "\n" .. objectives[i]
+                    end
+                    textLeft1 = textLeft1 .. "|r"
+
+                    _G["GameTooltipTextLeft1"]:SetText(textLeft1)
+                    GameTooltip:Show()
+                    break
+                end
+            end
+        end
+    end
+end
+
 function translator:initialize()
     InitializeCommandButtons()
 
@@ -851,5 +1012,23 @@ function translator:initialize()
     UIErrorsFrame:HookScript("OnUpdate", OnUIErrorsFrameUpdated)
     hooksecurefunc(UIErrorsFrame, "SetScript", function(_, _, value)
         if (not value) then UIErrorsFrame:HookScript("OnUpdate", OnUIErrorsFrameUpdated) end
+    end)
+
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.MinimapMouseover, OnMinimapMouseoverTooltipPostCall)
+    WorldMapFrame:HookScript("OnShow", function()
+        for _, frame in pairs({ WorldMapFrame.ScrollContainer.Child:GetChildren() }) do
+            if (frame and frame:GetObjectType() == "Button" and frame.questID) then
+                if (not WorldMapChildFramesCache[frame]) then
+                    frame:HookScript("OnEnter", OnWorldMapPinButtonTooltipUpdated)
+                    hooksecurefunc(frame, "UpdateTooltip", OnWorldMapPinButtonTooltipUpdated)
+                    WorldMapChildFramesCache[frame] = true
+                end
+            elseif (frame:GetObjectType() == "QuestPOIFrame") then
+                if (not WorldMapChildFramesCache[frame]) then
+                    hooksecurefunc(frame, "UpdateTooltip", OnWorldMapQuestPOIFrameTooltipUpdated)
+                    WorldMapChildFramesCache[frame] = true
+                end
+            end
+        end
     end)
 end
