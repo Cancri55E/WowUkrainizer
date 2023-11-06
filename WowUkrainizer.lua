@@ -89,13 +89,13 @@ local function createInterfaceOptions()
 end
 
 local function setGameFonts()
-    local function SetScaledFont(fontFamily, fontName, scale)
+    local function _setScaledFont(fontFamily, fontName, scale)
         if (not fontFamily) then return end
         local _, height, flags = fontFamily:GetFont()
         fontFamily:SetFont(fontName, height * scale, flags)
     end
 
-    local function SetFont(fontFamily, fontName, height)
+    local function _setFont(fontFamily, fontName, height)
         if (not fontFamily) then return end
         local _, _, flags = fontFamily:GetFont()
         fontFamily:SetFont(fontName, height, flags)
@@ -121,7 +121,7 @@ local function setGameFonts()
         }
 
         for _, fontElement in ipairs(fontElements) do
-            SetScaledFont(fontElement.element, fontName, fontElement.scale)
+            _setScaledFont(fontElement.element, fontName, fontElement.scale)
         end
     else
         local fontElements = {
@@ -213,7 +213,7 @@ local function setGameFonts()
             { element = Game30Font,                       fontName = FRIZQTFont, height = 30 },
         }
         for _, fontElement in ipairs(fontElements) do
-            SetFont(fontElement.element, fontElement.fontName, fontElement.height)
+            _setFont(fontElement.element, fontElement.fontName, fontElement.height)
         end
     end
 
@@ -231,7 +231,7 @@ local function setGameFonts()
     }
 
     for _, fontElement in ipairs(questFontSettings) do
-        SetFont(fontElement.element, fontElement.fontName, fontElement.height)
+        _setFont(fontElement.element, fontElement.fontName, fontElement.height)
     end
 end
 
