@@ -237,14 +237,7 @@ do
             return playerData.Race
         end)
 
-        text = string.gsub(text, "%$[cC]", function(marker)
-            local classStr = dbContext.Units.GetClass(playerData.Class, 1, playerData.Gender)
-
-            if (marker == "$C") then return string.upper(classStr) end
-            return classStr
-        end)
-
-        text = string.gsub(text, "%$[cC]:(.)", function(marker, caseLetter)
+        text = string.gsub(text, "(%$[cC]):([^\128-\191][\128-\191])", function(marker, caseLetter)
             local case = 1
             if (caseLetter == 'н' or caseLetter == 'Н') then
                 case = 1
@@ -263,6 +256,13 @@ do
             end
 
             local classStr = dbContext.Units.GetClass(playerData.Class, case, playerData.Gender)
+
+            if (marker == "$C") then return string.upper(classStr) end
+            return classStr
+        end)
+
+        text = string.gsub(text, "%$[cC]", function(marker)
+            local classStr = dbContext.Units.GetClass(playerData.Class, 1, playerData.Gender)
 
             if (marker == "$C") then return string.upper(classStr) end
             return classStr
