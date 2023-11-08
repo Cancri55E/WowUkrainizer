@@ -3,7 +3,6 @@
 *[Дивитись українську версію](README.uk.md)*
 
 ## Introduction
-
 WowUkrainizer is an addon for the World of Warcraft, designed to provide Ukrainian-speaking players with a localized gaming experience. With this addon installed, all in-game content will be automatically translated into Ukrainian, allowing players to fully immerse themselves in the game without having to rely on their English language skills.
 
 ## Installation
@@ -18,9 +17,9 @@ Also you can download the last version from CurseForge: https://www.curseforge.c
 * Semerkhet
 
 ### Translators
-* KuprumLight, Mark Tsemma, Glafira, Алексей Коваль, Serhii Feelenko, Semerkhet, senpusha, Валерий Бондаренко, NichnaVoitelka, Unbrkbl Opt1mist, Shelby333,
-* Nazar Kulchytskyi, Dmytro Borishpolets, RomenSkyJR, Дмитро Горєнков, Женя Браславська, Elanka, Asturiel, Лігво Друїда, Volodymyr Taras, Олексій Сьомін,
-* Ксенія Никонова, Primarch, rchenok, Артем Белякін, Roma Rybai, Andrew Kucherov, Toris_McDessert
+* KuprumLight, Glafira, Mark Tsemma, Olena Gorbenko, Алексей Коваль, Serhii Feelenko, Semerkhet, Mykyta Barmin, kasatushi, Валерій Бондаренко, Roman Yanyshyn, 
+* Dmytro Boryshpolets, NichnaVoitelka, Unbrkbl Opt1mist, Elanka, Shelby333, Nazar Kulchytskyi, Rolik33, RomenSkyJR, Дмитро Горєнков, Asturiel, Женя Браславська, 
+* Сергей Райдер, Лігво Друїда, losthost, Bokshchanin, Volodymyr Taras, Олексій Сьомін, Primarch, Ксенія Никонова, Natalie Dexter, Maxym Palamarchuk, Archenok
 
 ## License
 The WowUkrainizer is licensed under the MIT License. For the full text of the MIT License, please see the [LICENSE](LICENSE) file.

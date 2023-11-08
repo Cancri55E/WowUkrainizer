@@ -17,9 +17,9 @@ WowUkrainizer - це додаток для World of Warcraft, створений
 * Semerkhet
 
 ### Перекладачі
-* KuprumLight, Mark Tsemma, Glafira, Алексей Коваль, Serhii Feelenko, Semerkhet, senpusha, Валерий Бондаренко, NichnaVoitelka, Unbrkbl Opt1mist, Shelby333,
-* Nazar Kulchytskyi, Dmytro Borishpolets, RomenSkyJR, Дмитро Горєнков, Женя Браславська, Elanka, Asturiel, Лігво Друїда, Volodymyr Taras, Олексій Сьомін,
-* Ксенія Никонова, Primarch, rchenok, Артем Белякін, Roma Rybai, Andrew Kucherov, Toris_McDessert
+* KuprumLight, Glafira, Mark Tsemma, Olena Gorbenko, Алексей Коваль, Serhii Feelenko, Semerkhet, Mykyta Barmin, kasatushi, Валерій Бондаренко, Roman Yanyshyn, 
+* Dmytro Boryshpolets, NichnaVoitelka, Unbrkbl Opt1mist, Elanka, Shelby333, Nazar Kulchytskyi, Rolik33, RomenSkyJR, Дмитро Горєнков, Asturiel, Женя Браславська, 
+* Сергей Райдер, Лігво Друїда, losthost, Bokshchanin, Volodymyr Taras, Олексій Сьомін, Primarch, Ксенія Никонова, Natalie Dexter, Maxym Palamarchuk, Archenok
 
 ## Ліцензія
 WowUkrainizer ліцензований за ліцензією MIT. Для повного тексту ліцензії MIT, будь ласка, перегляньте файл [LICENSE](LICENSE).
