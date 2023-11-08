@@ -5,6 +5,9 @@ if (ns.DbContext) then return end
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
 local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithNumerics
 
+local NormalizePersonalizedString = ns.StringNormalizer.NormalizePersonalizedString
+local ReconstructPersonalizedString = ns.StringNormalizer.ReconstructPersonalizedString
+
 local dbContext = {}
 
 local function getValueOrDefault(hashTable, default)
@@ -18,6 +21,13 @@ local function getFormattedValueOrDefault(hashTable, default)
     local text, numValues = NormalizeStringAndExtractNumerics(default)
     local translatedText = getValueOrDefault(hashTable, text)
     return ReconstructStringWithNumerics(translatedText, numValues)
+end
+
+local function getPersonalizedValueOrDefault(hashTable, default)
+    if (not default) then return default end
+    local text = NormalizePersonalizedString(default)
+    local translatedText, hash = getValueOrDefault(hashTable, text)
+    return ReconstructPersonalizedString(translatedText), hash
 end
 
 local function removeBrackets(str)
@@ -173,7 +183,11 @@ do
     local repository = {}
 
     function repository.GetDialogText(default)
-        return getValueOrDefault(ns._db.DialogTexts, default)
+        return getPersonalizedValueOrDefault(ns._db.DialogTexts, default)
+    end
+
+    function repository.GetCinematicSubtitle(default)
+        return getPersonalizedValueOrDefault(ns._db.CinematicSubtitles, default)
     end
 
     dbContext.NpcDialogs = repository
