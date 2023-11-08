@@ -7,8 +7,8 @@ local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 
 local eventHandler = ns.EventHandler:new()
 
-local translator = class("MovieTranslator", ns.Translators.BaseTranslator)
-ns.Translators.MovieTranslator = translator
+local translator = class("SubtitlesTranslator", ns.Translators.BaseTranslator)
+ns.Translators.SubtitlesTranslator = translator
 
 function translator:initialize()
     ns.Translators.BaseTranslator.initialize(self)

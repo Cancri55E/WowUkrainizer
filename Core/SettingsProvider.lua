@@ -23,7 +23,7 @@ local defaultOptions = {
     TranslateSpellTooltips = true,
     TooltipSpellLangInName = "both",
     TooltipSpellLangInDescription = "ua",
-    TranslateMovieSubtitles = true,
+    TranslateSubtitles = true,
     TranslateNpcMessages = true,
 }
 
@@ -80,17 +80,20 @@ function settingsProvider:Load()
         WowUkrainizer_Options.HighlightSpellNameInDescription = def.HighlightSpellNameInDescription
     end
 
+    if (WowUkrainizer_Options.TranslateSubtitles == nil) then
+        WowUkrainizer_Options.TranslateSubtitles = def.TranslateSubtitles
+    end
+
+
+    if (WowUkrainizer_Options.TranslateNpcMessages == nil) then
+        WowUkrainizer_Options.TranslateNpcMessages = def.TranslateNpcMessages
+    end
+
     WowUkrainizer_Options.TooltipSpellLangInName =
         WowUkrainizer_Options.TooltipSpellLangInName or def.TooltipSpellLangInName
 
     WowUkrainizer_Options.TooltipSpellLangInDescription =
         WowUkrainizer_Options.TooltipSpellLangInDescription or def.TooltipSpellLangInDescription
-
-    WowUkrainizer_Options.TranslateMovieSubtitles =
-        WowUkrainizer_Options.TranslateMovieSubtitles or def.TranslateMovieSubtitles
-
-    WowUkrainizer_Options.TranslateNpcMessages =
-        WowUkrainizer_Options.TranslateNpcMessages or def.TranslateNpcMessages
 end
 
 function settingsProvider:Build()
@@ -246,14 +249,14 @@ function settingsProvider:Build()
                                 set = function(_, value) WowUkrainizer_Options.TranslateNameplatesAndUnitFrames = value end,
                             },
 
-                            TranslateMovieSubtitles = {
+                            TranslateSubtitles = {
                                 type = "toggle",
                                 name = "Перекладати субтитри в відеороликах",
-                                desc = "Відображає українські субтитри в відеороликах (pre-render)",
+                                desc = "Відображає українські субтитри в відеороликах",
                                 order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
-                                get = function(_) return WowUkrainizer_Options.TranslateMovieSubtitles end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateMovieSubtitles = value end,
+                                get = function(_) return WowUkrainizer_Options.TranslateSubtitles end,
+                                set = function(_, value) WowUkrainizer_Options.TranslateSubtitles = value end,
                             },
 
                             TranslateNpcMessages = {
@@ -683,7 +686,7 @@ function settingsProvider.GetTranslatorsState()
         translateNameplatesAndUnitFrames = WowUkrainizer_Options.TranslateNameplatesAndUnitFrames,
         translateSpellTooltips = WowUkrainizer_Options.TranslateSpellTooltips,
         translateUnitTooltips = WowUkrainizer_Options.TranslateUnitTooltips,
-        translateMovieSubtitles = WowUkrainizer_Options.TranslateMovieSubtitles,
+        TranslateSubtitles = WowUkrainizer_Options.TranslateSubtitles,
         translateNpcMessages = WowUkrainizer_Options.TranslateNpcMessages
     }
 end

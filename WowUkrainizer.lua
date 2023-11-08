@@ -51,11 +51,11 @@ local translators = {
         end
     },
     {
-        name = "MovieTranslator",
+        name = "SubtitlesTranslator",
         args = nil,
         isEnabled = function()
             return
-                WowUkrainizer_Options.TranslateMovieSubtitles
+                WowUkrainizer_Options.TranslateSubtitles
         end
     },
     {

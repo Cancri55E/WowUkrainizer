@@ -4,7 +4,7 @@
 	<Script file="QuestTranslator.lua"/>
 	<Script file="NameplateAndUnitFrameTranslator.lua"/>
 	<Script file="NpcMessageTranslator.lua"/>
-	<Script file="MovieTranslator.lua"/>
+	<Script file="SubtitlesTranslator.lua"/>
 	<Script file="Tooltips\BaseTooltipTranslator.lua"/>
 	<Script file="Tooltips\UnitTooltipTranslator.lua"/>
 	<Script file="Tooltips\SpellTooltipTranslator.lua"/>
