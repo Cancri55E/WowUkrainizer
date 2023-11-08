@@ -67,10 +67,7 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
         end
     end
 
-    if (displayInTalkingHead) then
-        SetFontStringText(TalkingHeadFrame.NameFrame.Name, translatedAuthor);
-        SetFontStringText(TalkingHeadFrame.TextFrame.Text, translatedMsg);
-    else
+    if (not displayInTalkingHead) then
         chatBubbleTimer:Start();
     end
 
@@ -109,6 +106,16 @@ function translator:initialize()
     end, "TALKINGHEAD_REQUESTED")
 
     eventHandler:Register(function() instance.talkingHeadUuid = '' end, "TALKINGHEAD_CLOSE")
+
+    TalkingHeadFrame:HookScript("OnUpdate", function()
+        if (not TalkingHeadFrame:IsVisible()) then return end
+
+        local translatedAuthor = GetUnitNameOrDefault(TalkingHeadFrame.NameFrame.Name:GetText())
+        local translatedMsg = GetDialogText(TalkingHeadFrame.TextFrame.Text:GetText())
+
+        SetFontStringText(TalkingHeadFrame.NameFrame.Name, translatedAuthor);
+        SetFontStringText(TalkingHeadFrame.TextFrame.Text, translatedMsg);
+    end)
 
     ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_SAY", onMonsterMessageReceivedHook)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_MONSTER_PARTY", onMonsterMessageReceivedHook)
