@@ -80,47 +80,6 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
     end
 end
 
-local function onCinematicFrameAddSubtitle(instance, chatType, subtitle)
-    local parts = Split(subtitle, ":")
-
-    local author = ''
-    local msg = ''
-    if (#parts == 1) then
-        msg = parts[1]
-    elseif (#parts == 2) then
-        author = parts[1]
-        msg = Trim(parts[2])
-    else
-        author = parts[1]
-        msg = parts[2]
-        for i = 3, #parts do
-            msg = msg .. ":" .. parts[i]
-        end
-        msg = Trim(msg)
-    end
-
-
-    local translatedAuthor = GetUnitNameOrDefault(author)
-    local translatedMsg, msgHash = GetCinematicSubtitle(msg)
-
-    if (translatedMsg == msg) then
-        local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
-        untranslatedData.cinematicUuid = instance.cinematicUuid
-        untranslatedData.subtitleOrder = instance.subtitleOrder
-    end
-
-    local translatedSubtitle = author == '' and translatedMsg or translatedAuthor .. ": " .. translatedMsg
-    ns.VoiceOverDirector:PlayDialog(msgHash, true, "Dialog")
-
-    if (settingsProvider.IsNeedTranslateCinematicText()) then
-        instance.hooks["CinematicFrame_AddSubtitle"](chatType, translatedSubtitle)
-    else
-        instance.hooks["CinematicFrame_AddSubtitle"](chatType, subtitle)
-    end
-
-    instance.subtitleOrder = instance.subtitleOrder + 1
-end
-
 function translator:initialize()
     ns.Translators.BaseTranslator.initialize(self)
 
@@ -132,10 +91,6 @@ function translator:initialize()
         return onMonsterMessageReceived(instance, msg, author, ...)
     end
 
-    local function onCinematicFrameAddSubtitleHook(chatType, subtitle)
-        onCinematicFrameAddSubtitle(instance, chatType, subtitle)
-    end
-
     chatBubbleTimer = CreateFrame("Frame", "ChatBubble-Timer", WorldFrame)
     chatBubbleTimer:SetFrameStrata("TOOLTIP")
     chatBubbleTimer.Start = chatBubbleTimer.Show
@@ -145,18 +100,6 @@ function translator:initialize()
     end
     chatBubbleTimer:Stop()
     chatBubbleTimer:SetScript("OnUpdate", onChatBubbleTimerUpdate)
-
-    aceHook:RawHook("CinematicFrame_AddSubtitle", onCinematicFrameAddSubtitleHook, true)
-
-    eventHandler:Register(function()
-        instance.cinematicUuid = GenerateUuid()
-        instance.subtitleOrder = 0
-    end, "CINEMATIC_START")
-
-    eventHandler:Register(function()
-        instance.cinematicUuid = ''
-        instance.subtitleOrder = -1
-    end, "CINEMATIC_STOP")
 
     eventHandler:Register(function()
         if (not instance.talkingHeadUuid or instance.talkingHeadUuid == '') then

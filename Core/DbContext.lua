@@ -7,6 +7,9 @@ local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithN
 local NormalizePersonalizedString = ns.StringNormalizer.NormalizePersonalizedString
 local ReconstructPersonalizedString = ns.StringNormalizer.ReconstructPersonalizedString
 
+local NormalizePersonalizedString = ns.StringNormalizer.NormalizePersonalizedString
+local ReconstructPersonalizedString = ns.StringNormalizer.ReconstructPersonalizedString
+
 local dbContext = {}
 
 local function getValueOrDefault(hashTable, default)

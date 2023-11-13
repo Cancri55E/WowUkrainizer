@@ -24,8 +24,7 @@ local defaultOptions = {
     TranslateSpellTooltips = true,
     TooltipSpellLangInName = "both",
     TooltipSpellLangInDescription = "ua",
-    -- Gameplay
-    TranslateMovieSubtitles = true,
+    TranslateSubtitles = true,
 
     TranslateNpcDialogs = true,
     NpcDialogTextLang = "ua",
@@ -83,17 +82,19 @@ function settingsProvider:Load()
     WowUkrainizer_Options.HighlightSpellNameInDescription =
         WowUkrainizer_Options.HighlightSpellNameInDescription or def.HighlightSpellNameInDescription
 
+    if (WowUkrainizer_Options.TranslateSubtitles == nil) then
+        WowUkrainizer_Options.TranslateSubtitles = def.TranslateSubtitles
+    end
+
     WowUkrainizer_Options.TooltipSpellLangInName =
         WowUkrainizer_Options.TooltipSpellLangInName or def.TooltipSpellLangInName
 
     WowUkrainizer_Options.TooltipSpellLangInDescription =
         WowUkrainizer_Options.TooltipSpellLangInDescription or def.TooltipSpellLangInDescription
 
-    WowUkrainizer_Options.TranslateMovieSubtitles =
-        WowUkrainizer_Options.TranslateMovieSubtitles or def.TranslateMovieSubtitles
-
-    WowUkrainizer_Options.TranslateNpcDialogs =
-        WowUkrainizer_Options.TranslateNpcDialogs or def.TranslateNpcDialogs
+    if (WowUkrainizer_Options.TranslateNpcDialogs == nil) then
+        WowUkrainizer_Options.TranslateNpcDialogs = def.TranslateNpcDialogs
+    end
 
     WowUkrainizer_Options.NpcDialogTextLang =
         WowUkrainizer_Options.NpcDialogTextLang or def.NpcDialogTextLang
@@ -101,8 +102,9 @@ function settingsProvider:Load()
     WowUkrainizer_Options.NpcDialogVoiceOverLang =
         WowUkrainizer_Options.NpcDialogVoiceOverLang or def.NpcDialogVoiceOverLang
 
-    WowUkrainizer_Options.TranslateCinematics =
-        WowUkrainizer_Options.TranslateCinematics or def.TranslateCinematics
+    if (WowUkrainizer_Options.TranslateCinematics == nil) then
+        WowUkrainizer_Options.TranslateCinematics = def.TranslateCinematics
+    end
 
     WowUkrainizer_Options.CinematicTextLang =
         WowUkrainizer_Options.CinematicTextLang or def.CinematicTextLang
@@ -272,14 +274,14 @@ function settingsProvider:Build()
                                 order = setGeneralSettingsArgsOrder()
                             },
 
-                            TranslateMovieSubtitles = {
+                            TranslateSubtitles = {
                                 type = "toggle",
                                 name = "Перекладати субтитри в відеороликах",
-                                desc = "Відображає українські субтитри в відеороликах (pre-rendered)",
+                                desc = "Відображає українські субтитри в відеороликах",
                                 order = setGeneralSettingsArgsOrder(),
                                 width = 3.6,
-                                get = function(_) return WowUkrainizer_Options.TranslateMovieSubtitles end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateMovieSubtitles = value end,
+                                get = function(_) return WowUkrainizer_Options.TranslateSubtitles end,
+                                set = function(_, value) WowUkrainizer_Options.TranslateSubtitles = value end,
                             },
 
                             TranslateNpcMessages = {
@@ -679,12 +681,11 @@ function settingsProvider:Build()
                         name = "Перекладачі",
                         get = function()
                             return
-                                "KuprumLight, Mark Tsemma, Glafira, Алексей Коваль, Serhii Feelenko, " ..
-                                "Semerkhet, senpusha, Валерий Бондаренко, NichnaVoitelka, Unbrkbl Opt1mist, Shelby333, " ..
-                                "Nazar Kulchytskyi, Dmytro Borishpolets, RomenSkyJR, Дмитро Горєнков, " ..
-                                "Женя Браславська, Elanka, Asturiel, Лігво Друїда, Volodymyr Taras, Олексій Сьомін, " ..
-                                "Ксенія Никонова, Primarch, rchenok, Артем Белякін, Roma Rybai, Andrew Kucherov, " ..
-                                "Toris_McDessert"
+                                "KuprumLight, Glafira, Mark Tsemma, Olena Gorbenko, Алексей Коваль, Serhii Feelenko, Semerkhet, " ..
+                                "Mykyta Barmin, kasatushi, Валерій Бондаренко, Roman Yanyshyn, Dmytro Boryshpolets, NichnaVoitelka, " ..
+                                "Unbrkbl Opt1mist, Elanka, Shelby333, Nazar Kulchytskyi, Rolik33, RomenSkyJR, Дмитро Горєнков, Asturiel, " ..
+                                "Женя Браславська, Сергей Райдер, Лігво Друїда, losthost, Bokshchanin, Volodymyr Taras, Олексій Сьомін, " ..
+                                "Primarch, Ксенія Никонова, Natalie Dexter, Maxym Palamarchuk, Archenok"
                         end,
                         order = setContributorsPageOrder(),
                         disabled = true,
@@ -817,7 +818,7 @@ function settingsProvider.GetTranslatorsState()
         translateNameplatesAndUnitFrames = WowUkrainizer_Options.TranslateNameplatesAndUnitFrames,
         translateSpellTooltips = WowUkrainizer_Options.TranslateSpellTooltips,
         translateUnitTooltips = WowUkrainizer_Options.TranslateUnitTooltips,
-        translateMovieSubtitles = WowUkrainizer_Options.TranslateMovieSubtitles,
+        TranslateSubtitles = WowUkrainizer_Options.TranslateSubtitles,
         TranslateNpcDialogs = WowUkrainizer_Options.TranslateNpcDialogs,
         TranslateCinematics = WowUkrainizer_Options.TranslateCinematics,
     }
