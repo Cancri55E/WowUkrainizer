@@ -296,6 +296,12 @@ do
             objectiveText = o
             completeText = c
         end)
+        if (not progressText and not completeText) then
+            objectiveText:gsub("^(.*)%s*(%b())%s*$", function(o, c)
+                objectiveText = o
+                completeText = c
+            end)
+        end
         if (not completeText) then
             objectiveText:gsub("^(%d+/%d+)(.*)", function(p, o)
                 progressText = p
