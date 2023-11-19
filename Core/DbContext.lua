@@ -290,28 +290,58 @@ do
 
         local progressText = nil
         local completeText = nil
+        local optionalText = nil
         local objectiveText = default
-        objectiveText:gsub("^(%d+/%d+)(.*)%s*(%b())%s*$", function(p, o, c)
-            progressText = p
-            objectiveText = o
-            completeText = c
-        end)
-        if (not progressText and not completeText) then
-            objectiveText:gsub("^(.*)%s*(%b())%s*$", function(o, c)
-                objectiveText = o
-                completeText = c
-            end)
-        end
-        if (not completeText) then
-            objectiveText:gsub("^(%d+/%d+)(.*)", function(p, o)
+
+        local containsProgressText = objectiveText:match("^(%d+/%d+)")
+        if (containsProgressText) then
+            objectiveText:gsub("^(%d+/%d+)(.*)%s*(%b())%s*(%b())%s*$", function(p, o, op, c)
                 progressText = p
                 objectiveText = o
+                completeText = c
+                optionalText = op
             end)
+            if (not optionalText) then
+                objectiveText:gsub("^(%d+/%d+)(.*)%s*(%b())%s*$", function(p, o, c)
+                    progressText = p
+                    objectiveText = o
+                    if (c == '(Complete)') then
+                        completeText = c
+                    else
+                        optionalText = c
+                    end
+                end)
+                if (not completeText and not optionalText) then
+                    objectiveText:gsub("^(%d+/%d+)(.*)", function(p, o)
+                        progressText = p
+                        objectiveText = o
+                    end)
+                end
+            end
+        else
+            objectiveText:gsub("^(.*)%s*(%b())%s*(%b())%s*$", function(o, op, c)
+                objectiveText = o
+                completeText = c
+                optionalText = op
+            end)
+            if (not optionalText) then
+                objectiveText:gsub("^(.*)%s*(%b())%s*$", function(o, c)
+                    objectiveText = o
+                    if (c == '(Complete)') then
+                        completeText = c
+                    else
+                        optionalText = c
+                    end
+                end)
+            end
         end
 
         local translatedObjectiveText = getValueOrDefault(objectives, objectiveText)
         if (progressText) then
             translatedObjectiveText = progressText .. " " .. translatedObjectiveText
+        end
+        if (optionalText) then
+            translatedObjectiveText = translatedObjectiveText .. " (Необов'язково)"
         end
         if (completeText) then
             translatedObjectiveText = translatedObjectiveText .. " (Виконано)"
