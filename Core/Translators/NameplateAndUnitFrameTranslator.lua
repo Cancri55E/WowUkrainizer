@@ -141,9 +141,22 @@ function translator:initialize()
     hooksecurefunc("CompactUnitFrame_UpdateName", function(control)
         if (not self:IsEnabled()) then return end
         if (not ShouldShowName(control)) then return end
-        if (StartsWith(control.displayedUnit, "nameplate")) and control.name and (type(control.name.GetText) == "function") then
-            translateUIControlWrapper(control.name)
-        end
+
+        local unitID = control.displayedUnit
+
+        if (not StartsWith(control.displayedUnit, "nameplate")) then return end
+
+        if (UnitIsPlayer(unitID)) then return end
+
+        local reaction = UnitReaction(unitID, "player")
+
+        local isEnemy = reaction and reaction <= 2
+
+        local inInstance, instanceType = IsInInstance()
+
+        if (inInstance and (instanceType == "raid" or instanceType == "party") and not isEnemy) then return end
+
+        translateUIControlWrapper(control.name)
     end)
 
     if (_G["Plater"]) then
