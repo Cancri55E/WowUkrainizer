@@ -61,6 +61,14 @@ local function parseUnitTooltipLines(tooltipLines)
         return level, unitType, rank, isPet
     end
 
+    local function getOrCreateQuestInfo(result, questID)
+        if (questID == 0) then return end
+        if (not result.questsInfo) then result.questsInfo = {} end
+        if (not result.questsInfo[questID]) then result.questsInfo[questID] = { objectives = {} } end
+
+        return result.questsInfo[questID]
+    end
+
     local result = { name = tooltipLines[1].leftText }
 
     if (#tooltipLines == 1) then return result end
@@ -96,10 +104,14 @@ local function parseUnitTooltipLines(tooltipLines)
             end
         elseif (tooltipLine.type == Enum.TooltipDataLineType.QuestTitle) then
             currentQuestID = math.floor(tonumber(tooltipLine.id) or 0)
-            if (not result.questsInfo) then result.questsInfo = {} end
-            result.questsInfo[currentQuestID] = { index = i, name = tooltipLine.leftText, objectives = {} }
+            local questInfo = getOrCreateQuestInfo(result, currentQuestID)
+            if (questInfo) then
+                questInfo.index = i
+                questInfo.name = tooltipLine.leftText
+            end
         elseif (tooltipLine.type == Enum.TooltipDataLineType.QuestObjective) then
-            result.questsInfo[currentQuestID].objectives[i] = tooltipLine.leftText
+            local questInfo = getOrCreateQuestInfo(result, currentQuestID)
+            if (questInfo) then questInfo.objectives[i] = tooltipLine.leftText end
         end
     end
 

@@ -128,25 +128,45 @@ local function healthDeficitPercentNameTagHook(tags, textFormat)
     end
 end
 
+local function translateUIControlWrapper(control)
+    if (not control) then return end
+    if (not control.GetText or not control.SetText) then return end
+
+    control:SetText(GetUnitNameOrDefault(control:GetText()))
+end
+
 function translator:initialize()
     ns.Translators.BaseTranslator.initialize(self)
 
     hooksecurefunc("CompactUnitFrame_UpdateName", function(control)
         if (not self:IsEnabled()) then return end
         if (not ShouldShowName(control)) then return end
-        if (StartsWith(control.displayedUnit, "nameplate")) and control.name and (type(control.name.GetText) == "function") then
-            control.name:SetText(GetUnitNameOrDefault(control.name:GetText()))
-        end
+
+        local unitID = control.displayedUnit
+
+        if (not StartsWith(control.displayedUnit, "nameplate")) then return end
+
+        if (UnitIsPlayer(unitID)) then return end
+
+        local reaction = UnitReaction(unitID, "player")
+
+        local isEnemy = reaction and reaction <= 2
+
+        local inInstance, instanceType = IsInInstance()
+
+        if (inInstance and (instanceType == "raid" or instanceType == "party") and not isEnemy) then return end
+
+        translateUIControlWrapper(control.name)
     end)
 
     if (_G["Plater"]) then
         hooksecurefunc(_G["Plater"], "UpdateUnitName", function(plateFrame)
-            local nameString = plateFrame.CurrentUnitNameString
-            nameString:SetText(GetUnitNameOrDefault(nameString:GetText()))
+            translateUIControlWrapper(plateFrame.CurrentUnitNameString)
         end)
 
         hooksecurefunc(_G["Plater"], "UpdatePlateText", function(plateFrame)
             if (plateFrame.ActorTitleSpecial:IsVisible()) then
+                if (not plateFrame.ActorTitleSpecial.GetText or not plateFrame.ActorTitleSpecial.SetText) then return end
                 local titleText = plateFrame.ActorTitleSpecial:GetText():match("<(.-)>")
                 plateFrame.ActorTitleSpecial:SetText("<" .. GetUnitSubnameOrDefault(titleText, UnitSex("target")) .. ">")
             end
@@ -182,6 +202,6 @@ function translator:initialize()
 
     eventHandler:Register(function()
         if (not self:IsEnabled()) then return end
-        TargetFrame.name:SetText(GetUnitNameOrDefault(TargetFrame.name:GetText()))
+        translateUIControlWrapper(TargetFrame.name)
     end, "PLAYER_TARGET_CHANGED", "UNIT_NAME_UPDATE", "INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 end
