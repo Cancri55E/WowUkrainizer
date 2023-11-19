@@ -44,6 +44,7 @@ local UIInfoMessageChange = {
     [ERR_QUEST_ADD_PLAYER_KILL_SII] = {},
 }
 
+local WorldMapStorylineQuestPinsCache = {}
 local WorldMapChildFramesCache = {}
 
 local translator = class("QuestTranslator", ns.Translators.BaseTranslator)
@@ -972,6 +973,25 @@ local function OnToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOf
     end
 end
 
+local function OnStorylineQuestPinMouseEnter(frame)
+    local questLineInfo = C_QuestLine.GetQuestLineInfo(frame.questID, frame.mapID);
+    if (questLineInfo) then
+        GameTooltip:SetOwner(frame, "ANCHOR_LEFT");
+        GameTooltip:SetText(questLineInfo.questName);
+        local translatedTitle = GetQuestTitle(tonumber(frame.questID))
+        if (translatedTitle) then
+            GameTooltip:SetText(translatedTitle)
+        end
+        GameTooltip:AddLine(getQuestFrameTranslationOrDefault(AVAILABLE_QUEST), 1, 1, 1, true);
+        if (questLineInfo.floorLocation == Enum.QuestLineFloorLocation.Below) then
+            GameTooltip:AddLine(getQuestFrameTranslationOrDefault(QUESTLINE_LOCATED_BELOW), 0.5, 0.5, 0.5, true);
+        elseif (questLineInfo.floorLocation == Enum.QuestLineFloorLocation.Above) then
+            GameTooltip:AddLine(getQuestFrameTranslationOrDefault(QUESTLINE_LOCATED_ABOVE), 0.5, 0.5, 0.5, true);
+        end
+        GameTooltip:Show();
+    end
+end
+
 function translator:initialize()
     InitializeCommandButtons()
 
@@ -1041,18 +1061,31 @@ function translator:initialize()
     end)
 
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.MinimapMouseover, OnMinimapMouseoverTooltipPostCall)
+
     WorldMapFrame:HookScript("OnShow", function()
-        for _, frame in pairs({ WorldMapFrame.ScrollContainer.Child:GetChildren() }) do
-            if (frame and frame:GetObjectType() == "Button" and frame.questID) then
-                if (not WorldMapChildFramesCache[frame]) then
-                    frame:HookScript("OnEnter", OnWorldMapPinButtonTooltipUpdated)
-                    hooksecurefunc(frame, "UpdateTooltip", OnWorldMapPinButtonTooltipUpdated)
-                    WorldMapChildFramesCache[frame] = true
+        if (WorldMapFrame.pinPools.StorylineQuestPinTemplate and WorldMapFrame.pinPools.StorylineQuestPinTemplate.activeObjects) then
+            for pin, _ in pairs(WorldMapFrame.pinPools.StorylineQuestPinTemplate.activeObjects) do
+                if (not WorldMapStorylineQuestPinsCache[pin]) then
+                    pin:HookScript("OnEnter", function() OnStorylineQuestPinMouseEnter(pin) end)
+                    WorldMapStorylineQuestPinsCache[pin] = true
                 end
-            elseif (frame:GetObjectType() == "QuestPOIFrame") then
-                if (not WorldMapChildFramesCache[frame]) then
-                    hooksecurefunc(frame, "UpdateTooltip", OnWorldMapQuestPOIFrameTooltipUpdated)
-                    WorldMapChildFramesCache[frame] = true
+            end
+        end
+
+        for _, frame in pairs({ WorldMapFrame.ScrollContainer.Child:GetChildren() }) do
+            if (frame) then
+                local frameType = frame:GetObjectType()
+                if (frameType == "Button" and frame.questID) then
+                    if (not WorldMapChildFramesCache[frame]) then
+                        frame:HookScript("OnEnter", OnWorldMapPinButtonTooltipUpdated)
+                        hooksecurefunc(frame, "UpdateTooltip", OnWorldMapPinButtonTooltipUpdated)
+                        WorldMapChildFramesCache[frame] = true
+                    end
+                elseif (frameType == "QuestPOIFrame") then
+                    if (not WorldMapChildFramesCache[frame]) then
+                        hooksecurefunc(frame, "UpdateTooltip", OnWorldMapQuestPOIFrameTooltipUpdated)
+                        WorldMapChildFramesCache[frame] = true
+                    end
                 end
             end
         end
