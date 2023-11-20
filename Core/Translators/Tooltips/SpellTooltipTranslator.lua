@@ -432,7 +432,7 @@ end
 
 function translator:ParseTooltip(tooltip, tooltipData)
     local linePrefix = "GameTooltip";
-    if (tooltip == _G["ElvUISpellBookTooltip"]) then linePrefix = 'ElvUISpellBookTooltip' end
+    if (tooltip == _G["ElvUI_SpellBookTooltip"]) then linePrefix = 'ElvUI_SpellBookTooltip' end
 
     self._postCallLineCount = tonumber(tooltip:NumLines())
 
