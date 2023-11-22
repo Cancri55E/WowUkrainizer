@@ -1075,15 +1075,21 @@ local function OnToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOf
             translateUIFontString(button)
         end
     elseif (dropDownFrame == ObjectiveTrackerBlockDropDown) then
+        local listFrameName = "DropDownList" .. level;
+        local buttonIndex = 1
         local questID = dropDownFrame.activeFrame.id
         local title = C_QuestLog.GetTitleForQuestID(questID);
-        local translatedTitle = GetQuestTitle(questID);
-        local listFrameName = "DropDownList" .. level;
-        _G[listFrameName .. "Button1"]:SetText(translatedTitle or title)
+        if (title) then
+            local translatedTitle = GetQuestTitle(questID);
+            if (translatedTitle) then
+                _G[listFrameName .. "Button" .. buttonIndex]:SetText(translatedTitle)
+            end
+            buttonIndex = buttonIndex + 1
+        end
+
         local listFrame = _G[listFrameName];
-        for i = 2, listFrame.numButtons do
-            local button = _G[listFrameName .. "Button" .. i];
-            translateUIFontString(button)
+        for i = buttonIndex, listFrame.numButtons do
+            translateUIFontString(_G[listFrameName .. "Button" .. i])
         end
     end
 end
