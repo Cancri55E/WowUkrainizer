@@ -21,6 +21,7 @@ ns.PET_LEVEL_TRANSLATION = "Супутник {1} рівня"
 ns.PET_CAPTURABLE_TRANSLATION = "Mожна приручити"
 ns.PET_COLLECTED_TRANSLATION = "Зібрано ({1}/{2})"
 
+ns.IS_TRIVIAL_QUEST_POSTFIX_TRANSLATION = " (низький рівень)"
 ns.ABANDON_QUEST_CONFIRM_UA = "Відмовитися від \"%s\"?"
 ns.YES_UA = "Так"
 ns.NO_UA = "Ні"
