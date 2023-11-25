@@ -197,7 +197,7 @@ local function TranslteQuestObjective(objectiveFrame, questData, isQuestFrame)
                 local completionText = GetQuestLogCompletionText(questLogIndex)
                 if (completionText and questData.CompletionText) then
                     translatedText = questData.CompletionText
-                elseif ((not completionText and not questData.ContainsObjectives) and questData.ObjectivesText) then
+                elseif (not questData.ContainsObjectives and questData.ObjectivesText) then
                     translatedText = questData.ObjectivesText
                 end
             end
@@ -385,10 +385,12 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
     local isComplete = C_QuestLog.IsComplete(info.questID);
     if isComplete then
         local completionText = GetQuestLogCompletionText(button.questLogIndex)
-        if (completionText) then
-            completionText = questData.CompletionText
-        else
+        if (not completionText) then
             completionText = getQuestFrameTranslationOrDefault(QUEST_WATCH_QUEST_READY)
+        elseif (completionText and questData.CompletionText) then
+            completionText = questData.CompletionText
+        elseif (not questData.ContainsObjectives and questData.ObjectivesText) then
+            completionText = questData.ObjectivesText
         end
         GameTooltip:AddLine(completionText, 1, 1, 1, true);
         GameTooltip:AddLine(" ");
