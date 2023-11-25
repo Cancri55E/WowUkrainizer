@@ -17,6 +17,7 @@ local ContainsQuestData = ns.DbContext.Quests.ContainsQuestData
 local FACTION_ALLIANCE = ns.FACTION_ALLIANCE
 local FACTION_HORDE = ns.FACTION_HORDE
 
+local IS_TRIVIAL_QUEST_POSTFIX_TRANSLATION = ns.IS_TRIVIAL_QUEST_POSTFIX_TRANSLATION
 local ABANDON_QUEST_CONFIRM_UA = ns.ABANDON_QUEST_CONFIRM_UA
 local YES_UA = ns.YES_UA
 local NO_UA = ns.NO_UA
@@ -61,6 +62,17 @@ local function copyTable(originalTable)
         end
     end
     return newTable
+end
+
+local function getQuestTitle(questID, isTrivial)
+    local translatedTitle = GetQuestTitle(questID)
+    if (not translatedTitle) then return end
+
+    if (isTrivial) then
+        translatedTitle = translatedTitle .. IS_TRIVIAL_QUEST_POSTFIX_TRANSLATION
+    end
+
+    return translatedTitle
 end
 
 local function getQuestFrameTranslationOrDefault(default)
@@ -215,6 +227,36 @@ local function TranslteQuestObjectives(objectiveFrames, questData, isOnQuestFram
     return questObjectiveHeight
 end
 
+local function OnQuestFrameGreetingPanelShow(_)
+    local function _translateQuestButton(button, questID, isTrivial)
+        local translatedText = getQuestTitle(questID, isTrivial)
+        if (not translatedText) then return end
+
+        button:SetText(translatedText)
+        button:SetHeight(math.max(button:GetTextHeight() + 2, button.Icon:GetHeight()));
+    end
+
+    local translatedTitle = GetGossipTitle(GreetingText:GetText())
+    if (translatedTitle) then
+        GreetingText:SetText(translatedTitle)
+    end
+
+    local activeQuestIndex = 1
+    local availableQuestIndex = 1
+    for button in QuestFrameGreetingPanel.titleButtonPool:EnumerateActive() do
+        if (button.isActive == 1) then
+            local questID = GetActiveQuestID(activeQuestIndex)
+            local isTrivial = IsActiveQuestTrivial(activeQuestIndex)
+            _translateQuestButton(button, questID, isTrivial)
+            activeQuestIndex = activeQuestIndex + 1
+        else
+            local isTrivial, _, _, _, questID = GetAvailableQuestInfo(availableQuestIndex);
+            _translateQuestButton(button, questID, isTrivial)
+            availableQuestIndex = availableQuestIndex + 1
+        end
+    end
+end
+
 local function OnGossipShow()
     local title = GossipFrameTitleText:GetText();
     GossipFrameTitleText:SetText(GetUnitNameOrDefault(title));
@@ -240,7 +282,7 @@ local function OnGossipShow()
                 childFrame:SetText(GetGossipOptionText(childFrame:GetText()))
                 childFrame:Resize();
             else
-                local translatedTitle = GetQuestTitle(tonumber(data.info.questID))
+                local translatedTitle = getQuestTitle(tonumber(data.info.questID), data.info.isTrivial)
                 if (translatedTitle) then
                     childFrame:SetText(translatedTitle)
                     childFrame:Resize();
@@ -1129,6 +1171,8 @@ function translator:initialize()
     translateUIFontString(QuestInfoObjectivesHeader)
     translateUIFontString(QuestInfoDescriptionHeader)
     translateUIFontString(QuestProgressRequiredItemsText)
+    translateUIFontString(CurrentQuestsText)
+    translateUIFontString(AvailableQuestsText)
     -- Objectives Frame
     translateUIFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
     translateUIFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
@@ -1164,6 +1208,8 @@ function translator:initialize()
     hooksecurefunc("QuestLogQuests_Update", OnQuestLogQuestsUpdate)
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", OnQuestMapLogTitleButtonTooltipShow)
     hooksecurefunc("QuestMapLog_GetCampaignTooltip", GetCampaignTooltipFromQuestMapLog)
+
+    QuestFrameGreetingPanel:HookScript("OnShow", OnQuestFrameGreetingPanelShow)
 
     QuestFrameProgressPanel:HookScript("OnShow", OnQuestFrameProgressPanelShow)
     hooksecurefunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
