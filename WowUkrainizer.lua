@@ -4,6 +4,9 @@ local sharedMedia = LibStub("LibSharedMedia-3.0")
 local eventHandler = ns.EventHandler:new()
 local settingsProvider = ns.SettingsProvider:new()
 
+local dataBroker
+local wowUkrainizerOptions
+
 local translators = {
     {
         name = "MainFrameTranslator",
@@ -84,7 +87,7 @@ local function createInterfaceOptions()
     LibStub("AceConfig-3.0"):RegisterOptionsTable(namespace, ns.Options)
 
     local configDialogLib = LibStub("AceConfigDialog-3.0")
-    configDialogLib:AddToBlizOptions(namespace, "WowUkrainizer", nil, "General")
+    wowUkrainizerOptions = configDialogLib:AddToBlizOptions(namespace, "WowUkrainizer", nil, "General")
     configDialogLib:AddToBlizOptions(namespace, "Причетні", "WowUkrainizer", "Contributors")
 end
 
@@ -253,6 +256,29 @@ local function initializeAddon()
 
     sharedMedia:Register("font", "Arsenal Regular", [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]])
     sharedMedia:Register("font", "Arsenal Bold", [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf]])
+
+    if type(WowUkrainizer_MinimapIcon) ~= "table" then
+        WowUkrainizer_MinimapIcon = {}
+    end
+
+    if LibStub("LibDBIcon-1.0", true) then
+        LibStub("LibDBIcon-1.0"):Register("WowUkrainizerMinimapIcon", dataBroker, WowUkrainizer_MinimapIcon)
+    end
+
+    local releaseDate = tonumber(C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")) or 0
+    local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
+    if string.match(version, "-[%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d]$") then
+        version = "[alpha] " .. version
+    elseif string.match(version, "-alpha$") then
+        version = "[alpha] " .. string.gsub(version, "-alpha$", "")
+    end
+
+    ns.CommonData = {
+        ReleaseDate = releaseDate,
+        Version = version,
+        VesionStr = "Версія: " ..
+            version .. " (" .. date("%d.%m.%y %H:%M:%S", releaseDate) .. ")"
+    }
 end
 
 local function OnPlayerLogin()
@@ -293,6 +319,45 @@ local function OnAddOnLoaded(_, name)
         else
             OnPlayerLogin()
         end
+    end
+end
+
+----------------------
+--  Minimap Button  --
+----------------------
+do
+    if LibStub("LibDataBroker-1.1", true) then
+        dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject(
+            "WowUkrainizerMinimapIcon",
+            {
+                type = "launcher",
+                label = "WowUkrainizerMinimapIcon",
+                icon = [[Interface\AddOns\WowUkrainizer\assets\images\logo.png]],
+                OnClick = function()
+                    if IsShiftKeyDown() then
+                        ReloadUI()
+                    else
+                        InterfaceOptionsFrame_OpenToCategory(wowUkrainizerOptions)
+                    end
+                end,
+                OnTooltipShow = function(GameTooltip)
+                    GameTooltip:SetText("WowUkrainizer", 1, 1, 1)
+                    GameTooltip:AddLine(ns.CommonData.VesionStr,
+                        NORMAL_FONT_COLOR.r,
+                        NORMAL_FONT_COLOR.g,
+                        NORMAL_FONT_COLOR.b, 1)
+                    GameTooltip:AddLine(" ")
+                    GameTooltip:AddLine("ЛКМ щоб відкрити налаштування",
+                        RAID_CLASS_COLORS.MAGE.r,
+                        RAID_CLASS_COLORS.MAGE.g,
+                        RAID_CLASS_COLORS.MAGE.b)
+                    GameTooltip:AddLine("Shift + ЛКМ щоб перезавантажити інтерфейс (/reload)",
+                        RAID_CLASS_COLORS.MAGE.r,
+                        RAID_CLASS_COLORS.MAGE.g,
+                        RAID_CLASS_COLORS.MAGE.b)
+                end
+            }
+        )
     end
 end
 
