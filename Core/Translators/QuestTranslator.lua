@@ -26,8 +26,11 @@ local ACTIVE_TEMPLATE;
 local ACTIVE_PARENT_FRAME;
 
 local questFrameSwitchTranslationButton
+local questFrameMTIcon
 local questPopupFrameSwitchTranslationButton
+local questPopupFrameMTIcon
 local questMapDetailsFrameSwitchTranslationButton
+local questMapDetailsFrameMTIcon
 
 local ERR_QUEST_OBJECTIVE_COMPLETE_S = 302
 local ERR_QUEST_UNKNOWN_COMPLETE = 303
@@ -111,14 +114,27 @@ local function getQuestID()
 end
 
 local function showCommandButtonsForQuest(questID)
-    if (ContainsQuestData(questID)) then
+    local contains, isMt = ContainsQuestData(questID)
+    if (contains) then
         questFrameSwitchTranslationButton:Show()
         questPopupFrameSwitchTranslationButton:Show()
         questMapDetailsFrameSwitchTranslationButton:Show()
+        if (isMt) then
+            questFrameMTIcon:Show()
+            questPopupFrameMTIcon:Show()
+            questMapDetailsFrameMTIcon:Show()
+        else
+            questFrameMTIcon:Hide()
+            questPopupFrameMTIcon:Hide()
+            questMapDetailsFrameMTIcon:Hide()
+        end
     else
         questFrameSwitchTranslationButton:Hide()
+        questFrameMTIcon:Hide()
         questPopupFrameSwitchTranslationButton:Hide()
+        questPopupFrameMTIcon:Hide()
         questMapDetailsFrameSwitchTranslationButton:Hide()
+        questMapDetailsFrameMTIcon:Hide()
     end
 end
 
@@ -681,6 +697,30 @@ local function OnStaticPopupShow(which, text_arg1, text_arg2)
 end
 
 local function InitializeCommandButtons()
+    local function CreateMtIconTexture(parentFrame, offsetX, offsetY)
+        local icon = parentFrame:CreateTexture(nil, "OVERLAY");
+        icon:ClearAllPoints();
+        icon:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", offsetX, offsetY);
+        icon:SetWidth(24);
+        icon:SetHeight(24);
+        icon:SetTexture([[Interface\AddOns\WowUkrainizer\assets\images\robot.png]]);
+        icon:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT");
+            GameTooltip:ClearLines();
+            GameTooltip:SetText("Перекладено за допомогою ШІ.", 1, 1, 1)
+            GameTooltip:AddLine(
+                "Ви завжди можете вимкнути переклади зроблені |nза допомогою ШІ в налаштуваннях додатку.",
+                RAID_CLASS_COLORS.MAGE.r,
+                RAID_CLASS_COLORS.MAGE.g,
+                RAID_CLASS_COLORS.MAGE.b)
+            GameTooltip:Show()
+        end)
+        icon:SetScript("OnLeave", function(_)
+            GameTooltip:Hide()
+        end);
+        return icon
+    end
+
     local function CreateSwitchTranslationButton(parentFrame, onClickFunc, offsetX, offsetY)
         local button = CreateFrame("Button", nil, parentFrame, "UIPanelButtonTemplate");
         button:SetSize(90, 24);
@@ -722,19 +762,22 @@ local function InitializeCommandButtons()
             QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
                 QuestInfoFrame.mapView)
         end
-    end, -34, -30)
+    end, -64, -30)
+    questFrameMTIcon = CreateMtIconTexture(QuestFrame, -34, -30)
     CreateWowheadButton(QuestFrame, -6, -30)
 
     questPopupFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestLogPopupDetailFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
-    end, -194, -28)
-    CreateWowheadButton(QuestLogPopupDetailFrame, -166, -28)
+    end, -188, -28)
+    questPopupFrameMTIcon = CreateMtIconTexture(QuestLogPopupDetailFrame, -162, -28)
+    CreateWowheadButton(QuestLogPopupDetailFrame, -2, -28)
 
     questMapDetailsFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestMapDetailsScrollFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
-    end, -16, 30)
+    end, -44, 30)
+    questMapDetailsFrameMTIcon = CreateMtIconTexture(QuestMapDetailsScrollFrame, -16, 30)
     CreateWowheadButton(QuestMapDetailsScrollFrame, 12, 30)
 end
 

@@ -280,12 +280,22 @@ do
         return text
     end
 
-    function repository.ContainsQuestData(questId) return ns._db.Quests[questId] ~= nil end
+    function repository.ContainsQuestData(questId)
+        local contains = ns._db.Quests[questId] ~= nil
+        if (not contains and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+            return ns._db.MTQuests[questId] ~= nil, true
+        end
+        return contains, false
+    end
 
     function repository.GetQuestObjective(questId, default)
         if (not default) then return default end
 
         local objectives = ns._db.QuestObjectives[questId]
+        if (not objectives and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+            objectives = ns._db.MTQuestObjectives[questId]
+        end
+
         if (not objectives) then return default end
 
         local progressText = nil
@@ -351,25 +361,45 @@ do
 
     function repository.GetQuestRewardText(questId)
         local data = ns._db.Quests[questId]
+        if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+            data = ns._db.MTQuests[questId]
+        end
+
         if (not data) then return end
+
         return normalizeQuestString(data[QUEST_REWARD_TEXT])
     end
 
     function repository.GetQuestProgressText(questId)
         local data = ns._db.Quests[questId]
+        if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+            data = ns._db.MTQuests[questId]
+        end
+
         if (not data) then return end
+
         return normalizeQuestString(data[QUEST_COMPLETED_TEXT])
     end
 
     function repository.GetQuestTitle(questId)
         local data = ns._db.Quests[questId]
+        if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+            data = ns._db.MTQuests[questId]
+        end
+
         if (not data) then return end
+
         return data[QUEST_TITLE]
     end
 
     function repository.GetQuestData(questId)
         local data = ns._db.Quests[questId]
+        if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+            data = ns._db.MTQuests[questId]
+        end
+
         if (not data) then return end
+
         return {
             ID = questId,
             Title = data[QUEST_TITLE],
