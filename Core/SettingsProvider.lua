@@ -16,6 +16,7 @@ local defaultOptions = {
     TranslateClassTalentsFrame = true,
     TranslateSpellbookFrame = true,
     TranslateQuestAndObjectivesFrame = true,
+    DisableMTForTranslateQuestAndObjectivesFrame = false,
     TranslateNameplatesAndUnitFrames = true,
     SpellNameLangInSpellbook = "ua",
     HighlightSpellNameInDescription = true,
@@ -63,6 +64,11 @@ function settingsProvider:Load()
 
     if (WowUkrainizer_Options.TranslateQuestAndObjectivesFrame == nil) then
         WowUkrainizer_Options.TranslateQuestAndObjectivesFrame = def.TranslateQuestAndObjectivesFrame
+    end
+
+    if (WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame == nil) then
+        WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame = def
+            .DisableMTForTranslateQuestAndObjectivesFrame
     end
 
     WowUkrainizer_Options.SpellNameLangInSpellbook =
@@ -115,13 +121,7 @@ function settingsProvider:Build()
         end
     end
 
-    local releaseDate = tonumber(C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")) or 0
-    local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
-    if string.match(version, "-[%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d]$") then
-        version = "[alpha] " .. version
-    elseif string.match(version, "-alpha$") then
-        version = "[alpha] " .. string.gsub(version, "-alpha$", "")
-    end
+
 
     local setContributorsPageOrder = createIncrementor()
     local setFontSettingsArgsOrder = createIncrementor()
@@ -139,7 +139,7 @@ function settingsProvider:Build()
                 args = {
                     Version = {
                         type = "description",
-                        name = "Версія: " .. version .. " (" .. date("%d.%m.%y %H:%M:%S", releaseDate) .. ")",
+                        name = ns.CommonData.VesionStr,
                         fontSize = "small",
                         order = 1,
                         width = "full"
@@ -234,9 +234,28 @@ function settingsProvider:Build()
                                 name = "Перекладати завдання",
                                 desc = "",
                                 order = setGeneralSettingsArgsOrder(),
-                                width = 3.6,
+                                width = 1.0,
                                 get = function(_) return WowUkrainizer_Options.TranslateQuestAndObjectivesFrame end,
                                 set = function(_, value) WowUkrainizer_Options.TranslateQuestAndObjectivesFrame = value end,
+                            },
+
+                            DisableMTForTranslateQuestAndObjectivesFrame = {
+                                type = "toggle",
+                                name = "Не використовувати машинний переклад для завдань",
+                                desc = "Якщо текст не був перекладеним людиною, то за замовчення підставляється " ..
+                                    "машинний переклад (якщо він є) і ви бачите спеціальну позначку. Якщо увімкнути цю опцію " ..
+                                    "машинний переклад ніколи не буде використовуватися.",
+                                order = setGeneralSettingsArgsOrder(),
+                                width = 2.0,
+                                get = function(_)
+                                    return WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame
+                                end,
+                                set = function(_, value)
+                                    WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame = value
+                                end,
+                                disabled = function()
+                                    return not WowUkrainizer_Options.TranslateQuestAndObjectivesFrame
+                                end,
                             },
 
                             TranslateNameplatesAndUnitFrames = {
@@ -675,19 +694,6 @@ function settingsProvider.GetFontSettings()
     local tooltipFontScale = WowUkrainizer_Options.TooltipFontScaleInPercent
 
     return WowUkrainizer_Options.UseDefaultFonts, fontName, fontScale, tooltipHeaderFontScale, tooltipFontScale
-end
-
-function settingsProvider.GetTranslatorsState()
-    return {
-        translateClassTalentsFrame = WowUkrainizer_Options.TranslateClassTalentsFrame,
-        translateSpellbookFrame = WowUkrainizer_Options.TranslateSpellbookFrame,
-        TranslateQuestAndObjectivesFrame = WowUkrainizer_Options.TranslateQuestAndObjectivesFrame,
-        translateNameplatesAndUnitFrames = WowUkrainizer_Options.TranslateNameplatesAndUnitFrames,
-        translateSpellTooltips = WowUkrainizer_Options.TranslateSpellTooltips,
-        translateUnitTooltips = WowUkrainizer_Options.TranslateUnitTooltips,
-        TranslateSubtitles = WowUkrainizer_Options.TranslateSubtitles,
-        translateNpcMessages = WowUkrainizer_Options.TranslateNpcMessages
-    }
 end
 
 function settingsProvider.IsNeedTranslateSpellNameInSpellbook()

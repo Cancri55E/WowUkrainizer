@@ -9,4 +9,5 @@
 	<Script file="DialogTexts.lua"/>
 	<Script file="Gossips.lua"/>
 	<Script file="Quests.lua"/>
+	<Script file="MtQuests.lua"/>
 </Ui>
