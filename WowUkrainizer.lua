@@ -279,6 +279,9 @@ local function initializeAddon()
         VesionStr = "Версія: " ..
             version .. " (" .. date("%d.%m.%y %H:%M:%S", releaseDate) .. ")"
     }
+
+    ns.Frames = {}
+    ns.Frames["ChangelogsFrame"] = CreateFrame("Frame", "ChangelogsFrame", UIParent, "WowUkrainizerChangelogsFrame")
 end
 
 local function OnPlayerLogin()
@@ -337,7 +340,8 @@ do
                     if IsShiftKeyDown() then
                         ReloadUI()
                     else
-                        InterfaceOptionsFrame_OpenToCategory(wowUkrainizerOptions)
+                        ns.Frames["ChangelogsFrame"]:Show()
+                        --InterfaceOptionsFrame_OpenToCategory(wowUkrainizerOptions)
                     end
                 end,
                 OnTooltipShow = function(GameTooltip)
