@@ -151,7 +151,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 		</Layers>
 	</Frame>
 
-    <Frame name="WowUkrainizerChangelogsFrame" inherits="WowUkrainizerBaseFrameTemplate" mixin="WowUkrainizerChangelogsFrameMixin" hidden="true" movable="false" resizable="true" virtual="true">
+    <Frame name="WowUkrainizerChangelogsFrame" inherits="WowUkrainizerBaseFrameTemplate" mixin="WowUkrainizerChangelogsFrameMixin" hidden="true" movable="false" resizable="true" virtual="true" toplevel="true" parent="UIParent">
 		<Size x="535" y="500"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
@@ -182,11 +182,11 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 			<Button name="$parentCloseWndButton">
 				<Size x="16" y="16"/>
 				<Anchors>
-					<Anchor point="TOPRIGHT" x="-8" y="-4"/>
+					<Anchor point="TOPRIGHT" x="-8" y="-6"/>
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						--DevTool:ToggleUI()
+						self:GetParent():ToggleUI()
 					</OnClick>
 				</Scripts>
 				<NormalTexture file="Interface\AddOns\WowUkrainizer\assets\images\close-up.png"/>

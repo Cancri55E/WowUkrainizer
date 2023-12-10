@@ -26,6 +26,8 @@ local defaultOptions = {
     TooltipSpellLangInDescription = "ua",
     TranslateSubtitles = true,
     TranslateNpcMessages = true,
+    -- Changelogs
+    LastAutoShownChangelogVersion = "1.8.19",
 }
 
 function settingsProvider:Load()
@@ -100,6 +102,9 @@ function settingsProvider:Load()
 
     WowUkrainizer_Options.TooltipSpellLangInDescription =
         WowUkrainizer_Options.TooltipSpellLangInDescription or def.TooltipSpellLangInDescription
+
+    WowUkrainizer_Options.LastAutoShownChangelogVersion =
+        WowUkrainizer_Options.LastAutoShownChangelogVersion or def.LastAutoShownChangelogVersion
 end
 
 function settingsProvider:Build()
@@ -179,6 +184,12 @@ function settingsProvider:Build()
                                 func = function()
                                     StaticPopup_Show("WOW_UKRAINIZAER_RESET_SETTINGS");
                                 end,
+                            },
+                            Changelogs = {
+                                order = 4,
+                                name = "Що Нового?",
+                                type = "execute",
+                                func = function() ns.Frames["ChangelogsFrame"]:ToggleUI() end,
                             },
                         }
                     },

@@ -74,3 +74,11 @@ function WowUkrainizerChangelogsFrameMixin:RefreshLayout()
 
     HybridScrollFrame_Update(self.scrollFrame, totalHeight, shownHeight);
 end
+
+function WowUkrainizerChangelogsFrameMixin:ToggleUI()
+    if not self:IsVisible() then
+        self:Show()
+    else
+        self:Hide()
+    end
+end
