@@ -2240,7 +2240,7 @@ ns._db.MTQuests = {
 		nil,
 		nil,
 		nil,
-		"$p!",
+		"$n!",
 		nil,
 		nil
 	},
@@ -4545,6 +4545,19 @@ ns._db.MTQuests = {
 		nil,
 		nil
 	},
+	[66114] = {
+		"Для блага королеви",
+		"Ми оберігаємо наші дорогоцінні яйця, щоб захистити майбутнє всіх драконячих зграй. Первісники загрожують не просто болем чи стражданням своїми діями. \n\nВони загрожують нам вимиранням.\n\nЯ мушу негайно поінформувати нашу королеву.",
+		"Лети з мажордомом Селістрою до рубінового святилища життя.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		"важко дивитися тобі в обличчя після того, що ти зробив. Колись ти загрожував майбутньому цієї драконячої зграї.\n\nА",
+		nil,
+		nil
+	},
 	[66115] = {
 		"Мандат Червоного",
 		"Наше покликання - піклування та співчуття. Ми допомагаємо іншим племенам не лише заради них самих, а й заради великого добра драконячого роду.\n\nМожливо, розмови з драконоїдами тут, у Рубіновому Святилищі Життя, допоможуть тобі краще зрозуміти нас.",
@@ -4637,6 +4650,45 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66126] = {
+		"Розгадка нашого минулого",
+		"Принеси мені зібраний ключ",
+		"Зібрати 1 зібраний ключ",
+		nil,
+		nil,
+		nil,
+		nil,
+		"Віддай зібраний ключ будь-якій фракції в Обсидіановій цитаделі.",
+		nil,
+		nil,
+		nil
+	},
+	[66129] = {
+		"Розгадка нашого минулого",
+		"Принеси мені зібраний ключ",
+		"Зібрати 1 зібраний ключ",
+		nil,
+		nil,
+		nil,
+		nil,
+		"Віддай зібраний ключ будь-якій фракції в Обсидіановій цитаделі.",
+		nil,
+		nil,
+		nil
+	},
+	[66130] = {
+		"Розгадка нашого минулого",
+		"Принеси мені зібраний ключ",
+		"Зібрати 1 зібраний ключ",
+		nil,
+		nil,
+		nil,
+		nil,
+		"Віддай зібраний ключ будь-якій фракції в Обсидіановій цитаделі.",
+		nil,
+		nil,
+		nil
+	},
+	[66131] = {
 		"Розгадка нашого минулого",
 		"Принеси мені зібраний ключ",
 		"Зібрати 1 зібраний ключ",
@@ -5963,93 +6015,93 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66331] = {
-		"The Primalist Front",
-		"The Khanam Matra sent word that she and her forces have arrived in the Emerald Gardens. They've located Koroleth and her Primalists. It appears a massive enemy invasion is gathering on a beach to the north.\n\nWisely, she has several scouts watching strategic locations around the battlefield. Go and collect their reports, then meet me and my forces at the battlefront. Glory awaits us in battle, and, if we succeed, there will be vengeance.",
-		"Speak to Scout Tomul, Ari and Belika, Ohn Seshteng, and Merithra in the Storm Scar.",
+		"Первісний фронт",
+		"Ханам Матра надіслала звістку, що вона та її війська прибули до Смарагдових Садів. Вони знайшли Королет та її Первісників. Схоже, що масштабне вторгнення ворогів збирається на пляжі на півночі.\n\nМудро з її боку було розставити кількох розвідників у стратегічних точках навколо поля бою. Сходи та збери їхні донесення, потім зустрінься зі мною та моїми силами на лінії фронту. Слава чекає нас у битві, а якщо ми переможемо, то помстимося.",
+		"Поговори з розвідницею Томул, Арі та Белікою, Он Сештенґ та Мерітрою у Штормовому Шрамі.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Our enemies are one step ahead of us. Do not despair. Our resolve is as strong as our alliance. Prepare yourself, $n.",
+		"Наші вороги на крок попереду нас. Не впадай у відчай. Наша рішучість така ж міцна, як і наш союз. Готуйся, $n.",
 		nil,
 		nil
 	},
 	[66333] = {
-		"Justice for Solethus",
-		"So long as a single green dragon draws breath, these Primalists will not defile the Ancient Bough without a fight.\n\nWe are eager to do our part in this battle, but as long as those dragonkiller ballistae are on the field, we cannot approach. The Nokhud's strongest warriors guard them, so you will need to take down the warriors as well.\n\nDestroy the ballistae and Nokhud Warmongers. Eliminate this threat, and the green dragons will turn the tide of battle.",
-		"Kill 3 Nokhud Warmongers and destroy 3 Dragon-Killer Ballistae.",
+		"Помста за Солетуса",
+		"Допоки хоч один зелений дракон дихає, ці Первісники не споганять Стародавнє Гілля без бою.\n\nМи палають бажанням взяти участь у цій битві, але допоки ті балісти, вбивці драконів, перебувають на полі бою, ми не можемо наблизитися. Найсильніші воїни з клану Нокхуд охороняють їх, тож тобі доведеться знищити і воїнів теж.\n\nЗнищи балісти та підбурювачів із клану Нокхуд. Усунь цю загрозу - і зелені дракони переламають хід битви.",
+		"Вбий 3 підбурювачів із клану Нокхуд та знищи 3 балісти, вбивці драконів.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Good riddance to those awful weapons. May no other dragon suffer as Solethus did.",
+		"Добре, що позбулися тих жахливих знарядь. Хай більше жоден дракон не потерпить так, як Солетус.",
 		nil,
 		nil
 	},
 	[66335] = {
-		"Deconstruct Additional Pylons",
-		"With those vile weapons destroyed, the green dragonflight can join the fray in force.\n\nWe are much more familiar with the situation on the ground. We need to light up some targets, so Merithra and her dragons can strike from above.\n\nMerithra gave me these enchanted seeds. Place them near the Primalist pylons. We will use their light to call in attacks from airborne dragons.",
-		"Mark the Primalist Pylons with Enchanted Seeds.",
+		"Руйнуємо додаткові стовпи",
+		"Тепер, коли ті огидні знаряддя знищені, зелені дракони можуть приєднатися до сутички всією силою.\n\nМи краще обізнані з ситуацією на землі. Нам потрібно підсвітити деякі цілі, щоб Мерітра та її дракони могли завдати ударів згори.\n\nМерітра дала мені ці зачаровані насінини. Поклади їх біля стовпів Первісників. Ми скористаємося їхнім світлом, щоб викликати атаки драконів із повітря.",
+		"Познач стовпи Первісників зачарованим насінням.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"I will remain forever grateful that the dragons were on our side during this battle.",
+		"Я вічно вдячний драконам за те, що вони були на нашому боці під час цієї битви.",
 		nil,
 		nil
 	},
 	[66336] = {
-		"The Isle of Emerald",
-		"Your part in this has not escaped me, mortal. It is in large part due to your bravery that we were able to defeat the Primalists.\n\nI have invited the centaur to join me under the Ancient Bough. You, along with the Khanam Matra and her people, are welcome in our home.\n\nFollow this path through the archway across the water and into the trees beyond. I will wait for you there.",
-		"Meet Merithra in the Ancient Bough.",
+		"Острів Смарагдів",
+		"Твоя роль у всьому цьому не залишилася для мене непоміченою, смертний. Саме завдяки твоїй відвазі ми змогли перемогти Первісників.\n\nЯ запросив кентаврів приєднатися до мене під Стародавнім Гіллям. Ти, разом із ханам Матрою та її людьми, теж є віталими гостями в нашому домі.\n\nЙди цією стежкою крізь арку над водою та у глиб лісу за нею. Я чекатиму на тебе там.",
+		"Зустрінься з Мерітрою у Стародавньому Гіллі.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Welcome to the Ancient Bough. You stand before the Emerald Oathstone of the green dragonflight.",
+		"Ласкаво просимо до Стародавнього Гілля. Ти стоїш перед Смарагдовою Клятвою зеленої драконячої зграї.",
 		nil,
 		nil
 	},
 	[66337] = {
-		"Stormbreaker",
-		"$n, to me! We are within reach of victory!\n\nThe Primalist ranks are broken, and their war is all but through. Everything we have achieved hinges on this final battle against the Primalist leader, Koroleth.\n\nLet us finish this, you and I! Together! To battle, $Gbrother:sister;!",
-		"Defeat Koroleth.",
-		"Koroleth",
-		"This primalist leader seeks to destroy the green dragons' sanctuary.",
+		"Громовладник",
+		"$n, до мене! Ми на порозі перемоги!\n\nЛави Первісників розбиті, їхня війна практично програна. Все, чого ми досягли, залежить від цієї вирішальної битви з ватажком Первісників Королетом.\n\nЗавершімо це, ти і я! Разом! У бій, {sex|брате|сестро}!",
+		"Переможи Королета.",
+		"Королет",
+		"Цей ватажок первісників прагне знищити смарагдовий притулок драконів.",
 		nil,
 		nil,
 		nil,
-		"At last, it is done. Our sacred isle is safe once again. Thank you for all you have done for my kind, $n.",
+		"Нарешті, все скінчено. Наш священний острів знову в безпеці. Дякую за все, що ти зробив для мого народу, $n.",
 		nil,
 		nil
 	},
 	[66340] = {
-		"Into the Azure",
-		"We have done our part. Though I must remain here to watch over the Oathstone and guide the green dragonflight, know that you leave here with our gratitude and faith.\n\nI have received word the Kirin Tor are seeking help in claiming the Azure Oathstone. Helping them with their Oathstone will bring us one step closer to healing Azeroth.\n\nFind Pakina and Masud the Wise of the Kirin Tor. They will instruct you further. Safe journey and pleasant dreams, $n.",
-		"Meet Masud the Wise in the Forkriver Crossing.",
+		"У смарагдову безодню",
+		"Ми виконали свою частку. Хоча я мушу залишитися тут, щоб охороняти Клятвенний Камінь та вести зелену зграю драконів, знай: ти йдеш звідси з нашою вдячністю та вірою.\n \nЯ дізнався, що Кірін Тор шукають допомоги у заволодінні своїм Смарагдовим Клятвенним Каменем. Допомагаючи їм, ми зробимо ще один крок до зцілення Азероту.\n\nЗнайди Пакіну та Масуда Мудрого з Кірін Тору. Вони проінструктують тебе. Щасливої дороги й солодких снів, $n.",
+		"Зустрінь Масуда Мудрого біля Річкової Розгалуження.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Hail adventurer! I'm glad our call for help reached you.",
+		"Вітаю, мандрівнику! Раді, що наш заклик про допомогу дійшов до тебе.",
 		nil,
 		nil
 	},
 	[66344] = {
-		"With the Wind at Our Backs",
-		"So the Primalists have recruited Clan Nokhud as allies. \n\nWe have held off the Primalists until now, but the Nokhud have brought a new weapon: a dragonkiller ballista. I fear Solethus will not be the last dragon to fall to its foul storm magic.\n\nCome. I will take you to the dragons' haven at Shady Sanctuary. You can tell me what you know of the Nokhud while the Khanam Matra gathers her forces. We must prepare for our next move.",
-		"Ride with Gerithus and Merithra.",
+		"З вітром у спину",
+		"Отже Первісники завербували клан Нокхуд як союзників.\n\nДо цих пір ми стримували Первісників, але Нокхуд принесли нову зброю: балісту-вбивцю драконів. Боюся, Солетус не буде останнім драконом, якого вб'є ця підступна бурхлива магія.\n\nХодімо. Я відведу тебе до драконячого притулку в Тінистому Прихистку. По дорозі розкажеш мені, що ти знаєш про Нокхудів, а хан-матка в цей час збере свої сили. Ми мусимо підготуватися до наступного кроку.",
+		"Полети з Герітусом та Мерітрою.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"We have arrived, mortal. Welcome to the Emerald Gardens.",
+		"Ми на місці, смертний. Ласкаво просимо в Смарагдові Сади.",
 		nil,
 		nil
 	},
@@ -6145,14 +6197,14 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66392] = {
-		"Rallying Nature's Allies",
-		"We cannot give into despair now. We must push forward. We must think of another way through the barrier.\n\nFirst, we need our allies. Countless elementals summoned by Rymek are pouring through the portal. We will need an army that can move in the Dream like we can, or one that can be brought in easily.\n\nRally the druids and centaur in Shady Sanctuary. It is time to call upon their oaths to preserve the grove.",
-		"Muster the druids and gather the empowered anchors in Shady Sanctuary.",
+		"Збирання союзників серед сил природи",
+		"Ми не можемо занепадати духом. Ми повинні йти далі. Ми мусимо знайти інший спосіб подолати бар'єр.\n\nПерш за все, нам потрібні союзники. Нескінченні елементалі, викликані Римеком, виливаються в портал. Нам знадобиться армія, здатна вільно пересуватися по Сновидінню, як ми, або ж таку, яку легко можна перенести туди.\n\nЗбери друїдів та кентаврів із Тінистого Прихистку. Прийшов час звернутися до їхніх присяг про збереження гаю.",
+		"Зібрати друїдів і посилених провідників у Тінистому Прихистку.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Meet Somnikus in Shady Sanctuary.",
+		"Зустрінься з Сомнікусом у Тінистому Прихистку.",
 		nil,
 		nil,
 		nil
@@ -7145,6 +7197,19 @@ ns._db.MTQuests = {
 		nil,
 		nil
 	},
+	[66549] = {
+		"Перегони на Берегах Пробудження",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
 	[66553] = {
 		"Розслідування",
 		"Снігошкурі з клану Вінтерпелт - особливий випадок серед хутропузів.\n\nЯ б назвав їх трохи 'ізоляціоністами'. Вони як привиди в ущелині, їхні шкури зливаються зі снігом.\n\nЗазвичай тримаються осторонь, але тепер вони прямо агресивні. Вони напали на наш табір без будь-якої провокації!\n\nЩось має бути не так, що змусило їх до цього. Я не можу їх питати, що сталося - поки що - але може ти зможеш знайти якісь підказки у їхньому селищі?",
@@ -7678,8 +7743,21 @@ ns._db.MTQuests = {
 		nil,
 		nil
 	},
+	[66691] = {
+		"Перегони на Берегах Пробудження",
+		"Цей маршрут схожий на попередній, просто з більшою варіативністю розташування контрольних пунктів.\n\nЯкщо ти застрягнеш, подми в свисток і я перезавантажу тебе.",
+		"Пролетіти через кільця.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
 	[66692] = {
-		"Ruby Lifeshrine Loop - Advanced",
+		"Коло Рубінового Святилища Життя - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -7770,7 +7848,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66710] = {
-		"Переліт над Льодовитими Запеченнями",
+		"Переліт над Льодовитим Спалахом",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -7796,7 +7874,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66712] = {
-		"Flashfrost Flyover - Advanced",
+		"Переліт над Льодовитим Спалахом - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -7848,7 +7926,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66722] = {
-		"Wild Preserve Slalom - Advanced",
+		"Слалом Дикого Уділу - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -7887,7 +7965,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66726] = {
-		"Wild Preserve Circuit - Advanced",
+		"Коло Дикого Уділу - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -7913,7 +7991,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66728] = {
-		"Emberflow Flight - Advanced",
+		"Політ над Жаровим Потоком - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -8017,7 +8095,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66777] = {
-		"Американські Гірки Уктулуту",
+		"Гірки Уктулуту",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -8030,7 +8108,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66778] = {
-		"Uktulut Coaster - Advanced",
+		"Гірки Уктулуту - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -8134,7 +8212,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66787] = {
-		"Wingrest Roundabout - Advanced",
+		"Окружний Маршрут Вінгресту - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -8156,6 +8234,19 @@ ns._db.MTQuests = {
 		nil,
 		nil,
 		"Дякую тобі, $n. Я знову відчуваю, що у нас є майбутнє.",
+		nil,
+		nil
+	},
+	[66825] = {
+		"Рубінове покликання життя",
+		"$p! Який щасливий збіг, що ти тут! Ми якраз збираємося розпочати Церемонію покликання життя і були б удостоєні, якби ти нам допоміг. \n\nПокликання драконоїда дуже особливе. Дехто стає чудовим садівником; інші доглядають за певною дикою природою.\n\nЦі молоді драконоїди закінчили своє навчання і готові взяти на себе свої перші покликання. Я знаю, що вони були б захоплені, якби ти взяв участь. Коли будеш готовий, будь ласка, подай їм кожен з предметів на цьому столі.",
+		"Візьми участь у церемонії покликання життя в рубіновому святилищі життя.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
 		nil,
 		nil
 	},
@@ -8394,7 +8485,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66877] = {
-		"Переліт Через Болото",
+		"Політ над болотами",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -8407,7 +8498,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66878] = {
-		"Переліт Через Болото - Просунутий рівень",
+		"Політ над болотами - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -8433,7 +8524,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66880] = {
-		"Перегони Річковим Ущелиною",
+		"Перегони Річковою Ущелиною",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -8446,7 +8537,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[66881] = {
-		"Перегони Річковим Ущелиною - Просунутий рівень",
+		"Перегони Річковою Ущелиною - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -8542,6 +8633,19 @@ ns._db.MTQuests = {
 		"Знешкодь Айзіра Спаленілого.",
 		"Айзір Спаленілий",
 		"Останній у довгій черзі лідерів.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[66895] = {
+		"Той самий старий бос",
+		"Дракони-світозруйнувачі — наївний народець. Ми слідували багатьом різним вождям протягом років, вірячи, що кожен із них приведе нас до Часу сутінок та повернення Смертокрила.",
+		"Усунути Провидицю Візос ",
+		"Провидиця Візос",
+		"Остання у довгій черзі лідерів.",
 		nil,
 		nil,
 		nil,
@@ -9031,14 +9135,14 @@ ns._db.MTQuests = {
 		nil
 	},
 	[67067] = {
-		"Navigating the Leapmaize",
-		"There's a dragon chef in Valdrakken? Truly? I'll have to ask her to try my arclight bisque! It's an old family recipe.\n\nI know the plant you speak of. It grows around streams here, but it's caused some problems.\n\nThe stalks of leapmaize seem to be a natural feeding ground for beetles and small salamanthars, which are, in turn, natural prey of the hornswogs. That's fine if you can spot them out in the open, but there's a few here that are incredibly stealthy.\n\nI'd watch my back if I were you.",
-		"Collect 15 stalks of Wild Leapmaize.",
+		"Проходження лабіринту",
+		"У Вальдраккені є дракон-кухар? Справді? Мені треба попросити її спробувати мій арклайт біск, це стара сімейна страва.\n\nЯ знаю цю рослину. Вона росте біля струмків тут, але вона спричинила деякі проблеми.\n\nСтебла лабіринту, схоже, є природним кормом для жуків і дрібних саламантрів, які, у свою чергу, є природною здобиччю для дракожаб. Це гаразд, якщо ти можеш побачити їх на відкритій місцевості, але тут є кілька дуже непомітних.\n\nЯ би стежив за спиною, якби був тобою.",
+		"Збери 15 стебел дикого лабіринту.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Return to Rumiastrasza at The Ruby Feast in Valdrakken.",
+		"Повернись до Руміястрази в Рубіновому бенкеті у Вальдраккені.",
 		nil,
 		nil,
 		nil
@@ -9057,16 +9161,16 @@ ns._db.MTQuests = {
 		nil
 	},
 	[67071] = {
-		"What a Long, Sweet Trip It's Been",
-		"$n! Just who Morsel and I were looking for!\n\nFrom the bottom of both of our winged-hearts, we thank you dearly.\n\nWe started The Ruby Feast to share the Isles' culinary culture with all of Azeroth's races, and to learn from them too. We had you running from one end of our beloved continent to another, but you helped bring our dream vision of these gatherings to each honored visitor and guest here.\n\nAs friends, we would like to give you a gift. Grab the top journal from our hoard behind the cauldron.",
-		"Speak with Rumiastrasza.",
+		"Яка довга і солодка це подорож була",
+		"$r! Саме того, кого Морсель і я шукали!\n\nВід щирого серця дякуємо тобі.\n\nМи відкрили Рубіновий бенкет, щоб поділитися кулінарною культурою Островів з усіма расами Азерота і щоб вчитися в них. Ми змусили тебе бігати з одного кінця нашого улюбленого континенту в інший, але ти допоміг здійснити наше бачення цих зібрань для кожного шанованого відвідувача та гостя тут.\n\nЯк друзі, ми хотіли б подарувати тобі подарунок. Візьми верхній журнал з нашого сховища за казаном.",
+		"Поговори з Руміястразою.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Catch a fish for a mortal, they will eat for a day.\n\nTeach a mortal to cook, they will eat for a lifetime.\n\nGive a mortal your most prized recipe, they will think of you each time they make it. At least we hope you do.\n\n<Morsel and Rumi smile at you like only good friends can.>\n\nCome back any time, $n! The meal is on us!",
-		"Our hoard is just behind the cauldron.\n\nNot to worry though, we lowered the sealing enchantment and deathly magical traps for you!",
+		"Нагодуй рибою смертного, і він поїсть на день.\n\nНавчи смертного готувати, і він їстиме все життя.\n\nВіддай смертному свій найцінніший рецепт, і він думатиме про тебе кожного разу, коли готуватиме його. Принаймні ми сподіваємося, що ти це робитимеш.\n\n<Морсель і Румі посміхаються тобі, як тільки добрі друзі вміють.>\n\nПриходь будь-коли, $r! Їжа за наш рахунок!",
+		"Наше сховище якраз за казаном.\n\nНе хвилюйся, ми зняли запечатуюче закляття і смертельні магічні пастки для тебе!",
 		nil
 	},
 	[67073] = {
@@ -9213,15 +9317,15 @@ ns._db.MTQuests = {
 		nil
 	},
 	[67094] = {
-		"A Dryad's Work Is Never Done",
-		"It is wonderful to see Valdrakken so lively again, but there are so many things that have wilted under thousands of years of neglect - not the least of which are all of the adorable little city critters! Alas, we don't have enough dryads to go around tending to them all. \n\nSay, how would you like to be appointed Honorary Valdrakken Dryad? Some of the city's cutest little friends have gone far too long without their preferred snacks. Won't you help me tend to them?",
-		"Help Thalendra feed the many small animals of Valdrakken.",
+		"Роботи в дріади ніколи не закінчується",
+		"Чудово бачити Вальдраккен знову живим, але багато речей зів'яли за тисячі років занедбаності - і не в останню чергу всі милі маленькі міські звірятка! На жаль, у нас недостатньо дріад, щоб піклуватися про них усіх.\n \nСкажи, як тобі ідея стати почесною дріадою Вальдраккена? Деякі з наймиліших друзів міста занадто довго залишалися без улюблених ласощів. Чи не допоможеш ти мені потурбуватися про них?",
+		"Допоможи Талендрі нагодувати багатьох дрібних тварин Вальдраккена.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Oh, how wonderful! I bet they all have smiles on their cute little faces, beaks, snouts and whatnot. \n\nThere is one more critter that needs our help, though, and I fear the situation is rather dire.",
+		"О, як чудово! Гадаю, на їхніх милих мордочках, дзьобах, писках та інших частинах тіла зараз посмішки. \n\nПроте ще одна звірятка потребує нашої допомоги, і, боюся, ситуація доволі скрутна.",
 		nil,
 		nil
 	},
@@ -9460,9 +9564,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[67606] = {
-		"A Dryadic Remedy",
-		"While you were gone, I heard from a dreamhare that one of the local ducklings is feeling rather down in the dumps. Luckily, I know exactly how to fix that!\n\nWhenever I'm feeling moody, I snack on something sweet and tasty! As an expert in cute, lovable creatures, I know that the same principle will surely apply here.\n\nThis particular duckling is fond of a local dessert known as a Tasty Hatchling's Treat. Won't you find one and bring it to the poor dear? It's the dryadic thing to do, after all!",
-		"Acquire a Tasty Hatchling's Treat and administer it to the Despondent Duckling.",
+		"Сухостійний засіб",
+		"Поки тебе не було, я почула від сонливця, що одне з місцевих каченят почуває себе дуже пригніченим. На щастя, я точно знаю, як це виправити!\n\nКоли я почуваюся похмуро, я ласую смачними солодощами! Будучи експертом у милих, чарівних створіннях, я знаю, що той самий принцип обов'язково спрацює і тут.\n\nЦе конкретне каченя полюбляє місцевий десерт під назвою Смачна страва для каченят. Чи не знайдеш ти одну і принесеш бідоласі? Це ж сухостійний вчинок!",
+		"Здобудь Смачну страву для каченят і нагодуй нею Пригнічене каченя.",
 		nil,
 		nil,
 		nil,
@@ -10071,9 +10175,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[69937] = {
-		"Sylvan Succor",
-		"Ah, $n, there you are! I've been looking all over for you.\n\nAnother of our local critters has been suffering from a distinct lack of affectionate treat-feeding of late. Won't you go and find them something sweet to snack on?",
-		"Acquire a Tasty Hatchling's Treat and administer it to the Despondent Duckling.",
+		"Лісова Допомога",
+		"Агов, $n, ось ти де! Шукав тебе всюди.\n\nОдна з наших місцевих істот останнім часом страждає від браку ласощів. Не знайдеш для неї щось солоденьке на закуску?",
+		"Здобудь смаколик для Драконячого Дитинчати і пригости ним Пригнічене Каченя",
 		nil,
 		nil,
 		nil,
@@ -10084,9 +10188,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[69939] = {
-		"Sylvan Succor",
-		"Ah, $n, there you are! I've been looking all over for you.\n\nAnother of our local critters has been suffering from a distinct lack of affectionate treat-feeding of late. Won't you go and find them something sweet to snack on?",
-		"Acquire a Snow in a Cone and administer it to the Overwrought Otter.",
+		"Лісова Допомога",
+		"Агов, $n, ось ти де! Шукав тебе всюди.\n\nОдна з наших місцевих істот останнім часом страждає від браку ласощів. Не знайдеш для неї щось солоденьке на закуску?",
+		"Здобудь Сніг у Конусі і пригости ним Змучену Видру",
 		nil,
 		nil,
 		nil,
@@ -10097,9 +10201,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[69940] = {
-		"Sylvan Succor",
-		"Ah, $n, there you are! I've been looking all over for you.\n\nAnother of our local critters has been suffering from a distinct lack of affectionate treat-feeding of late. Won't you go and find them something sweet to snack on?",
-		"Acquire a Blubbery Muffin and administer it to the Anxious Eft.",
+		"Лісова Допомога",
+		"Агов, $n, ось ти де! Шукав тебе всюди.\n\nОдна з наших місцевих істот останнім часом страждає від браку ласощів. Не знайдеш для неї щось солоденьке на закуску?",
+		"Здобудь Мафін з Блубері і пригости ним Тривожного Тритона",
 		nil,
 		nil,
 		nil,
@@ -10370,7 +10474,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70051] = {
-		"Вертикальний цикл",
+		"Перегони по схилах",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -10383,7 +10487,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70052] = {
-		"Вертикальний цикл - Просунутий рівень",
+		"Перегони по схилах - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -11292,6 +11396,175 @@ ns._db.MTQuests = {
 		nil,
 		nil
 	},
+	[70355] = {
+		"Алхімія Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70357] = {
+		"Ковальство Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70358] = {
+		"Ковальство Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70359] = {
+		"Інженерія Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70360] = {
+		"Зачаровування Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70361] = {
+		"Написання Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		"Поговори з Ізаріаном пером тіні біля зруйнованої арки життя.",
+		nil,
+		nil,
+		nil
+	},
+	[70362] = {
+		"Обробка шкіри Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70363] = {
+		"Зняття шкіри Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70364] = {
+		"Травництво Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70365] = {
+		"Ювелірна справа Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70366] = {
+		"Кравецтво Драконових Островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70368] = {
+		"Екзамен на заняття",
+		"Вітаю! Ви зацікавлені працювати з Консорціумом ремісників, щоб заробляти великі прибутки та надавати цінні товари й послуги клієнтам по всьому Азероту?\n\nЧудово! Які дві професії ви вивчили?\n\n...Хм? У вас лише одна професія? Яка втрачена можливість!\n\n<Гефеста замислюється на мить.>\n\nЗнаю! Я поставлю вам серію запитань про вашу особистість, і ми разом з'ясуємо, яка друга професія найкраще доповнює вашу першу! Як вам ця ідея?",
+		"Пройдіть особистісний тест Гефести, щоб дізнатися про вашу ідеальну професію.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[70370] = {
+		"Екзамен на заняття",
+		"Вітаю! Ви зацікавлені працювати з Консорціумом ремісників, щоб заробляти великі прибутки та надавати цінні товари й послуги клієнтам по всьому Азероту?\n\nЧудово! Які дві професії ви вивчили?\n\n...Хм? У вас лише одна професія? Яка втрачена можливість!\n\n<Гефеста замислюється на мить.>\n\nЗнаю! Я поставлю вам серію запитань про вашу особистість, і ми разом з'ясуємо, яка друга професія найкраще доповнює вашу першу! Як вам ця ідея?",
+		"Пройдіть особистісний тест Гефести, щоб дізнатися про вашу ідеальну професію.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
 	[70374] = {
 		"Гімія, благословенна",
 		"Елементи претендують на цю землю і не вітають наше втручання.\n\nО, Елементи, чи забули ви нашого захисника -- Повітря! Невидиме, але всюдисуще та життєво необхідне для усього живого! Забуте, як легко ви дихаєте ним. Після протистояння зі мною, ви більше ніколи не забудете.",
@@ -11358,15 +11631,15 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70444] = {
-		"The Fields of Ferocity",
-		"To the bravest Shikaar! \n\nGather your best and head on over to the Fields of Ferocity. You could be crowned the fiercest of them all!\n\nProve your might. Show us your best fight!\n\nTerms and conditions apply.",
-		"Meet Gurgthock at the Fields of Ferocity.",
+		"Поле Жорстокості",
+		"Найвідважнішим Шикаарам!\n\nЗберіть найкращих і вирушайте на Поле Жорстокості. Саме ви можете бути вінчані як найнепримиренніші!\n\nДоведіть свою хоробрість. Покажіть найкращу битву!\n\nУмови та положення застосовуються:",
+		"Зустрінься з Гаргтоком на Полі Жорстокості.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Hey, you're no centaur.\n\nEhh. You'll do.",
+		"Ого, ти що, не кентавр.\n\nЕх, підійдеш.",
 		nil,
 		nil
 	},
@@ -11397,21 +11670,21 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70501] = {
-		"License to Hunt",
-		"Ah, finally ready to prove yourself as a hunter? Keep in mind this is not as simple as running around and hunting everything that moves. The Shikaar hunt with purpose. We hunt to feed and clothe the clan, to prove our strength against mighty foes, and to balance nature.\n\nWe do not hunt the land barren, we sow the seeds for future Grand Hunts as we go. Prove yourself capable of following these instructions and you may join us.\n\nHowever I do not have confidence in your friend there succeeding.",
-		"Complete the Grand Hunt training tasks.",
+		"Ліцензія на полювання",
+		"А, нарешті готовий довести, що ти - мисливець? Пам'ятай, це не так просто, як бігати навкруги та полювати на все, що рухається. Шикаар полюють з метою. Ми полюємо, аби годувати та одягати клан, доводити нашу силу проти могутніх ворогів і балансувати природу.\n\nМи не винищуємо звірину дочиста, ми сіємо насіння для майбутніх Великих Полювань, куди б не йшли. Доведи, що здатен дотримуватися цих вказівок, і ти зможеш приєднатися до нас.\n\nОднак я не впевнений, що твій товариш там досягне успіху.",
+		"Виконай навчальні завдання для Великого Полювання.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Excellent! You are ready to join the Grand Hunts! \n\nPlease inform this Nesingwary Jr. that there is more to hunting than mindless killing and that he is unwelcome to join us.",
+		"Чудово! Ти готовий приєднатися до Великих Полювань!\n\nБудь ласка, повідом цього Несінґварі молодшого, що в полюванні є щось більше, ніж бездумне вбивство, і що йому не раді серед нас.",
 		nil,
 		nil
 	},
 	[70526] = {
-		"Ohn'ahran Plains Rally",
-		"Fly through the checkpoint rings marking the course.",
+		"Перегони Он'аранськими рівнинами",
+		"Пролети крізь контрольні кільця, позначаючи маршрут.",
 		nil,
 		nil,
 		nil,
@@ -11423,15 +11696,15 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70541] = {
-		"Hunting Tactics: Companion",
-		"Your renown with the Maruuk grows. You may now hunt alongside a tenacious bakar or swift ohuna companion.",
-		"Choose to fight alongside a bakar or ohuna during the Grand Hunt.",
+		"Тактика полювання: супутник",
+		"Твоя слава серед Марууків зростає. Тепер ти можеш полювати разом із невтомним бакаром чи прудконогим охуною.\n",
+		"Вибери, хто буде битися поряд під час Великого Полювання - бакар чи охуна.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Treat your hunting companion with loyalty and respect and they will protect your life with their own.\n\nReturn when your renown grows and I will train you further.",
+		"Стався до свого полювального супутника з вірністю та повагою, і він захистить твоє життя ціною власного.\n\nПовертайся, коли твоя слава зросте, і я навчу тебе далі.",
 		nil,
 		nil
 	},
@@ -11540,15 +11813,15 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70701] = {
-		"Bakar Dream of Lost Argali",
-		"Some of the clan's argali have wandered away from our flock again.\n\nThe ridge around us is too dangerous for our shepherds to search for them. It would be a great boon if you could take one of our bakar and bring back the argali. Our shepherds can point you in the right direction.",
-		"Herd the lost argali back to Clan Aylaag.",
+		"Бакар мріє про загублених аргалі",
+		"Деякі аргалі нашого клану знову відбилися від отари.\n\nНавколишній кряж занадто небезпечний, щоб наші пастухи шукали їх там. Для нас було би великою послугою, якби ти взяв одного з наших бакарів та повернув аргалі. Наші пастухи вкажуть тобі напрямок.",
+		"Заганяй загублених аргалі назад до клану Айлааґ.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"We must be vigilant about our livestock. We are limited in resources to begin with. To lose an argali is a setback we would much like to avoid.",
+		"Ми маємо пильнувати за худобою. І без того обмаль ресурсів. Втрата аргалі - це збиток, якого дуже хотілося б уникнути.",
 		nil,
 		nil
 	},
@@ -11618,7 +11891,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70710] = {
-		"River Rapids Route",
+		"Маршрут річкових порогів",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -11631,7 +11904,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70711] = {
-		"River Rapids Route - Advanced",
+		"Маршрут річкових порогів - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -11657,22 +11930,22 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70721] = {
-		"After My Ohn Heart",
-		"There is a small pond by the Mirror of the Sky where Narman and I first met during my initiate training.\n\nInitiates travel up there to be closer to Ohn'ahra so they may feel the wind. I first saw him in the reflection of the water when a sudden breeze opened my eyes. It is the most beautiful sight in all of the plains.\n\nIt will be the perfect place for our proposal.",
-		"Help Windsage Dawa and Hunter Narman with their proposals.",
+		"За серцем она",
+		"Недалечко від Дзеркала Небес є невеличкий ставок, де я вперше зустріла Нармана під час мого посвячення. \n\nПосвячені сходять туди поближче до Он'ари, аби відчути вітер. Я вперше побачила Нармана у відбитті води, коли раптовий подих вітру відкрив мені очі. Це найчарівніше видовище на всіх рівнинах.\n\nЦе ідеальне місце для нашої заручин.",
+		"Допоможи Мудриці Вітру Даві та Мисливцю Нарману з їхніми пропозиціями руки та серця.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"Thank you, $p.\n\nDawa and I will always remember what you have done for us.",
+		"Дякую, $p. \n\nДава і я завжди пам'ятатимемо, що ти для нас зробив.",
 		nil,
 		nil
 	},
 	[70730] = {
-		"Shikaar Giver",
-		"Oh, $n.\n\nDo you feel comfort under the sun? Do you feel safe under its bright caress? Does each new day represent hope for the future and a chance to live your life as you've always dreamt it?\n\nThen you know love as I do.\n\nNarman of Clan Shikaar is my sun. He is my warmth. He is my light. He is my hope.\n\nA man like him deserves a proposal worthy of stature.\n\nWe must seek guidance from an Ohn.",
-		"Help Windsage Dawa prepare for the perfect proposal.",
+		"Дарувальник Шикаар",
+		"О, $n.\n\nЧи відчуваєш ти комфорт під сонцем? Чи почуваєшся в безпеці під його яскравими променями? Чи кожен новий день уособлює для тебе надію на майбутнє та шанс жити так, як ти завжди мріяв?\n\nТоді ти знаєш любов, як і я.\n\nНарман із клану Шикаар - моє сонце. Він - моє тепло. Він - моє світло. Він - моя надія.\n\nТакий чоловік, як він, заслуговує на пропозицію, гідну його статусу. \n\nМи маємо шукати поради в Она.\n",
+		"Допоможи Мудриці Вітру Даві підготуватися до ідеальної пропозиції руки та серця.",
 		nil,
 		nil,
 		nil,
@@ -11696,15 +11969,15 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70739] = {
-		"Bloodlines, Sweets, and Teerai",
-		"I have hunted with khans, outrun our fastest bakar, and wrestled a full grown bruffalon bull bare-handed. As a hunter, I've nothing left to prove.\n\nHowever, as a partner, I still have much to learn. \n\nWindsage Dawa of Clan Ohn'ir is my heart and my joy. I wish only to prove worthy of his love, but I know nothing of traditions and rituals. I require the wisdom of the elders in Maruukai.",
-		"Help Hunter Narman earn a traditional blessing for his marriage proposal.",
+		"Родовід, солодощі та Тіра",
+		"Я полював з ханами, переганяв наших найшвидших бакарів і боровся голими руками з дорослим биком груборога. Як мисливець, мені немає чого доводити.\n\nОднак як партнер, мені ще багато чому потрібно навчитися. \n\nМудриця вітру Дава з клану Он'ір - моє серце і моя радість. Я бажаю лише довести себе гідним його любові, але я нічого не знаю про традиції та ритуали. Мені потрібна мудрість старійшин у Марукаї.",
+		"Допоможи мисливцеві Нарману отримати традиційне благословення для пропозиції одруження.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Speak to Hunter Narman at the Shikaar rise in Maruukai.",
-		"I would sooner ask all the stars of the night sky to admire me back than claim to be wholly worthy of Dawa's love.\n\nNonetheless, I will find the courage to proceed. When the time comes, will you assist me with a grand proposal?",
+		"Поговори з мисливцем Нарманом на підвищенні Шикаар у Марукаї.",
+		"Я скоріше попросив би всі зірки нічного неба захоплюватися мною у відповідь, ніж заявив би, що повністю гідний Давиної любові.\n\nПроте я знайду в собі мужність просуватися далі. Коли настане час, ти допоможеш мені зробити грандіозну пропозицію?",
 		nil,
 		nil
 	},
@@ -12385,14 +12658,14 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70985] = {
-		"The Lonely Scout",
-		"I know, I know, it's silly. A centaur and a dryad, right? We can't be more different.\n\nBut ever since I first laid eyes on the Emerald Gardens, I really have wanted to get to know one better. I just can't seem to say or do anything to keep them interested in me.\n\nI've heard they're into... plants. And cute baby animals. And maybe killing poachers, but I don't even know where to start.\n\nPlease, you can talk to them, right? Could you ask around and find out what they like? Then maybe I can have a shot.",
-		"Speak to dryads in Shady Sanctuary.",
+		"Самотній розвідник",
+		"Я знаю, я знаю, це смішно. Кентавр і дріада, так? Ми не можемо бути більш відмінними.\n\nАле відколи я вперше побачив Смарагдові сади, я дійсно хотів краще познайомитися з однією з них. Я просто не можу сказати чи зробити нічого, щоб вони зацікавилися мною.\n\nЯ чув, що їм подобаються... рослини. І милі немовлята тварин. І, можливо, вбивство браконьєрів, але я навіть не знаю, з чого почати.\n\nБудь ласка, ти можеш поговорити з ними, правда? Ти не міг би розпитати і дізнатися, що їм подобається? Тоді, можливо, в мене буде шанс.",
+		"Поговори з дріадами в Тінистому притулку.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Return to Scout Santuun.",
+		"Повернися до розвідника Сантууна.",
 		nil,
 		nil,
 		nil
@@ -12411,9 +12684,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70988] = {
-		"The Egg's the Thing",
-		"\"All the world's an egg.\" That is how the saying goes, right?\n\nEggs! They are the core of confections, and one of the great catalysts of culinary creation! They are the fat that puts acids, heats, and salts on their highest pedestals, to their highest potentials!\n\nOur Isles are teeming with fowl of immense strength, but the Breezehunters of the Plains lay eggs primed with flavor!\n\nThey often nest on the Eastern side of the Plains, so ask around the outpost in Rusza'thar Reach.",
-		"Speak with Ilana at Rusza'thar Reach in the Ohn'ahran Plains.",
+		"Яйце - ось що важливо",
+		"«Увесь світ - яйце». Так каже приказка, чи не так?\n\nЯйця! Вони є основою цукерок і одними з найважливіших каталізаторів кулінарної творчості! Вони - жир, який ставить кислоти, жар, і солі на найвищі п'єдестали, на найвищі рівні їхнього потенціалу!\n\nНа наших Островах багато птахів величезної сили, але гнізда Бризоловів Рівнин містять яйця, насичені смаком!\n\nВони часто гніздяться на східній стороні Рівнин, тож запитай в заставі Рубежу Руша'тар.",
+		"Поговори з Іланою на Рубежі Руша'тар на Рівнинах Он'ара.",
 		nil,
 		nil,
 		nil,
@@ -12424,28 +12697,28 @@ ns._db.MTQuests = {
 		nil
 	},
 	[70989] = {
-		"Part of a Pack",
-		"Perhaps your bakar needs to be shown the proper way to hunt by his own kind.\n\nYou may borrow some of our trained bakar. Take them and bring down the drake that circles the area. \n\nLet us see how Taivan behaves in a pack!",
-		"Hunt the Ravenous Proto-Drake with Taivan and the pack of hunting bakar.",
+		"Частина зграї",
+		"Можливо, твій бакар повинен побачити, як полюють його родичі.\n\nТи можеш позичити деяких з наших навчених бакарів. Візьми їх і збий дракона, який кружляє навколо. \n\nПодивимося, як Тайван поводитиметься у зграї!",
+		"Полюй на хижого прото-дракона з Тайваном та зграєю полюючих бакарів.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"<Jadar shakes his head.>\n\nVery disappointing. I'm afraid Taivan just does not have it in him to hunt like a Shikaar. Even with other bakar fighting beside him, he could not shake his unwillingness to attack his enemy. \n\nWhat a waste!",
+		"<Ядар хитає головою.>\n\nДуже розчаровує. Боюся, Тайван просто не має в собі того, щоб полювати як шикаарець. Навіть з іншими бакарами, які б'ються поряд з ним, він не міг подолати свою небажаність нападати на ворога. \n\nЯка марна трата!",
 		nil,
 		nil
 	},
 	[70990] = {
-		"If There's Wool There's a Way",
-		"While most of our wool comes from our own argali flocks, we do sometimes need to pull from the land when the flock grows thin.\n\nThe nearby plains are home to wild argali - they tend to be more temperamental than our clan's flock. If you could take this blade and attempt to shear their wool, it would be a great service to Aylaag.",
-		"Shear cliffhoof argali for their wool.",
+		"Якщо є вовна - то є спосіб",
+		"Хоча більшість нашої вовни надходить від власних отар аргалі, іноді, коли отара проріджується, нам доводиться звертатися до дикої природи.\n\nНа навколишніх рівнинах водяться дикі аргалі - вони зазвичай бувають більш непоступливими, ніж отара нашого клану. Якби ви могли взяти цей ніж та спробувати зістригти їхню вовну, це було би великою послугою для Айлаага.",
+		"Зістрижіть вовну зі скельних аргалі для її подальшого використання.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"I will get this wool to the artisans who can use it. Thank you.",
+		"Я передам цю вовну майстрам, які зможуть її використати. Дякую.",
 		nil,
 		nil
 	},
@@ -12593,15 +12866,15 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71022] = {
-		"Reign of the Ram",
-		"Since the argali don't seem to have much respect for Taivan, we should see if he can handle the herd's ram next.\n\nHe's the boss of all the argali here, and quite the stubborn thing. If Taivan can assert dominance over the ram, the herd will start obeying him.\n\nYou can find him just over there, on the hill. Good luck, Taivan. If this doesn't work, I'm afraid there's not much hope for him being a herder!",
-		"Command Taivan to confront the herd's Stubborn Ram.",
+		"Панування Барана",
+		"Оскільки аргалі, схоже, не надто поважають Тайвана, то треба перевірити, чи зможе він упоратися з бараном - ватажком всієї отари.\n\nВін - бос усіх аргалі тут, і доволі впертий. Якщо Тайван зможе встановити домінування над бараном, то все стадо почне його слухатися.\n\nЙого можна знайти там, на пагорбі. Удачі, Тайване. Якщо це не спрацює, боюсь, немає надії, що з нього вийде пастух!",
+		"Накажіть Тайвану протистояти Упертому Барану - ватажку стада.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"That could have gone better. Sorry, friend, but I don't think Taivan is cut out for this. \n\nHe's a very nice bakar, but doesn't quite seem smart enough to figure out how to get the argali into the pen, or aggressive enough to take command of the herd away from the ram. \n\nI'm afraid I'm going to have to send you back to Selbekh with bad news.",
+		"Могло піти й краще. Вибачте, друже, але, гадаю, Тайван не підходить для цієї справи.\n\nВін дуже слухняний бакар, але, мабуть, недостатньо розумний, щоб збагнути, як загнати аргалі до загону, чи недостатньо агресивний, щоб перехопити контроль над стадом у барана.\n \nБоюсь, доведеться відправити вас назад до Сельбеха з поганими новинами.",
 		nil,
 		nil
 	},
@@ -12619,35 +12892,35 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71027] = {
-		"WANTED: Mara'nar the Thunderous",
-		"Looking for a mighty hunter to take down a rampaging beast!\n\nA thunder lizard named Mara'nar the Thunderous worked his way from Thunderspine Thicket to Primordial Vale, disrupting local wildlife. It has electrified water, knocked down trees, and broken duck nests.\n\nThis menace must be stopped. Slay him and bring one of his plates to Khansguard Jebotai as proof.\n\nMay Ohn'ahra guide you.",
-		"Slay Mara'nar the Thunderous in Primordial Vale and retrieve one of his plates.",
-		"Mara'nar the Thunderous",
-		"Disrupting the local wildlife of Primordial Vale, this beast has smashed one too many duck nests.",
+		"РОЗШУКУЄТЬСЯ: Мара'нар Грозовий",
+		"Шукаємо могутнього мисливця, щоб упокорити люту тварюку!\n\nГромова ящірка Мара'нар Грозовий пробралась із Гущавини Громоспинів до Споконвічної Долини, порушуючи життєдіяльність місцевої фауни. Вона електризувала воду, повалила дерева та знищила гнізда качок.\n\nЦю загрозу треба зупинити. Убийте її та принесіть одну з її лусок Ханському Гвардійцю Джеботаю на доказ.\n\nХай Он'ара веде вас.",
+		"Убийте Мара'нар Грозового в Споконвічній Долині та принесіть одну з його лусок.",
+		"Мара'нар Грозовий",
+		"Порушуючи життєдіяльність місцевої фауни Споконвічної Долини, ця тварина знищила забагато гнізд качок.",
 		nil,
 		nil,
 		nil,
-		"Mara'nar has been slain. May his kin learn to stay within their own lands.",
+		"Мара'нар упокорено. Хай його рід навчиться триматися в межах власних володінь.",
 		nil,
 		nil
 	},
 	[71028] = {
-		"Hunting Tactics: Blessing of Ohn'ahra",
-		"Your renown with the Maruuk grows. Listen closely, and I will teach you to call upon a blessing of Ohn'ahra to protect you and your allies.",
-		"Select a blessing of Ohn'ahra for use in the Grand Hunt.",
+		"Мисливські прийоми: Благословення Он'ари",
+		"Твоя слава серед Марууків зростає. Слухай уважно, і я навчу тебе, як призвати Благословення Он'ари, щоб захистити тебе та твоїх союзників.",
+		"Оберіть благословення Он'ари для використання під час Великого Полювання.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"May the winds of Ohn'ahra guide and protect you.\n\nReturn when your renown grows, and I will train you further.",
+		"Хай вітри Он'ари ведуть і захищають тебе.\n\nПовертайся, коли твоя слава зросте, і я навчу тебе далі.",
 		nil,
 		nil
 	},
 	[71029] = {
-		"Hunting Tactics: Companion Training",
-		"Your renown with the Maruuk grows once more. For your efforts, I will teach you to command your hunting companion more effectively in combat.",
-		"Choose an additional companion ability for use in the Grand Hunt.",
+		"Мисливські прийоми: Тренування супутника",
+		"Твоя слава серед Марууків знову зросла. За твої зусилля я навчу тебе краще керувати твоїм мисливським супутником у бою.",
+		"Оберіть ще одну здатність для супутника під час Великого Полювання.",
 		nil,
 		nil,
 		nil,
@@ -12658,7 +12931,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71030] = {
-		"Hunting Tactics: Shikaar Mentorship",
+		"Мисливські прийоми: Шикаарське наставництво",
 		nil,
 		nil,
 		nil,
@@ -12671,7 +12944,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71031] = {
-		"Hunting Tactics: Proof of Prowess",
+		"Мисливські прийоми: Доказ вправності",
 		nil,
 		nil,
 		nil,
@@ -12684,7 +12957,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71032] = {
-		"Hunting Tactics: Apex Hunter",
+		"Мисливські прийоми: верховний мисливець",
 		nil,
 		nil,
 		nil,
@@ -12762,9 +13035,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71138] = {
-		"Waygate: Rusza'thar Reach",
-		"An expeditionary member reported a dormant stone sighting atop a lookout in the Ohn'ahran Plains.\n\nUp fer an adventure?",
-		"Locate the Dormant Waygate at the Rusza'thar Reach in the Ohn'ahran Plains.",
+		"Брама: Рубіж Руша'тар",
+		"Член експедиції повідомив про виявлення неактивного каменю на спостережному пункті в рівнинах Он'ари.\n\nГотовий до пригод?",
+		"Знайди Неактивну Браму в Рубежі Руша'тар на рівнинах Он'ари.",
 		nil,
 		nil,
 		nil,
@@ -12918,9 +13191,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71178] = {
-		"Waygate: Shady Sanctuary",
-		"Our expedition reports a dormant stone out in the lush hillsides to the southwest. It's quite a journey, but worth sendin' someone with yer knowledge tae investigate.",
-		"Locate the Dormant Waygate at the Shady Sanctuary in the Ohn'ahran Plains.",
+		"Брама: Тінистий Прихисток",
+		"Наша експедиція повідомляє про неактивний камінь серед буйної рослинності на південному заході. Це доволі далека подорож, але варто надіслати когось із твоїми знаннями, щоб розвідати.",
+		"Знайди Неактивну Браму в Тінистому Прихистку на рівнинах Он'ари.",
 		nil,
 		nil,
 		nil,
@@ -12970,9 +13243,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71192] = {
-		"Predator Control",
-		"Greetings friend!\n\nI've been looking for a good place to set up fishing nets around here, but it seems like the population of waddlers around here is too dense - they're eating away most of the juvenile fish before they get a chance to mature.\n\nI've made some effigies to scare at least some of those ravenous birds away. This will help us sustain the abundance of fish across the Dragonsprings. \n\nCan you help me setting those up?",
-		"Set up the Scary Effigies.\n\nYou may unlock only one extra fishing net per day.",
+		"Контроль хижаків",
+		"Вітаю, друже!\n\nЯ шукаю гарне місце, щоб розставити рибальські сітки, але здається тут забагато качиних - вони з'їдають більшість молодої риби, не даючи їй вирости.\n\nЯ зробив кілька опудал, щоб прогнати хоча б частину цих ненажерливих птахів. Це допоможе нам підтримати рясність риби в Драконячих Джерелах.\n\nМожеш допомогти мені їх розставити?\n",
+		"Розстав Страхітливі Опудала.\n\nТи можеш розблокувати лише одну додаткову рибальську сітку на день.",
 		nil,
 		nil,
 		nil,
@@ -13009,9 +13282,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71195] = {
-		"To Tame A Thunderspine",
-		"I guess this is Lizi's new favorite spot. She hasn't been interested in coming back home. After all, she is a wild beast.\n\nI have to tell you... I haven't spoken to Meluun since we saved Lizi. I know she was right, but I don't know how to approach her. She doesn't seem to approve of anything I do. I know I have to focus more on my training.\n\nMeluun makes a stomping good curry that Lizi would love. Do you think you could ask her for it? She's usually working in the Ohn's house west of the springs.",
-		"Collect Meluun's Green Curry in the Ohn'iri Springs and 150 Dragon Isles Supplies.",
+		"Приборкати Громошипа",
+		"Гадаю, це нове улюблене місце Лізі. Вона більше не хоче повертатися додому. Зрештою, вона дика звірюка.\n\nМушу зізнатися... Після того, як ми врятували Лізі, я з Мелуун не розмовляв. Знаю, що вона мала рацію, але не знаю, як до неї підійти. Здається, вона не схвалює нічого з того, що я роблю. Знаю, мені треба більше зосередитися на тренуваннях.\n\nМелуун чудово готує карі, яке б Лізі сподобалося. Можеш попросити в неї рецепт? Зазвичай вона працює в будинку Онів на захід від джерел.\n",
+		"Збери Карі Мелуун в Он'Ірських Джерелах і 150 Постачань Драконових Островів.",
 		nil,
 		nil,
 		nil,
@@ -13022,9 +13295,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71196] = {
-		"To Tame A Thunderspine",
-		"I'm so happy that Lizi is safe and sound with us.\n\nHowever, her wounds are healing slower than expected. I hope that the magic inflicted upon her didn't cause permanent damage.\n\nCould you help me gather insect ichor? I know, it sounds gross! It's actually the base of many healing ointments.",
-		"Collect 20 Fluorescent Fluid from insects around the Dragon Isles and 150 Dragon Isles Supplies.",
+		"Приборкати Громошипа",
+		"Я такий щасливий, що Лізі в безпеці з нами.\n\nОднак її рани загоюються повільніше, ніж очікувалося. Сподіваюсь, що магія, накладена на неї, не завдала незворотної шкоди.\n\nМіг би ти допомогти зібрати комахий екстракт? Знаю, звучить огидно! Насправді, це основа для багатьох цілющих мазей.\n",
+		"Збери 20 Флуоресцентної Рідини від комах на Драконових Островах і 150 Постачань Драконових Островів.",
 		nil,
 		nil,
 		nil,
@@ -13035,7 +13308,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71197] = {
-		"To Tame A Thunderspine",
+		"Приборкати Громошипа",
 		nil,
 		nil,
 		nil,
@@ -13048,7 +13321,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71198] = {
-		"To Tame A Thunderspine",
+		"Приборкати Громошипа",
 		nil,
 		nil,
 		nil,
@@ -13061,7 +13334,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71199] = {
-		"To Tame A Thunderspine",
+		"Приборкати Громошипа",
 		nil,
 		nil,
 		nil,
@@ -13074,9 +13347,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71209] = {
-		"Beast of the Plains",
-		"I think Lizi is ready to be a beast of the plains again. She's so friendly to you and I now, but I can tell she wants to return to the wild.\n\nOne day, when I am a Windsage, I will explore all of the world beyond these springs. But first--my midseason initiate trials! How time flies.\n\nI made a saddle and reins from the wool you gathered. Lizi will be happy to come at your call.\n\nPlease take her on all the adventures, $n.",
-		"Accept Lizi's Reins.",
+		"Звір рівнин",
+		"Думаю, Лізі готова знову стати звіром рівнин. Вона така дружелюбна до тебе й до мене зараз, але я бачу, що вона хоче повернутися у дику природу. \n\nОдного дня, коли я стану Мудрицею вітру, я досліджу весь світ за межами цих джерел. Але спочатку - випробування ініціації середнього сезону! Скоробіг часу. \n\nЯ зробила сідло та повід із вовни, яку ти зібрав. Лізі буде приємно прийти до тебе на поклик. \n\nБудь ласка, вози її у всі пригоди, $p.",
+		"Прийми повід Лізі.",
 		nil,
 		nil,
 		nil,
@@ -13178,9 +13451,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[71241] = {
-		"Duck, Duck, Trap",
-		"The grove called the Primordial Vale is rich with the magic of the old dragons. A type of slyvern there are prized by my kin for their fur, but they are elusive and hard to find.\n\nInstead of having you try to track them down, you can find some of our hunting traps in the area. Use meat from the nearby waterfowl to reset them - I will send some of our clan to retrieve whatever gets caught.",
-		"Reset the Clan Aylaag hunting traps at the Primordial Vale.",
+		"Качка, качка, пастка",
+		"Гай, що називається Споконвічною Долиною, насичений магією стародавніх драконів. Певний вид вівернолисів дуже цінується моїм племенем за їхнє хутро, але ці істоти важко знайти. \n\nЗамість того, щоб вести тебе до полювання на них, ти можеш знайти деякі з наших мисливських пасток у цій місцевості. Використай м'ясо місцевих водоплавних, щоб знову налаштувати пастки - я відправлю деяких із нашого клану, щоб забрати все, що в них потрапить.",
+		"Перевстанови мисливські пастки клану Айлааг у Споконвічній Долині.",
 		nil,
 		nil,
 		nil,
@@ -13191,7 +13464,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72052] = {
-		"Ruby Lifeshrine Loop - Reverse",
+		"Коло Рубінового Святилища Життя - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -13230,9 +13503,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72063] = {
-		"Return Yennu's Toy Boat",
-		"<This hand made toy boat resembles the ships of the Tuskarr. Yennu, the young Tuskarr, was musing about a boat, it must belong to him>",
-		"Return the toy boat to Yennu alongside the river in the Ohn'ahran Plains.",
+		"Поверни човник Єнну",
+		"<Цей ручної роботи іграшковий човник схожий на кораблі Бивняррів. Єнну, молодий Бивнярр, мріяв про човен, цей човник, мабуть, належить йому>",
+		"Поверни іграшковий човник Єнну на річковому березі на рівнинах Он'ари.",
 		nil,
 		nil,
 		nil,
@@ -13295,9 +13568,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72072] = {
-		"Dragonsprings Drop",
-		"The fish could be biting better, don't you think?\n\nYou know, that gives me an idea. Legend says these lakes and rivers did not always have fish. They say, these watering holes were stocked with fish when the dragons soaring overhead dropped them! Can you believe it?\n\nMaybe you and your drake could give it a try?",
-		"Collect fish to restock the fishing hole and mount your drake to drop them from above.",
+		"Скидання з дракона",
+		"Риба могла б клювати краще, чи не так?\n\nЗнаєш, це дає мені ідею. Легенда свідчить, що ці озера і річки спочатку не мали риби. Кажуть, ці водойми були зариблені рибою, коли пролітаючі дракони випустили її! Чи можеш у це повірити? \n\nМожливо, ти й твій дракон могли б спробувати?",
+		"Збери рибу, щоб поповнити рибальську водойму, і злети на своєму драконі, щоб скинути її зверху.",
 		nil,
 		nil,
 		nil,
@@ -13502,6 +13775,58 @@ ns._db.MTQuests = {
 		nil,
 		nil
 	},
+	[72242] = {
+		"Інженерна справа Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		"Привіт! Ласкаво просимо на Драконячі острови! Гей, здається, ти такий же ентузіаст вибухів, як і я. Можу показати тобі кілька приладів, над якими я працюю?\n\nЯ можу навчити тебе деяких нових схем інженерії!",
+		nil,
+		nil
+	},
+	[72243] = {
+		"Травництво Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[72244] = {
+		"Написання Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		"Поговори з Джессамін Спітц у посольстві Крилатого спочинку.",
+		nil,
+		nil,
+		nil
+	},
+	[72245] = {
+		"Алхімія Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
 	[72246] = {
 		"Безтурботні Сни",
 		"Ласкаво просимо до курорту 'Безтурботні Сни'!\n\nМушу вибачитися. Зараз ми не можемо приймати нових гостей через обставини, що вийшли з-під контролю.\n\nДозвольте мені направити вас до менеджера курорту, Сіцзаня Тернолапа. Він кваліфікований відповісти на всі ваші запитання.",
@@ -13512,6 +13837,84 @@ ns._db.MTQuests = {
 		nil,
 		nil,
 		"Ласкаво просимо до курорту 'Безтурботні Сни'! Тут ви можете насолодитися багатьма релаксаційними активностями!\n\nО! Ти прийшов допомогти? Буду вдячний за твою допомогу.",
+		nil,
+		nil
+	},
+	[72247] = {
+		"Ювелірна справа Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[72249] = {
+		"Кравецтво Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[72250] = {
+		"Кулінарія Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		"<Головний шеф Стакс видає низку звуків та жестів, пов'язаних з кулінарією. Його вінчики крутяться! Його пальники ревуть та плюються! Він гримає сковорідкою, ніби величезним гонгом!\n\nВся таверна аплодує його мудрості. \n\nСпостерігаючи за цією витонченою пантомімою, ти раптом відчуваєш, що став набагато кращим кухарем.>",
+		nil,
+		nil
+	},
+	[72251] = {
+		"Кулінарія Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[72252] = {
+		"Рибальство Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[72253] = {
+		"Рибальство Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
 		nil,
 		nil
 	},
@@ -13932,15 +14335,15 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72429] = {
-		"Orientation: Maruukai",
-		"<As Sansok Khan signs, Okir vocalizes for her.>\n\nThe Maruuk as a people are not staunchly against outsiders, but we do require any potential allies to prove their worth. As you meet the clans and aid in our ventures, word will spread of your support.\n\nOn the lower level of the krutal on the hill you will find one of the Khanam Matra's daughters, who can help you see where you stand with our people. Be sure to introduce yourself.",
-		"Meet the Keeper of Renown and Renown Quartermaster in Maruukai.",
+		"Орієнтація: Марукай",
+		"<Під час того як хан Сансок жестикулює, Окір озвучує за неї.> \n\nНарод Маруук у цілому не різко проти прибульців, але ми вимагаємо від потенційних союзників довести свою корисність. Коли ти зустрічатимешся з кланами та допомагатимеш у наших справах, чутки про твою підтримку поширюватимуться. \n\nНа нижньому рівні круталу на пагорбі ти знайдеш одну з дочок Канаматри - вона може показати тобі твоє становище серед наших людей. Обов'язково представся їй.",
+		"Зустрінься з Кидачем відомостей і Квартирмейстером відомостей у Марукаї.",
 		nil,
 		nil,
 		nil,
 		nil,
 		nil,
-		"I look forward to seeing how you contribute to the Maruuk.",
+		"Я з нетерпінням чекаю, як ти допоможеш народу Маруук.",
 		nil,
 		nil
 	},
@@ -13954,6 +14357,19 @@ ns._db.MTQuests = {
 		nil,
 		nil,
 		"Сподіваюся, тобі сподобалося в Іскаарі.\n\nЯк ти зараз знаєш, багато з нас — вправні майстри та купці. Я заохочую тебе продовжувати опитувати і дізнаватися, що всі мої люди можуть тобі запропонувати.",
+		nil,
+		nil
+	},
+	[72442] = {
+		"Залишки Тіра",
+		"Як Ноздорму відчував силу, що лишилась у лусці, я відчуваю Тіра тут, у самих каменях цього місця.\n\nЯ підозрюю, що інші конструкти теж це відчувають. Вони мабуть прийшли сюди, коли Тіра було переплавлено. Ми маємо йти правильним шляхом. \n\nЯкщо тут лишились сліди його присутності, луска могла б зібрати їх за допомогою цієї консолі. Але конструкти можуть сприйняти наше збирання останніх спогадів Тіра як спробу їх знищити. \n\nСтримуй їх, якщо вони прокинуться.",
+		"Захисти Наглядача Кораноса від конструктів у гробниці.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
 		nil,
 		nil
 	},
@@ -14036,9 +14452,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72483] = {
-		"The Ohn'ahran Plains Tour",
-		"Ah, the Ohn'ahran Plains. Wide open spaces, gusting winds, endless vistas... and more race courses!\n\nJust as in the Waking Shores, if you find any of my bronze colleagues, speak to them about their race course.",
-		"Fly each of the race courses in the Ohn'ahran Plains.",
+		"Екскурсія рівнинами Он'ара",
+		"Ах, рівнини Он'ари. Безкраї простори, поривчасті вітри, безмежні обрії... та ще більше перегонів! \n\nТак само як і в Берегах пробудження, якщо ви знайдете будь-яких із моїх бронзових колег, поговоріть з ними про їхні перегони.",
+		"Пролети кожну з перегонних трас на рівнинах Он'ари.",
 		nil,
 		nil,
 		nil,
@@ -14049,9 +14465,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72484] = {
-		"The Ohn'ahran Plains Advanced Tour",
-		"The advanced courses should be more challenging, but I am sure it is nothing you cannot handle!\n\nMy bronze colleagues have set up advanced courses in the Ohn'ahran Plains that have a few obstacles and surprises thrown in them. You can also compete against your own best times!\n\nGood luck!",
-		"Fly each of the advanced courses in Ohn'ahran Plains.",
+		"Розширена екскурсія рівнинами Он'ара",
+		"Розширені траси мають бути складнішими, але я впевнений, що для тебе це не проблема! \n\nМої бронзові колеги облаштували розширені траси на рівнинах Он'ари, куди додали деякі перешкоди та сюрпризи. Ти також можеш змагатися за власні кращі результати! \n\nПоводься!",
+		"Пролети кожну з розширених трас на рівнинах Он'ари.",
 		nil,
 		nil,
 		nil,
@@ -14114,9 +14530,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72512] = {
-		"A Whispering Breeze",
-		"<Godoloto cocks her head quizzically, nods at you, and finally holds your gaze. After a long moment, she casts her eyes up towards the sky... and the mountain just beside Maruukai. You sense that she wants you to travel up to Ohn'ahra's Roost.>",
-		"Approach Ohn'ahra in Ohn'ahra's Roost.",
+		"Шепіт вітру",
+		"<Ґодолото схиляє голову, здивовано дивиться на тебе, потім витримує твій погляд. Після тривалої миті вона підводить очі до неба... і до гори поряд з Марукаєм. Ти відчуваєш, що вона хоче, аби ти піднявся до Гнізда Он'ари.>",
+		"Наблизься до Он'ари в Гнізді Он'ари.",
 		nil,
 		nil,
 		nil,
@@ -14374,9 +14790,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72591] = {
-		"A Debt That Must Be Paid",
-		"$n, I have heard you cultivated good relations with the centaur of the Ohn'ahran Plains. I would like to ask a favor.\n\nBaine left for the plains a few days ago in search of a group of missing tauren. I offered to accompany him, but he insisted on going alone.\n\nThe tauren of Thunder Bluff have a long and bloody history with the centaur of Kalimdor, as does Baine. While the Maruuk centaur are unrelated, I still have my concerns.\n\nYour presence could help smooth tensions. I hope.",
-		"Find Baine in the Ohn'ahran Plains.",
+		"Борг, який треба сплатити",
+		"$p, я чув, що ти налагодив добрі стосунки з кентаврами Он'ахранських рівнин. Я хотів би попросити послугу. \n\nКілька днів тому Бейн вирушив на рівнини на пошуки групи зниклих тауренів. Я запропонував супроводжувати його, але він наполягав піти наодинці. \n\nУ тауренів Громового Бескида склалася довга й кривава історія з кентаврами Калімдору, як і в Бейна. Хоча кентаври Маруук не пов'язані з ними, у мене залишаються побоювання. \n\nТвоя присутність могла б згладити напруженість. Сподіваюся.",
+		"Знайди Бейна на рівнинах Он'ари.",
 		nil,
 		nil,
 		nil,
@@ -14387,9 +14803,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72592] = {
-		"Scars from the Past",
-		"A tribe of tauren came to the Dragon Isles led by a close friend of mine, Bovan Windtotem. No one has heard from them since they entered these plains.\n\nIf they have gone missing, then I must find them. Unfortunately, I underestimated the size of this place. \n\nYou have an existing relationship with the centaur. Will you go speak with them and see if they have any information on Bovan or his tribe? \n\nPerhaps they can help narrow down my search.",
-		"Ask the Maruuk centaur about the disappearance of Bovan Windtotem.",
+		"Шрами минулого",
+		"Плем'я тауренів на чолі з моїм близьким другом Бовеном Вітровим Тотемом прибуло на Драконячі Острови. Відтоді про них нічого не чути. \n\nЯкщо вони зникли, я повинен знайти їх. На жаль, я недооцінив розмір цієї місцевості. \n\nУ тебе вже налагоджені стосунки з кентаврами. Ти не міг би поговорити з ними і дізнатися, чи мають вони якусь інформацію про Бовена чи його плем'я? \n\nМожливо, вони зможуть звузити мій пошук.",
+		"Запитай у кентаврів Маруук про зникнення Бовена Вітрового Тотема.",
 		nil,
 		nil,
 		nil,
@@ -14400,9 +14816,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72593] = {
-		"A Tomul-tuous Beginning",
-		"Since the dragons returned, we've seen an overwhelming number of outsiders passing through the plains. Normally we keep a close eye on our borders, but their sheer numbers, combined with the Nokhud threat, have made it difficult to track them.\n\nOne scout reported a group of outsiders that matched your description traveling along the eastern road. We should start our search there.\n\nAs for your friend, my khan gave me a command. A huffy companion won't stop me from carrying it out.",
-		"Meet Tomul and Baine on the eastern road near the Watering Hole.",
+		"Бурхливий початок з Томул",
+		"Відколи повернулися дракони, ми бачили надзвичайно велику кількість прибульців, які проходять через рівнини. Зазвичай ми пильно стежимо за нашими кордонами, але їхня величезна кількість у поєднанні з загрозою Нокхудів ускладнили відстеження. \n\nОдин розвідник повідомив про групу прибульців, які відповідали твоєму опису - вони рухалися східною дорогою. Нам варто почати пошуки звідти. \n\nЩодо твого друга, мій хан віддав мені наказ. Сопучий супутник мене не зупинить від його виконання.",
+		"Зустрінься з Томул і Бейном на східній дорозі біля Водопою.",
 		nil,
 		nil,
 		nil,
@@ -14413,9 +14829,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72594] = {
-		"Delivering Bad News",
-		"As soon as we arrived, Baine was whisked away. Bovan is still missing, so he is speaking to someone named Tagar.\n\nOf course I've been left out here in the cold. It seems they still don't trust me.\n\nIn any case, you should go in and speak with the tauren. Take the items you found and try to identify who they belonged to. At the very least, you can let the families know what we've discovered so far.\n\nBut... be gentle, $n. For some of them, this may be the worst day of their lives.",
-		"Speak to the tauren and identify to whom the items you found belonged.",
+		"Передача поганих новин",
+		"Щойно ми прибули, Бейна кудись повели. Бовен досі зниклий безвісти, тож він розмовляє з кимось на ім'я Тагар.\n\nЗвісно, мене залишили надворі на холоді. Здається, вони мені все одно не довіряють.\n\nТак чи інак, тобі слід зайти всередину й поговорити з тауренами. Візьми знайдені речі й спробуй з'ясувати, кому вони належали. Принаймні можеш дати родинам знати, що ми досі знайшли.\n\nАле... будь ніжним, $n. Для деяких із них це може бути найгірший день у їхньому житті.",
+		"Поговори з тауренами й з'ясуй, кому належали знайдені тобою речі.",
 		nil,
 		nil,
 		nil,
@@ -14426,9 +14842,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72595] = {
-		"The Search for Bovan Windtotem",
-		"According to this survivor, the centaur took them completely by surprise. Bovan led many of the braves against the centaur, hoping to buy time for the others to escape. \n\nHe succeeded, but Bovan and most of the braves have not returned. We must find him, $n.\n\nI need you to search the surrounding area. If you find survivors, tell them to make their way back here.\n\nIf you find fallen tauren... take something recognizable to bring back to their families.",
-		"Search the surrounding area for the missing tauren.",
+		"Пошуки Бовена Вітрового Тотему",
+		"За словами вцілілого, напад кентаврів був повною несподіванкою. Бовен повів багатьох воїнів проти кентаврів у спробі виграти час для втечі решти.\n\nЙому це вдалося, але Бовен та більшість воїнів так і не повернулися. Ми мусимо його знайти, $n.\n\nЯ потребую, щоб ти обшукав околиці. Якщо знайдеш виживших тауренів, скажи їм повертатися сюди.\n\nЯкщо ж натрапиш на загиблих тауренів... забери щось впізнаване, щоб віддати їхнім родинам.",
+		"Обшукай околиці на предмет зниклих тауренів.",
 		nil,
 		nil,
 		nil,
@@ -14465,35 +14881,35 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72599] = {
-		"Joint Rescue Operation",
-		"Tomul says the attacks on the Windtotem were carried out by an enemy clan known as the Nokhud. \n\nJust down this road is their closest outpost, and the most likely location where tauren prisoners would be taken.\n\nThe task is simple--rescue the captives. We do not know how many there are, or how long they have been here, so we must hurry.\n\nI speak from experience when I say centaur do not keep their captives for long.",
-		"Rescue 6 Windtotem Captives.",
+		"Спільна рятувальна операція",
+		"Томул каже, що напади на плем'я Вітрового Тотему здійснив ворожий клан на ім'я Нокхуд.\n\nПросто вниз по дорозі - їхня найближча фортеця, і найімовірніше місце, куди могли відвести полонених тауренів.\n\nЗавдання просте - врятувати заручників. Ми не знаємо, скільки їх там і як довго вони там перебувають, тож мусимо поспішати.\n\nКажу з власного досвіду: кентаври не тримають полонених занадто довго.",
+		"Врятуй 6 Полонених Вітрового Тотему.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Meet up with Baine and Tomul inside the Shikaar Highlands.",
+		"Зустрінься з Бейном та Томул всередині Шикаарського Нагір'я.",
 		nil,
 		nil,
 		nil
 	},
 	[72600] = {
-		"A Proper Shikaar Send-Off",
-		"We're here to rescue the captive tauren, but I have a personal request.\n\nThe place we are assaulting was once my home. The Nokhud took over after a surprise attack during the civil war.\n\nTake these Shikaar banners. When you kill a Nokhud or one of their allies, plant a banner on their corpse. I want to send a message--if they continue to occupy our home, they will pay in blood.",
-		"Plant a Shikaar Banner on 15 slain Nokhud centaur or their allies.",
+		"Гідне шикаарське проводжання",
+		"Ми тут, щоб визволити тауренів, але в мене особисте прохання.\n\nМісце, яке ми штурмуємо, колись було моїм домом. Нокхуди захопили його після раптової атаки під час громадянської війни.\n\nВізьми ці шикаарські прапори. Коли вб'єш Нокхуда чи одного з їхніх союзників, посади прапор у труп. Хочу надіслати повідомлення - якщо вони продовжать окуповувати наш дім, то заплатять кров'ю.",
+		"Посади Шикаарський Прапор на 15 трупів Нокхудських Кентаврів чи їхніх союзників.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Meet up with Baine and Tomul inside the Shikaar Highlands.",
+		"Зустрінься з Бейном та Томул всередині Шикаарського Нагір'я.",
 		nil,
 		nil,
 		nil
 	},
 	[72601] = {
-		"Bovan's Last Hope",
-		"If Bovan is not here, the Nokhud could have taken him anywhere. We might have one last chance to find him, but it's a long shot.\n\nWe still have Bovan's necklace. One of the Ohn'ir mystics might be able to use it to help divine his location. I've only heard about this ritual, so I have no idea if it will work.\n\nGo to the Ohn'iri Springs and look for Boku. I'm sure he will help us.\n\nBaine and I will make sure the tauren we rescued get back safely. We'll meet you at the Ohn'iri Springs.",
-		"Find Boku at the Ohn'iri Springs.",
+		"Остання надія Бовена",
+		"Якщо Бовена тут немає, Нокхуди могли відвести його куди завгодно. У нас може залишитися останній шанс знайти його, але це довгий кидок. \n\nУ нас досі є намисто Бовена. Один з містиків Он'ір міг би використати його, щоб допомогти визначити його місцезнаходження. Я лише чув про цей ритуал, тож не маю жодної ідеї, чи він спрацює. \n\nЙди в Он'їрські джерела і шукай Боку. Впевнений, він допоможе нам. \n\nБейн і я переконаємося, що врятовані таурени безпечно повернуться. Ми зустрінемо тебе біля Он'їрських джерел.",
+		"Знайди Боку в Он'їрських джерелах.",
 		nil,
 		nil,
 		nil,
@@ -14504,22 +14920,22 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72602] = {
-		"Optimistic Mystic",
-		"I'm sure I can find this Bovan Windtotem--but I will need a few items from you.\n\nFirst, I need a selection of flowers that grow at the base of the springs. They have the specific properties we are looking for.\n\nNext, I require the heart of a salamanther. A stronger heart will better our chances--look for the strongest you can find!\n\nI can gather the rest of the materials on my own.",
-		"Collect a Strong Salamanther Heart and 8 Geyser Flowers.",
+		"Оптимістичний містик",
+		"Я впевнений, що зможу знайти цього Бовена Вітрового Тотему - але мені знадобляться деякі речі від тебе. \n\nПо-перше, мені потрібен букет квітів, що ростуть біля основи джерел. Вони мають потрібні нам властивості. \n\nДалі мені знадобиться серце саламандри. Сильніше серце краще підвищить наші шанси - шукай найпотужніше, яке зможеш знайти! \n\nРешту матеріалів я зберу сам.",
+		"Збери Сильне Серце Саламандри та 8 Джерельних Квітів.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Meet Boku just north of the Ohn'iri Springs.",
+		"Зустрінься з Боку трохи на північ від Он'їрських джерел.",
 		nil,
 		nil,
 		nil
 	},
 	[72603] = {
-		"What Words Are Worth",
-		"Let me just grind these flowers and... there we are, all ready! \n\nTake these items and place them in the incense burner. Together with Bovan's necklace, I can entreat Ohn'ahra to help us find him. \n\nWith luck, she will give us a vision.",
-		"Place the items in the incense burner and witness the vision.",
+		"Що варті слова",
+		"Треба лише розтерти ці квіти і... готово! \n\nВізьми ці речі й поклади їх у кадильницю. Разом із намистом Бовена я зможу благати Он'ару допомогти нам знайти його. \n\nЗ трішки щастя, вона подарує нам видіння.",
+		"Поклади речі в кадильницю і спостерігай за видінням.",
 		nil,
 		nil,
 		nil,
@@ -14530,9 +14946,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72604] = {
-		"Desperate Rescue",
-		"I should have known I could not trust the centaur. They may provide token amounts of aid, but they would never risk themselves for us.\n\nLet us focus on the matter at hand. We cannot allow Bovan to remain in centaur captivity! I will set out immediately for Nokhudon Hold. \n\nMeet me there as quickly as you can.",
-		"Meet Baine Bloodhoof outside Nokhudon Hold.",
+		"Відчайдушне порятунок",
+		"Я мав знати, що не можна довіряти кентаврам. Вони можуть надавати символічну допомогу, але ніколи не ризикнули б заради нас. \n\nЗосередимося на справі, що в руках. Ми не можемо дозволити Бовену залишатися в полоні у кентаврів! Я вирушу негайно до Нокхудської Тверді. \n\nЗустрінься зі мною там якомога швидше.",
+		"Зустрінь Бейна Криваве Копито біля Нокхудської Тверді.",
 		nil,
 		nil,
 		nil,
@@ -14543,9 +14959,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72605] = {
-		"Saving Bovan Windtotem",
-		"Time is against us, $n. We must find Bovan as quickly as possible.\n\nThis hold is teeming with centaur. Our search will go faster if we split up--and it will be easier to slip by the patrols.\n\nTake one of these potions I brought. It should help you go undetected, but beware of the Nokhud wardogs. If Tomul spoke correctly, they will sniff you out.\n\nSearch the area for Bovan. If you find him, get him out. Do not wait for me.",
-		"Search Nokhudon Hold for Bovan Windtotem.",
+		"Порятунок Бовена Вітрового Тотему",
+		"Час проти нас, $p. Ми маємо знайти Бовена якомога швидше. \n\nЦя твердь кишить кентаврами. Наш пошук піде швидше, якщо ми розділимося - і буде легше прослизнути повз патрулі. \n\nВізьми одне з оцих зілль, що я приніс. Воно має допомогти тобі залишитися непоміченим, але обережно - нокхудські бойові пси все одно тебе вичують. Якщо Томул сказала правду. \n\nШукай Бовена в цій місцевості. Якщо знайдеш його, виведи звідси. Не чекай на мене.",
+		"Шукай Бовена Вітрового Тотема в Нокхудській Тверді.",
 		nil,
 		nil,
 		nil,
@@ -14556,9 +14972,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72606] = {
-		"See Red",
-		"Nokhud. Gelkis. Magram. Kolkar. They are all the same...\n\nThey plague the land. They murder my people. No more!\n\nI will end this centaur threat. Here! Now!",
-		"Slay centaur within Nokhudon Hold.",
+		"Бачу червоне",
+		"Нокхуди. Ґелкіси. Маґрами. Колкари. Вони всі однакові... \n\nВони спустошують землю. Вони вбивають мій народ. Досить! \n\nЯ покладу край цій кентаврячій загрозі. Тут! Зараз!",
+		"Убий кентаврів у Нокхудській Тверді.",
 		nil,
 		nil,
 		nil,
@@ -14569,11 +14985,11 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72607] = {
-		"Old Hatreds",
-		"<Baine is still breathing heavily from his recent battles.>\n\nI will not leave... until Jamoku pays... for what he has done...\n\nI will avenge Bovan... no matter the cost...",
-		"Slay Jamoku.",
-		"Jamoku",
-		"Jamoku was responsible for the attacks on the tauren and the death of Bovan Windtotem, among others.",
+		"Старі образи",
+		"<Бейн досі важко дихає після нещодавніх битв.>\n\nЯ не піду... допоки Джамоку не заплатить... за те, що накоїв...\n\nЯ помщуся за Бована... щоб там не сталося...",
+		"Убий Джамоку.",
+		"Джамоку",
+		"Джамоку був відповідальний за напади на тауренів та смерть Бована Вітрового Тотему, серед інших.",
 		nil,
 		nil,
 		nil,
@@ -14582,9 +14998,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72609] = {
-		"Case Closed",
-		"You are lucky we arrived when we did. We intercepted the Nokhud reinforcements about to flank you during your fight with Jamoku.\n\nWe lost two of our number in that battle. Their bodies have already been recovered. Bovan's is the last.\n\nThe Nokhud will not take long to rally and hunt us down. We must leave now.\n\nHead to Toghusuq Village, where the tauren are encamped. We will meet you there.",
-		"Meet Scout Tomul and Baine Bloodhoof at Toghusuq Village.",
+		"Справу закрито",
+		"Добре, що ми прибули, коли прибули. Ми перехопили підкріплення Нокхудів, які збиралися оточити тебе під час твоєї сутички з Джамоку.\n\nМи втратили двох наших під час тієї битви. Їхні тіла вже забрані. Залишилося знайти лише тіло Бована.\n\nНокхуди незабаром зіб'ються докупи та почнуть полювати за нами. Ми маємо йти зараз.\n\nВирушай до селища Тогхусук, де таборяться таурени. Ми зустрінемося з тобою там.",
+		"Зустрінься з розвідницею Томул та Бейном Кривавим Копитом у селищі Тогхусук.",
 		nil,
 		nil,
 		nil,
@@ -14595,9 +15011,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72611] = {
-		"Letting Go",
-		"The Shikaar lost two of their own during the battle. All of Tomul's reinforcements... they volunteered to help, of their own will.\n\nI... have much to consider.\n\nAfter speaking with the Shikaar, we decided to honor our dead together. We have blended our funerary rites into one ceremony for this occasion.\n\nWe would be honored if you would stay and participate.",
-		"Speak to Baine Bloodhoof about the funeral.",
+		"Прощання",
+		"Шикаар втратили двох своїх під час битви. Всі підкріплення Томул... вони добровільно вирушили на допомогу.\n\nМені... є про що подумати.\n\nПорадившись із Шикаарами, ми вирішили разом вшанувати наших загиблих. Ми поєднали наші траурні обряди в одну церемонію для цієї нагоди.\n\nДля нас було б честю, якби ти лишився та взяв участь.",
+		"Поговори з Бейном Кривавим Копитом про похорон.",
 		nil,
 		nil,
 		nil,
@@ -14621,14 +15037,14 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72647] = {
-		"Sparks of Life: Ohn'ahran Plains",
-		"The Ohn'ahran Plains are overflowing with energy, $n, and the lands teem with beasts.\n\nNow is the time to join in the hunt, to revel in the bounty, and earn glory for yourself.",
-		"Collect 100 Sparks of Life in the Ohn'ahran Plains, while in War Mode.",
+		"Іскри Життя: Он'аранські рівнини",
+		"Он'аранські рівнини переповнені енергією, $n, а землі кишать звіром.\n\nЗараз час приєднатися до полювання, насолоджуватися щедрістю та здобувати славу.\n",
+		"Збери 100 Іскор Життя на Он'аранських рівнинах, перебуваючи у Воєнному режимі.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Speak with Fieldmaster Emberath in Valdrakken.",
+		"Поговори з фельдмаршалом Ембератом у Вальдраккені.",
 		nil,
 		nil,
 		nil
@@ -14673,9 +15089,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72662] = {
-		"Resupplying Supplies",
-		"The Nokhud have been striking at outsiders crossing into the plains. This is no doubt their handiwork.\n\nThis survivor says that most of their food supplies were destroyed in the ambush. We should try to help out.\n\nLet's collect meat from the plentiful game around the Watering Hole. That should be enough to cover their immediate needs.",
-		"Collect 40 Fresh Plains Meat from the area surrounding Toghusuq Village.",
+		"Поповнення запасів",
+		"Нокхуди продовжують нападати на чужинців, які перетинають рівнини. Це, безсумнівно, їхніх рук справа.\n\nЦей вижив загону каже, що більшість їхніх припасів було знищено під час засідки. Ми маємо спробувати допомогти.\n\nЗберімо м'ясо зі щедрої дичини навколо Водопою. Цього має вистачити, аби задовольнити їхні негайні потреби.",
+		"Збери 40 Свіжого М'яса з рівнин навколо селища Тогхусук.",
 		nil,
 		nil,
 		nil,
@@ -14686,9 +15102,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72663] = {
-		"Pinewood Trail",
-		"If Bovan is not dead, and he is not here, then either he is still out there... or he has been captured. Given Tomul's message, I fear it's the latter.\n\nThe Windtotem are safe for now, but with an attack possible at any moment, they can't spare any braves to go after Bovan.\n\nIt looks like it is up to us. Let us head to Pinewood Post.",
-		"Meet up with Tomul and Baine at Pinewood Post.",
+		"Сосновий Шлях",
+		"Якщо Бован не мертвий, і його тут немає, то або він досі десь там... або його захопили. Враховуючи звістку Томул, я остерігаюся останнього.\n\nВітрові Тотеми поки що в безпеці, але загроза нападу в будь-який момент нависає над ними, тож вони не можуть відрядити хоробрих вояків на пошуки Бована.\n\nСхоже, все залежить від нас. Вирушаймо до Застави Соснового Бору.",
+		"Зустріньтеся з Томул та Бейном біля Застави Соснового Бору.",
 		nil,
 		nil,
 		nil,
@@ -14699,7 +15115,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72700] = {
-		"Переліт над Льодовитими Запеченнями - Зворотньо",
+		"Переліт над Льодовитим Спалахом - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -14712,7 +15128,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72705] = {
-		"Слалом Дикого Уділу - Зворотньо",
+		"Слалом Дикого Уділу - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -14725,7 +15141,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72706] = {
-		"Коло Дикого Уділу - Зворотньо",
+		"Коло Дикого Уділу - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -14738,7 +15154,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72707] = {
-		"Emberflow Flight - Reverse",
+		"Політ над Жаровим Потоком - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -14855,7 +15271,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72739] = {
-		"Uktulut Coaster - Reverse",
+		"Гірки Уктулуту - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -14868,7 +15284,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72740] = {
-		"Wingrest Roundabout - Reverse",
+		"Окружний Маршрут Вінгресту - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -14907,7 +15323,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72760] = {
-		"Кліфсайд-Схема - Зворотній напрямок",
+		"Перегони по схилах - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -15076,7 +15492,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72801] = {
-		"Sundapple Copse Circuit - Reverse",
+		"Круговий Забіг Сонячноплідного Гаю - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -15089,7 +15505,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72802] = {
-		"Fen Flythrough - Reverse",
+		"Політ над болотами - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -15102,7 +15518,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72803] = {
-		"Ravine River Run - Reverse",
+		"Перегони Річковою Ущелиною - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -15115,7 +15531,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72805] = {
-		"Emerald Gardens Ascent - Reverse",
+		"Підйом Смарагдових Садів - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -15141,7 +15557,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72807] = {
-		"River Rapids Route - Reverse",
+		"Маршрут річкових порогів - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -15895,9 +16311,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72977] = {
-		"Where the Flames Fell",
-		"The Aspects have requested our help. As protectors of the Isles and dragonkind, we are more than willing.\n\nI must locate Emberthal and ask her to join. I believe I can recruit her to our cause as long as we remain committed to hers against the Sundered Flame in the future.\n\nMeet Sabellian and Wrathion at the site of the Incarnates' devastation.",
-		"Meet Sabellian and Wrathion in Cascades Canyon.",
+		"Де полум'я впало",
+		"Аспекти попросили нашої допомоги. Як захисники Островів і драконів, ми більш ніж готові.\n\nЯ мушу знайти Ембертал і попросити її приєднатися. Вірю, що зможу завербувати її до нашої справи, якщо залишимося відданими її боротьбі проти Розколотого Полум'я в майбутньому.\n\nЗустрінься з Сабеліаном і Гнівіоном на місці руйнування Втілених.",
+		"Зустрінься з Сабеліаном і Гнівіоном у Каньйоні Каскадів.",
 		nil,
 		nil,
 		nil,
@@ -15960,9 +16376,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[72982] = {
-		"The Ohn'ahran Plains Reverse Tour",
-		"Time to go forward to go backward once more.\n\nMore races await you in Ohn'ahran plains. Head over there now, make sure you go in the right direction.",
-		"Fly each of the reverse courses in Ohn'ahran Plains.",
+		"Зворотна екскурсія рівнинами Он'ари",
+		"Знову потрібно йти вперед, щоб повернутися назад.\n\nНа рівнинах Он'ари тебе чекають нові перегони. Відправляйся туди зараз і переконайся, що ти рухаєшся в правильному напрямку.",
+		"Пролети кожен зі зворотних маршрутів на рівнинах Он'ари.",
 		nil,
 		nil,
 		nil,
@@ -16025,7 +16441,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[73018] = {
-		"Stormsunder Crater Circuit - Advanced",
+		"Коло Кратера Штормового Розколу - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -16038,7 +16454,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[73019] = {
-		"Stormsunder Crater Circuit - Reverse",
+		"Коло Кратера Штормового Розколу - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -16064,7 +16480,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[73023] = {
-		"Morqut Ascent - Advanced",
+		"Підйом Моркут - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -16077,7 +16493,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[73024] = {
-		"Morqut Ascent - Reverse",
+		"Підйом Моркут - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -16181,7 +16597,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[73032] = {
-		"Southern Reach Route - Reverse",
+		"Маршрут Південного Краю - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -16402,7 +16818,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[73061] = {
-		"Поштовх Забороненого Краю",
+		"Прорив через Заборонений Край",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -16415,7 +16831,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[73062] = {
-		"Forbidden Reach Rush - Advanced",
+		"Прорив через Заборонений Край - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -16428,7 +16844,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[73065] = {
-		"Forbidden Reach Rush - Reverse",
+		"Прорив через Заборонений Край - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -17377,9 +17793,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74493] = {
-		"Second Time Is The Charm",
-		"<Voraxian bounces the Odd Round Object in his hands a few times.>\n\nHmm, it lands in the hand well, like it was made for this. Let us talk to Veritistrasz and see if he knows more.",
-		"Determine the origin of the Odd Round Object.",
+		"На другий раз вийде краще",
+		"<Вораксіан кидає Дивний Круглий Предмет з руки в руку кілька разів.>\n\nГм, він добре лягає в долоню, наче саме для цього й був створений. Давай з Верітістразом поговоримо, може він більше знає.",
+		"З'ясуй походження Дивного Круглого Предмета.",
 		nil,
 		nil,
 		nil,
@@ -17403,9 +17819,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74495] = {
-		"The Tale of Hraxian",
-		"Hello $n, it is good to see you.\n\nWould you like to join us around the fire? I think it is time we heard a positive story about the obsidian flight of old.\n\nI once promised yourself and Voraxian I would tell you the story from the vase you found in the Zskera Vaults. I believe it is that time.",
-		"Listen to the tale of Hraxian.",
+		"Історія Граксіана",
+		"Вітаю, $n, радий тебе бачити.\n\nНе приєднаєшся до нас біля вогнища? Гадаю, час послухати позитивну історію про чорний політ минулого.\n\nЯ обіцяв тобі й Вораксіану розповісти історію з вази, що ти знайшов у Зскерських Сховищах. Вважаю, надійшов той час.",
+		"Послухай історію про Граксіана.",
 		nil,
 		nil,
 		nil,
@@ -17689,9 +18105,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74795] = {
-		"An Odd Round Object",
-		"<This object looked out of place in the Zskera Vaults. It is round, with three claw-like divots in it. Perhaps it is of interest to Voraxian.>",
-		"Bring the Odd Round Object to Voraxian in Rusza'thar Reach.",
+		"Дивний Круглий Предмет",
+		"<Цей предмет виглядав не на місці в Зскерських Сховищах. Він круглий, з трьома пазурами. Можливо, він зацікавить Вораксіана>.",
+		"Віднеси Дивний Круглий Предмет Вораксіану в Рубіж Руша'тар.",
 		nil,
 		nil,
 		nil,
@@ -17702,9 +18118,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74796] = {
-		"A Dusty Vase",
-		"<You have found a vase. It appears to represent a black dragon fighting what could be a djaradin. It could be something Voraxian is interested in.>",
-		"Bring the Dusty Vase to Voraxian in Rusza'thar Reach.",
+		"Пилюшка Ваза",
+		"<Ти знайшов вазу. Схоже, на ній зображено боротьбу чорного дракона з джарадином. Вораксіана це може зацікавити>.\n",
+		"Віднеси Пилюшку Вазу Вораксіану в Рубіж Руша'тар.",
 		nil,
 		nil,
 		nil,
@@ -17715,7 +18131,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74839] = {
-		"Кришталевий Коло",
+		"Кришталеве Коло",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -17728,7 +18144,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74842] = {
-		"Crystal Circuit - Advanced",
+		"Кришталеве Коло - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -17910,7 +18326,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74882] = {
-		"Crystal Circuit - Reverse",
+		"Кришталеве Коло - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -18144,9 +18560,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74946] = {
-		"A Place of Refuge",
-		"Our next priority is to catch up with the others who fled during Bovan's stand. Hopefully, Bovan and the other braves have regrouped with them.\n\nThis Tomul says the most likely place the tauren would seek refuge is an abandoned village to the southeast. \n\nWhile her reasoning is sound, this is also the perfect location for a trap.\n\n$n, I know you vouch for her, so I will give her the benefit of the doubt.\n\nLet us hope your trust in her is not misplaced.",
-		"Meet Baine and Tomul at Toghusuq Village.",
+		"Місце притулку",
+		"Наше наступне завдання - наздогнати інших, хто втік під час відчайдушної оборони Бовена. Сподіваюся, Бовен і інші воїни встигли возз'єднатися з ними.\n\nЦя Томул каже, що найімовірніше таурени шукатимуть притулку в покинутому поселенні на південному сході.\n\nХоч її міркування й логічні, це також ідеальне місце для пастки. \n\n$n, я знаю, що ти поручишся за неї, тож дам їй шанс. \n\nСподіваюсь, твоя довіра до неї не безпідставна.",
+		"Зустрінься з Бейном і Томул у селищі Тогхусук.",
 		nil,
 		nil,
 		nil,
@@ -18235,7 +18651,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74954] = {
-		"Shimmering Slalom - Advanced",
+		"Блискучий Слалом - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -18248,7 +18664,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74956] = {
-		"Shimmering Slalom - Reverse",
+		"Блискучий Слалом - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -18404,7 +18820,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74975] = {
-		"Loamm Roamm - Advanced",
+		"Блукання Лоамма - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -18417,7 +18833,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74977] = {
-		"Loamm Roamm - Reverse",
+		"Блукання Лоамма - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -18456,7 +18872,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74994] = {
-		"Hraxian's Unbreakable Will",
+		"Незламна воля Граксіана",
 		nil,
 		nil,
 		nil,
@@ -18469,9 +18885,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[74996] = {
-		"A Difficult Legacy",
-		"Let us talk to Veritistrasz about this vase, $p. \n\nI want to temper your expectations though. It is just a vase, but you never know. It could be exciting.\n\nMaybe it could point us to a cache of weapons?",
-		"Talk to Voraxian and Veritistrasz at Rusza'thar Reach.",
+		"Важка спадщина",
+		"Давай поговоримо з Верітістразом про цю вазу, $p. \n\nХочу попередити тебе, щоб не робити зайвих сподівань. Це просто ваза, але хтозна. Можливо, це буде захопливо. \n\nМожливо, вона вкаже нам на сховок зі зброєю?",
+		"Поговори з Вораксіаном і Верітістразом на Рубежі Руша'тар.",
 		nil,
 		nil,
 		nil,
@@ -18534,7 +18950,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75042] = {
-		"Sulfur Sprint - Advanced",
+		"Сірчаний Спринт - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -18547,7 +18963,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75043] = {
-		"Sulfur Sprint - Reverse",
+		"Сірчаний Спринт - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -18794,9 +19210,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75258] = {
-		"A Final Word",
-		"I have sent a message to Mayla in Valdrakken, relaying what has happened here. I suspect she will be relieved to hear from me... and in knowing she was right to send you. \n\nBefore you leave, I would like to speak with you a moment.",
-		"Speak with Baine.",
+		"Останнє слово",
+		"Я відправив повідомлення Майлі у Вальдраккен, розповівши про те, що тут сталося. Підозрюю, вона полегшено зітхне, почувши від мене... і дізнавшись, що була права, відправивши тебе. \n\nПерш ніж ти підеш, я хотів би поговорити з тобою хвилинку.",
+		"Поговори з Бейном.",
 		nil,
 		nil,
 		nil,
@@ -19067,7 +19483,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75318] = {
-		"Nordrassil Spiral - Advanced",
+		"Спіраль Нордрассілу - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -19080,7 +19496,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75319] = {
-		"Nordrassil Spiral - Reverse",
+		"Спіраль Нордрассілу - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -19106,7 +19522,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75331] = {
-		"Hyjal Hotfoot - Advanced",
+		"Гарячий Початок Хіджалу - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -19119,7 +19535,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75332] = {
-		"Hyjal Hotfoot - Reverse",
+		"Гарячий Початок Хіджалу - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -19717,7 +20133,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75473] = {
-		"Ahn'Qiraj Circuit - Advanced",
+		"Перегони по Ан'Киражу - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -19730,7 +20146,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75474] = {
-		"Ahn'Qiraj Circuit - Reverse",
+		"Перегони по Ан'Киражу - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -19756,7 +20172,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75482] = {
-		"Uldum Tour - Advanced",
+		"Турне по Ульдуму - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -19769,7 +20185,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75483] = {
-		"Uldum Tour - Reverse",
+		"Турне по Ульдуму - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20055,9 +20471,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75657] = {
-		"Time-Lost Trio",
-		"We have a teensy problem I could use your help with. But it's... complicated.\n\nSome time ago, King Varian Wrynn was in a gladiator trio with Broll Bearmantle and Valeera Sanguinar. Those three just showed up in this 'Field of Ferocity' place and they're not only taking on all challengers, they're beating them too! They won't return through our portals until they lose.\n\nDo you think you could find some friends and defeat them? We'll be able to convince them to go back if you can, I'm sure of it!",
-		"Defeat Valeera, Broll, and Lo'Gosh.",
+		"Тріо поза часом",
+		"У нас дрібнесенька проблемка, з якою ти міг би допомогти. Але це... ускладнено.\n\nЯкийсь час тому король Варіан Рінн був у гладіаторському тріо з Броллом Ведмежим Плащем і Валірою Кривавою. Ці троє щойно з'явилися в цьому місці «Поле жорстокості» і не тільки приймають усіх бажаючих, а й перемагають! Вони не повернуться через наші портали, поки не програють.\n\nТи гадаєш зміг би знайти друзів і перемогти їх? Ми зможемо переконати їх повернутися, якщо ви здолаєте, я впевнений!",
+		"Переможи Валіру, Бролла і Ло'Гоша.",
 		nil,
 		nil,
 		nil,
@@ -20419,7 +20835,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75776] = {
-		"Виклик: Коло Рубінового Святилища Життя",
+		"Коло Рубінового Святилища Життя - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20432,7 +20848,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75777] = {
-		"Ruby Lifeshrine Loop - Reverse Challenge",
+		"Коло Рубінового Святилища Життя - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20445,7 +20861,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75778] = {
-		"Виклик: Слалом Дикого Уділу",
+		"Слалом Дикого Уділу - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20458,7 +20874,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75779] = {
-		"Wild Preserve Slalom - Reverse Challenge",
+		"Слалом Дикого Уділу - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20471,7 +20887,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75780] = {
-		"Виклик: Політ над Жаровим Потоком",
+		"Політ над Жаровим Потоком - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20484,7 +20900,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75781] = {
-		"Emberflow Flight - Reverse Challenge",
+		"Політ над Жаровим Потоком - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20536,7 +20952,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75785] = {
-		"Виклик: Американські Гірки Уктулуту",
+		"Гірки Уктулуту - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20549,7 +20965,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75786] = {
-		"Uktulut Coaster - Reverse Challenge",
+		"Гірки Уктулуту - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20562,7 +20978,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75787] = {
-		"Виклик: Окружний Маршрут Вінгресту",
+		"Окружний Маршрут Вінгресту - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20575,7 +20991,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75788] = {
-		"Wingrest Roundabout - Reverse Challenge",
+		"Окружний Маршрут Вінгресту - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20588,7 +21004,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75789] = {
-		"Виклик: Переліт над Льодовитими Запеченнями",
+		"Переліт над Льодовитим Спалахом - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20601,7 +21017,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75790] = {
-		"Flashfrost Flyover - Reverse Challenge",
+		"Переліт над Льодовитим Спалахом - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20614,7 +21030,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75791] = {
-		"Виклик: Коло Дикого Уділу",
+		"Коло Дикого Уділу - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20627,7 +21043,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75792] = {
-		"Wild Preserve Circuit - Reverse Challenge",
+		"Коло Дикого Уділу - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20640,7 +21056,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75793] = {
-		"Sundapple Copse Circuit - Challenge",
+		"Круговий Забіг Сонячноплідного Гаю - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20653,7 +21069,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75794] = {
-		"Sundapple Copse Circuit - Reverse Challenge",
+		"Круговий Забіг Сонячноплідного Гаю - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20666,7 +21082,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75795] = {
-		"Fen Flythrough - Challenge",
+		"Політ над болотами - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20679,7 +21095,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75796] = {
-		"Fen Flythrough - Reverse Challenge",
+		"Політ над болотами - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20692,7 +21108,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75797] = {
-		"Ravine River Run - Challenge",
+		"Перегони Річковою Ущелиною - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20705,7 +21121,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75798] = {
-		"Ravine River Run - Reverse Challenge",
+		"Перегони Річковою Ущелиною - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20718,7 +21134,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75799] = {
-		"Emerald Garden Ascent - Challenge",
+		"Підйом Смарагдових Садів - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20731,7 +21147,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75800] = {
-		"Emerald Garden Ascent - Reverse Challenge",
+		"Підйом Смарагдових Садів - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20744,7 +21160,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75801] = {
-		"Maruukai Dash - Challenge",
+		"Гонка Марукай - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20757,7 +21173,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75802] = {
-		"Mirror of Sky Dash - Challenge",
+		"Гонка Дзеркала Небес - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20770,7 +21186,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75803] = {
-		"River Rapids Route - Challenge",
+		"Маршрут річкових порогів - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -20783,7 +21199,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75804] = {
-		"River Rapids Route - Reverse Challenge",
+		"Маршрут річкових порогів - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21173,9 +21589,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75918] = {
-		"Fire Season",
-		"No doubt you have seen the destruction that Fyrakk continues to leave in his wake.\n\nWhile others fight him directly, my troops and I have been serving as the eyes and ears of the green dragonflight. Although Fyrakk's actions may seem erratic, there are trends to his strategies.\n\nWe learned that he is to have a secret meeting with Vyranoth soon in Lunedane. This is a deviation from his recent tactics, and we need to know why.\n\nGiven the danger, we would value your aid. Meet me in Lunedane.",
-		"Meet Shandris at Lunedane in the Ohn'ahran Plains.",
+		"Сезон пожеж",
+		"Безсумнівно, ти бачив руйнування, які Фіракк продовжує залишати слідом за собою. \n \nХоча інші б'ються з ним безпосередньо, мої війська і я слугували очима й вухами зеленого драконячого роду. Хоча дії Фіракка можуть здаватися хаотичними, у його стратегіях є певні закономірності. \n\nМи дізналися, що незабаром у Лунедейн відбудеться його таємна зустріч з Віранотом. Це відхилення від його нещодавньої тактики, і нам потрібно з'ясувати чому. \n\nЗ огляду на небезпеку, ми оцінили б твою допомогу. Зустрінься зі мною в Лунедейн.",
+		"Зустрінься з Шандріс у Лунедейн на рівнинах Он'ари.",
 		nil,
 		nil,
 		nil,
@@ -21186,9 +21602,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75919] = {
-		"Dousing the Wards",
-		"Fyrakk and Vyranoth are already here. I spotted them near the overlook at the northeastern edge of Lunedane. Landing close to their location would reveal our presence, thus we are forced to begin our mission here. \n\nHowever, the bridge connecting this area to the overlook has been protected with fire magic. We will not be able to break through it.\n\nFyrakk's Primalist allies appear to be maintaining the fire using wards set up around this area. \n\nIf we destroy the wards, the fire should subside.",
-		"Destroy 4 Warding Firestones.",
+		"Знищення охоронних чар",
+		"Фіракк і Віранот вже тут. Я помітила їх біля оглядового майданчика на північно-східному краю Лунедейна. Приземлення поруч з їхнім місцеперебуванням викрило б нашу присутність, тому ми змушені почати нашу місію тут. \n\nПроте міст, що з'єднує цю ділянку з оглядовим майданчиком, захищено вогняною магією. Ми не зможемо пробитися крізь нього. \n\nСоюзники-первісники Фіракка, схоже, підтримують вогонь за допомогою охоронних знаків, розставлених навколо цієї місцевості. \n\nЯкщо ми знищимо знаки, вогонь повинен послабитися.",
+		"Знищи 4 камені охоронних вогнів.",
 		nil,
 		nil,
 		nil,
@@ -21199,9 +21615,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75920] = {
-		"Eyes of Fire",
-		"This area is swarming with far more Primalists than I expected. Fyrakk does not generally travel with guards, so I doubt the Primalists are here to accompany him.\n\nThey seem to be trying to establish a foothold here. But why? \n\nPerhaps whatever the Incarnates are discussing will answer that question.\n\nIn the meantime, let us thin out the Primalists guarding this area. We cannot risk having them in full force behind us as we cross the bridge.",
-		"Kill 8 Burning Flamespeakers or Blazing Overseers.",
+		"Вогняні очі ",
+		"Ця місцевість кишить набагато більшою кількістю первісників, ніж я очікувала. Фіракк зазвичай не подорожує з охороною, тож сумніваюся, що первісники тут супроводжують його. \n\nСхоже, вони намагаються закріпитися тут. Але навіщо? \n\nМожливо, відповідь дасть те, про що розмовляють втілення. \n\nТим часом давайте прорідимо первісників, які охороняють цю місцевість. Ми не можемо ризикувати, щоб вони переслідували нас у повній силі, коли ми перетинатимемо міст.",
+		"Вбий 8 Палаючих вогнемовців або Полум'яних наглядачів.",
 		nil,
 		nil,
 		nil,
@@ -21212,9 +21628,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75921] = {
-		"Through the Flames",
-		"Druids of the Flame...\n\n<Shandris frowns deeply, eyes shut as she holds back her anger.>\n\nTo think that they still exist. That any of our people would join Fyrakk and his--\n\n<She stops, releases a heavy breath, and continues.>\n\nWe have a mission to complete.\n\nWe need to cross the bridge to get close enough to the Incarnates that we can overhear their conversation. I will shroud us so that we can move between the elementals still guarding the way forward.",
-		"Collect 4 Smoldering Blossoms while crossing the bridge towards Fyrakk and Vyranoth.",
+		"Крізь полум'я",
+		"Друїди полум'я...\n\n<Шандріс глибоко насуплюється, заплющує очі, стримуючи гнів.>\n\nГадати, що вони досі існують. Що хтось із нашого народу приєднався до Фіракка та його...\n\n<Вона зупиняється, видихає і продовжує.>\n\nУ нас є завдання, яке треба виконати.\n\nЩоб наблизитися до Втілень настільки, аби підслухати їхню розмову, нам треба перетнути міст. Я приховаю нас, щоб ми змогли пройти поміж стихіями, котрі досі охороняють шлях уперед.",
+		"Збери 4 Тліючі Квітки, перетинаючи міст у напрямку Фіракка та Віранота.",
 		nil,
 		nil,
 		nil,
@@ -21225,9 +21641,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75922] = {
-		"Inflammatory Information",
-		"<Shandris whispers to you.>\n\nDo you see that up ahead? The Druids of the Flame have captured what appears to be a keeper--a guardian of nature, sacred to our people. If their power is already enough to...\n\n<Shandris shakes her head, then gestures at the dense shrubbery nearby.>\n\nStay hidden with me and we will listen to the Incarnates, and perhaps discern what the druids intend to do with the keeper.",
-		"Eavesdrop on Fyrakk and Vyranoth.",
+		"Запальна інформація",
+		"<Шандріс шепоче до тебе.>\n\nБачиш те попереду? Друїди Полум'я захопили, схоже, охоронця - захисника природи, священного для нашого народу. Якщо їхня міць уже достатня, аби...\n\n<Шандріс хитає головою, потім жестом вказує на густі чагарники неподалік.>\n\nЛишайся прихованим разом зі мною, і ми прислухаємось до Втілень - можливо, збагнемо, що друїди збираються робити з охоронцем.",
+		"Підслухай Фіракка та Віранота.",
 		nil,
 		nil,
 		nil,
@@ -21238,9 +21654,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75923] = {
-		"Raise the Alarm",
-		"So the Druids of the Flame have allied with Fyrakk to help him invade the Emerald Dream.\n\nThey were able to turn that keeper to the flame with hardly any effort. Fyrakk must be bolstering their power, perhaps as payment for their aid in accessing the Dream.\n\nWe need to mobilize troops immediately to find every Druid of the Flame on the Dragon Isles and stop them.\n\nGo to Captain Drine in Valdrakken and alert her. She will dispatch the drakonid.\n\nI will go to Merithra and handle things here.",
-		"Deliver your report to Captain Drine at the Seat of the Aspects in Valdrakken.",
+		"Підняти тривогу",
+		"Отже, Друїди Полум'я уклали союз із Фіракком, аби допомогти йому вторгнутися у Смарагдовий Сон.\n\nВони ледь без зусиль змогли перетворити того охоронця на вогняну істоту. Фіракк, мабуть, посилив їхню міць як плату за допомогу у проникненні до Сну.\n\nНам треба негайно мобілізувати війська, аби знайти кожного Друїда Полум'я на Драконячих Островах і зупинити їх.\n\nІди до капітана Драйна у Вальдраккені та сповісти його. Він відрядить драконідів.\n\nА я піду до Мерітри та владнаю справи тут.",
+		"Доповісь капітанові Драйну біля Трону Аспектів у Вальдраккені.",
 		nil,
 		nil,
 		nil,
@@ -21355,7 +21771,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75954] = {
-		"Виклик: Коло Кратера Штормового Розколу",
+		"Коло Кратера Штормового Розколу - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21368,7 +21784,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75955] = {
-		"Stormsunder Crater Circuit - Reverse Challenge",
+		"Коло Кратера Штормового Розколу - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21381,7 +21797,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75956] = {
-		"Виклик: Підйом Моркут",
+		"Підйом Моркут - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21394,7 +21810,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75957] = {
-		"Morqut Ascent - Reverse Challenge",
+		"Підйом Моркут - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21433,7 +21849,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75960] = {
-		"Виклик: Маршрут Південного Краю",
+		"Маршрут Південного Краю",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21446,7 +21862,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75961] = {
-		"Southern Reach Route - Reverse Challenge",
+		"Маршрут Південного Краю - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21485,7 +21901,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75964] = {
-		"Виклик: Поштовх Забороненого Краю",
+		"Прорив через Заборонений Край - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21498,7 +21914,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75965] = {
-		"Forbidden Reach Rush - Reverse Challenge",
+		"Прорив через Заборонений Край - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21550,7 +21966,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75972] = {
-		"Виклик: Кришталевий Коло",
+		"Кришталеве Коло - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21563,7 +21979,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75973] = {
-		"Crystal Circuit - Reverse Challenge",
+		"Кришталеве Коло - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21628,7 +22044,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75978] = {
-		"Виклик: Блискучий Слалом",
+		"Блискучий Слалом - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21641,7 +22057,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75979] = {
-		"Shimmering Slalom - Reverse Challenge",
+		"Блискучий Слалом - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21654,7 +22070,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75980] = {
-		"Виклик: Блукання Лоамма",
+		"Блукання Лоамма - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21667,7 +22083,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75981] = {
-		"Loamm Roamm - Reverse Challenge",
+		"Блукання Лоамма - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21680,7 +22096,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75982] = {
-		"Виклик: Сірчаний Спринт",
+		"Сірчаний Спринт - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21693,7 +22109,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75983] = {
-		"Sulfur Sprint - Reverse Challenge",
+		"Сірчаний Спринт - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21706,9 +22122,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[75985] = {
-		"Rest Well, Warrior",
-		"Shalkeel deserves to be seen off properly.\n\nI want to dress his burial area and say a few words. I know your time is precious, but would you take the shovel and bury his ashes while I perform the rites?",
-		"Assist Khasar with Shalkeel's burial.",
+		"Нехай спочиває з миром, воїне",
+		"Шалкіл заслуговує на гідні похорони.\n\nЯ хочу прикрасити місце його поховання та сказати кілька слів. Знаю, твій час дорогоцінний, але чи не міг би ти узяти лопату та поховати його попіл, поки я читатиму молитви?",
+		"Допоможи Хасару з похованням Шалкіла.",
 		nil,
 		nil,
 		nil,
@@ -21940,7 +22356,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76037] = {
-		"Виклик: Спіраль Нордрассілу",
+		"Спіраль Нордрассілу - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21953,7 +22369,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76040] = {
-		"Nordrassil Spiral - Reverse Challenge",
+		"Спіраль Нордрассілу - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21966,7 +22382,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76041] = {
-		"Hyjal Hotfoot - Challenge",
+		"Гарячий Початок Хіджалу - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -21979,7 +22395,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76042] = {
-		"Hyjal Hotfoot - Reverse Challenge",
+		"Гарячий Початок Хіджалу - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -22226,7 +22642,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76061] = {
-		"Ahn'Qiraj Circuit - Challenge",
+		"Перегони по Ан'Киражу - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -22239,7 +22655,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76062] = {
-		"Ahn'Qiraj Circuit - Reverse Challenge",
+		"Перегони по Ан'Киражу - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -22252,7 +22668,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76063] = {
-		"Uldum Tour - Challenge",
+		"Турне по Ульдуму - Випробування",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -22265,7 +22681,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76064] = {
-		"Uldum Tour - Reverse Challenge",
+		"Турне по Ульдуму - Випробування в зворотному напрямку",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -22356,9 +22772,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76164] = {
-		"Bovan's Last Hope",
-		"If Bovan is not here, the Nokhud could have taken him anywhere. We might have one last chance to find him, but it's a long shot.\n\nWe still have Bovan's necklace. One of the Ohn'ir mystics might be able to use it to help divine his location. I've only heard about this ritual, so I have no idea if it will work.\n\nGo to the Ohn'iri Springs and look for Boku. I'm sure he will help us.\n\nBaine and I will make sure the tauren we rescued get back safely. We'll meet you at the Ohn'iri Springs.",
-		"Find Boku at the Ohn'iri Springs.",
+		"Остання надія Бована",
+		"Якщо Бована тут немає, Нокхуди могли відвести його куди завгодно. У нас залишилася остання слабка надія знайти його.\n\nУ нас досі є намисто Бована. Хтось із містиків Он'ірів зміг би скористатися ним, аби допомогти визначити його місцезнаходження. Я лише чув про цей ритуал, тож не маю жодного уявлення, чи спрацює він.\n\nІди в Он'ірські Джерела та подивися, чи не знайдеш там Боку. Я впевнений, що він допоможе нам.\n\nБейн і я переконаємося, що врятовані таурени безпечно повернуться. Зустрінемося в Он'ірських Джерелах.",
+		"Знайди Боку в Он'ірських Джерелах.",
 		nil,
 		nil,
 		nil,
@@ -22369,8 +22785,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76167] = {
-		"A Place of Refuge",
-		"Our next priority is to catch up with the others who fled during Bovan's stand. Hopefully, Bovan and the other braves have regrouped with them.\n\nThis Tomul says the most likely place the tauren would seek refuge is an abandoned village to the southeast. \n\nWhile her reasoning is sound, this is also the perfect location for a trap.\n\n$n, I know you vouch for her, so I will give her the benefit of the doubt.\n\nLet us hope your trust in her is not misplaced.",
+		"Місце притулку",
+		"Нашим наступним пріоритетом є наздогнати інших, хто втік під час відчайдушної вилазки Бована. Сподіваюся, Бован та інші хоробрі вояки встигли перегрупуватися з ними.\n\nЦя розвідниця Томул каже, найімовірніше, таурени шукатимуть притулку в покинутому селищі на південний схід.\n\nХоч її міркування логічні, це також ідеальне місце для пастки.\n\n$n, я знаю, що ти довіряєш їй, тож я теж надам їй шанс. \n\nСподіваюся, твоя довіра до неї не є марною.",
 		nil,
 		nil,
 		nil,
@@ -22382,8 +22798,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[76168] = {
-		"A Place of Refuge",
-		"Our next priority is to catch up with the others who fled during Bovan's stand. Hopefully, Bovan and the other braves have regrouped with them.\n\nThis Tomul says the most likely place the tauren would seek refuge is an abandoned village to the southeast. \n\nWhile her reasoning is sound, this is also the perfect location for a trap.\n\n$n, I know you vouch for her, so I will give her the benefit of the doubt.\n\nLet us hope your trust in her is not misplaced.",
+		"Місце притулку",
+		"Нашим наступним пріоритетом є наздогнати інших, хто втік під час відчайдушної вилазки Бована. Сподіваюся, Бован та інші хоробрі вояки встигли перегрупуватися з ними.\n\nЦя розвідниця Томул каже, найімовірніше, таурени шукатимуть притулку в покинутому селищі на південний схід.\n\nХоч її міркування логічні, це також ідеальне місце для пастки.\n\n$n, я знаю, що ти довіряєш їй, тож я теж надам їй шанс. \n\nСподіваюся, твоя довіра до неї не є марною.",
 		nil,
 		nil,
 		nil,
@@ -23344,8 +23760,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77101] = {
-		"Ingredient Quest Template",
-		"Ricket sent word that she was here in Mechagon, so I came right away to help with the uh... research.\n\nI had the peons scour the island for any technology they could find. With da stuff we got here, we gonna make some amazing weapons to fight King Mechagon. Then afterwards, we get rich selling 'em!\n\nHelp me wrangle everyone's ideas into one perfect weapon!",
+		"Шаблон квесту на інгредієнти",
+		"Рікет надіслала звістку, що вона тут, на Мехагоні, тому я відразу прийшов допомогти з е-е... дослідженням.\n\nЯ наказав робітникам обшукати весь острів у пошуках будь-яких технологій, які вони зможуть знайти. Зі штуковинами, які в нас тут є, ми зробимо дивовижну зброю, щоб битися з королем Мехагону. А потім ми розбагатіємо, продаючи їх!\n\nДопоможіть мені об'єднати ідеї всіх в одну ідеальну зброю!",
 		nil,
 		nil,
 		nil,
@@ -23370,7 +23786,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77103] = {
-		"Hellfire Hustle - Advanced",
+		"Гонка через Пекло - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23383,7 +23799,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77104] = {
-		"Hellfire Hustle - Reverse",
+		"Гонка через Пекло - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23435,7 +23851,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77170] = {
-		"Coilfang Caper - Advanced",
+		"Каперство Коїлфанга - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23448,7 +23864,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77171] = {
-		"Coilfang Caper - Reverse",
+		"Каперство Коїлфанга - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23461,8 +23877,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77200] = {
-		"Offerings for the Well",
-		"Amirdrassil has been ushered into this world by the denizens of the Dream. Now we must ensure its roots are bathed in the waters of Elune by creating a new moonwell.\n\nSo many of my people have brought us to this moment. Each should have a part in this dedication. \n\nGo, speak to the kaldorei gathered here, and see if they have offerings for the ceremony.",
+		"Пожертви для криниці",
+		"Амірдрассіл було викликано до цього світу мешканцями Сну. Тепер ми маємо забезпечити, щоб його коріння було занурене у води Елуни, створивши нову місячну криницю.\n\nБагато моїх людей привели нас до цього моменту. Кожен має бути причетним до цієї церемонії. \n\nІдіть, поговоріть з кельдореями, зібраними тут, і дізнайтеся, чи мають вони пожертви для обряду.",
 		nil,
 		nil,
 		nil,
@@ -23474,8 +23890,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77201] = {
-		"A Personal Offering",
-		"$n. You have done so much for our people. I would have you participate in this ceremony and provide an offering of your own, should you wish it.\n\nLet me know what it is that you would like to put forward and it will be done.",
+		"Особиста пожертва",
+		"$n, ви зробили так багато для нашого народу. Я бажав би, щоб ви взяли участь у цій церемонії та зробили власну пожертву, якщо вам завгодно. \n\nСкажіть мені, що саме ви хотіли б принести, і це буде зроблено.",
 		nil,
 		nil,
 		nil,
@@ -23578,7 +23994,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77239] = {
-		"Telaar Tear - Advanced",
+		"Сльоза Телаару - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23591,7 +24007,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77240] = {
-		"Telaar Tear - Reverse",
+		"Сльоза Телаару - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23617,7 +24033,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77260] = {
-		"Почес Разортрону",
+		"Прорив Разортрону",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23630,7 +24046,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77261] = {
-		"Razorthorn Rise Rush - Advanced",
+		"Прорив Разортрону - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23643,7 +24059,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77262] = {
-		"Razorthorn Rise Rush - Reverse",
+		"Прорив Разортрону - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23747,7 +24163,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77279] = {
-		"Tempest Keep Sweep - Advanced",
+		"Метення Фортеці Бурі - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23760,7 +24176,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77280] = {
-		"Tempest Keep Sweep - Reverse",
+		"Метення Фортеці Бурі - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23799,9 +24215,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77283] = {
-		"A Multi-Front Battle",
-		"The kaldorei have set up a temporary base beneath the boughs of Amirdrassil.\n\nWith hope and hard work, this encampment will become permanent when the tree enters our world. \n\nFeel free to acquaint yourself with the provisions available. Then return to me.",
-		"Meet Saelienne, Keeper Amrymn and Vaskarn in the Central Encampment.",
+		"Битва на багатьох фронтах",
+		"Калдореї влаштували тимчасову базу під гілками Амірдрассіла.\n\nЗ надією та важкою працею цей табір стане постійним, коли дерево увійде в наш світ. \n\nНе соромся ознайомитися з доступними запасами. Потім повертайся до мене.",
+		"Зустрінься з Саелієн, Опікуном Амримном та Васкарном у Центральному таборі.",
 		nil,
 		nil,
 		nil,
@@ -23890,7 +24306,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77323] = {
-		"Shattrath City Sashay - Advanced",
+		"Шик Шаттратського Міста - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23903,7 +24319,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77324] = {
-		"Shattrath City Sashay - Reverse",
+		"Шик Шаттратського Міста - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -23916,8 +24332,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77329] = {
-		"Auspicious Gathering",
-		"As you know, Amirdrassil is no ordinary tree. Tyrande Whisperwind and the rest of the kaldorei have been preparing to properly welcome it with a ceremony of their own, and establish a new moonwell. \n\nI am certain that Tyrande would want you there for the dedication.\n\nLet us join them at the Central Encampment.",
+		"Сприятливе зібрання",
+		"Як ви знаєте, Амірдрассіл - не звичайне дерево. Тіранда Шепіт Вітру та решта кельдореїв готувалися належним чином його привітати церемонією та заснувати нову місячну криницю. \n\nЯ впевнений, що Тіранда хотіла б, щоб ви були присутні на освяченні.\n\nПриєднаймося до них у Центральному таборі.",
 		nil,
 		nil,
 		nil,
@@ -24033,7 +24449,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77347] = {
-		"Shadowmoon Slam - Advanced",
+		"Удар Тінедолу - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24046,7 +24462,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77348] = {
-		"Shadowmoon Slam - Reverse",
+		"Удар Тінедолу - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24085,7 +24501,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77399] = {
-		"Eco-Dome Excursion - Advanced",
+		"Екскурсія Еко-Куполом - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24098,7 +24514,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77400] = {
-		"Eco-Dome Excursion - Reverse",
+		"Екскурсія Еко-Куполом - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24150,9 +24566,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77436] = {
-		"The Burning Barrow",
-		"Fyrakk's forces have already set their plans in motion. We are one step behind, and we need to catch up quickly if we are to properly protect Amirdrassil.\n\nWhile you were on your way here, we received word of suspicious-looking figures entering one of the nearby barrow dens. Tyrande already went to investigate. Seek her out and lend her your aid.",
-		"Find Tyrande near the Sor'theril Barrow Den.",
+		"Палаючий курган",
+		"Сили Фіракка вже запустили свої плани в дію. Ми на крок позаду і нам потрібно якомога швидше наздогнати, якщо ми хочемо належним чином захистити Амірдрассіла.\n\nПоки ти був по дорозі сюди, ми отримали звістку про підозрілих осіб, які увійшли в одне з навколишніх курганних лігв. Тіранда вже пішла розслідувати. Знайди її та допоможи їй.",
+		"Знайди Тіранду поблизу Курганного лігва Сор'теріл.",
 		nil,
 		nil,
 		nil,
@@ -24189,7 +24605,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77591] = {
-		"Warmaul Wingding - Advanced",
+		"Велике Вар'ятство - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24202,7 +24618,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77593] = {
-		"Warmaul Wingding - Reverse",
+		"Велике Вар'ятство - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24228,7 +24644,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77646] = {
-		"Skettis Scramble - Advanced",
+		"Скеттіське Завзяття - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24241,7 +24657,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77647] = {
-		"Skettis Scramble - Reverse",
+		"Скеттіське Завзяття - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24267,9 +24683,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77677] = {
-		"Some Water...",
-		"<The plant is clear of soot and flame, but its leaves are limp with thirst. Perhaps someone from Central Encampment will know the perfect remedy.>",
-		"Nurse the plant back to health.",
+		"Трохи води...",
+		"<Рослина чиста від сажі та вогню, але її листя звисає від спраги. Можливо, хтось із Центрального табору знатиме ідеальний засіб.>",
+		"Доглянь за рослиною, щоб вона ожила.",
 		nil,
 		nil,
 		nil,
@@ -24306,7 +24722,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77685] = {
-		"Fel Pit Fracas - Advanced",
+		"Сутички у Ямі Скверни - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24319,7 +24735,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77686] = {
-		"Fel Pit Fracas - Reverse",
+		"Сутички у Ямі Скверни - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24332,9 +24748,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77697] = {
-		"The Right Food...",
-		"<The plant is now a promising sapling and has thrived with the attention you've given.\n\nPeering closely at the plant's leaves, you see its exterior brimming with dew. Perhaps the right food will help the plant even further.>",
-		"Bring some fertilizer for the plant.",
+		"Правильна їжа...",
+		"<Рослина тепер обнадійливе саджанце і процвітає завдяки твоїй увазі.\n\nПридивившись до листя рослини, ти бачиш, що її зовнішність переповнена росою. Можливо, правильна їжа допоможе рослині ще більше.>",
+		"Принести добриво для рослини.",
 		nil,
 		nil,
 		nil,
@@ -24345,8 +24761,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77711] = {
-		"And a Pinch of Magic",
-		"The diligence you've shown here is astounding, $n. I never suspected that someone who couldn't even find their own bucket, could do something like this.\n\nI think the sapling is almost there, and with my help we can bring it the rest of the way.\n\nTake this totem and place it near some of the weakened, flame-corrupted Roottenders found in the Singing Fen. This should siphon the unstable magical energies out of their bodies and transform it into something we can use.",
+		"І щипок магії",
+		"Старанність, яку ти тут проявив, вражає, $р. Я ніколи не підозрював, що хтось, хто навіть не може знайти своє відро, може зробити щось подібне.\n\nДумаю, що сіянцю залишилося зовсім трохи, і з моєю допомогою ми зможемо довести його до кінця.\n\nВізьми цей тотем і поклади його біля деяких ослаблених, заражених вогнем Прив'язувачок кореня, яких можна знайти у Співаючій драговині. Це повинно витягти нестабільну магічну енергію з їхніх тіл і перетворити її на щось, що ми зможемо використати.",
 		nil,
 		nil,
 		nil,
@@ -24358,8 +24774,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77762] = {
-		"A Little Hope is Never without Worth",
-		"The plant has matured and is thriving. And with this little corner of our ecosystem restored, we've seen something I've been wishing for since I learned what you were up to.\n\nThe Dreamtalon have returned with their kits!\n\nOne of the grateful mature dreamtalons has offered their services to you, if you wish it.",
+		"Трохи надії ніколи не буває марною",
+		"Рослина дозріла і процвітає. І завдяки цьому маленькому куточку нашої екосистеми, що відновився, ми побачили щось, на що я сподівався з того моменту, як дізнався, за що ти взявся.\n\nСновидці повернулися зі своїми малятами!\n\nОдин з вдячних дорослих сновидців запропонував тобі свої послуги, якщо ти хочеш.",
 		nil,
 		nil,
 		nil,
@@ -24371,7 +24787,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77777] = {
-		"Ruby Lifeshrine Loop - Storm Gryphon",
+		"Коло Рубінового Святилища Життя - Штормогріфон",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24384,9 +24800,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77780] = {
-		"A Blossom Witnessed",
-		"Amirdrassil has bloomed beyond the confines of the Dream.\n\nLet us venture to the Dragon Isles and see where this new World Tree has taken root.",
-		"Speak with Merithra at the Ancient Bough in the Ohn'ahran Plains.",
+		"Розквітло квітко",
+		"Амірдрассіл розквітнув за межами Смарагдового Сну.\n\nХодімо на Драконячі Острови і подивимося, де вкоренилося це нове Дерево Світу.",
+		"Поговорити з Мерітрою біля Давнього Гілля на Рівнинах Он'Ари.",
 		nil,
 		nil,
 		nil,
@@ -24397,8 +24813,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77781] = {
-		"A Different Enthusiasm",
-		"I noticed the festivities have drawn the attention of a few spriggans from Ardenweald. They are curious creatures with... interesting tastes.\n\nTheir pranks have been more than disruptive. Please root them out so the celebration may continue in peace.",
+		"Інший ентузіазм",
+		"Я помітив, що святкування привернуло увагу декількох спригганів з Арденвельда. Це дивні істоти з... цікавими смаками.\n\nЇхні розіграші були більш ніж заважаючими. Будь ласка, викорени їх, щоб святкування могло тривати спокійно.",
 		nil,
 		nil,
 		nil,
@@ -24423,7 +24839,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77785] = {
-		"Fen Flythrough - Storm Gryphon",
+		"Політ над болотами - штормовий грифон",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24449,7 +24865,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77787] = {
-		"Stormsunder Crater Circuit - Storm Gryphon",
+		"Коло Кратера Штормового Розколу - Штормогріфон",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24462,7 +24878,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77793] = {
-		"Кришталевий Коло - Штормогріфон",
+		"Кришталеве Коло - Штормогріфон",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -24501,8 +24917,8 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77818] = {
-		"The Cruel",
-		"Primalists, djaradin, and Druids of the Flame all work together against us.\n\nBut I can sense that this is not the last of them. Something powerful is trying to come through this portal. Let us try to seal them out for as long as we can.",
+		"Жорстокі",
+		"Первісники, джарадіни та друїди полум'я працюють разом проти нас.\n\nАле я відчуваю, що це не останні з них. Щось потужне намагається пройти крізь цей портал. Спробуємо запечатати їх якомога довше.",
 		nil,
 		nil,
 		nil,
@@ -24553,9 +24969,61 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77841] = {
-		"Ysera Invitational",
+		"Перевірка Ізери",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77842] = {
+		"Перевірка Ізери - Просунутий рівень",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77843] = {
+		"Перевірка Ізери - Зворотній напрямок",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77844] = {
+		"Перевірка Ізери - Випробування",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77845] = {
+		"Перевірка Ізери - Випробування в зворотному напрямку",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
 		nil,
 		nil,
 		nil,
@@ -24579,22 +25047,22 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77889] = {
-		"A Fiery Proposal",
-		"Ah hello!\n\nI have been working with some inscribers recently. We've been making a new type of ink. It's like fire ink, but even fierier! \n\nWe need fiery essence from fire elementals, and fire elementals are currently attacking the dream. I believe this is what is called a \"win win\" scenario.\n\nPlease drop their essence off at my associate in Amirdrassil.",
-		"Collect 10 Fiery Essence from fire elementals in the Emerald Dream.",
+		"Вогняна пропозиція",
+		"А, вітаю!\n\nЯ останнім часом працювала з деякими писарями. Ми створюємо новий вид чорнила. Воно схоже на вогняне чорнило, але ще вогненніше! \n\nНам потрібна вогняна сутність від вогняних елементалів, а вогняні елементалі зараз атакують Сон. Я вважаю, це те, що називається \"виграш-виграш\".\n\nБудь ласка, віднесіть їхню сутність моєму колезі в Амірдрассілі.",
+		"Зібрати 10 Вогняної Сутності у вогняних елементалів у Смарагдовому Сні.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Deliver the supplies to Professor Ash in the Emerald Dream.",
+		"Доставити припаси професорові Ешу в Смарагдовий Сон.",
 		nil,
 		nil,
 		nil
 	},
 	[77891] = {
-		"Fixing The Dream",
-		"Engineering is an exact science! When something explodes, engineers plan it that way. \n\nDreams are not exact, especially emerald ones! Someday, someone will want engineers to fix the dream, and we won't know how to do it. We need a lot more information to understand what we're dealing with!\n\nGo to the dream and place research beacons at my designated points. They will gather the information needed for any future repairs. Use this handy teleport device if you want to find the locations quickly.",
-		"8 Research Beacons activated",
+		"Лагодження Сну",
+		"Інженерія - точна наука! Коли щось вибухає, інженери планують це. \n\nСни не є точними, особливо смарагдові! Колись хтось захоче, щоб інженери полагодили Сон, а ми не знатимемо як це зробити. Нам потрібно набагато більше інформації, щоб зрозуміти, з чим маємо справу!\n\nВідправся у Сон і розмісти дослідницькі маяки у вказаних мною точках. Вони зберуть необхідну інформацію для майбутніх ремонтів. Використовуй цей зручний телепортуючий пристрій, щоб швидко знайти розташування.",
+		"8 Дослідницьких Маяків активовано",
 		nil,
 		nil,
 		nil,
@@ -24605,27 +25073,27 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77892] = {
-		"Pearls Of Great Value",
-		"When Amirdrassil's roots spread to the water, many rare creatures arose from the ocean's depths and now flourish around the dreams.\n\nOne such rare creature is the Sandsparkle Clam, which can contain magical pearls!\n\nSee if you can locate these clams and find some pearls within.",
-		"Collect 10 Sandsparkle Pearls",
+		"Перлини великої цінності",
+		"Коли коріння Амірдрассіла поширилося на воду, багато рідкісних істот зійшли з океанських глибин і тепер процвітають навколо Снів.\n\nОднією з таких рідкісних істот є мушля Сяйлива Піщанка, яка може містити чарівні перлини!\n\nПодивись, чи зможеш знайти ці мушлі та видобути з них деякі перлини.",
+		"Зібрати 10 Перлин Сяйливої Піщанки",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Deliver the supplies to Magnolia in Valdrakken.",
+		"Доставити припаси Магнолії у Вальдраккен.",
 		nil,
 		nil,
 		nil
 	},
 	[77896] = {
-		"A Sleepy Search",
-		"In our fight against Fyrakk's forces, a group of my fellow druids went out in search for a quiet and safe place to rest. But with Fyrakk's forces closing in on their location...\n\nI have to start planning for another assault, I can't split my time as much as I wish. \n\nI last saw them heading south to a cave by the shore. Please, I just need to make sure they're safe.",
-		"Check up with the sleeping druids.",
+		"Сонне шукання",
+		"У нашій боротьбі з силами Фіракка група моїх товаришів-друїдів вирушила на пошуки тихого і безпечного місця для відпочинку. Але з силами Фіракка, які наближаються до їхнього місця перебування...\n\nЯ повинен почати планувати ще один наступ, я не можу розділяти свій час так сильно, як я того бажаю. \n\nВостаннє я бачив їх біля південних берегів, де на них чекала печера. Будь ласка, мені просто потрібно переконатися, що з ними все гаразд.",
+		"Перевірити сплячих друїдів.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Seek out the sleeping druids in the Slumbersome Shores.",
+		"Знайти сплячих друїдів у Дрімучих берегах.",
 		nil,
 		nil,
 		nil
@@ -24657,9 +25125,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77910] = {
-		"Enchanted Shrubbery",
-		"Certain plants from the Emerald Dream could contain ingredients that would be helpful in our work here, but we need a lot of them, and I'm not hiring some herbalist to collect them.\n\nI've enchanted a water pot to help solve the problem. \nTravel to the Emerald Dream and use it on the plants I require. The plants should then deliver themselves.",
-		"Use the Watering Pot on 12 Enchanted Shrubs.",
+		"Зачаровані чагарники",
+		"Деякі рослини зі Смарагдового Сну можуть містити інгредієнти, які були б корисні в нашій роботі тут, але нам потрібно багато з них, і я не збираюся наймати якогось травознаю, щоб збирати їх.\n\nЯ зачарувала глечик з водою, щоб вирішити цю проблему. \nВідправся у Смарагдовий Сон і використовуй його на потрібних мені рослинах. Тоді рослини мають доставити себе самі сюди.",
+		"Використати Поливальний Глечик на 12 Зачарованих Чагарниках.",
 		nil,
 		nil,
 		nil,
@@ -24670,9 +25138,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77911] = {
-		"Build-a-Blanket",
-		"I am unable to rest! I have spent all my energy in battle, but there is too much noise and the ground is too hard for me to sleep...\n\nI know! It pains me to ask this, but I need to rest so I can go back out and fight.\n\nCould you feed two birds with one seed for me? Take out the enraged lashers and retrieve their leaves so I can make a blanket to rest on.",
-		"Collect 6 Velvety Lasher Leaves from lashers.",
+		"Побудуйте-ковдру",
+		"Я не можу відпочити! Я витратив усю свою енергію в битві, але тут надто шумно і земля надто тверда, щоб спати...\n\nЯ знаю! Мені боляче про це просити, але я повинен відпочити, щоб повернутися назад і битися.\n\nЧи не міг би ти вбити двох зайців одним пострілом для мене? Знищи лютих гарапників і принеси їхнє листя, щоб я зміг зробити ковдру для відпочинку.",
+		"Збери 6 оксамитових листків гарапника від гарапників.",
 		nil,
 		nil,
 		nil,
@@ -24683,35 +25151,35 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77912] = {
-		"Unmodern Jewelry",
-		"Some of the local Jewelcrafters are looking to study examples of the Zaqali tribes adornments.\n\nGiven they are currently attacking my home, we may take advantage of the situation.\n\nI thought you might take them violently, yes?\n\nArgonax waits once you have collected them.",
-		"Collect 10 Zaqali Adornments.",
+		"Несучасні прикраси",
+		"Деякі місцеві ювеліри хочуть вивчити зразки прикрас племені закалі.\n\nЗ огляду на те, що зараз вони атакують мій дім, ми можемо скористатися ситуацією.\n\nЯ подумав, що ти міг би забрати їх насильно, так?\n\nАргонакс чекає, коли ти збереш їх.",
+		"Збери 10 прикрас закалі.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Deliver the supplies to Argonax in the Emerald Dream.",
+		"Достав прикраси Аргонаксу в Смарагдовий сон.",
 		nil,
 		nil,
 		nil
 	},
 	[77914] = {
-		"Burning Runes",
-		"I am told that the Druids of the Flame help to stabilize their portals into the dream through the use of a unique sort of inscription! While their ends are abhorrent, I cannot help but be curious as to their means.\n\nIf we can better understand their methods, then perhaps we can better equip our allies to stem the tide of their arrival. If you get your hands on any burning runes, could you bring them to my colleague for further study?",
-		"Collect 10 Burning Runes from druids of the flame in the Emerald Dream.",
+		"Палаючі руни",
+		"Мені сказали, що друїди полум'я допомагають стабілізувати свої портали в сон за допомогою унікального виду написів! Хоча їхні цілі жахливі, я не можу не цікавитися їхніми засобами.\n\nЯкщо ми зможемо краще зрозуміти їхні методи, то, можливо, ми зможемо краще оснастити наших союзників, щоб стримати хвилю їхнього прибуття. Якщо ти дістанеш палаючі руни, чи не міг би ти принести їх моєму колезі для подальшого вивчення?",
+		"Збери 10 палаючих рун від друїдів полум'я в Смарагдовому сні.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Deliver the supplies to Feyden Darkin in the Emerald Dream.",
+		"Достав руни Фейдену Темному в Смарагдовому сні.",
 		nil,
 		nil,
 		nil
 	},
 	[77922] = {
-		"Fluffy Filler Retrieval",
-		"There is no way I could rest without something soft to sleep on. Luckily, the dream has some sage so plush, that it would even put roc feathers to shame! It would be a perfect filling! \n\nCould you collect some sage around the area for me to rest on?",
-		"Collect 8 Silky Sage.",
+		"Збір пухнастого наповнювача",
+		"Немає жодного шансу, що я зможу відпочити без чогось м'якого, на чому можна було б спати. На щастя, у цьому сні є така пухнаста полин, що навіть пір'я років посоромиться! Це було б ідеальне наповнення!\n\nЧи не міг би ти зібрати для мене трохи полину навколо, щоб я міг на ній відпочити?",
+		"Збери 8 шовковистої полині.",
 		nil,
 		nil,
 		nil,
@@ -24735,9 +25203,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77932] = {
-		"Warmth of Life",
-		"The Druids of the Flame practice virulent magics that warp and burn all they touch. They do, however, have excellent taste in alchemical reagents.\n\nIf you should happen across any of their metamorphic ash, could you gather it up for me? One of my contacts within the Dream has been asking after the stuff.",
-		"Collect eight samples of Metamorphic Ash from Druids of the Flame in the Smoldering Copse.",
+		"Тепло життя",
+		"Друїди полум'я практикують вірулентну магію, яка спотворює і спалює все, до чого торкається. Проте, у них чудовий смак щодо алхімічних реагентів.\n\nЯкщо ти натрапиш на їхній метаморфічний попіл, чи не зміг би ти зібрати його для мене? Один з моїх контактів усередині Сну нещодавно цікавився цією речовиною.",
+		"Збери вісім зразків метаморфічного попелу від друїдів полум'я в Тліючій гущавині.",
 		nil,
 		nil,
 		nil,
@@ -24748,9 +25216,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77933] = {
-		"Bubbling Discoveries",
-		"The rise of Amirdrassil has unlocked various geological wonders in the dream. Among these are a variety of magical springs, bubbling water from deep within Azeroth.\n\nTravel the dream and gather samples from these springs.",
-		"Collect 8 samples from Bubbling Springs.",
+		"Булькаючі відкриття",
+		"Підйом Амірдрассіла розкрив різноманітні геологічні чудеса у сні. Серед них - різні чарівні джерела, що булькають воду з глибин Азероту.\n\nПодорожуй сном і збирай зразки з цих джерел.",
+		"Збери 8 зразків з булькаючих джерел.",
 		nil,
 		nil,
 		nil,
@@ -24774,9 +25242,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77935] = {
-		"A-Sword-ed Needs",
-		"Swords!\n\nSorry, I saw you and I did not want to forget.\n\nYes. We need swords. In the Dream. You can provide, yes?\n\nPlease deliver them to Cylania.",
-		"Deliver 3 Draconium Swords to Cylania in the Emerald Dream",
+		"Потреба в мечах",
+		"Мечі!\n\nВибачте, я побачив вас і не хотів забути.\n\nТак. Нам потрібні мечі. Уві Сні. Ти можеш надати, так?\n\nБудь ласка, достав їх Циланії.",
+		"Достав 3 драконієвих меча Циланії в Смарагдовому сні",
 		nil,
 		nil,
 		nil,
@@ -24787,9 +25255,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77936] = {
-		"A Warm Harvest",
-		"Everyone knows heat plays a critical role in blacksmithing.\n\nI hear the Emerald Dream is still heavily under attack by allies of the flame. There must be a way to harvest fuel from those eternally fiery creatures.\n\nIf you do secure anything, I'm sure one of the local blacksmiths in the Dream will be very interested.",
-		"Collect 10 Essence of Endless Flame in the Emerald Dream.",
+		"Теплий врожай",
+		"Кожен знає, яку важливу роль відіграє жар у ковальстві.\n\nЧутки ходять, що Смарагдовий Сон досі піддається жорстоким нападам союзників полум'я. Має існувати спосіб добути паливо з цих вічновогненних істот.\n\nЯкщо тобі вдасться щось знайти, я впевнений, один із місцевих ковалів у Сні буде дуже зацікавлений.",
+		"Збери 10 Сутності Нескінченного Полум'я в Смарагдовому Сні.",
 		nil,
 		nil,
 		nil,
@@ -24800,9 +25268,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77937] = {
-		"Forbidden Sugar",
-		"During this very unique time of bloom, a new flower has been discovered in the Dream. These stunning flowers produce a marvelous pollen. Its aroma is a delight, just like fresh baked cookies.\n\nTo the dismay of chefs, even eating a tiny bit will result in rapid, severe poisoning of the liver.\n\nHowever, it is an incredible all-purpose addition to enchanting. Early tests demonstrate potency as high as quadruple that of Chromatic Dust. Traders from Valdrakken are very interested in its acquisition.",
-		"Collect 8 Glowdrop Sugar from Shaded Glowdrops in the Emerald Dream.",
+		"Заборонений цукор",
+		"Під час цього дуже унікального періоду цвітіння в Сні була виявлена нова квітка. Ці вражаючі квіти виділяють чудовий пилок. Його аромат - справжня насолода, немов свіжоспечені печиво.\n\nНа превеликий жаль кухарів, навіть з'їдання крихітної частинки призведе до швидкого та сильного отруєння печінки.\n\nОднак він є неймовірним універсальним добавкою для зачаровування. Попередні тести показують потужність у чотири рази вищу, ніж у Хроматичного Пилу. Торговці з Вальдраккена дуже зацікавлені в його придбанні.",
+		"Збери 8 Цукру Світлячки з Освітлених Світлячок в Смарагдовому Сні.",
 		nil,
 		nil,
 		nil,
@@ -24813,61 +25281,61 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77945] = {
-		"Boots on the Ground",
-		"Just who I wanted to see.\n\nI have a requisition script for items of leather from some of the denizens of the Dream. Shoes, of course. Bipeds tend to go through them like a bird through the forest, yes?\n\nOnce you have acquired them, please take them to Cylania.",
-		"Deliver 3 Pioneer's Leather Boots to Cylania in the Emerald Dream.",
+		"Підошви на землі",
+		"Саме того, кого я хотів побачити.\n\nУ мене є запит щодо виробів зі шкіри деяких мешканців Сну. Взуття, звісно. Дводомні істоти зношують його, немов птах ліс. \n\nКоли збереш, будь ласка, віднеси все Циланії.",
+		"Віднеси 3 Шкіряних Черевика Піонера Циланії в Смарагдовому Сні.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Deliver 3 Pioneer's Leather Boots to Cylania in the Emerald Dream",
+		"Віднеси 3 Шкіряних Черевика Піонера Циланії в Смарагдовому Сні.",
 		nil,
 		nil,
 		nil
 	},
 	[77946] = {
-		"Fibrous Thread",
-		"Fine thread may conjure images of tailory, but it can serve a vital role in leatherwork as well.\n\nSome of the Dream's hardier flora can be processed into a thread strong enough to secure even the thickest of hides and scales. If you happen upon any dense fiber during your travels, you would be well-served by bringing it to my colleague in the Dream.",
-		"Bring 1 Emerald Fiber from enchanted thickets in the Emerald Dream.",
+		"Волокниста нитка",
+		"Тонка нитка може викликати асоціації з кравецтвом, але вона може відігравати життєво важливу роль і в шкіряній справі.\n\nДеякі життєстійкі рослини Сну можна переробити на нитку, достатньо міцну, щоб закріпити навіть найтовстіші шкури та луски. Якщо під час мандрів трапляться якісь щільні волокна, ти добре вчиниш, якщо принесеш їх моєму колезі у Сні.",
+		"Принеси 1 Смарагдове Волокно з зачарованих чагарників Смарагдового Сну.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Deliver the supplies to Cerwyn in the Emerald Dream.",
+		"Достав провіант до Сервіна в Смарагдовому Сні.",
 		nil,
 		nil,
 		nil
 	},
 	[77947] = {
-		"Primalist Fashion",
-		"Ah, $n, there you are!\n\nThe robes of the primalists make for interesting study for the local tailors. If you could retrieve some from the primalists assaulting the dream, I would be pleased, yes?\n\nNo rips or tears please. Blood stains optional. They can be washed out.",
-		"Collect 10 Intact Primalist Garb from the Emerald Dream.",
+		"Одяг первісників",
+		"А, $n, ось ти де!\n\nОдяг первісників становить цікавий предмет вивчення для місцевих кравців. Чи не міг би ти добути кілька екземплярів з тих первісників, що атакують Сон? Я був би дуже задоволений.\n\nБез розривів та дірок, будь ласка. Кров можна відмити.",
+		"Збери 10 Неушкоджених Шат Первісників із Смарагдового Сну.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Return to Cylania in the Emerald Dream.",
+		"Повернися до Циланії в Смарагдовому Сні.",
 		nil,
 		nil,
 		nil
 	},
 	[77948] = {
-		"Burning Out",
-		"Please, I know how this looks, but we are on the same side!\n\nMy siblings and I intended to defect from the Flame together. However, none of them have escaped or met up with me since I left, and it's been days! I fear the worst.\n\nDo you think I would be begging for aid, alone and unarmed, if I was not honest? Please, find them. They are all I have left.",
-		"Find Solarys's siblings in the Smoldering Copse.",
+		"Згоряння",
+		"Будь ласка, я розумію, як це виглядає, але ми на одному боці!\n\nМої брати і сестри та я мали намір разом дезертирувати з Полум'я. Однак жодного з них не побачив з того часу, як я пішов, і минуло вже кілька днів! Я побоююся найгіршого.\n\nЧи гадаєш ти, я б благав про допомогу, самотній і беззбройний, якби був нещирим? Будь ласка, знайди їх. Вони все, що в мене залишилося.",
+		"Знайди братів і сестер Соларіса в Тліючій Пущі.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Return to Solarys at the Central Encampment.",
+		"Повернися до Соларіса в Центральному Таборі.",
 		nil,
 		nil,
 		nil
 	},
 	[77949] = {
-		"Fashion Feathers",
-		"Much of the Dream's wildlife is feathered or furred. Their shed, whether it be down fur or feathers, is reputed to be extremely durable, soft, and fashionable.\n\nThe great somnowls' feathers are particularly desirable. They don't shed often, and feathers are quickly retrieved by local wildlife for nest building.\n\nI've heard that your best chance is scouring the Meandering Rootlands in the Dream.",
-		"Collect 10 Shed Great Feathers in the Emerald Dream.",
+		"Модне пір'я",
+		"Багато тварин Сну вкриті пір'ям або хутром. Їхнє оперення, чи то пух, хутро або пір'я, вважається надзвичайно міцним, м'яким і модним.\n\nОсобливо бажаним є пір'я великих сов. Вони рідко линяють, а їхнє пір'я швидко збирає місцева фауна для будівництва гнізд.\n\nЯ чув, що найкращий шанс - обшукати Заплутане Кореневище у Сні.",
+		"Зберіть 10 Скинутого Великого Пір'я у Смарагдовому Сні.",
 		nil,
 		nil,
 		nil,
@@ -24904,11 +25372,11 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77955] = {
-		"Heated Hearthstone Hustle",
-		"Wait, my hearthstone! I can't sleep without my hearthstone. \n\nA djaradin stole it during our last battle. It stays warm perpetually and I always sleep with it. \n\nI hate that I must ask more of you, but could you get my hearthstone? \n\nThe djaradin that stole it should be near Fyrakk's army, just north of here.",
-		"Retrieve the Heated Hearthstone from the Stonewarmer.",
-		"The Stonewarmer",
-		"A djaradin leading the invasion on the Emerald Dream. Holds onto a stone that stays ever warm.",
+		"Поспішне полювання за нагрітою оселянкою",
+		"Ой, моя оселянка! Я не можу спати без моєї оселянки.\n\nДжарадін вкрав її під час нашої останньої битви. Вона постійно тепла, і я завжди сплю з нею.\n\nМені ненависно просити ще більше від тебе, але чи не міг би ти повернути мою оселянку?\n\nДжарадін, який її вкрав, має бути поблизу армії Фіракка, трохи на північ відси.",
+		"Поверніть Нагріту Оселянку від Каменесогрівача.",
+		"Каменесогрівач",
+		"Джарадін, який очолює вторгнення у Смарагдовий Сон. Тримає камінь, що постійно теплий.",
 		nil,
 		nil,
 		nil,
@@ -24930,14 +25398,14 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77958] = {
-		"Sleepy Druid in Emerald Dream",
-		"Why can I still not fall asleep, even with a heated blanket? \n\n<Thaalean curses the air then sighs.>\n\nThis is embarrassing to request, but my mother used to sing me a lullaby before I slept back in Teldrassil, may I ask you to do the same?\n\nAny lullaby will do, I just want to rest peacefully.",
-		"Sing a lullaby for sleepy druid.",
+		"Сонний друїд у Смарагдовому Сні",
+		"Чому я досі не можу заснути, навіть зі зігрівальною ковдрою?\n\n<Талін проклинає повітря, а потім зітхає.>\n\nЦе соромно просити, але моя мати колись співала мені колискову перед сном у Тельдрассілі. Чи не міг би ти зробити те саме?\n\nБудь-яка колискова підійде, я просто хочу мирно відпочити.",
+		"Заспівай колискову сонному друїдові.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Report back to Icarius in the Central Encampment.",
+		"Поверніться до Ікарія у Центральному Таборі.",
 		nil,
 		nil,
 		nil
@@ -24969,22 +25437,74 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77978] = {
-		"A Passed Torch",
-		"<Strategic documents are scattered around Lyandris. Notes detailing experiments and future assault locations covering many of them.> \n\n<It would be of great use to your allies to find more of these documents. Thinning out the Flame's numbers wouldn't hurt either.>",
-		"Collect documents & kill Druids of the Flame within the Smoldering Copse.",
+		"Передана естафета",
+		"<Стратегічні документи розкидані навколо Ліандріса. Нотатки, що деталізують експерименти та майбутні місця нападів, покривають багато з них.>\n\n<Для твоїх союзників було б дуже корисно знайти більше таких документів. Зменшення чисельності Полум'я також не завадило б.>",
+		"Зберіть документи та вбий Друїдів Полум'я у Тліючій Пущі.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Return to Solarys at the Central Encampment.",
+		"Поверніться до Соларіса у Центральному Таборі.",
 		nil,
 		nil,
 		nil
 	},
 	[77983] = {
-		"Smoldering Sprint",
+		"Димлячий ривок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77984] = {
+		"Димлячий ривок - Просунутий рівень",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77985] = {
+		"Димлячий ривок - Зворотній напрямок",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77986] = {
+		"Димлячий ривок - Випробування",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77987] = {
+		"Димлячий ривок - Випробування в зворотному напрямку",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
 		nil,
 		nil,
 		nil,
@@ -24995,7 +25515,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[77996] = {
-		"Viridescent Venture",
+		"Смарагдовий забіг",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25007,10 +25527,114 @@ ns._db.MTQuests = {
 		nil,
 		nil
 	},
+	[77997] = {
+		"Смарагдовий забіг - Просунутий рівень",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77998] = {
+		"Смарагдовий забіг - Зворотній напрямок",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[77999] = {
+		"Смарагдовий забіг - Випробування",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78000] = {
+		"Смарагдовий забіг - Випробування в зворотному напрямку",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
 	[78016] = {
-		"Shoreline Switchback",
+		"Пробіг по березі",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78017] = {
+		"Пробіг по березі - Просунутий рівень",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78018] = {
+		"Пробіг по березі - Зворотній напрямок",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78019] = {
+		"Пробіг по березі - Випробування",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78020] = {
+		"Пробіг по березі - Випробування в зворотному напрямку",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
 		nil,
 		nil,
 		nil,
@@ -25047,22 +25671,74 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78097] = {
-		"Sparks of Life: Emerald Dream",
-		"Follow the essence into the Emerald Dream and see what you may explore, but beware of foes who may cross your path.",
-		"Collect 100 Sparks of Life in Emerald Dream, while in War Mode.",
+		"Іскри життя: Смарагдовий Сон",
+		"Слідуй за сутністю у Смарагдовий Сон і подивися, що ти можеш дослідити, але будь обережний з ворогами, які можуть перетнути твою стежку.",
+		"Збери 100 Іскор Життя у Смарагдовому Сні, перебуваючи у Військовому Режимі.",
 		nil,
 		nil,
 		nil,
 		nil,
-		"Speak with Fieldmaster Emberath in Valdrakken.",
+		"Поговори з Фельдмаршалом Ембератом у Вальдраккені.",
 		nil,
 		nil,
 		nil
 	},
 	[78102] = {
-		"Canopy Concours",
+		"Політ під куполом",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78103] = {
+		"Політ під куполом - Просунутий рівень",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78104] = {
+		"Політ під куполом - Зворотній напрямок",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78105] = {
+		"Політ під куполом - Випробування",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78106] = {
+		"Політ під куполом - Випробування в зворотному напрямку",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
 		nil,
 		nil,
 		nil,
@@ -25086,7 +25762,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78115] = {
-		"Emerald Amble",
+		"Смарагдовий підйом ",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25098,10 +25774,62 @@ ns._db.MTQuests = {
 		nil,
 		nil
 	},
+	[78116] = {
+		"Смарагдовий підйом - Просунутий рівень",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78117] = {
+		"Смарагдовий підйом - Зворотній напрямок",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78118] = {
+		"Смарагдовий підйом - Випробування",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78119] = {
+		"Смарагдовий підйом - Випробування в зворотному напрямку",
+		"Пролети через контрольні кільця, які позначають маршрут.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
 	[78262] = {
-		"It Starts With a Stone",
-		"This land holds so many secrets. And even more power!\n\nAnd you... we both know you enjoy unraveling secrets and collecting marvelous gear. And when you're ready to unlock the power of gear you find in this new land, come visit Cuzolth and me. We are experimenting and will be able to upgrade your gear by the time you come back.\n\nPlease bring me some Flightstones and a new item so I can show you how these upgrades work.",
-		"Acquire 50 Flightstones by defeating unique creatures, conquering dungeons and raids, completing world activities, or by looting caches. Then speak to Cuzolth and upgrade a piece of Season 3 equipment using Flightstones.",
+		"Все починається з каменя",
+		"Ця земля ховає стільки таємниць. І ще більше сили!\n\nІ ти... ми обоє знаємо, що тобі подобається розкривати таємниці та збирати чудове спорядження. А коли ти будеш готовий розкрити силу спорядження, яке знайдеш на цій новій землі, завітай до Кузолта та мене. Ми експериментуємо і зможемо підсилити твоє спорядження до того, як ти повернешся.\n\nБудь ласка, принеси мені деякі Камені Польоту та новий предмет, щоб я міг показати тобі, як працюють ці вдосконалення.",
+		"Здобудь 50 Каменів Польоту, перемагаючи унікальних істот, завойовуючи підземелля та рейди, виконуючи світові завдання або шукаючи скарби. Потім поговори з Кузолтом та вдоскональ один предмет 3-го сезону, використовуючи Камені Польоту.",
 		nil,
 		nil,
 		nil,
@@ -25125,7 +25853,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78302] = {
-		"Scalawag Slither - Advanced",
+		"Повзучий Шлях Шахраїв - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25138,7 +25866,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78303] = {
-		"Scalawag Slither - Reverse",
+		"Повзучий Шлях Шахраїв - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25164,7 +25892,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78326] = {
-		"Daggercap Dart - Advanced",
+		"Дротик Даггеркепу - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25177,7 +25905,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78327] = {
-		"Daggercap Dart - Reverse",
+		"Дротик Даггеркепу - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25242,7 +25970,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78347] = {
-		"Gundrak Fast Track - Advanced",
+		"Швидкісний Трек Ґундраку - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25255,7 +25983,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78349] = {
-		"Gundrak Fast Track - Reverse",
+		"Швидкісний Трек Ґундраку - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25268,7 +25996,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78357] = {
-		"Dreamy Drakewatching",
+		"Спостереження за мрійливими драконами",
 		nil,
 		nil,
 		nil,
@@ -25281,9 +26009,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78363] = {
-		"The Tabard of Your Dreams",
-		"<Melsysra drops a slightly damp note into your hand.>\n\n$n, we are immensely grateful for all you've done to help us. Please meet me at Central Encampment so we can properly reward you for your efforts!\n\n- Amrymn",
-		"Talk to Keeper Amrymn at the Central Encampment.",
+		"Табард твоїх мрій",
+		"<Мелсісра кидає тобі у руку трохи вологу записку.>\n\n$р, ми нескінченно вдячні за все, що ти зробив, щоб допомогти нам. Будь ласка, зустрінься зі мною у Центральному таборі, щоб ми могли належним чином винагородити тебе за твої зусилля!\n\n- Амрімн",
+		"Поговорити з Охоронцем Амрімном у Центральному таборі.",
 		nil,
 		nil,
 		nil,
@@ -25294,9 +26022,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78373] = {
-		"The Dream Thanks You",
-		"<Melsysra drops a slightly damp note into your hand.>\n\n$n, your contributions to the dream are immeasurable. Please meet me at the Central Encampment, we have a reward we're excited to give you.\n\n- Amrymn",
-		"Talk to Amrymn in the Central Encampment.",
+		"Сон дякує тобі",
+		"<Мелсісра кидає тобі у руку трохи вологу записку.>\n\n$р, твій внесок у цей сон неоціненний. Будь ласка, зустрінься зі мною у Центральному таборі, у нас є нагорода, якою ми хочемо з тобою поділитися. \n\n- Амрімн",
+		"Поговорити з Амрімном у Центральному таборі.",
 		nil,
 		nil,
 		nil,
@@ -25307,7 +26035,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78374] = {
-		"Flightstones",
+		"Каміння зграї",
 		nil,
 		nil,
 		nil,
@@ -25320,7 +26048,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78377] = {
-		"Counting Drakes",
+		"Підрахунок драконів",
 		nil,
 		nil,
 		nil,
@@ -25333,7 +26061,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78380] = {
-		"I Dream of Drakes",
+		"Я мрію про драконів",
 		nil,
 		nil,
 		nil,
@@ -25372,9 +26100,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78388] = {
-		"Gigantic Dreamseeds",
-		"<Melsysra drops a slightly damp note into your hand.>\n\n$n, we've noticed an increase of fertile dirt within the Dream. It's the perfect opportunity for new plants! Come talk to me so we can start planting some seeds.\n\n- [NPC]",
-		"Talk to [NPC] in [zone].",
+		"Гігантські насінини мрії",
+		"<Мелсісра кидає тобі трохи вологу записку.>\n\n$n, ми помітили збільшення родючої землі у Мрії. Це чудова нагода для нових рослин! Приходь поговорити зі мною, щоб ми могли посадити деякі насінини.\n\n- [NPC]",
+		"Поговорити з [NPC] у [zone].",
 		nil,
 		nil,
 		nil,
@@ -25398,7 +26126,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78390] = {
-		"The Makers' Marathon - Advanced",
+		"Марафон Творців - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25411,7 +26139,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78391] = {
-		"The Makers' Marathon - Reverse",
+		"Марафон Творців - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25424,9 +26152,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78398] = {
-		"A Dash of Minerals...",
-		"I think we have a chance with this one, $n. But we'll need to begin revitalizing the soil if we want to see this plant flourish.\n\nHead to the Eye of Ysera and harvest fish bones from the Fathomless Lurkers in the depths of the water. They're rich in minerals and degrade easily. It won't replenish the soil on its own, but it's a great start.",
-		"Collect Fish Bones from Fathomless Lurkers.",
+		"Трішки мінералів...",
+		"Я думаю, у нас є шанс із цією рослиною, $n. Але нам потрібно почати відновлювати ґрунт, якщо ми хочемо, щоб вона процвітала.\n\nВідправляйся до Ока Ізери й збери риб'ячі кістки з Безодніх Підстерігачів у глибині води. Вони багаті на мінерали й легко розкладаються. Цього не вистачить, щоб повністю відновити ґрунт, але це гарний початок.",
+		"Збери Риб'ячі Кістки з Безодніх Підстерігачів.",
 		nil,
 		nil,
 		nil,
@@ -25437,9 +26165,9 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78428] = {
-		"Crate of the Art",
-		"Our stockpiles have taken a grave hit, $n. \n\nWe need to replenish our reserves as soon as possible, lest the enemy gain the upper hand. We will need far more supplies than we previously envisioned.\n\nOnce again, Vashonir can assist you with packing the shipments. Please return to me with five crates of goods.\n\nElune, watch over you.",
-		"Pack 5 Shipments of Goods with Vashonir in the Central Encampment.",
+		"Ящик мистецтва",
+		"Наші запаси сильно постраждали, $n.\n\nНам потрібно якомога швидше їх поповнити, щоб ворог не отримав перевагу. Нам знадобиться набагато більше припасів, ніж ми спочатку думали.\n\nЩе раз попроси Вашоніра допомогти запакувати відправлення. Будь ласка, принеси мені п'ять ящиків із товарами.\n\nЕлуне, оберігай тебе.",
+		"Запакуй 5 Відправлень Товарів із Вашоніром у Центральному Таборі.",
 		nil,
 		nil,
 		nil,
@@ -25463,7 +26191,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78442] = {
-		"Crystalsong Crisis - Advanced",
+		"Криза Кришталевого Співу - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25476,7 +26204,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78443] = {
-		"Crystalsong Crisis - Reverse",
+		"Криза Кришталевого Співу - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25528,7 +26256,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78455] = {
-		"Dragonblight Dragon Flight - Advanced",
+		"Переліт над Драконовим Кладовищем - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25541,7 +26269,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78456] = {
-		"Dragonblight Dragon Flight - Reverese",
+		"Переліт над Драконовим Кладовищем - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25567,7 +26295,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78500] = {
-		"Citadel Sortie - Advanced",
+		"Вилазка на Цитадель - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25580,7 +26308,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78501] = {
-		"Citadel Sortie - Reverse",
+		"Вилазка на Цитадель - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25606,7 +26334,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78559] = {
-		"Sholazar Spree - Advanced",
+		"Бенкет Шолазару - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25619,7 +26347,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78560] = {
-		"Sholazar Spree - Reverse",
+		"Бенкет Шолазару - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25631,10 +26359,153 @@ ns._db.MTQuests = {
 		nil,
 		nil
 	},
+	[78579] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78580] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78581] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78582] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78583] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78584] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78585] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78586] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78587] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78588] = {
+		"Припаси Драконячих островів",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
 	[78595] = {
-		"Dream Infused",
-		"<Melsysra drops a slightly damp note into your hand.>\n\n$n, your deeds have helped garner enough strength for a dream infusion! Meet me at the Central Encampment so I can get it to you.\n\n- Elianna",
-		"Talk to Elianna in the Central Encampment.",
+		"Насичений мрією",
+		"<Мелсісра кидає тобі трохи вологу записку.>\n\n$n, твої вчинки допомогли зібрати достатньо сили для насичення мрією! Зустрінься зі мною у Центральному таборі, щоб я міг передати його тобі.\n\n- Еліанна",
+		"Поговорити з Еліанною у Центральному таборі.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78598] = {
+		"Насичення мрією",
+		nil,
+		nil,
 		nil,
 		nil,
 		nil,
@@ -25658,7 +26529,7 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78609] = {
-		"Geothermal Jaunt - Advanced",
+		"Геотермальна Прогулянка - Просунутий рівень",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
 		nil,
@@ -25671,9 +26542,22 @@ ns._db.MTQuests = {
 		nil
 	},
 	[78610] = {
-		"Geothermal Jaunt - Reverse",
+		"Геотермальна Прогулянка - Зворотній напрямок",
 		"Пролети через контрольні кільця, які позначають маршрут.",
 		"Пролетіти через кільця.",
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil,
+		nil
+	},
+	[78789] = {
+		"Камені польоту",
+		nil,
+		nil,
 		nil,
 		nil,
 		nil,
@@ -26456,7 +27340,7 @@ ns._db.MTQuestObjectives = {
 	[65939] = {
 		[2297420534] = "Поговори з Гнівіоном, щоб почати штурм",
 		[2828389424] = "Введено в Обсидіанову цитадель",
-		[3272956615] = "RTC",
+		[3272956615] = "РТС",
 	},
 	[65940] = {
 		[2645624092] = "Прибуття до другої зупинки",
@@ -26475,6 +27359,9 @@ ns._db.MTQuestObjectives = {
 		[919237713] = "Східний кристал вирваний",
 		[1190096972] = "Західний кристал вирваний",
 		[1840226182] = "Зібрано енергію часу",
+	},
+	[65950] = {
+		[3903727725] = "Припаси клану Шикаар ",
 	},
 	[65951] = {
 		[1824532888] = "Знайдений Хасар",
@@ -26502,6 +27389,25 @@ ns._db.MTQuestObjectives = {
 	},
 	[65977] = {
 		[2480735967] = "Маги Кірін Тору врятовані",
+	},
+	[65989] = {
+		[2720820022] = "Джарадінів вбито",
+	},
+	[65990] = {
+		[616213629] = "Скімлячих Дракончиків врятовано",
+	},
+	[65991] = {
+		[3850905803] = "Зустрітися з Гнівіоном у фортеці Розколотої Луски.",
+	},
+	[65992] = {
+		[853199444] = "Розпитайте Праву",
+		[1106340874] = "Розпитайте кігтеловщицю Кавію",
+		[3070016798] = "Розпитайте ліву",
+		[3836569328] = "Зустріньтесь з Гнівіоном",
+	},
+	[65993] = {
+		[1253464079] = "М'ясоруб Соток вбитий",
+		[3836569328] = "Зустріньтесь з Гнівіоном",
 	},
 	[65996] = {
 		[42143922] = "Вилікувані вартові Виверженої печери",
@@ -26726,6 +27632,10 @@ ns._db.MTQuestObjectives = {
 		[2786426490] = "Знайдено запасне колесо",
 		[4206660584] = "Знайдено непідпалені дошки",
 	},
+	[66114] = {
+		[1347340224] = "Покажи королеві Алексстразі насичене яйце",
+		[1801046564] = "Лети з мажордомом Селістрою до рубінового святилища життя",
+	},
 	[66115] = {
 		[1716774276] = "Поговорено з Ксіусом",
 		[2929245361] = "Поговорено з Матір'ю Еліон",
@@ -26751,6 +27661,15 @@ ns._db.MTQuestObjectives = {
 		[3751566769] = "Вийшов з анклаву Морозного спалаху",
 	},
 	[66126] = {
+		[2984444594] = "Відновлений обсидіановий ключ",
+	},
+	[66129] = {
+		[2984444594] = "Відновлений обсидіановий ключ",
+	},
+	[66130] = {
+		[2984444594] = "Відновлений обсидіановий ключ",
+	},
+	[66131] = {
 		[2984444594] = "Відновлений обсидіановий ключ",
 	},
 	[66135] = {
@@ -27319,6 +28238,9 @@ ns._db.MTQuestObjectives = {
 		[1693705750] = "Відвідай Посольство",
 		[3976460634] = "Відвідай Аукціонний Дім",
 	},
+	[66549] = {
+		[3564995160] = "Заверши перегони",
+	},
 	[66553] = {
 		[2243553877] = "Підказки виявлено",
 	},
@@ -27431,6 +28353,9 @@ ns._db.MTQuestObjectives = {
 	},
 	[66688] = {
 		[693188498] = "Символи Вітру",
+	},
+	[66691] = {
+		[3564995160] = "Заверши перегони",
 	},
 	[66692] = {
 		[3564995160] = "Заверши перегони",
@@ -27550,6 +28475,17 @@ ns._db.MTQuestObjectives = {
 		[868327503] = "Висмикування зарослого бур'яну",
 		[2594212638] = "Прибирання опалого листя",
 		[3503465139] = "Полірування рубінового вартового святилища",
+	},
+	[66825] = {
+		[6371157] = "[DNT] Граблі",
+		[298234926] = "[DNT] Ласо подано",
+		[522878032] = "[DNT] Поливальник подано",
+		[883693857] = "[DNT] Глечик",
+		[1016855864] = "[DNT] Банка",
+		[1226934887] = "[DNT] Ласо",
+		[1599775527] = "[DNT] Банка подано",
+		[1722295081] = "[DNT] Граблі подано",
+		[3555422002] = "Покликання обрано",
 	},
 	[66827] = {
 		[710722114] = "Піднесені дозрілі пітахаї",
@@ -28343,6 +29279,14 @@ ns._db.MTQuestObjectives = {
 	[70352] = {
 		[348052495] = "Убити дракожабів",
 	},
+	[70368] = {
+		[2558454880] = "Попроси Гефесту надати інструкції",
+		[4126234465] = "Пройдіть тест Гефести",
+	},
+	[70370] = {
+		[2558454880] = "Попроси Гефесту надати інструкції",
+		[4126234465] = "Пройдіть тест Гефести",
+	},
 	[70374] = {
 		[1425766494] = "Перемогти елементи",
 	},
@@ -28787,6 +29731,14 @@ ns._db.MTQuestObjectives = {
 		[2104962814] = "Постачальник обладунку",
 		[3468226692] = "Постачальник їздових істот",
 	},
+	[72442] = {
+		[1505420792] = "[DNT] Початок хвильової події",
+		[2589041973] = "Срібний голем",
+		[3360985704] = "[DNT] Розмова хвильової події 1",
+		[3364917868] = "[DNT] Розмова хвильової події 2",
+		[3368850032] = "[DNT] Розмова хвильової події 3",
+		[4241447933] = "Захисти Кораноса",
+	},
 	[72444] = {
 		[891701516] = "[DNT] - Тір Переміщений",
 		[1063468093] = "Активовано Срібну Луску",
@@ -29036,11 +29988,11 @@ ns._db.MTQuestObjectives = {
 		[1596407551] = "Допомогти розвідникам Емберталю",
 	},
 	[72714] = {
-		[482255431] = "A",
-		[499031624] = "B",
-		[515807817] = "C",
-		[532584010] = "D",
-		[549360203] = "E",
+		[482255431] = "А",
+		[499031624] = "Б",
+		[515807817] = "В",
+		[532584010] = "Г",
+		[549360203] = "Д",
 		[3405415067] = "Знайти Ебіссіана у Високих Яслах",
 		[3667798120] = "Дослідник врятований",
 	},
@@ -30330,30 +31282,30 @@ ns._db.MTQuestObjectives = {
 		[3807380143] = "Поговорити з Валунеєю",
 	},
 	[75643] = {
-		[26751159] = "Flight Master",
-		[456437367] = "Renown Quartermaster",
-		[2715663409] = "Keeper of Renown",
+		[26751159] = "Польотний майстер",
+		[456437367] = "Квартирмейстер знатності",
+		[2715663409] = "Опікун знатності",
 	},
 	[75644] = {
-		[142333469] = "Regroup with your companions",
+		[142333469] = "З'єднайся зі своїми супутниками",
 	},
 	[75657] = {
 		[541060083] = "Тріо загублених у часі гладіаторів переможено",
 	},
 	[75662] = {
-		[1164841366] = "Bashful Treats obtained from Corry",
-		[1867744735] = "Bashful Treats used on snail racer Bashful",
-		[3366442018] = "Bashful wins a race",
+		[1164841366] = "Отримано Сором'язливі ласощі від Коррі",
+		[1867744735] = "Використано Сором'язливі ласощі на равлика-перегонщика Сором'язливого",
+		[3366442018] = "Сором'язливий виграв перегони",
 	},
 	[75706] = {
-		[526162530] = "Tricky Treats used on snail racer Tricky",
-		[1964041874] = "Tricky wins a race",
-		[2963342731] = "Tricky Treats obtained from Corry",
+		[526162530] = "Використано Хитрі ласощі на равлика-перегонщика Хитрого",
+		[1964041874] = "Хитрий виграв перегони",
+		[2963342731] = "Отримано Хитрі ласощі від Коррі",
 	},
 	[75707] = {
-		[2362352878] = "Brulee Treats obtained from Corry",
-		[2690279107] = "Brulee wins a race",
-		[3079652115] = "Brulee Treats used on snail racer Brulee",
+		[2362352878] = "Отримано ласощі Брюле від Коррі",
+		[2690279107] = "Брюле виграв перегони",
+		[3079652115] = "Використано ласощі Брюле на равлика-перегонщика Брюле",
 	},
 	[75765] = {
 		[3380259730] = "Капаючий Глиняний Горщик",
@@ -30552,11 +31504,11 @@ ns._db.MTQuestObjectives = {
 	[75885] = {
 		[1303004266] = "Продано Помазок Понцо",
 		[1449048094] = "Продано Сертифікати на Часові Апартаменти в Мерехтливому Оґґ",
-		[3971965458] = "1",
-		[3988741651] = "2",
-		[4005517844] = "3",
-		[4022294037] = "4",
-		[4039070230] = "5",
+		[3971965458] = "Один",
+		[3988741651] = "Два",
+		[4005517844] = "Три",
+		[4022294037] = "Чотири",
+		[4039070230] = "П'ять",
 	},
 	[75919] = {
 		[3568430023] = "Знищено запобіжні вогненні камені",
@@ -31314,6 +32266,18 @@ ns._db.MTQuestObjectives = {
 	[77841] = {
 		[3564995160] = "Заверши перегони",
 	},
+	[77842] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[77843] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[77844] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[77845] = {
+		[3564995160] = "Заверши перегони",
+	},
 	[77889] = {
 		[1194160656] = "Виконай події 'Увійти у сон'",
 		[4199174195] = "Вогненна сутність",
@@ -31410,16 +32374,64 @@ ns._db.MTQuestObjectives = {
 	[77983] = {
 		[3564995160] = "Заверши перегони",
 	},
+	[77984] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[77985] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[77986] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[77987] = {
+		[3564995160] = "Заверши перегони",
+	},
 	[77996] = {
 		[3564995160] = "Заверши перегони",
 	},
+	[77997] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[77998] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[77999] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78000] = {
+		[3564995160] = "Заверши перегони",
+	},
 	[78016] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78017] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78018] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78019] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78020] = {
 		[3564995160] = "Заверши перегони",
 	},
 	[78097] = {
 		[2608764154] = "Іскра Життя",
 	},
 	[78102] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78103] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78104] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78105] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78106] = {
 		[3564995160] = "Заверши перегони",
 	},
 	[78113] = {
@@ -31431,6 +32443,18 @@ ns._db.MTQuestObjectives = {
 		[3223356538] = "Заборонений Край",
 	},
 	[78115] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78116] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78117] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78118] = {
+		[3564995160] = "Заверши перегони",
+	},
+	[78119] = {
 		[3564995160] = "Заверши перегони",
 	},
 	[78262] = {
