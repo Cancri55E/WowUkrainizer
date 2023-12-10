@@ -233,6 +233,10 @@ do
             return playerData.Name
         end)
 
+        text = string.gsub(text, "%$[pP]", function(_)
+            return playerData.Name
+        end)
+
         text = string.gsub(text, "%$[rR]", function(marker) -- TODO: case like class
             if (marker == "$R") then return string.upper(playerData.Race) end
             return playerData.Race
