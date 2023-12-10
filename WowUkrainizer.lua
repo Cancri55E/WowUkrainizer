@@ -279,6 +279,10 @@ local function initializeAddon()
         VesionStr = "Версія: " ..
             version .. " (" .. date("%d.%m.%y %H:%M:%S", releaseDate) .. ")"
     }
+
+    ns.Frames = {}
+    ns.Frames["ChangelogsFrame"] = CreateFrame("FRAME", "ChangelogsFrame", UIParent, "WowUkrainizerChangelogsFrame")
+    ns.Frames["ChangelogsFrame"]:SetFrameLevel(5000)
 end
 
 local function OnPlayerLogin()
@@ -309,6 +313,12 @@ local function OnPlayerLogin()
             translatorData.translator = createTranslator(translatorData.name, translatorData.args)
         end
     end
+
+    local lastAutoShownChangelogVersion = WowUkrainizer_Options.LastAutoShownChangelogVersion
+    if (ns._db.Changelogs[1][1] ~= lastAutoShownChangelogVersion) then
+        ns.Frames["ChangelogsFrame"]:ToggleUI()
+        WowUkrainizer_Options.LastAutoShownChangelogVersion = ns._db.Changelogs[1][1]
+    end
 end
 
 local function OnAddOnLoaded(_, name)
@@ -337,6 +347,7 @@ do
                     if IsShiftKeyDown() then
                         ReloadUI()
                     else
+                        --ns.Frames["ChangelogsFrame"]:Show()
                         InterfaceOptionsFrame_OpenToCategory(wowUkrainizerOptions)
                     end
                 end,
