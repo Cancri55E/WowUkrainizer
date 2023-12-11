@@ -284,14 +284,6 @@ do
         return text
     end
 
-    function repository.ContainsQuestData(questId)
-        local contains = ns._db.Quests[questId] ~= nil
-        if (not contains and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
-            return ns._db.MTQuests[questId] ~= nil, true
-        end
-        return contains, false
-    end
-
     function repository.GetQuestObjective(questId, default)
         if (not default) then return default end
 
@@ -363,28 +355,6 @@ do
         return normalizeQuestString(translatedObjectiveText)
     end
 
-    function repository.GetQuestRewardText(questId)
-        local data = ns._db.Quests[questId]
-        if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
-            data = ns._db.MTQuests[questId]
-        end
-
-        if (not data) then return end
-
-        return normalizeQuestString(data[QUEST_REWARD_TEXT])
-    end
-
-    function repository.GetQuestProgressText(questId)
-        local data = ns._db.Quests[questId]
-        if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
-            data = ns._db.MTQuests[questId]
-        end
-
-        if (not data) then return end
-
-        return normalizeQuestString(data[QUEST_COMPLETED_TEXT])
-    end
-
     function repository.GetQuestTitle(questId)
         local data = ns._db.Quests[questId]
         if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
@@ -398,25 +368,53 @@ do
 
     function repository.GetQuestData(questId)
         local data = ns._db.Quests[questId]
-        if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
-            data = ns._db.MTQuests[questId]
+        local mtData = nil
+        if (not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+            mtData = ns._db.MTQuests[questId]
         end
 
-        if (not data) then return end
+        if (not data and not mtData) then return end
 
-        return {
+        local isMTDataUsed = false
+
+        local function _getDataRow(index, postProcessFunc)
+            local dataRow = (data and data[index])
+            local mtDataRow = (mtData and mtData[index])
+
+            if not dataRow and mtDataRow then
+                isMTDataUsed = true
+            end
+
+            local value = dataRow or mtDataRow
+
+            if (postProcessFunc ~= nil) then
+                return postProcessFunc(value)
+            else
+                return value
+            end
+        end
+
+        local questData = {
             ID = questId,
-            Title = data[QUEST_TITLE],
-            Description = normalizeQuestString(data[QUEST_DESCRIPTION]),
-            ObjectivesText = normalizeQuestString(data[QUEST_OBJECTIVES_TEXT]),
-            ContainsObjectives = ns._db.QuestObjectives[questId] ~= nil,
-            CompletionText = data[QUEST_LOG_COMPLETION_TEXT],
-            TargetName = data[QUEST_TARGET_NAME],
-            TargetDescription = data[QUEST_TARGET_DESCRIPTION],
-            TargetCompletedName = data[QUEST_COMPLETED_TARGET_NAME],
-            TargetCompletedDescription = data[QUEST_COMPLETED_TARGET_DESCRIPTION],
-            AreaDescription = data[QUEST_AREA_DESCRIPTION],
+            Title = _getDataRow(QUEST_TITLE),
+            Description = _getDataRow(QUEST_DESCRIPTION, normalizeQuestString),
+            ObjectivesText = _getDataRow(QUEST_OBJECTIVES_TEXT, normalizeQuestString),
+            ContainsObjectives = ns._db.QuestObjectives[questId] ~= nil or ns._db.MTQuestObjectives[questId] ~= nil,
+            CompletionText = _getDataRow(QUEST_LOG_COMPLETION_TEXT),
+            TargetName = _getDataRow(QUEST_TARGET_NAME),
+            TargetDescription = _getDataRow(QUEST_TARGET_DESCRIPTION),
+            TargetCompletedName = _getDataRow(QUEST_COMPLETED_TARGET_NAME),
+            TargetCompletedDescription = _getDataRow(QUEST_COMPLETED_TARGET_DESCRIPTION),
+            AreaDescription = _getDataRow(QUEST_AREA_DESCRIPTION),
+            RewardText = _getDataRow(QUEST_REWARD_TEXT, normalizeQuestString),
+            ProgressText = _getDataRow(QUEST_COMPLETED_TEXT, normalizeQuestString),
         }
+
+        if (isMTDataUsed) then
+            questData.IsMTData = true
+        end
+
+        return questData
     end
 
     dbContext.Quests = repository
