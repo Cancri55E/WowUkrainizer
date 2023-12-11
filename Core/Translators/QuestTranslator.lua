@@ -10,9 +10,6 @@ local GetGossipOptionText = ns.DbContext.Gossips.GetGossipOptionText
 local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
 local GetQuestData = ns.DbContext.Quests.GetQuestData
 local GetQuestObjective = ns.DbContext.Quests.GetQuestObjective
-local GetQuestRewardText = ns.DbContext.Quests.GetQuestRewardText
-local GetQuestProgressText = ns.DbContext.Quests.GetQuestProgressText
-local ContainsQuestData = ns.DbContext.Quests.ContainsQuestData
 
 local FACTION_ALLIANCE = ns.FACTION_ALLIANCE
 local FACTION_HORDE = ns.FACTION_HORDE
@@ -113,13 +110,12 @@ local function getQuestID()
     end
 end
 
-local function showCommandButtonsForQuest(questID)
-    local contains, isMt = ContainsQuestData(questID)
-    if (contains) then
+local function showCommandButtonsForQuest(needToShow, isMTData)
+    if (needToShow) then
         questFrameSwitchTranslationButton:Show()
         questPopupFrameSwitchTranslationButton:Show()
         questMapDetailsFrameSwitchTranslationButton:Show()
-        if (isMt) then
+        if (isMTData) then
             questFrameMTIcon:Show()
             questPopupFrameMTIcon:Show()
             questMapDetailsFrameMTIcon:Show()
@@ -579,9 +575,9 @@ local function DisplayQuestInfo(template, parentFrame)
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
 
-    showCommandButtonsForQuest(questID)
-
     local questData = GetQuestData(questID)
+
+    showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMTData)
 
     local elementsTable = template.elements;
     for i = 1, #elementsTable, 3 do
@@ -616,9 +612,8 @@ local function DisplayQuestInfo(template, parentFrame)
                 -- ignore
             elseif (name == "QuestInfoRewardsFrame") then
                 if (WowUkrainizer_Options.TranslateQuestText) then
-                    local rewardText = GetQuestRewardText(questID)
-                    if (rewardText) then
-                        QuestInfoRewardText:SetText(rewardText)
+                    if (questData and questData.RewardText) then
+                        QuestInfoRewardText:SetText(questData.RewardText)
                     end
                 end
                 translateUIFontString(QuestInfoRewardsFrame.ItemChooseText)
@@ -656,17 +651,17 @@ local function OnQuestFrameProgressPanelShow(_)
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
 
-    showCommandButtonsForQuest(questID)
+    local questData = GetQuestData(questID)
+
+    showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMTData)
 
     if (WowUkrainizer_Options.TranslateQuestText) then
-        local title = GetQuestTitle(questID)
-        if (title) then
-            QuestProgressTitleText:SetText(title)
+        if (questData and questData.Title) then
+            QuestProgressTitleText:SetText(questData.Title)
         end
 
-        local progressText = GetQuestProgressText(questID)
-        if (progressText) then
-            QuestProgressText:SetText(progressText)
+        if (questData and questData.ProgressText) then
+            QuestProgressText:SetText(questData.ProgressText)
         end
     end
 end
