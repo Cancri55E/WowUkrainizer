@@ -1,0 +1,115 @@
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
+    <Script file="CommonFrames.lua"/>
+
+    <Font name="WowUkrainizerFrameTitleFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="15"/>
+    <Font name="WowUkrainizerFrameSecondaryTitleFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="14"/>
+    <Font name="WowUkrainizerFramePrimaryTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="12"/>
+    <Font name="WowUkrainizerFrameHeaderTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="13">
+		<Color r="1" g="0.8" b="0"/>
+	</Font>
+    <Font name="WowUkrainizerSmallTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="11"/>
+	<Font name="WowUkrainizerSecondaryTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="11">
+        <Color r="0.604" g="0.592" b="0.725"/>
+    </Font>
+    <Font name="WowUkrainizerUrlTextFont" justifyH="LEFT" justifyV="TOP" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="13">
+        <Color r="0" g="0.6" b="1"/>
+    </Font>
+
+    <CheckButton name="WowUkrainizerCheckButtonTemplate" mixin="WowUkrainizerCheckButtonMixin" virtual="true">
+		<Size x="24" y="24"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Text" inherits="WowUkrainizerFramePrimaryTextFont">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT" x="1" y="1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
+		<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
+		<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
+		<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
+		<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
+		<Scripts>
+			<OnClick method="OnClick"/>
+		</Scripts>
+	</CheckButton>
+
+	<Frame name="WowUkrainizerUrlFrameTemplate" mixin="WowUkrainizerUrlFrameMixin" virtual="true">
+		<Size x="343" y="24"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Title" inherits="WowUkrainizerFrameHeaderTextFont" justifyH="RIGHT">
+					<Size x="65"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Url" inherits="WowUkrainizerUrlTextFont">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Title" relativePoint="TOPRIGHT" x="8"/>
+					</Anchors>
+					<Scripts>
+						<OnMouseDown>
+							self:GetParent():OnMouseDown()
+						</OnMouseDown>
+					</Scripts>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox name="$parentEditBox" parentKey="CopyUrlBox" inherits="InputBoxTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Title" relativePoint="TOPRIGHT" x="8"/>
+				</Anchors>
+			</EditBox>
+		</Frames>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+		</Scripts>
+	</Frame>
+
+	<Frame name="WowUkrainizerInfoFrameTemplate" mixin="WowUkrainizerInfoFrameMixin" virtual="true">
+		<Size x="343" y="24"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Title" inherits="WowUkrainizerFrameHeaderTextFont" justifyH="RIGHT">
+					<Size x="65"/>
+					<Anchors>
+						<Anchor point="LEFT"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Info" inherits="WowUkrainizerFrameHeaderTextFont">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Title" relativePoint="TOPRIGHT" x="8"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+		</Scripts>
+	</Frame>
+
+	<Frame name="WowUkrainizerHeaderTemplate" virtual="true">
+        <Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Header" inherits="WowUkrainizerFrameHeaderTextFont" wordwrap="false" text="Заголовок">
+					<Anchors>
+						<Anchor point="TOPLEFT" y="0"/>
+					</Anchors>
+				</FontString>
+                <Texture>
+					<Size y="2"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="0" y="-16"/>
+						<Anchor point="TOPRIGHT" x="0" y="-18"/>
+					</Anchors>
+					<Color r="0.216" g="0.208" b="0.31" a="1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
+</Ui>

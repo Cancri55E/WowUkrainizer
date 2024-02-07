@@ -1,4 +1,4 @@
-local addonName, ns = ...;
+local _, ns = ...;
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 
@@ -7,718 +7,216 @@ ns.SettingsProvider = settingsProvider
 
 local defaultOptions = {
     -- Font
-    UserFontName = "Arsenal Regular",
-    FontScaleInPercent = 1.1,
-    TooltipHeaderFontScaleInPercent = 1.15,
-    TooltipFontScaleInPercent = 1.1,
-    UseDefaultFonts = false,
+    [WOW_UKRAINIZER_MAIN_FONT_NAME_OPTION] = "Friz Quadrata TT (укр.)",
+    [WOW_UKRAINIZER_TITLE_FONT_NAME_OPTION] = "Morpheus (укр.)",
+    [WOW_UKRAINIZER_TOOLTIP_FONT_NAME_OPTION] = "Friz Quadrata TT (укр.)",
+    [WOW_UKRAINIZER_MAIN_FONT_SCALE_IN_PERCENT_OPTION] = 1,
+    [WOW_UKRAINIZER_TITLE_FONT_SCALE_IN_PERCENT_OPTION] = 1,
+    [WOW_UKRAINIZER_TOOLTIP_FONT_SCALE_IN_PERCENT_OPTION] = 1,
+    [WOW_UKRAINIZER_USE_DEFAULT_FONTS_OPTION] = false,
+    [WOW_UKRAINIZER_USE_ADAPTED_FONTS_OPTION] = true,
+    [WOW_UKRAINIZER_USE_CUSTOMIZED_FONTS_OPTION] = false,
     -- General
-    TranslateClassTalentsFrame = true,
-    TranslateSpellbookFrame = true,
-    TranslateQuestAndObjectivesFrame = true,
-    DisableMTForTranslateQuestAndObjectivesFrame = false,
-    TranslateNameplatesAndUnitFrames = true,
-    SpellNameLangInSpellbook = "ua",
-    HighlightSpellNameInDescription = true,
-    TranslateUnitTooltips = true,
-    TranslateSpellTooltips = true,
-    TooltipSpellLangInName = "both",
-    TooltipSpellLangInDescription = "ua",
-    TranslateSubtitles = true,
-    TranslateNpcMessages = true,
+    [WOW_UKRAINIZER_IS_FIRST_RUN_OPTION] = true,
+    [WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION] = true,
+    [WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION] = true,
+    [WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION] = true,
+    [WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION] = false,
+    [WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION] = true,
+    [WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION] = true,
+    [WOW_UKRAINIZER_SPELL_NAME_LANG_IN_SPELLBOOK_OPTION] = "ua",
+    [WOW_UKRAINIZER_TRANSLATE_SUBTITLES_OPTION] = true,
+    [WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION] = true,
+    -- Tooltips
+    [WOW_UKRAINIZER_TRANSLATE_UNIT_TOOLTIPS_OPTION] = true,
+    [WOW_UKRAINIZER_TRANSLATE_SPELL_TOOLTIPS_OPTION] = true,
+    [WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION] = "both",
+    [WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION] = "ua",
+    [WOW_UKRAINIZER_HIGHLIGHT_SPELL_NAME_IN_DESCRIPTION_OPTION] = true,
     -- Changelogs
-    LastAutoShownChangelogVersion = "1.8.19",
+    [WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION] = "1.9.2",
 }
 
 function settingsProvider:Load()
     WowUkrainizer_Options = WowUkrainizer_Options or {}
 
-    local def = self.GetDefaultOptions()
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_IS_FIRST_RUN_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_IS_FIRST_RUN_OPTION] = defaultOptions
+            [WOW_UKRAINIZER_IS_FIRST_RUN_OPTION]
+    end
 
     -- Font settings
-    WowUkrainizer_Options.UserFontName = WowUkrainizer_Options.UserFontName or def.UserFontName
+    WowUkrainizer_Options[WOW_UKRAINIZER_MAIN_FONT_NAME_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_MAIN_FONT_NAME_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_MAIN_FONT_NAME_OPTION]
 
-    WowUkrainizer_Options.FontScaleInPercent =
-        WowUkrainizer_Options.FontScaleInPercent or def.FontScaleInPercent
+    WowUkrainizer_Options[WOW_UKRAINIZER_TITLE_FONT_NAME_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_TITLE_FONT_NAME_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_TITLE_FONT_NAME_OPTION]
 
-    WowUkrainizer_Options.TooltipHeaderFontScaleInPercent =
-        WowUkrainizer_Options.TooltipHeaderFontScaleInPercent or def.TooltipHeaderFontScaleInPercent
+    WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_FONT_NAME_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_FONT_NAME_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_TOOLTIP_FONT_NAME_OPTION]
 
-    WowUkrainizer_Options.TooltipFontScaleInPercent =
-        WowUkrainizer_Options.TooltipFontScaleInPercent or def.TooltipFontScaleInPercent
+    WowUkrainizer_Options[WOW_UKRAINIZER_MAIN_FONT_SCALE_IN_PERCENT_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_MAIN_FONT_SCALE_IN_PERCENT_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_MAIN_FONT_SCALE_IN_PERCENT_OPTION]
 
-    if (WowUkrainizer_Options.UseDefaultFonts == nil) then
-        WowUkrainizer_Options.UseDefaultFonts = def.UseDefaultFonts
+    WowUkrainizer_Options[WOW_UKRAINIZER_TITLE_FONT_SCALE_IN_PERCENT_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_TITLE_FONT_SCALE_IN_PERCENT_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_TITLE_FONT_SCALE_IN_PERCENT_OPTION]
+
+    WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_FONT_SCALE_IN_PERCENT_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_FONT_SCALE_IN_PERCENT_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_TOOLTIP_FONT_SCALE_IN_PERCENT_OPTION]
+
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_USE_DEFAULT_FONTS_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_USE_DEFAULT_FONTS_OPTION] = defaultOptions
+            [WOW_UKRAINIZER_USE_DEFAULT_FONTS_OPTION]
+    end
+
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_USE_ADAPTED_FONTS_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_USE_ADAPTED_FONTS_OPTION] = defaultOptions
+            [WOW_UKRAINIZER_USE_ADAPTED_FONTS_OPTION]
+    end
+
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_USE_CUSTOMIZED_FONTS_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_USE_CUSTOMIZED_FONTS_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_USE_CUSTOMIZED_FONTS_OPTION]
     end
 
     -- General settings
-    if (WowUkrainizer_Options.TranslateClassTalentsFrame == nil) then
-        WowUkrainizer_Options.TranslateClassTalentsFrame = def.TranslateClassTalentsFrame
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION]
     end
 
-    if (WowUkrainizer_Options.TranslateSpellbookFrame == nil) then
-        WowUkrainizer_Options.TranslateSpellbookFrame = def.TranslateSpellbookFrame
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION] = defaultOptions
+            [WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION]
     end
 
-    if (WowUkrainizer_Options.TranslateNameplatesAndUnitFrames == nil) then
-        WowUkrainizer_Options.TranslateNameplatesAndUnitFrames = def.TranslateNameplatesAndUnitFrames
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION]
     end
 
-    if (WowUkrainizer_Options.TranslateQuestAndObjectivesFrame == nil) then
-        WowUkrainizer_Options.TranslateQuestAndObjectivesFrame = def.TranslateQuestAndObjectivesFrame
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION]
     end
 
-    if (WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame == nil) then
-        WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame = def
-            .DisableMTForTranslateQuestAndObjectivesFrame
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION]
     end
 
-    WowUkrainizer_Options.SpellNameLangInSpellbook =
-        WowUkrainizer_Options.SpellNameLangInSpellbook or def.SpellNameLangInSpellbook
+    WowUkrainizer_Options[WOW_UKRAINIZER_SPELL_NAME_LANG_IN_SPELLBOOK_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_SPELL_NAME_LANG_IN_SPELLBOOK_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_SPELL_NAME_LANG_IN_SPELLBOOK_OPTION]
 
-    if (WowUkrainizer_Options.TranslateSpellTooltips == nil) then
-        WowUkrainizer_Options.TranslateSpellTooltips = def.TranslateSpellTooltips
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_SPELL_TOOLTIPS_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_SPELL_TOOLTIPS_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_TRANSLATE_SPELL_TOOLTIPS_OPTION]
     end
 
-    if (WowUkrainizer_Options.TranslateUnitTooltips == nil) then
-        WowUkrainizer_Options.TranslateUnitTooltips = def.TranslateUnitTooltips
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_UNIT_TOOLTIPS_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_UNIT_TOOLTIPS_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_TRANSLATE_UNIT_TOOLTIPS_OPTION]
     end
 
-    if (WowUkrainizer_Options.HighlightSpellNameInDescription == nil) then
-        WowUkrainizer_Options.HighlightSpellNameInDescription = def.HighlightSpellNameInDescription
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_HIGHLIGHT_SPELL_NAME_IN_DESCRIPTION_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_HIGHLIGHT_SPELL_NAME_IN_DESCRIPTION_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_HIGHLIGHT_SPELL_NAME_IN_DESCRIPTION_OPTION]
     end
 
-    if (WowUkrainizer_Options.TranslateSubtitles == nil) then
-        WowUkrainizer_Options.TranslateSubtitles = def.TranslateSubtitles
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_SUBTITLES_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_SUBTITLES_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_TRANSLATE_SUBTITLES_OPTION]
     end
 
 
-    if (WowUkrainizer_Options.TranslateNpcMessages == nil) then
-        WowUkrainizer_Options.TranslateNpcMessages = def.TranslateNpcMessages
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION] == nil) then
+        WowUkrainizer_Options[WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION] =
+            defaultOptions[WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION]
     end
 
-    WowUkrainizer_Options.TooltipSpellLangInName =
-        WowUkrainizer_Options.TooltipSpellLangInName or def.TooltipSpellLangInName
+    WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION]
 
-    WowUkrainizer_Options.TooltipSpellLangInDescription =
-        WowUkrainizer_Options.TooltipSpellLangInDescription or def.TooltipSpellLangInDescription
+    WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION]
 
-    WowUkrainizer_Options.LastAutoShownChangelogVersion =
-        WowUkrainizer_Options.LastAutoShownChangelogVersion or def.LastAutoShownChangelogVersion
+    WowUkrainizer_Options[WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION] =
+        WowUkrainizer_Options[WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION] or
+        defaultOptions[WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION]
 end
 
-function settingsProvider:Build()
-    local function addVerticalMargin(order)
-        return {
-            type = "description",
-            name = " ",
-            fontSize = "medium",
-            order = order,
-            width = 3.6
-        }
+function settingsProvider:ResetToDefault()
+    local currentLastAutoShownChangelogVersion =
+        WowUkrainizer_Options[WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION]
+
+    local isFirstRun =
+        WowUkrainizer_Options[WOW_UKRAINIZER_IS_FIRST_RUN_OPTION]
+
+    for k, v in pairs(defaultOptions) do
+        WowUkrainizer_Options[k] = v
     end
 
-    local function createIncrementor()
-        local x = 0
-        return function()
-            x = x + 1
-            return x
-        end
-    end
-
-
-
-    local setContributorsPageOrder = createIncrementor()
-    local setFontSettingsArgsOrder = createIncrementor()
-    local setGeneralSettingsArgsOrder = createIncrementor()
-
-    ns.Options = {
-        type = "group",
-        name = "WowUkrainizer",
-        args = {
-            General = {
-                order = 1,
-                type = "group",
-                name = "Налаштування",
-                childGroups = "tab",
-                args = {
-                    Version = {
-                        type = "description",
-                        name = ns.CommonData.VesionStr,
-                        fontSize = "small",
-                        order = 1,
-                        width = "full"
-                    },
-                    Commands = {
-                        order = 2,
-                        type = "group",
-                        name = " ",
-                        inline = true,
-                        args = {
-                            SettingsWarning = {
-                                type = "description",
-                                name =
-                                [[Увага!
-Зміни в налаштуваннях будуть застосовані тільки після перезавантаження інтерфейсу або виконання команди /reload.
-Будь ласка, зверніть увагу, що без цього кроку нові налаштування не вступлять в силу.
-
-]],
-                                fontSize = "small",
-                                order = 1,
-                                width = "full"
-                            },
-                            ResetInterface = {
-                                order = 2,
-                                name = "Перезавантажити",
-                                type = "execute",
-                                func = function() ReloadUI() end,
-                            },
-                            ResetFonts = {
-                                order = 3,
-                                name = "За замовчуванням",
-                                desc =
-                                [[Ця кнопка скидає всі налаштування до стандартних значень, встановлених розробниками аддона.
-
-Після натискання всі ваші поточні налаштування будуть втрачені, і будуть встановлені значення за замовчуванням.]],
-                                type = "execute",
-                                func = function()
-                                    StaticPopup_Show("WOW_UKRAINIZAER_RESET_SETTINGS");
-                                end,
-                            },
-                            Changelogs = {
-                                order = 4,
-                                name = "Що Нового?",
-                                type = "execute",
-                                func = function() ns.Frames["ChangelogsFrame"]:ToggleUI() end,
-                            },
-                        }
-                    },
-                    GeneralSettings = {
-                        name = "Загальні налаштування",
-                        type = "group",
-                        order = 3,
-                        width = "double",
-                        args = {
-                            TranslateClassTalentsFrame = {
-                                type = "toggle",
-                                name = "Перекладати вікно \"Спеціалізація та таланти\"",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 3.6,
-                                get = function(_) return WowUkrainizer_Options.TranslateClassTalentsFrame end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateClassTalentsFrame = value end,
-                            },
-                            TranslateSpellbookFrame = {
-                                type = "toggle",
-                                name = "Перекладати вікно \"Книга здібностей та професії\"",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 3.6,
-                                get = function(_) return WowUkrainizer_Options.TranslateSpellbookFrame end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateSpellbookFrame = value end,
-                            },
-
-                            -- Spell Name in spellbook
-                            SpellNameLangInSpellbook_Desc = {
-                                type = "description",
-                                name = "Якою мовою виводити назви здібностей",
-                                fontSize = "medium",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 2.15
-                            },
-                            SpellNameLangInSpellbook = {
-                                type = "select",
-                                name = "",
-                                width = 1.3,
-                                order = setGeneralSettingsArgsOrder(),
-                                values = {
-                                    ["en"] = "Англійська",
-                                    ["ua"] = "Українська",
-                                },
-                                get = function(_) return WowUkrainizer_Options.SpellNameLangInSpellbook end,
-                                set = function(_, value) WowUkrainizer_Options.SpellNameLangInSpellbook = value end,
-                                disabled = function()
-                                    return not WowUkrainizer_Options.TranslateSpellbookFrame
-                                end,
-                            },
-
-                            TranslateQuestAndObjectivesFrame = {
-                                type = "toggle",
-                                name = "Перекладати завдання",
-                                desc = "",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 1.0,
-                                get = function(_) return WowUkrainizer_Options.TranslateQuestAndObjectivesFrame end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateQuestAndObjectivesFrame = value end,
-                            },
-
-                            DisableMTForTranslateQuestAndObjectivesFrame = {
-                                type = "toggle",
-                                name = "Не використовувати машинний переклад для завдань",
-                                desc = "Якщо текст не був перекладеним людиною, то за замовчення підставляється " ..
-                                    "машинний переклад (якщо він є) і ви бачите спеціальну позначку. Якщо увімкнути цю опцію " ..
-                                    "машинний переклад ніколи не буде використовуватися.",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 2.0,
-                                get = function(_)
-                                    return WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame
-                                end,
-                                set = function(_, value)
-                                    WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame = value
-                                end,
-                                disabled = function()
-                                    return not WowUkrainizer_Options.TranslateQuestAndObjectivesFrame
-                                end,
-                            },
-
-                            TranslateNameplatesAndUnitFrames = {
-                                type = "toggle",
-                                name = "Перекладати Nameplates та Unit Frames",
-                                desc = "Крім стандартних Nameplates, наш аддон також сумісний з Plater та ElvUI.",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 3.6,
-                                get = function(_) return WowUkrainizer_Options.TranslateNameplatesAndUnitFrames end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateNameplatesAndUnitFrames = value end,
-                            },
-
-                            TranslateSubtitles = {
-                                type = "toggle",
-                                name = "Перекладати субтитри в відеороликах",
-                                desc = "Відображає українські субтитри в відеороликах",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 3.6,
-                                get = function(_) return WowUkrainizer_Options.TranslateSubtitles end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateSubtitles = value end,
-                            },
-
-                            TranslateNpcMessages = {
-                                type = "toggle",
-                                name = "Перекладати діалоги",
-                                desc = "Відображає український переклад в діалогах які ви бачите під час гри " ..
-                                    "(як в чаті, так і в \"бульбашках\" над головами НІП)",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 3.6,
-                                get = function(_) return WowUkrainizer_Options.TranslateNpcMessages end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateNpcMessages = value end,
-                            },
-
-                            VerticalMargin = addVerticalMargin(12),
-                            TooltipsHeader = {
-                                type = "header",
-                                name = "Екрані підказки",
-                                order = setGeneralSettingsArgsOrder()
-                            },
-
-                            TranslateUnitTooltips = {
-                                type = "toggle",
-                                name = "Перекладати підказки НІП",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 3.6,
-                                get = function(_) return WowUkrainizer_Options.TranslateUnitTooltips end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateUnitTooltips = value end,
-                            },
-                            TranslateSpellTooltips = {
-                                type = "toggle",
-                                name = "Перекладати підказки здібностей та талантів",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 3.6,
-                                get = function(_) return WowUkrainizer_Options.TranslateSpellTooltips end,
-                                set = function(_, value) WowUkrainizer_Options.TranslateSpellTooltips = value end,
-                            },
-
-                            -- Spell Name
-                            TooltipSpellLangInName_Desc = {
-                                type = "description",
-                                name = "Мова якою виводяться назви талантів та здібностей",
-                                fontSize = "medium",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 2.15
-                            },
-                            TooltipSpellLangInName = {
-                                type = "select",
-                                name = "",
-                                width = 1.3,
-                                order = setGeneralSettingsArgsOrder(),
-                                values = {
-                                    ["en"] = "Англійська",
-                                    ["ua"] = "Українська",
-                                    ["both"] = "Обидві (спочатку англійська)",
-                                },
-                                get = function(_) return WowUkrainizer_Options.TooltipSpellLangInName end,
-                                set = function(_, value) WowUkrainizer_Options.TooltipSpellLangInName = value end,
-                                disabled = function()
-                                    return not WowUkrainizer_Options.TranslateSpellTooltips
-                                end,
-                            },
-
-                            -- Spell Description
-                            TooltipSpellLangInDescription_Desc = {
-                                type = "description",
-                                name = "Мова якою виводиться опис талантів та здібностей",
-                                fontSize = "medium",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 2.15
-                            },
-                            TooltipSpellLangInDescription = {
-                                type = "select",
-                                name = "",
-                                width = 1.3,
-                                order = setGeneralSettingsArgsOrder(),
-                                values = {
-                                    ["en"] = "Англійська",
-                                    ["ua"] = "Українська",
-                                },
-                                get = function(_) return WowUkrainizer_Options.TooltipSpellLangInDescription end,
-                                set = function(_, value) WowUkrainizer_Options.TooltipSpellLangInDescription = value end,
-                                disabled = function()
-                                    return not WowUkrainizer_Options.TranslateSpellTooltips
-                                end,
-                            },
-
-                            HighlightSpellNameInDescription = {
-                                type = "toggle",
-                                name = "Виділяти голубим кольором назви здібностей (талантів) в описі",
-                                order = setGeneralSettingsArgsOrder(),
-                                width = 3.45,
-                                get = function(_) return WowUkrainizer_Options.HighlightSpellNameInDescription end,
-                                set = function(_, value) WowUkrainizer_Options.HighlightSpellNameInDescription = value end,
-                                disabled = function()
-                                    return not WowUkrainizer_Options.TranslateSpellTooltips
-                                end,
-                            },
-                        }
-                    },
-                    FontSettings = {
-                        name = "Налаштувати шрифти",
-                        type = "group",
-                        order = 4,
-                        width = "double",
-                        args = {
-                            UseDefaultFonts = {
-                                type = "toggle",
-                                name = "Використовувати стандартні шрифти",
-                                desc =
-                                [[Якщо ви вже використовуєте будь-яку глобальну модифікацію, яка замінює шрифт, наприклад ElvUI, рекомендується встановити цю позначку, щоб уникнути можливих конфліктів.
-
-Всі налаштування шрифтів слід проводити безпосередньо через глобальну модифікацію.
-
-Це допоможе забезпечити стабільність та сумісність між різними аддонами.]],
-                                order = setFontSettingsArgsOrder(),
-                                width = "double",
-                                get = function(_) return WowUkrainizer_Options.UseDefaultFonts end,
-                                set = function(_, value) WowUkrainizer_Options.UseDefaultFonts = value end,
-                            },
-                            HorizaontalMargin1 = {
-                                type = "description",
-                                name = " ",
-                                fontSize = "large",
-                                order = setFontSettingsArgsOrder(),
-                                width = "half"
-                            },
-                            UserFontHeader = {
-                                type = "header",
-                                name = "",
-                                order = setFontSettingsArgsOrder()
-                            },
-                            UserFontWarning = {
-                                type = "description",
-                                name =
-                                [[Перевірте що вибраний вами шрифт підтримує кирилицю. Інакше це призведе візуальних багів з відображенням тексту.
-Ви можете використати аддон LibSharedMedia-3.0 для додавання нових шрифтів.
-                                ]],
-                                order = setFontSettingsArgsOrder(),
-                                width = "full"
-                            },
-                            UserFont = {
-                                type = "select",
-                                name = "Доступні шрифти",
-                                width = "double",
-                                order = setFontSettingsArgsOrder(),
-                                values = sharedMedia:HashTable("font"),
-                                dialogControl = "LSM30_Font",
-                                get = function(_) return WowUkrainizer_Options.UserFontName end,
-                                set = function(_, value) WowUkrainizer_Options.UserFontName = value end,
-                                disabled = function()
-                                    return WowUkrainizer_Options.UseDefaultFonts
-                                end,
-                            },
-                            VerticalMargin2 = {
-                                type = "description",
-                                name = " ",
-                                order = setFontSettingsArgsOrder()
-                            },
-                            FontScaleHeader = {
-                                type = "header",
-                                name = "Розмір шрифту (%)",
-                                order = setFontSettingsArgsOrder()
-                            },
-                            FontScaleDescription = {
-                                type = "description",
-                                name = "Загальний",
-                                order = setFontSettingsArgsOrder(),
-                                width = "1",
-                                fontSize = "medium"
-                            },
-                            FontScale = {
-                                type = "range",
-                                name = "",
-                                order = setFontSettingsArgsOrder(),
-                                min = 0.5,
-                                max = 3,
-                                bigStep = 0.01,
-                                width = "double",
-                                get = function(_) return WowUkrainizer_Options.FontScaleInPercent end,
-                                set = function(_, value) WowUkrainizer_Options.FontScaleInPercent = value end,
-                                disabled = function()
-                                    return WowUkrainizer_Options.UseDefaultFonts
-                                end,
-                            },
-                            TooltipHeaderFontScaleDescription = {
-                                type = "description",
-                                name = "Заголовок екранних підказок",
-                                order = setFontSettingsArgsOrder(),
-                                width = "1",
-                                fontSize = "medium"
-                            },
-                            TooltipHeaderFontScale = {
-                                type = "range",
-                                name = "",
-                                order = setFontSettingsArgsOrder(),
-                                min = 0.5,
-                                max = 3,
-                                bigStep = 0.01,
-                                width = "double",
-                                get = function(_)
-                                    return WowUkrainizer_Options
-                                        .TooltipHeaderFontScaleInPercent
-                                end,
-                                set = function(_, value)
-                                    WowUkrainizer_Options.TooltipHeaderFontScaleInPercent =
-                                        value
-                                end,
-                                disabled = function()
-                                    return WowUkrainizer_Options.UseDefaultFonts
-                                end,
-                            },
-                            TooltipFontScaleDescription = {
-                                type = "description",
-                                name = "Текст екранних підказок",
-                                order = setFontSettingsArgsOrder(),
-                                width = "1",
-                                fontSize = "medium"
-                            },
-                            TooltipFontScale = {
-                                type = "range",
-                                name = "",
-                                order = setFontSettingsArgsOrder(),
-                                min = 0.5,
-                                max = 3,
-                                bigStep = 0.01,
-                                width = "double",
-                                get = function(_) return WowUkrainizer_Options.TooltipFontScaleInPercent end,
-                                set = function(_, value)
-                                    WowUkrainizer_Options.TooltipFontScaleInPercent =
-                                        value
-                                end,
-                                disabled = function()
-                                    return WowUkrainizer_Options.UseDefaultFonts
-                                end,
-                            },
-                        }
-                    },
-                }
-            },
-            Contributors = {
-                order = 2,
-                type = "group",
-                name = "Причетні",
-                args = {
-                    DedicationText = {
-                        order = setContributorsPageOrder(),
-                        type = "description",
-                        name = [[
-Українчики,
-
-Хочу висловити вам мою щиру подяку за невтомну роботу та підтримку в процесі перекладу та тестування аддона. Це лише перший крок в українізації одного із найпопулярніших ігрових світів.
-
-Закликаю вас грати українською, дивитися українських контент-мейкерів та продовжувати підтримувати нашу спільну мету. Всі посилання на потрібні ресурси ви знайдете нижче.
-
-Разом до перемоги!]],
-                        fontSize = "small"
-                    },
-                    SPC00 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    SPC01 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    ContributorsHeader = {
-                        order = setContributorsPageOrder(),
-                        type = "header",
-                        name = "Причетні",
-                        dialogControl = "SFX-Header-II",
-                    },
-                    Proofreaders = {
-                        type = "input",
-                        name = "Редактори",
-                        get = function() return "Semerkhet\n" end,
-                        order = setContributorsPageOrder(),
-                        disabled = true,
-                        dialogControl = "SFX-Info",
-                    },
-                    SPC0 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    Translators = {
-                        type = "input",
-                        name = "Перекладачі",
-                        get = function()
-                            return
-                                "KuprumLight, Glafira, Mark Tsemma, Olena Gorbenko, Алексей Коваль, Serhii Feelenko, Semerkhet, " ..
-                                "Mykyta Barmin, kasatushi, Валерій Бондаренко, Roman Yanyshyn, Dmytro Boryshpolets, NichnaVoitelka, " ..
-                                "Unbrkbl Opt1mist, Elanka, Shelby333, Nazar Kulchytskyi, Rolik33, RomenSkyJR, Дмитро Горєнков, Asturiel, " ..
-                                "Женя Браславська, Сергей Райдер, Лігво Друїда, losthost, Bokshchanin, Volodymyr Taras, Олексій Сьомін, " ..
-                                "Primarch, Ксенія Никонова, Natalie Dexter, Maxym Palamarchuk, Archenok"
-                        end,
-                        order = setContributorsPageOrder(),
-                        disabled = true,
-                        dialogControl = "SFX-Info",
-                    },
-                    SPC1 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    Bugfix = {
-                        type = "input",
-                        name = "Технічна поміч",
-                        get = function() return "Лігво Друїда (molaf)\n\n" end,
-                        order = setContributorsPageOrder(),
-                        disabled = false,
-                        dialogControl = "SFX-Info",
-                    },
-                    SPC2 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    SPC4 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    Media = {
-                        order = setContributorsPageOrder(),
-                        type = "header",
-                        name = "Ресурси та Посилання",
-                        dialogControl = "SFX-Header-II",
-                    },
-                    SPC6 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    Discords1 = {
-                        type = "input",
-                        name = "Ukrainian Community",
-                        get = function() return "https://bit.ly/ua_wow" end,
-                        order = setContributorsPageOrder(),
-                        disabled = false,
-                        dialogControl = "SFX-Info-URL",
-                    },
-                    SPC7 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    Discords2 = {
-                        type = "input",
-                        name = "Нічна Воїтелька",
-                        get = function() return "https://discord.gg/VGfWeWTX24" end,
-                        order = setContributorsPageOrder(),
-                        disabled = false,
-                        dialogControl = "SFX-Info-URL",
-                    },
-                    SPC8 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    Twitch1 = {
-                        type = "input",
-                        name = "Rolik33",
-                        get = function() return "https://www.twitch.tv/rolik33" end,
-                        order = setContributorsPageOrder(),
-                        disabled = false,
-                        dialogControl = "SFX-Info-URL",
-                    },
-                    SPC9 = {
-                        type = "description",
-                        name = " ",
-                        order = setContributorsPageOrder(),
-                    },
-                    Youtube1 = {
-                        type = "input",
-                        name = "Unbrkbl Opt1mist",
-                        get = function() return "https://www.youtube.com/user/xcryjedicryx" end,
-                        order = setContributorsPageOrder(),
-                        disabled = false,
-                        dialogControl = "SFX-Info-URL",
-                    },
-                }
-            }
-        }
-    }
+    WowUkrainizer_Options[WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION] = currentLastAutoShownChangelogVersion
+    WowUkrainizer_Options[WOW_UKRAINIZER_IS_FIRST_RUN_OPTION] = isFirstRun
 end
-
-function settingsProvider:Reset()
-    WowUkrainizer_Options = self.GetDefaultOptions()
-    ReloadUI()
-end
-
-function settingsProvider.GetQuestTitleFontFile()
-    return [[Interface\AddOns\WowUkrainizer\assets\Classic_UA_Morpheus.ttf]]
-end
-
-function settingsProvider.GetQuestFontFile()
-    return [[Interface\AddOns\WowUkrainizer\assets\Classic_UA_FRIZQT.ttf]]
-end
-
-function settingsProvider.GetDefaultFontFile()
-    return [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]]
-end
-
-function settingsProvider.GetDefaultOptions() return defaultOptions end
 
 function settingsProvider.GetFontSettings()
-    local fontName = settingsProvider.GetDefaultFontFile()
-    for key, value in pairs(sharedMedia:HashTable("font")) do
-        if (key == WowUkrainizer_Options.UserFontName) then fontName = value end
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_USE_DEFAULT_FONTS_OPTION]) then
+        return true
     end
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_USE_ADAPTED_FONTS_OPTION]) then
+        return false,
+            WOW_UKRAINIZER_ADAPTED_MAIN_FONT_PATH, 1,
+            WOW_UKRAINIZER_ADAPTED_TITLE_FONT_PATH, 1,
+            WOW_UKRAINIZER_ADAPTED_MAIN_FONT_PATH, 1
+    end
+    if (WowUkrainizer_Options[WOW_UKRAINIZER_USE_CUSTOMIZED_FONTS_OPTION]) then
+        return false,
+            sharedMedia:Fetch('font', WowUkrainizer_Options[WOW_UKRAINIZER_MAIN_FONT_NAME_OPTION]),
+            WowUkrainizer_Options[WOW_UKRAINIZER_MAIN_FONT_SCALE_IN_PERCENT_OPTION],
+            sharedMedia:Fetch('font', WowUkrainizer_Options[WOW_UKRAINIZER_TITLE_FONT_NAME_OPTION]),
+            WowUkrainizer_Options[WOW_UKRAINIZER_TITLE_FONT_SCALE_IN_PERCENT_OPTION],
+            sharedMedia:Fetch('font', WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_FONT_NAME_OPTION]),
+            WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_FONT_SCALE_IN_PERCENT_OPTION]
+    end
+end
 
-    local fontScale = WowUkrainizer_Options.FontScaleInPercent
-    local tooltipHeaderFontScale = WowUkrainizer_Options.TooltipHeaderFontScaleInPercent
-    local tooltipFontScale = WowUkrainizer_Options.TooltipFontScaleInPercent
+function settingsProvider.ShouldShowChangelog()
+    local lastAutoShownChangelogVersion = WowUkrainizer_Options[WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION]
+    local isFirstRun = WowUkrainizer_Options[WOW_UKRAINIZER_IS_FIRST_RUN_OPTION]
 
-    return WowUkrainizer_Options.UseDefaultFonts, fontName, fontScale, tooltipHeaderFontScale, tooltipFontScale
+    return not isFirstRun and ns._db.Changelogs[1][1] ~= lastAutoShownChangelogVersion
+end
+
+function settingsProvider.ShouldShowInstallerWizard()
+    return WowUkrainizer_Options[WOW_UKRAINIZER_IS_FIRST_RUN_OPTION] == true
 end
 
 function settingsProvider.IsNeedTranslateSpellNameInSpellbook()
-    return WowUkrainizer_Options.SpellNameLangInSpellbook == "ua"
+    return WowUkrainizer_Options[WOW_UKRAINIZER_SPELL_NAME_LANG_IN_SPELLBOOK_OPTION] == "ua"
 end
 
 function settingsProvider.IsNeedTranslateSpellDescriptionInTooltip()
-    return WowUkrainizer_Options.TooltipSpellLangInDescription == "ua"
+    return WowUkrainizer_Options[WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION] == "ua"
 end
 
 function settingsProvider.IsNeedHighlightSpellNameInDescription()
-    return WowUkrainizer_Options.HighlightSpellNameInDescription == true
+    return WowUkrainizer_Options[WOW_UKRAINIZER_HIGHLIGHT_SPELL_NAME_IN_DESCRIPTION_OPTION] == true
 end
 
-function settingsProvider.GetTooltipSpellLangInName()
-    return WowUkrainizer_Options.TooltipSpellLangInName
+function settingsProvider.SetOption(name, value)
+    WowUkrainizer_Options[name] = value
+end
+
+function settingsProvider.GetOption(name)
+    return WowUkrainizer_Options[name]
 end

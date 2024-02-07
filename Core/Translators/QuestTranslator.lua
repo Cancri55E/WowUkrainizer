@@ -3,6 +3,7 @@ local _, ns = ...;
 local _G = _G
 
 local eventHandler = ns.EventHandler:new()
+local SettingsProvider = ns.SettingsProvider
 
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetGossipTitle = ns.DbContext.Gossips.GetGossipTitle
@@ -582,28 +583,29 @@ local function DisplayQuestInfo(template, parentFrame)
     local elementsTable = template.elements;
     for i = 1, #elementsTable, 3 do
         local shownFrame, _ = elementsTable[i](parentFrame);
+        local translateQuestText = SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
         if (shownFrame) then
             local _, name = TryCallAPIFn("GetName", shownFrame)
             if (name == "QuestInfoTitleHeader") then
-                if (WowUkrainizer_Options.TranslateQuestText) then
+                if (translateQuestText) then
                     if (questData and questData.Title) then
                         QuestInfoTitleHeader:SetText(questData.Title)
                     end
                 end
             elseif (name == "QuestInfoObjectivesText") then
-                if (WowUkrainizer_Options.TranslateQuestText) then
+                if (translateQuestText) then
                     if (questData and questData.ObjectivesText) then
                         QuestInfoObjectivesText:SetText(questData.ObjectivesText)
                     end
                 end
             elseif (name == "QuestInfoObjectivesFrame") then
-                if (WowUkrainizer_Options.TranslateQuestText) then
+                if (translateQuestText) then
                     TranslteQuestObjectives(QuestInfoObjectivesFrame.Objectives, questData, true)
                 end
             elseif (name == "QuestInfoDescriptionHeader") then
                 -- ignore
             elseif (name == "QuestInfoDescriptionText") then
-                if (WowUkrainizer_Options.TranslateQuestText) then
+                if (translateQuestText) then
                     if (questData and questData.Description) then
                         QuestInfoDescriptionText:SetText(questData.Description)
                     end
@@ -611,7 +613,7 @@ local function DisplayQuestInfo(template, parentFrame)
             elseif (name == "QuestInfoSpacerFrame") then
                 -- ignore
             elseif (name == "QuestInfoRewardsFrame") then
-                if (WowUkrainizer_Options.TranslateQuestText) then
+                if (translateQuestText) then
                     if (questData and questData.RewardText) then
                         QuestInfoRewardText:SetText(questData.RewardText)
                     end
@@ -655,7 +657,7 @@ local function OnQuestFrameProgressPanelShow(_)
 
     showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMTData)
 
-    if (WowUkrainizer_Options.TranslateQuestText) then
+    if (SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
         if (questData and questData.Title) then
             QuestProgressTitleText:SetText(questData.Title)
         end
@@ -719,7 +721,7 @@ local function InitializeCommandButtons()
     local function CreateSwitchTranslationButton(parentFrame, onClickFunc, offsetX, offsetY)
         local button = CreateFrame("Button", nil, parentFrame, "UIPanelButtonTemplate");
         button:SetSize(90, 24);
-        if (WowUkrainizer_Options.TranslateQuestText) then
+        if (SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
             button:SetText("Оригінал");
         else
             button:SetText("Переклад");
@@ -727,8 +729,9 @@ local function InitializeCommandButtons()
         button:ClearAllPoints();
         button:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", offsetX, offsetY);
         button:SetScript("OnMouseDown", function(_)
-            WowUkrainizer_Options.TranslateQuestText = not WowUkrainizer_Options.TranslateQuestText
-            if (WowUkrainizer_Options.TranslateQuestText) then
+            local newValue = not SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
+            SettingsProvider.SetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION, newValue)
+            if (newValue) then
                 button:SetText("Оригінал");
             else
                 button:SetText("Переклад");

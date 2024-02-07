@@ -2,6 +2,8 @@ local _, ns = ...;
 
 if (ns.DbContext) then return end
 
+local SettingsProvider = ns.SettingsProvider
+
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
 local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithNumerics
 
@@ -288,7 +290,7 @@ do
         if (not default) then return default end
 
         local objectives = ns._db.QuestObjectives[questId]
-        if (not objectives and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+        if (not objectives and not SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
             objectives = ns._db.MTQuestObjectives[questId]
         end
 
@@ -357,7 +359,7 @@ do
 
     function repository.GetQuestTitle(questId)
         local data = ns._db.Quests[questId]
-        if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+        if (not data and not SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
             data = ns._db.MTQuests[questId]
         end
 
@@ -369,7 +371,7 @@ do
     function repository.GetQuestData(questId)
         local data = ns._db.Quests[questId]
         local mtData = nil
-        if (not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+        if (not SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
             mtData = ns._db.MTQuests[questId]
         end
 

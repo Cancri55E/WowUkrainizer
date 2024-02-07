@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Include file="Frames\_manifest.xml"/>
+	<Script file="Globals.lua"/>
 	<Include file="Extensions\_manifest.xml"/>
 	<Script file="EventHandler.lua"/>
 	<Script file="UntranslatedDataStorage.lua"/>
@@ -8,4 +8,5 @@
 	<Script file="StringNormalizer.lua"/>
 	<Script file="DbContext.lua"/>
 	<Include file="Translators\_manifest.xml"/>
+	<Include file="Frames\_manifest.xml"/>
 </Ui>

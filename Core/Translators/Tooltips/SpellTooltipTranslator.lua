@@ -475,7 +475,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     local translatedTooltipLines = {}
 
-    local spellNameLang = settingsProvider.GetTooltipSpellLangInName()
+    local spellNameLang = settingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION)
     if (spellNameLang ~= "en") then
         local spellName = tooltipInfo.Name
         local translatedValue = GetSpellNameOrDefault(tooltipInfo.Name, true)
