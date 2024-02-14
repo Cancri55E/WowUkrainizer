@@ -230,6 +230,23 @@ voiceOverData.Dialogs = {
 	["Lindie Springstock"] = {
 		[79260170] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lindie_springstock\vo_152861_3487001.ogg]], lengthInSeconds = 3.06 }
 	},
+	["Shuja Grimaxe"] = {
+		[2184315970] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157154_3587485.ogg]], lengthInSeconds = 3.69 },
+		[428827098] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_156609_3583247.ogg]], lengthInSeconds = 8.62 },
+		[227425249] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157157_3587488.ogg]], lengthInSeconds = 6.33 },
+		[2511149839] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157159_3587490.ogg]], lengthInSeconds = 3.09 },
+		[202560834] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157160_3587491.ogg]], lengthInSeconds = 3.88 },
+		[600730920] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157161_3587492.ogg]], lengthInSeconds = 3.78 },
+		[3440020241] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157162_3587493.ogg]], lengthInSeconds = 5 },
+		[2192546432] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157176_3587507.ogg]], lengthInSeconds = 6.18 },
+		[1667005118] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157179_3587510.ogg]], lengthInSeconds = 6.48 },
+		[3089691317] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157123_3587113.ogg]], lengthInSeconds = 4.94 },
+		[59217516] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157124_3587114.ogg]], lengthInSeconds = 4.63 },
+		[2583413093] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157130_3587120.ogg]], lengthInSeconds = 2.12 },
+		[2253621444] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157132_3587122.ogg]], lengthInSeconds = 2.3 },
+		[3502803062] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157220_3587711.ogg]], lengthInSeconds = 2.62 },
+		[1042428949] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157219_3587710.ogg]], lengthInSeconds = 3.24 }
+	},
 	["Lana Jordan"] = {
 		[1407848859] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lana_jordan\vo_155934_3574371.ogg]], lengthInSeconds = 5.35 }
 	},
@@ -303,8 +320,7 @@ voiceOverData.Dialogs = {
 		[765947677] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150263_3434336.ogg]], lengthInSeconds = 4.77 },
 		[2027966518] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150262_3434335.ogg]], lengthInSeconds = 2.5 },
 		[2838492484] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_151448_3463238.ogg]], lengthInSeconds = 1.28 },
-		[283987963] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150264_3434337.ogg]], lengthInSeconds = 3.35 },
-		[3851334535] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150268_3434341.ogg]], lengthInSeconds = 8.67 }
+		[283987963] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150264_3434337.ogg]], lengthInSeconds = 3.35 }
 	},
 	["Ogre Brute"] = {
 		[85611352] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\ogre_exiles_rich\vo_150266_3434339.ogg]], lengthInSeconds = 6.51 },
@@ -543,6 +559,8 @@ voiceOverData.MuteDialogs = {
 	3488935,
 	-- Lindie Springstock
 	3487001,
+	-- Shuja Grimaxe
+	3587485, 3583247, 3587488, 3587490, 3587491, 3587492, 3587493, 3587507, 3587510, 3587113, 3587114, 3587120, 3587122, 3587711, 3587710,
 	-- Lana Jordan
 	3574371,
 	-- Mithdran Dawntracker
@@ -559,8 +577,6 @@ voiceOverData.MuteDialogs = {
 	3434343, 3434345,
 	-- Ogre Shadowcaster, Ogre Brute
 	3434339, 3434338, 3463237, 3434334, 3434330, 3434340, 3434333, 3434332, 3434331, 3434336, 3434335, 3463238, 3434337,
-	-- Ogre Shadowcaster
-	3434341,
 	-- Wug
 	3463239, 3463236,
 	-- Jugnug
