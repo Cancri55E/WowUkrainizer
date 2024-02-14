@@ -247,6 +247,18 @@ voiceOverData.Dialogs = {
 		[695989910] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153043_3489013.ogg]], lengthInSeconds = 2.49 },
 		[4234452107] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153044_3489014.ogg]], lengthInSeconds = 3.64 }
 	},
+	["Cork Fizzlepop"] = {
+		[1448879346] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156984_3586106.ogg]], lengthInSeconds = 5.79 },
+		[771841201] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156985_3586107.ogg]], lengthInSeconds = 3.3 },
+		[2569978807] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156986_3586108.ogg]], lengthInSeconds = 5.69 },
+		[3025997988] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156987_3586109.ogg]], lengthInSeconds = 3.24 },
+		[324023677] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156988_3586110.ogg]], lengthInSeconds = 4.52 },
+		[2802459490] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156995_3586154.ogg]], lengthInSeconds = 5.04 },
+		[695511608] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156996_3586155.ogg]], lengthInSeconds = 6.16 },
+		[1809506422] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156997_3586156.ogg]], lengthInSeconds = 6.68 },
+		[119088029] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156998_3586157.ogg]], lengthInSeconds = 4.57 },
+		[876077227] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_157003_3586178.ogg]], lengthInSeconds = 5.48 }
+	},
 	["Shuja Grimaxe"] = {
 		[2184315970] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157154_3587485.ogg]], lengthInSeconds = 3.69 },
 		[428827098] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_156609_3583247.ogg]], lengthInSeconds = 8.62 },
@@ -436,6 +448,10 @@ voiceOverData.Emotions = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\farewells_01_169142_3585522.ogg]], lengthInSeconds = 2.09 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\farewells_02_169142_3585523.ogg]], lengthInSeconds = 1.38 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\farewells_03_169142_3585524.ogg]], lengthInSeconds = 1.83 }, },
 	[169143] = {
 		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\greetings_01_169143_3585525.ogg]], lengthInSeconds = 2.11 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\greetings_02_169143_3585526.ogg]], lengthInSeconds = 3.28 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\wonsa\emotions\greetings_03_169143_3585527.ogg]], lengthInSeconds = 1.77 }, },
+	[165166] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\emotions\farewells_01_165166_3585702.ogg]], lengthInSeconds = 1.05 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\emotions\farewells_02_165166_3585703.ogg]], lengthInSeconds = 1.62 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\emotions\farewells_03_165166_3585704.ogg]], lengthInSeconds = 1.03 }, },
+	[165167] = {
+		[1] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\emotions\greetings_01_165167_3585705.ogg]], lengthInSeconds = 2.11 }, [2] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\emotions\greetings_02_165167_3585706.ogg]], lengthInSeconds = 1.75 }, [3] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\emotions\greetings_03_165167_3585707.ogg]], lengthInSeconds = 1.53 }, },
 }
 
 
@@ -482,6 +498,12 @@ voiceOverData.NpcEmotions = {
 
 
 voiceOverData.SoundKindIds = {
+	[156989] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156989_3586111.ogg]], lengthInSeconds = 3.68 },
+	[156990] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156990_3586112.ogg]], lengthInSeconds = 4.31 },
+	[156991] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156991_3586113.ogg]], lengthInSeconds = 7.68 },
+	[156993] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156993_3586152.ogg]], lengthInSeconds = 5.01 },
+	[156994] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_156994_3586153.ogg]], lengthInSeconds = 8.62 },
+	[157004] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\cork_fizzlepop\vo_157004_3586179.ogg]], lengthInSeconds = 10.77 },
 }
 
 
@@ -552,6 +574,10 @@ voiceOverData.MuteEmotions = {
 	3585522, 3585523, 3585524,
 	-- 169143
 	3585525, 3585526, 3585527,
+	-- 165166
+	3585702, 3585703, 3585704,
+	-- 165167
+	3585705, 3585706, 3585707,
 }
 
 
@@ -578,6 +604,8 @@ voiceOverData.MuteDialogs = {
 	3487001,
 	-- Henry Garrick
 	3488992, 3488993, 3488997, 3488998, 3488999, 3489000, 3489001, 3489002, 3489003, 3489004, 3489007, 3489009, 3489012, 3489013, 3489014,
+	-- Cork Fizzlepop
+	3586106, 3586107, 3586108, 3586109, 3586110, 3586111, 3586112, 3586113, 3586152, 3586153, 3586154, 3586155, 3586156, 3586157, 3586178, 3586179,
 	-- Shuja Grimaxe
 	3587485, 3583247, 3587488, 3587490, 3587491, 3587492, 3587493, 3587507, 3587510, 3587113, 3587114, 3587120, 3587122, 3587711, 3587710,
 	-- Lana Jordan
