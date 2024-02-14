@@ -230,6 +230,23 @@ voiceOverData.Dialogs = {
 	["Lindie Springstock"] = {
 		[79260170] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\lindie_springstock\vo_152861_3487001.ogg]], lengthInSeconds = 3.06 }
 	},
+	["Henry Garrick"] = {
+		[40210048] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153026_3488992.ogg]], lengthInSeconds = 3.04 },
+		[1408230263] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153027_3488993.ogg]], lengthInSeconds = 6.11 },
+		[1304416008] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153031_3488997.ogg]], lengthInSeconds = 5.43 },
+		[3981972374] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153032_3488998.ogg]], lengthInSeconds = 2.99 },
+		[3155943954] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153033_3488999.ogg]], lengthInSeconds = 4.13 },
+		[1693364536] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153034_3489000.ogg]], lengthInSeconds = 2.37 },
+		[1616513576] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153035_3489001.ogg]], lengthInSeconds = 3.1 },
+		[2692236585] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153036_3489002.ogg]], lengthInSeconds = 4.22 },
+		[4280603438] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153037_3489003.ogg]], lengthInSeconds = 3.57 },
+		[3422912583] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153038_3489004.ogg]], lengthInSeconds = 4.43 },
+		[1877425684] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153040_3489007.ogg]], lengthInSeconds = 6.34 },
+		[3873786156] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153041_3489009.ogg]], lengthInSeconds = 5.53 },
+		[1440410713] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153042_3489012.ogg]], lengthInSeconds = 1.36 },
+		[695989910] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153043_3489013.ogg]], lengthInSeconds = 2.49 },
+		[4234452107] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\henry_garrick\vo_153044_3489014.ogg]], lengthInSeconds = 3.64 }
+	},
 	["Shuja Grimaxe"] = {
 		[2184315970] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_157154_3587485.ogg]], lengthInSeconds = 3.69 },
 		[428827098] = { file =[[Interface\AddOns\WowUkrainizer\assets\sounds\creatures\shuja_grimaxe\vo_156609_3583247.ogg]], lengthInSeconds = 8.62 },
@@ -559,6 +576,8 @@ voiceOverData.MuteDialogs = {
 	3488935,
 	-- Lindie Springstock
 	3487001,
+	-- Henry Garrick
+	3488992, 3488993, 3488997, 3488998, 3488999, 3489000, 3489001, 3489002, 3489003, 3489004, 3489007, 3489009, 3489012, 3489013, 3489014,
 	-- Shuja Grimaxe
 	3587485, 3583247, 3587488, 3587490, 3587491, 3587492, 3587493, 3587507, 3587510, 3587113, 3587114, 3587120, 3587122, 3587711, 3587710,
 	-- Lana Jordan
