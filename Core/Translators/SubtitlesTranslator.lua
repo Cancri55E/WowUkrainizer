@@ -53,7 +53,7 @@ function translator:initialize()
             end
         end
 
-        local translatedMessage = translateMessage()
+        local translatedMessage, msgHash = translateMessage()
         local body = translatedMessage
         if sender then
             local translatedSender = GetUnitNameOrDefault(sender)
@@ -70,6 +70,8 @@ function translator:initialize()
                 untranslatedData.subtitleOrder = instance.subtitleOrder
             end
             instance.subtitleOrder = instance.subtitleOrder + 1
+
+            ns.VoiceOverDirector:PlaySoundFileForCinematic(msgHash, sender)
         end
 
         local fontString

@@ -7,11 +7,9 @@ local eventHandler = ns.EventHandler:new()
 local settingsProvider = ns.SettingsProvider:new()
 
 local GenerateUuid = ns.CommonExtensions.GenerateUuid
-local Split, Trim = ns.StringExtensions.Split, ns.StringExtensions.Trim
 local SetFontStringText = ns.FontStringExtensions.SetText
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetDialogText = ns.DbContext.NpcDialogs.GetDialogText
-local GetCinematicSubtitle = ns.DbContext.NpcDialogs.GetCinematicSubtitle
 
 local translator = class("NpcMessageTranslator", ns.Translators.BaseTranslator)
 ns.Translators.NpcMessageTranslator = translator
@@ -59,7 +57,7 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
     local translatedAuthor = GetUnitNameOrDefault(author)
     local translatedMsg, msgHash = GetDialogText(msg)
 
-    ns.VoiceOverDirector:PlayDialog(msgHash, false, "Dialog", author)
+    ns.VoiceOverDirector:PlaySoundFileForDialogue(msgHash, author)
 
     if (msg == translatedMsg) then
         local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
