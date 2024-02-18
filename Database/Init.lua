@@ -31,6 +31,15 @@ ns._db = {}
 ns._db.Changelogs = {
     -- version, date, color, type-text, author, title, description
     {
+        "1.9.3",
+        "18 лютого 2024",
+        "blue",
+        "Покращення",
+        "Cancri",
+        nil,
+        "Додано підтримку доповнення Immersion. Тепер гравці які його використовують зможуть вмикати переклад завдань."
+    },
+    {
         "1.9.2",
         "11 грудня 2023",
         "red",
