@@ -724,7 +724,7 @@ local function ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
         end
     end
 
-    if (not WowUkrainizer_Options.TranslateQuestText) then
+    if (not SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
         updateTalkBoxText(title, text)
         return
     end
@@ -761,7 +761,7 @@ local function ImmersionTalkBoxElementsDisplayHook(elements)
 
     do -- ShowObjectivesText
         local objectivesText = immersionObjectivesTextOriginal
-        if (WowUkrainizer_Options.TranslateQuestText) then
+        if (SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
             local questData = GetQuestData(questID)
             if (questData and questData.ObjectivesText) then
                 objectivesText = questData.ObjectivesText
