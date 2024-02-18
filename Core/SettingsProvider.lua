@@ -27,7 +27,7 @@ local defaultOptions = {
     TranslateSubtitles = true,
     TranslateNpcMessages = true,
     -- Changelogs
-    LastAutoShownChangelogVersion = "1.8.19",
+    LastAutoShownChangelogVersion = "1.9.2",
 }
 
 function settingsProvider:Load()
