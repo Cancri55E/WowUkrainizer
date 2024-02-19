@@ -132,7 +132,7 @@ local function translateUIControlWrapper(control)
     if (not control) then return end
     if (not control.GetText or not control.SetText) then return end
 
-    control:SetText(GetUnitNameOrDefault(control:GetText()))
+    local isOk, error = pcall(function() control:SetText(GetUnitNameOrDefault(control:GetText())) end)
 end
 
 function translator:initialize()
