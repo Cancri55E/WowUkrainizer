@@ -461,6 +461,12 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 								<Anchor point="BOTTOMLEFT" x="20"/>
 							</Anchors>
 						</FontString>
+						<Texture parentKey="Logo" file="Interface\AddOns\WowUkrainizer\assets\images\logo_big.png">
+							<Size y="192" x="192"/>
+							<Anchors>
+								<Anchor point="TOP" relativeKey="$parent.Description" relativePoint="BOTTOM" y="280"/>
+							</Anchors>
+						</Texture>
 					</Layer>
 				</Layers>
 				<Frames>
