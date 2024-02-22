@@ -31,6 +31,7 @@ local questMapDetailsFrameSwitchTranslationButton
 local questMapDetailsFrameMTIcon
 local immersionFrameSwitchTranslationButton
 local immersionFrameMTIcon
+local immersionWowheadButton
 
 local ERR_QUEST_OBJECTIVE_COMPLETE_S = 302
 local ERR_QUEST_UNKNOWN_COMPLETE = 303
@@ -158,7 +159,7 @@ _G.StaticPopupDialogs["WowUkrainizer_WowheadLink"] = {
     hasEditBox = 1,
     button1 = "Гаразд",
     OnShow = function(self)
-        local questID = getQuestID()
+        local questID = self.data.getQuestID()
         if questID and questID ~= 0 then
             local box = getglobal(self:GetName() .. "EditBox")
             if box then
@@ -722,6 +723,14 @@ local function ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
         end
     end
 
+    local questID = GetQuestID()
+
+    if (questID == 0) then
+        immersionWowheadButton:Hide()
+    else
+        immersionWowheadButton:Show()
+    end
+
     if (not WowUkrainizer_Options.TranslateQuestText) then
         updateTalkBoxText(title, text)
         return
@@ -732,8 +741,10 @@ local function ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
         -- TODO: Check when gossip translations is ready
         updateTalkBoxText(GetUnitNameOrDefault(title), GetGossipTitle(text))
     else
-        local questID = GetQuestID()
         local questData = GetQuestData(questID)
+
+        showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMTData)
+
         if (questData) then
             if (playbackEvent == "QUEST_PROGRESS") then
                 updateTalkBoxText(questData.Title, questData.ProgressText)
@@ -870,14 +881,14 @@ local function InitializeCommandButtons()
         return button
     end
 
-    local function CreateWowheadButton(parentFrame, offsetX, offsetY)
+    local function CreateWowheadButton(parentFrame, offsetX, offsetY, data)
         local button = CreateFrame("Button", nil, parentFrame, "UIPanelButtonTemplate");
         button:SetSize(24, 24);
         button:ClearAllPoints();
         button:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", offsetX, offsetY);
         button:SetNormalAtlas("UI-HUD-MicroMenu-Shop-Up");
         button:SetPushedAtlas("UI-HUD-MicroMenu-Shop-Down");
-        button:SetScript("OnMouseDown", function(_) _G.StaticPopup_Show("WowUkrainizer_WowheadLink") end)
+        button:SetScript("OnMouseDown", function(_) _G.StaticPopup_Show("WowUkrainizer_WowheadLink", nil, nil, data) end)
         button:Show();
         return button
     end
@@ -891,32 +902,36 @@ local function InitializeCommandButtons()
         end
     end, -64, -30)
     questFrameMTIcon = CreateMtIconTexture(QuestFrame, -34, -30)
-    CreateWowheadButton(QuestFrame, -6, -30)
+    CreateWowheadButton(QuestFrame, -6, -30, { getQuestID = function() return GetQuestID() end })
 
     questPopupFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestLogPopupDetailFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
     end, -188, -28)
     questPopupFrameMTIcon = CreateMtIconTexture(QuestLogPopupDetailFrame, -162, -28)
-    CreateWowheadButton(QuestLogPopupDetailFrame, -2, -28)
+    CreateWowheadButton(QuestLogPopupDetailFrame, -2, -28,
+        { getQuestID = function() return C_QuestLog.GetSelectedQuest() end })
 
     questMapDetailsFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestMapDetailsScrollFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
     end, -44, 30)
     questMapDetailsFrameMTIcon = CreateMtIconTexture(QuestMapDetailsScrollFrame, -16, 30)
-    CreateWowheadButton(QuestMapDetailsScrollFrame, 12, 30)
+    CreateWowheadButton(QuestMapDetailsScrollFrame, 12, 30,
+        { getQuestID = function() return C_QuestLog.GetSelectedQuest() end })
 
     if (ImmersionFrame) then
         local immersionModelFrame = ImmersionFrame.TalkBox.MainFrame.Model
-        immersionFrameSwitchTranslationButton = CreateSwitchTranslationButton(immersionModelFrame, function()
+
+        local yOffset = immersionModelFrame:GetHeight() * -1 + 20
+        immersionWowheadButton = CreateWowheadButton(immersionModelFrame, 30, yOffset,
+            { getQuestID = function() return GetQuestID() end })
+        immersionFrameSwitchTranslationButton = CreateSwitchTranslationButton(immersionWowheadButton, function()
             ImmersionUpdateTalkingHeadHook(ImmersionFrame, immersionTitleOriginal, immersionTextOriginal)
             ImmersionTalkBoxElementsDisplayHook(ImmersionFrame.TalkBox.Elements)
             ImmersionFrame.TalkBox.TextFrame.Text:RepeatTexts();
-        end, 96, immersionModelFrame:GetWidth() * -1 + 24)
-
-        local immersionWowheadButton = CreateWowheadButton(immersionFrameSwitchTranslationButton, 24, 0)
-        immersionFrameMTIcon = CreateMtIconTexture(immersionWowheadButton, 24, 0)
+        end, 92, 0)
+        immersionFrameMTIcon = CreateMtIconTexture(immersionFrameSwitchTranslationButton, 24, 0)
     end
 end
 
@@ -1355,7 +1370,10 @@ local function InitializeImmersion()
     hooksecurefunc(ImmersionFrame.TitleButtons, "UpdateAvailableQuests", function(titleButtons, availableQuests)
         for i, quest in ipairs(availableQuests) do
             local button = titleButtons:GetButton(i)
-            button:SetText(getQuestTitle(quest.questID, quest.isTrivial))
+            local questTitle = getQuestTitle(quest.questID, quest.isTrivial)
+            if (questTitle) then
+                button:SetText(questTitle)
+            end
         end
     end)
 
@@ -1363,7 +1381,10 @@ local function InitializeImmersion()
         local numGossipAvailableQuests = #ImmersionAPI:GetGossipAvailableQuests()
         for i, quest in ipairs(activeQuests) do
             local button = titleButtons:GetButton(i + numGossipAvailableQuests)
-            button:SetText(getQuestTitle(quest.questID, quest.isTrivial))
+            local questTitle = getQuestTitle(quest.questID, quest.isTrivial)
+            if (questTitle) then
+                button:SetText(questTitle)
+            end
         end
     end)
 
@@ -1380,7 +1401,10 @@ local function InitializeImmersion()
     hooksecurefunc(ImmersionFrame.TitleButtons, "UpdateActiveGreetingQuests", function(titleButtons, numActiveQuests)
         for i = 1, numActiveQuests do
             local button = titleButtons:GetButton(i)
-            button:SetText(getQuestTitle(GetActiveQuestID(i), IsActiveQuestTrivial(i)))
+            local questTitle = getQuestTitle(GetActiveQuestID(i), IsActiveQuestTrivial(i))
+            if (questTitle) then
+                button:SetText(questTitle)
+            end
         end
     end)
 
@@ -1390,7 +1414,10 @@ local function InitializeImmersion()
             for i = 1, numAvailableQuests do
                 local isTrivial, _, _, _, questID = ImmersionAPI:GetAvailableQuestInfo(i)
                 local button = titleButtons:GetButton(i + numActiveQuests)
-                button:SetText(getQuestTitle(questID, isTrivial))
+                local questTitle = getQuestTitle(questID, isTrivial)
+                if (questTitle) then
+                    button:SetText(questTitle)
+                end
             end
         end)
 
