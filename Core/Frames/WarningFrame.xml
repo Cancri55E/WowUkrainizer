@@ -2,8 +2,6 @@
 https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
 	<Script file="WarningFrame.lua"/>
 
-	<Font name="CommandButtonTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="12"/>
-
 	<Frame name="WowUkrainizerWarningFrame" mixin="WowUkrainizerWarningFrameMixin" hidden="true" movable="false" resizable="true" virtual="true" toplevel="true" enableMouse="true" parent="UIParent">
 		<Size x="535" y="500"/>
 		<Anchors>
@@ -64,7 +62,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString parentKey="Text" inherits="CommandButtonTextFont" text="Зрозуміло">
+						<FontString parentKey="Text" inherits="WowUkrainizerCommandButtonTextFont" text="Зрозуміло">
 							<Anchors>
 								<Anchor point="CENTER" />
 							</Anchors>

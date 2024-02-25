@@ -4,13 +4,11 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 
 	<!-- COMMON CONTROLS -->
 
-	<Font name="CommandButtonTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="12"/>
-
 	<Button name="WowUkrainizerCommandButtonTemplate" virtual="true">
 		<Size x="80" y="28"/>
 		<Layers>
 			<Layer level="OVERLAY">
-                <FontString parentKey="Text" inherits="CommandButtonTextFont">
+                <FontString parentKey="Text" inherits="WowUkrainizerCommandButtonTextFont">
                     <Anchors>
                         <Anchor point="CENTER" />
                     </Anchors>
