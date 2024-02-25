@@ -4,4 +4,5 @@
     <Include file="SettingsFrame.xml"/>
     <Include file="ChangelogsFrame.xml"/>
     <Include file="WizardFrame.xml"/>
+    <Include file="WarningFrame.xml"/>
 </Ui>
