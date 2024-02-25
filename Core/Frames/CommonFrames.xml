@@ -15,7 +15,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
     <Font name="WowUkrainizerUrlTextFont" justifyH="LEFT" justifyV="TOP" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="13">
         <Color r="0" g="0.6" b="1"/>
     </Font>
-	<Font name="CommandButtonTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="12"/>
+	<Font name="WowUkrainizerCommandButtonTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="12"/>
 
     <CheckButton name="WowUkrainizerCheckButtonTemplate" mixin="WowUkrainizerCheckButtonMixin" virtual="true">
 		<Size x="24" y="24"/>
