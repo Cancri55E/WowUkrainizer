@@ -32,7 +32,7 @@ ns._db.Changelogs = {
     -- version, date, color, type-text, author, title, description
     {
         "1.10.0",
-        "23 лютого 2024",
+        "26 лютого 2024",
         "purple",
         "Новий функціонал",
         "Cancri",
