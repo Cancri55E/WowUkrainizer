@@ -281,8 +281,32 @@ local function initializeAddon()
     }
 
     ns.Frames = {}
+    ns.Frames["WarningFrame"] = CreateFrame("FRAME", "WarningFrame", UIParent, "WowUkrainizerWarningFrame")
+    ns.Frames["WarningFrame"]:SetFrameLevel(5000)
     ns.Frames["ChangelogsFrame"] = CreateFrame("FRAME", "ChangelogsFrame", UIParent, "WowUkrainizerChangelogsFrame")
     ns.Frames["ChangelogsFrame"]:SetFrameLevel(5000)
+end
+
+local function ShowUnsupportedLangWarning(locale)
+    local firstMessage =
+    "Для роботи доповнення потрібно встановити англійську мову в грі. Інші мови наразі не підтримуються."
+
+    local ruMessage =
+    "|cffE60965Увага! Підтримка російської мови не планується.|r Однак ми рекомендуємо вам спробувати пограти українською на європейських серверах. Там діють дружні українські гільдії та спільноти, які з радістю доповнять ваш ігровий досвід цікавими подіями та спілкуванням."
+
+    local lastMessage = [[Дякуємо за розуміння та підтримку!
+
+Хочемо нагадати, що наразі не весь контент гри перекладено українською. Однак команда перекладачів працює цілодобово, й нові переклади та виправлення з'являються майже щодня. Ми докладаємо максимум зусиль, тому, будь ласка будьте терплячими та насолоджуйтесь грою українською в міру появи нових перекладів.]]
+
+    local height = 230
+    local msg = firstMessage .. "|n|n"
+    if (locale == "ruRU") then
+        msg = msg .. ruMessage .. "|n|n"
+        height = 270
+    end
+    msg = msg .. lastMessage
+
+    ns.Frames["WarningFrame"]:ShowWarning("|cffE60965Переклад з вибраної мови неможливий!|r", msg, height)
 end
 
 local function OnPlayerLogin()
@@ -324,6 +348,13 @@ end
 local function OnAddOnLoaded(_, name)
     if (name == addonName) then
         initializeAddon()
+
+        local locale = GetLocale()
+        if (locale ~= "enGB" and locale ~= "enUS") then
+            ShowUnsupportedLangWarning(locale)
+            return
+        end
+
         if not IsLoggedIn() then
             eventHandler:Register(OnPlayerLogin, "PLAYER_LOGIN")
         else
@@ -347,8 +378,12 @@ do
                     if IsShiftKeyDown() then
                         ReloadUI()
                     else
-                        --ns.Frames["ChangelogsFrame"]:Show()
-                        InterfaceOptionsFrame_OpenToCategory(wowUkrainizerOptions)
+                        local locale = GetLocale()
+                        if (locale ~= "enGB" and locale ~= "enUS") then
+                            ShowUnsupportedLangWarning(locale)
+                        else
+                            InterfaceOptionsFrame_OpenToCategory(wowUkrainizerOptions)
+                        end
                     end
                 end,
                 OnTooltipShow = function(GameTooltip)

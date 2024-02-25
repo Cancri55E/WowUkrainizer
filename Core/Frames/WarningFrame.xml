@@ -1,0 +1,102 @@
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
+	<Script file="WarningFrame.lua"/>
+
+	<Font name="CommandButtonTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="12"/>
+
+	<Frame name="WowUkrainizerWarningFrame" mixin="WowUkrainizerWarningFrameMixin" hidden="true" movable="false" resizable="true" virtual="true" toplevel="true" enableMouse="true" parent="UIParent">
+		<Size x="535" y="500"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+        <Layers>
+			<Layer level="BACKGROUND">
+				<Texture>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+					<Color r="0.118" g="0.114" b="0.169" a="1"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Title" inherits="WowUkrainizerFrameTitleFont" wordwrap="false">
+					<Anchors>
+						<Anchor point="TOP" y="-6"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Message" inherits="WowUkrainizerFramePrimaryTextFont" wordwrap="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" y="-48" x="22"/>
+						<Anchor point="TOPRIGHT" y="-48" x="-22"/>
+					</Anchors>
+				</FontString>
+                <Texture>
+					<Size y="2"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="20" y="-28"/>
+						<Anchor point="TOPRIGHT" y="-30" x="-32"/>
+					</Anchors>
+					<Color r="0.216" g="0.208" b="0.31" a="1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentCloseWndButton">
+				<Size x="16" y="16"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" x="-8" y="-6"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Hide()
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\AddOns\WowUkrainizer\assets\images\close-up.png"/>
+				<PushedTexture file="Interface\AddOns\WowUkrainizer\assets\images\close-down.png"/>
+				<DisabledTexture file="Interface\AddOns\WowUkrainizer\assets\images\close-disabled.png"/>
+				<HighlightTexture file="Interface\AddOns\WowUkrainizer\assets\images\close-up.png" alphaMode="ADD"/>
+			</Button>
+			<Button name="$parentLeaveDefaultButton" parentKey="ConfirmButton">
+				<Size x="100" y="28"/>
+				<Anchors>
+					<Anchor point="BOTTOM" y="18"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Text" inherits="CommandButtonTextFont" text="Зрозуміло">
+							<Anchors>
+								<Anchor point="CENTER" />
+							</Anchors>
+						</FontString>
+					</Layer>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="Background"> 
+							<Size y="10" x="10"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" />
+								<Anchor point="BOTTOMRIGHT" />
+							</Anchors>
+							<Color r="0.188" g="0.412" b="0.996" a="1"/>
+						</Texture>
+					</Layer>
+					<Layer level="HIGHLIGHT">
+						<Texture parentKey="Highlight"> 
+							<Size y="10" x="10"/>
+							<Anchors>
+								<Anchor point="TOPLEFT" />
+								<Anchor point="BOTTOMRIGHT" />
+							</Anchors>
+							<Color r="1" g="1" b="1" a="0.15"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+        </Frames>
+	</Frame>
+</Ui>
