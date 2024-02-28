@@ -8,7 +8,6 @@
 	<Include file="Ace3\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
 	<Include file="Ace3\AceHook-3.0\AceHook-3.0.xml"/>
 	<Include file="Ace3\AceConfig-3.0\AceConfig-3.0.xml"/>
-	<Include file="AceGUI-3.0_SFX-Widgets\AceGUI-3.0_SFX-Widgets.xml"/>
 	<Script file="LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
 	<Include file="LibDBIcon-1.0\lib.xml"/>
 	<Script file="LibUIDropDownMenu.lua"/>
