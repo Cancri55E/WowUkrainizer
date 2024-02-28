@@ -4,7 +4,7 @@ local sharedMedia = LibStub("LibSharedMedia-3.0")
 local eventHandler = ns.EventHandler:new()
 local settingsProvider = ns.SettingsProvider:new()
 
-local dataBroker
+local minimapDataBroker
 local addOnSettingsCategoryID
 
 local translators = {
@@ -249,8 +249,8 @@ local function initializeAddon()
         WowUkrainizer_MinimapIcon = {}
     end
 
-    if LibStub("LibDBIcon-1.0", true) and dataBroker then
-        LibStub("LibDBIcon-1.0"):Register("WowUkrainizerMinimapIcon", dataBroker, WowUkrainizer_MinimapIcon)
+    if LibStub("LibDBIcon-1.0", true) and minimapDataBroker then
+        LibStub("LibDBIcon-1.0"):Register("WowUkrainizerMinimapIcon", minimapDataBroker, WowUkrainizer_MinimapIcon)
     end
 
     local releaseDate = tonumber(C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")) or 0
@@ -261,6 +261,11 @@ local function initializeAddon()
         version = "[alpha] " .. string.gsub(version, "-alpha$", "")
     end
 
+    --- Object containing common data such as release date and version information.
+    ---@class CommonData
+    ---@field ReleaseDate number @The release date timestamp obtained from the add-on metadata.
+    ---@field Version string @The version string obtained from the add-on metadata.
+    ---@field VesionStr string @A formatted string representing the version and release date.
     ns.CommonData = {
         ReleaseDate = releaseDate,
         Version = version,
@@ -295,6 +300,12 @@ local function ShowUnsupportedLangWarning(locale)
 end
 
 local function OnPlayerLogin()
+    --- Object containing information about the player character.
+    ---@class PlayerData
+    ---@field Name string @The name of the player character.
+    ---@field Race string @The race of the player character.
+    ---@field Class string @The class of the player character.
+    ---@field Gender number? @The gender (sex) of the player character.
     ns.PlayerData = {
         Name = GetUnitName("player"),
         Race = UnitRace("player"),
@@ -356,7 +367,7 @@ end
 
 do
     if LibStub("LibDataBroker-1.1", true) then
-        dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject(
+        minimapDataBroker = LibStub("LibDataBroker-1.1"):NewDataObject(
             "WowUkrainizerMinimapIcon",
             {
                 type = "launcher",

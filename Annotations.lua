@@ -2,3 +2,5 @@
 ---@field CommonUtil CommonUtil
 ---@field FontStringUtil FontStringUtil
 ---@field StringUtil StringUtil
+---@field CommonData CommonData
+---@field PlayerData PlayerData
