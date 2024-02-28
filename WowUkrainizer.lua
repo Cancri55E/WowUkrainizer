@@ -3,7 +3,7 @@ local addonName, ns = ...;
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
-local settingsProvider = ns.SettingsProvider:new()
+local settingsProvider = ns:GetSettingsProvider()
 
 local minimapDataBroker
 local addOnSettingsCategoryID
@@ -314,7 +314,6 @@ local function OnPlayerLogin()
         Gender = UnitSex("player")
     }
 
-    settingsProvider:Load()
     createInterfaceOptions()
     preloadAvailableFonts()
     setGameFonts()

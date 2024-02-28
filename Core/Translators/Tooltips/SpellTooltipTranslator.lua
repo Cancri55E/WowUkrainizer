@@ -3,7 +3,7 @@ local _, ns = ...;
 
 local _G = _G
 
-local settingsProvider = ns.SettingsProvider:new()
+local settingsProvider = ns:GetSettingsProvider()
 
 local EndsWith = ns.StringUtil.EndsWith
 local StartsWith = ns.StringUtil.StartsWith

@@ -3,7 +3,7 @@ local _, ns = ...;
 
 if (ns.DbContext) then return end
 
-local SettingsProvider = ns.SettingsProvider
+local SettingsProvider = ns:GetSettingsProvider()
 
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
 local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithNumerics

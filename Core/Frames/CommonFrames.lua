@@ -1,7 +1,7 @@
 --- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local settingsProvider = ns.SettingsProvider
+local settingsProvider = ns:GetSettingsProvider()
 
 -- WowUkrainizerCheckButtonMixin
 do

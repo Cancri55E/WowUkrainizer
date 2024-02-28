@@ -1,7 +1,7 @@
 --- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local settingsProvider = ns.SettingsProvider
+local settingsProvider = ns:GetSettingsProvider()
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 local dropdownLib = LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 

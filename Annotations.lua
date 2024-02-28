@@ -5,3 +5,4 @@
 ---@field CommonData CommonData
 ---@field PlayerData PlayerData
 ---@field EventHandlerFactory EventHandlerFactory
+---@field private _settingsProvider SettingsProvider? @Singleton instance of the SettingsProvider.

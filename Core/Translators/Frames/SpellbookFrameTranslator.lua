@@ -3,7 +3,7 @@ local _, ns = ...;
 
 local _G = _G
 
-local settingsProvider = ns.SettingsProvider:new()
+local settingsProvider = ns:GetSettingsProvider()
 
 local PAGE_TRANSLATION, SPELL_PASSIVE_TRANSLATION = ns.PAGE_TRANSLATION, ns.SPELL_PASSIVE_TRANSLATION
 local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION

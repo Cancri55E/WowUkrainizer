@@ -4,7 +4,7 @@ local _, ns = ...;
 local _G = _G
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
-local SettingsProvider = ns.SettingsProvider
+local SettingsProvider = ns:GetSettingsProvider()
 
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
