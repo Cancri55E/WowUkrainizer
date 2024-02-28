@@ -3,7 +3,7 @@ local _, ns = ...;
 
 local utf8sub, utf8len = string.utf8sub, string.utf8len
 
-local StartsWith = ns.StringExtensions.StartsWith
+local StartsWith = ns.StringUtil.StartsWith
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetUnitSubnameOrDefault = ns.DbContext.Units.GetUnitSubnameOrDefault
 

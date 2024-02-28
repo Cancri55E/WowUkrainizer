@@ -15,7 +15,7 @@ local dbContext = {}
 
 local function getValueOrDefault(hashTable, default)
     if (not default) then return default end
-    local hash = ns.StringExtensions.GetHash(default)
+    local hash = ns.StringUtil.GetHash(default)
     return hashTable[hash] or default
 end
 

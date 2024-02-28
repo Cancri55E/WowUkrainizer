@@ -5,9 +5,9 @@ local _G = _G
 
 local settingsProvider = ns.SettingsProvider:new()
 
-local EndsWith = ns.StringExtensions.EndsWith
-local StartsWith = ns.StringExtensions.StartsWith
-local StringsAreEqual = ns.StringExtensions.StringsAreEqual
+local EndsWith = ns.StringUtil.EndsWith
+local StartsWith = ns.StringUtil.StartsWith
+local StringsAreEqual = ns.StringUtil.StringsAreEqual
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
 local IsValueInTable = ns.CommonUtil.IsValueInTable
 

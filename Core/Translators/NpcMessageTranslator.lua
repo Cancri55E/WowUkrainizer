@@ -7,7 +7,7 @@ local aceHook = LibStub("AceHook-3.0")
 local eventHandler = ns.EventHandler:new()
 
 local GenerateUuid = ns.CommonUtil.GenerateUuid
-local Split, Trim = ns.StringExtensions.Split, ns.StringExtensions.Trim
+local Split, Trim = ns.StringUtil.Split, ns.StringUtil.Trim
 local SetFontStringText = ns.FontStringUtil.SetText
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetDialogText = ns.DbContext.NpcDialogs.GetDialogText

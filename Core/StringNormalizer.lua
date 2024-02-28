@@ -1,9 +1,9 @@
 --- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local ExtractNumericValues = ns.StringExtensions.ExtractNumericValues
-local InsertNumericValues = ns.StringExtensions.InsertNumericValues
-local DeclensionWord = ns.StringExtensions.DeclensionWord
+local ExtractNumericValues = ns.StringUtil.ExtractNumericValues
+local InsertNumericValues = ns.StringUtil.InsertNumericValues
+local DeclensionWord = ns.StringUtil.DeclensionWord
 
 local internal = {}
 ns.StringNormalizer = internal

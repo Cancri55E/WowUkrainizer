@@ -17,9 +17,9 @@ local GetUnitFractionOrDefault = ns.DbContext.Units.GetUnitFractionOrDefault
 local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
 local GetQuestObjective = ns.DbContext.Quests.GetQuestObjective
 
-local StartsWith = ns.StringExtensions.StartsWith
-local ExtractNumericValues = ns.StringExtensions.ExtractNumericValues
-local InsertNumericValues = ns.StringExtensions.InsertNumericValues
+local StartsWith = ns.StringUtil.StartsWith
+local ExtractNumericValues = ns.StringUtil.ExtractNumericValues
+local InsertNumericValues = ns.StringUtil.InsertNumericValues
 
 local translator = class("UnitTooltipTranslator", ns.Translators.BaseTooltipTranslator)
 ns.Translators.UnitTooltipTranslator = translator

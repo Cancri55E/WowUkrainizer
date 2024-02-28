@@ -1,4 +1,5 @@
 -- Colors
+
 WOW_UKRAINIZER_WHITE_COLOR = { r = 1, g = 1, b = 1 }
 WOW_UKRAINIZER_GREEN_COLOR = { r = 0.271, g = 0.561, b = 0.094 }
 WOW_UKRAINIZER_DISABLED_COLOR = { r = 0.427, g = 0.443, b = 0.478 }

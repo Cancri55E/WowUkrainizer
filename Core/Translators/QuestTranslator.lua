@@ -1232,7 +1232,7 @@ local function OnMinimapMouseoverTooltipPostCall(tooltip, tooltipData)
             local text = tooltip.TextLeft1:GetText()
             if (not text) then return end
 
-            local hash = ns.StringExtensions.GetHash(text)
+            local hash = ns.StringUtil.GetHash(text)
             if (not MinimapTooltipCache[hash]) then
                 local tooltipRows = processMinimapTooltip(text)
 
