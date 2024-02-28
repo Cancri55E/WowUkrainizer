@@ -1,5 +1,5 @@
---- @type string, WowUkrainizerInternals
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
 ---Utility module for manipulating FontString objects.
 ---@class FontStringUtil

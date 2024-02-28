@@ -3,6 +3,8 @@ local ns = select(2, ...);
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 
+--- Utility class responsible for managing and providing access to addon settings.
+--- This class ensures the proper initialization and handling of various options.
 ---@class SettingsProvider
 ---@field defaultOptions table<string, any> @Default options for addon.
 local _settingsProviderPrototype = {

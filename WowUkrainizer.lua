@@ -1,5 +1,8 @@
---- @type string, WowUkrainizerInternals
-local addonName, ns = ...;
+--- @type string
+local addonName = select(1, ...);
+
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()

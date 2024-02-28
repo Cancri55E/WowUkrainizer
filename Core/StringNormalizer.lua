@@ -1,16 +1,22 @@
---- @type string, WowUkrainizerInternals
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
 local ExtractNumericValues = ns.StringUtil.ExtractNumericValues
 local InsertNumericValues = ns.StringUtil.InsertNumericValues
 local DeclensionWord = ns.StringUtil.DeclensionWord
 
+--- Utility class providing string normalization functions for addon.
+--- @class StringNormalizer
 local internal = {}
 ns.StringNormalizer = internal
 
+--- Normalize a string and extract numeric values.
+--- @param text string? The input text.
+--- @return string? normalizedText @The normalized text.
+--- @return table extractedNumerics @The extracted numeric values.
 function internal.NormalizeStringAndExtractNumerics(text)
     if text == nil or text == "" then
-        return text
+        return text, {}
     end
 
     local icons = {}
@@ -53,19 +59,28 @@ function internal.NormalizeStringAndExtractNumerics(text)
     return text, numbers
 end
 
+--- Reconstruct a string with numeric values.
+--- @param str string The input string.
+--- @param numbers table The numeric values.
+--- @return string @The reconstructed string.
 function internal.ReconstructStringWithNumerics(str, numbers)
     local result = InsertNumericValues(str, numbers)
     result = result:gsub("(%d+)( *){(declension)|([^}|]+)|([^}|]+)|([^}|]+)}",
         function(numberString, space, _, nominativ, genetiv, plural)
             local number = tonumber(numberString)
-            return number .. space .. DeclensionWord(number, nominativ, genetiv, plural)
+            if (number) then
+                return number .. space .. DeclensionWord(number, nominativ, genetiv, plural)
+            end
         end)
     result = result:gsub("{(%x+)|([^}]+)}", "|c%1%2|r")
     return result
 end
 
+--- Normalize a personalized string by replacing player name with a placeholder.
+--- @param text string The input text.
+--- @return string @The normalized text.
 function internal.NormalizePersonalizedString(text)
-    local playerName = UnitName("player")
+    local playerName = ns.PlayerData.Name
     if (playerName) then
         text = string.gsub(text, playerName, function()
             return "{name}"
@@ -74,8 +89,11 @@ function internal.NormalizePersonalizedString(text)
     return text
 end
 
+--- Reconstruct a personalized string by replacing the placeholder with the player name.
+--- @param text string The input text.
+--- @return string @The reconstructed text.
 function internal.ReconstructPersonalizedString(text)
-    local playerName = UnitName("player")
+    local playerName = ns.PlayerData.Name
     if (playerName) then
         text = string.gsub(text, "{name}", function()
             return playerName

@@ -1,5 +1,5 @@
---- @type string, WowUkrainizerInternals
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
 local IsValueInTable = ns.CommonUtil.IsValueInTable
 

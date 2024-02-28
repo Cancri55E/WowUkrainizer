@@ -1,8 +1,2 @@
 ---@class WowUkrainizerInternals
----@field CommonUtil CommonUtil
----@field FontStringUtil FontStringUtil
----@field StringUtil StringUtil
----@field CommonData CommonData
----@field PlayerData PlayerData
----@field EventHandlerFactory EventHandlerFactory
 ---@field private _settingsProvider SettingsProvider? @Singleton instance of the SettingsProvider.
