@@ -3,7 +3,7 @@ local _, ns = ...;
 
 local _G = _G
 
-local eventHandler = ns.EventHandler:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 local SettingsProvider = ns.SettingsProvider
 
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault

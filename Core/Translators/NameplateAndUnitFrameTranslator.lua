@@ -7,7 +7,7 @@ local StartsWith = ns.StringUtil.StartsWith
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetUnitSubnameOrDefault = ns.DbContext.Units.GetUnitSubnameOrDefault
 
-local eventHandler = ns.EventHandler:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 local translator = class("NameplateAndUnitFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.NameplateAndUnitFrameTranslator = translator

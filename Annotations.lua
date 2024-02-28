@@ -4,3 +4,4 @@
 ---@field StringUtil StringUtil
 ---@field CommonData CommonData
 ---@field PlayerData PlayerData
+---@field EventHandlerFactory EventHandlerFactory

@@ -10,7 +10,7 @@ local GetSpecializationNote = ns.DbContext.Units.GetSpecializationNote
 local GetTranslationOrDefault = ns.DbContext.Frames.GetTranslationOrDefault
 local SetText = ns.FontStringUtil.SetText
 
-local eventHandler = ns.EventHandler:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 local translator = class("ClassTalentFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.ClassTalentFrameTranslator = translator

@@ -1,7 +1,8 @@
+--- @type string, WowUkrainizerInternals
 local addonName, ns = ...;
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
-local eventHandler = ns.EventHandler:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 local settingsProvider = ns.SettingsProvider:new()
 
 local minimapDataBroker

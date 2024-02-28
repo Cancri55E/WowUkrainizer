@@ -6,7 +6,7 @@ local GetMovieSubtitle = ns.DbContext.Subtitles.GetMovieSubtitle
 local GetCinematicSubtitle = ns.DbContext.NpcDialogs.GetCinematicSubtitle
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 
-local eventHandler = ns.EventHandler:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 local translator = class("SubtitlesTranslator", ns.Translators.BaseTranslator)
 ns.Translators.SubtitlesTranslator = translator

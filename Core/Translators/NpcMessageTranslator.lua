@@ -4,7 +4,7 @@ local _, ns = ...;
 local chatBubbleTimer
 
 local aceHook = LibStub("AceHook-3.0")
-local eventHandler = ns.EventHandler:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 local GenerateUuid = ns.CommonUtil.GenerateUuid
 local Split, Trim = ns.StringUtil.Split, ns.StringUtil.Trim
