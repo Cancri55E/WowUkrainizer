@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local translator = class("MainFrameTranslator", ns.Translators.BaseTranslator)

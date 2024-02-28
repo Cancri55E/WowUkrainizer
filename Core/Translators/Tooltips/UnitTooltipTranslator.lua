@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local _G = _G

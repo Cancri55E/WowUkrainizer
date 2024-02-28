@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local settingsProvider = ns.SettingsProvider
@@ -104,7 +105,7 @@ do
         self.FontNameSelector = createDropdownList("FontNameSelector", self, {
             items = settingData.fonts,
             width = 150,
-            selectedValue = ns.CommonExtensions.FindKeyByValue(
+            selectedValue = ns.CommonUtil.FindKeyByValue(
                 settingData.fonts, settingsProvider.GetOption(settingData.fontNameOption)),
             selectedItemChangedCallback = function(selectedItem)
                 settingsProvider.SetOption(self.fontNameOption, settingData.fonts[selectedItem])

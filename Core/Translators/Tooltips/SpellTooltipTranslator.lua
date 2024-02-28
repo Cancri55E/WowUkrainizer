@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local _G = _G
@@ -8,7 +9,7 @@ local EndsWith = ns.StringExtensions.EndsWith
 local StartsWith = ns.StringExtensions.StartsWith
 local StringsAreEqual = ns.StringExtensions.StringsAreEqual
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
-local IsValueInTable = ns.CommonExtensions.IsValueInTable
+local IsValueInTable = ns.CommonUtil.IsValueInTable
 
 local SPELL_PASSIVE_TRANSLATION = ns.SPELL_PASSIVE_TRANSLATION
 local TALENT_UPGRADE_TRANSLATION = ns.TALENT_UPGRADE_TRANSLATION

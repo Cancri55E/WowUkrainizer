@@ -1,11 +1,7 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local settingsProvider = ns.SettingsProvider
-
-WOW_UKRAINIZER_WHITE_COLOR = { r = 1, g = 1, b = 1 }
-WOW_UKRAINIZER_GREEN_COLOR = { r = 0.271, g = 0.561, b = 0.094 }
-WOW_UKRAINIZER_DISABLED_COLOR = { r = 0.427, g = 0.443, b = 0.478 }
-WOW_UKRAINIZER_SECONDARY_TEXT_COLOR = { r = 0.604, g = 0.592, b = 0.725 }
 
 -- WowUkrainizerCheckButtonMixin
 do
@@ -44,33 +40,33 @@ end
 
 -- WowUkrainizerUrlFrameMixin
 do
-    local WizardTooltip = CreateFrame("GameTooltip", "WowUkrainizer-Wizard-Tooltip", UIParent, "GameTooltipTemplate")
+    local wizardTooltip = CreateFrame("GameTooltip", "WowUkrainizer-Wizard-Tooltip", UIParent, "GameTooltipTemplate")
 
 
     WowUkrainizerUrlFrameMixin = CreateFromMixins(CallbackRegistryMixin);
     WowUkrainizerUrlFrameMixin._url = ""
 
     local function OnUrlEnter(self)
-        WizardTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
-        WizardTooltip:SetText("Виділити")
-        WizardTooltip:AddLine("Натисніть, щоб виділити цю URL-адресу.", 1, 1, 1)
-        WizardTooltip:Show()
+        wizardTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+        wizardTooltip:SetText("Виділити")
+        wizardTooltip:AddLine("Натисніть, щоб виділити цю URL-адресу.", 1, 1, 1)
+        wizardTooltip:Show()
     end
 
     local function OnUrlLeave(_)
-        WizardTooltip:Hide()
+        wizardTooltip:Hide()
     end
 
     local function OnCopyUrlBoxEnter(self)
-        WizardTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
-        WizardTooltip:SetText("Копіювати")
-        WizardTooltip:AddLine("Натисніть |cffffcc00CTRL+C|r, щоб скопіювати текст.", 1, 1, 1)
-        WizardTooltip:AddLine("Натисніть |cffffcc00ESC|r, щоб скасувати.", 1, 1, 1)
-        WizardTooltip:Show()
+        wizardTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+        wizardTooltip:SetText("Копіювати")
+        wizardTooltip:AddLine("Натисніть |cffffcc00CTRL+C|r, щоб скопіювати текст.", 1, 1, 1)
+        wizardTooltip:AddLine("Натисніть |cffffcc00ESC|r, щоб скасувати.", 1, 1, 1)
+        wizardTooltip:Show()
     end
 
     local function OnCopyUrlBoxLeave(_)
-        WizardTooltip:Hide()
+        wizardTooltip:Hide()
     end
 
     local function OnCopyUrlBoxFocusGained(self)

@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local utf8sub, utf8len = string.utf8sub, string.utf8len

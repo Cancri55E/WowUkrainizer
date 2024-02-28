@@ -1,6 +1,7 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local SetText = ns.FontStringExtensions.SetText
+local SetText = ns.FontStringUtil.SetText
 
 local translator = class("BaseTooltipTranslator", ns.Translators.BaseTranslator)
 ns.Translators.BaseTooltipTranslator = translator

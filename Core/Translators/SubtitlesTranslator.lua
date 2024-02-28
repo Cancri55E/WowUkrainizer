@@ -1,6 +1,7 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local GenerateUuid = ns.CommonExtensions.GenerateUuid
+local GenerateUuid = ns.CommonUtil.GenerateUuid
 local GetMovieSubtitle = ns.DbContext.Subtitles.GetMovieSubtitle
 local GetCinematicSubtitle = ns.DbContext.NpcDialogs.GetCinematicSubtitle
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault

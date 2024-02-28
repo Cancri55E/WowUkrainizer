@@ -1,0 +1,3 @@
+---@class WowUkrainizerInternals
+---@field CommonUtil CommonUtil
+---@field FontStringUtil FontStringUtil

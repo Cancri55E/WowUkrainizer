@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local _G = _G
@@ -7,7 +8,7 @@ local GetRole, GetAttribute = ns.DbContext.Units.GetRole, ns.DbContext.Units.Get
 local GetSpecialization, GetClass = ns.DbContext.Units.GetSpecialization, ns.DbContext.Units.GetClass
 local GetSpecializationNote = ns.DbContext.Units.GetSpecializationNote
 local GetTranslationOrDefault = ns.DbContext.Frames.GetTranslationOrDefault
-local SetText = ns.FontStringExtensions.SetText
+local SetText = ns.FontStringUtil.SetText
 
 local eventHandler = ns.EventHandler:new()
 

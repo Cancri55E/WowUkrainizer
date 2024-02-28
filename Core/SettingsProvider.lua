@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")

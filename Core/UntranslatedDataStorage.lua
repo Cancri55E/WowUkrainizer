@@ -1,6 +1,7 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local IsValueInTable = ns.CommonExtensions.IsValueInTable
+local IsValueInTable = ns.CommonUtil.IsValueInTable
 
 local dataStorage = class("UntranslatedDataStorage");
 ns.UntranslatedDataStorage = dataStorage

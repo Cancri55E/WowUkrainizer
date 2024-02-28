@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local chatBubbleTimer
@@ -5,9 +6,9 @@ local chatBubbleTimer
 local aceHook = LibStub("AceHook-3.0")
 local eventHandler = ns.EventHandler:new()
 
-local GenerateUuid = ns.CommonExtensions.GenerateUuid
+local GenerateUuid = ns.CommonUtil.GenerateUuid
 local Split, Trim = ns.StringExtensions.Split, ns.StringExtensions.Trim
-local SetFontStringText = ns.FontStringExtensions.SetText
+local SetFontStringText = ns.FontStringUtil.SetText
 local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
 local GetDialogText = ns.DbContext.NpcDialogs.GetDialogText
 

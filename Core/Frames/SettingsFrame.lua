@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local WOW_UKRAINIZER_SETTING_FRAME_WARNING_TEXT =

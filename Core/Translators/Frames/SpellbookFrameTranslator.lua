@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local _G = _G
@@ -8,7 +9,7 @@ local PAGE_TRANSLATION, SPELL_PASSIVE_TRANSLATION = ns.PAGE_TRANSLATION, ns.SPEL
 local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
 local SPELL_GENERAL_TRANSLATION = ns.SPELL_GENERAL_TRANSLATION
 
-local StartsWith, SetText = ns.StringExtensions.StartsWith, ns.FontStringExtensions.SetText
+local StartsWith, SetText = ns.StringExtensions.StartsWith, ns.FontStringUtil.SetText
 local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
 local GetSpellAttributeOrDefault = ns.DbContext.Spells.GetSpellAttributeOrDefault
 local GetClass, GetSpecialization = ns.DbContext.Units.GetClass, ns.DbContext.Units.GetSpecialization
