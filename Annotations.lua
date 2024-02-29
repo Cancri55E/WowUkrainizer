@@ -44,5 +44,30 @@
 
 ---@class (exact) WowUkrainizerDatabase
 ---@field Changelogs ChangelogEntry[] Array of changelog entries, newest first
+---@field Quests table<integer, string[]>
+---@field QuestObjectives table<integer, table<integer, string>>
 ---@field MTQuests table<integer, string[]>
 ---@field MTQuestObjectives table<integer, table<integer, string>>
+---@field UnitTypes table<integer, string>
+---@field UnitRanks table<integer, string>
+---@field CommonSpellAttributes table<integer, string>
+---@field Specializations table<integer, string>
+---@field Classes table<integer, string>
+---@field Attributes table<integer, string>
+---@field Roles table<integer, string>
+---@field SpecializationNotes table<integer, string>
+---@field DialogTexts table<integer, string>
+---@field CinematicSubtitles table<integer, string>
+---@field SpellbookFrameLines table<integer, string>
+---@field ClassTalentFrameLines table<integer, string>
+---@field AdditionalSpellTips table<integer, string>
+---@field MainFrameLines table<integer, string>
+---@field QuestFrameLines table<integer, string>
+---@field GossipTitles table<integer, string>
+---@field GossipOptions table<integer, string>
+---@field SpellNames table<integer, string>
+---@field SpellDescriptions table<integer, string>
+---@field MovieSubtitles table<integer, string>
+---@field UnitNames table<integer, string>
+---@field UnitSubnames table<integer, string>
+-- TODO: @field Voiceover

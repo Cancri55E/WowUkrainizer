@@ -23,7 +23,7 @@ local dbContext = {}
 local baseRepository = {}
 
 --- Protected method to get the translated or the original (English) text if not translated.
----@param dbTable table @ The database table for translations.
+---@param dbTable table<integer, string> @ The database table for translations.
 ---@param original string @ The original (English) text.
 ---@return string @ The translated or original value.
 ---@protected
@@ -34,7 +34,7 @@ function baseRepository._getValue(dbTable, original)
 end
 
 --- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain numeric values.
----@param dbTable table @ The database table for translations.
+---@param dbTable table<integer, string> @ The database table for translations.
 ---@param original string @ The original (English) text.
 ---@return string @ The translated or original value.
 ---@protected
@@ -49,7 +49,7 @@ function baseRepository:_getFormattedValue(dbTable, original)
 end
 
 --- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain personalized values (player name, class, etc.).
----@param dbTable table @ The database table for translations.
+---@param dbTable table<integer, string> @ The database table for translations.
 ---@param original string @ The original (English) text.
 ---@return string @ The translated or original value.
 ---@protected
