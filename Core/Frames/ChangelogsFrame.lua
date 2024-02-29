@@ -30,20 +30,21 @@ function WowUkrainizerChangelogsFrameMixin:OnShow()
 end
 
 function WowUkrainizerChangelogsFrameMixin:RefreshLayout()
+    ---@param changelog ChangelogEntry
     local function _updateButton(button, itemIndex, changelog)
         button:SetID(itemIndex);
 
-        if (changelog[6] ~= nil) then
-            button.Title:SetText("Версія " .. changelog[1] .. " - " .. changelog[6])
+        if (changelog.title ~= nil) then
+            button.Title:SetText("Версія " .. changelog.version .. " - " .. changelog.title)
         else
-            button.Title:SetText("Версія " .. changelog[1])
+            button.Title:SetText("Версія " .. changelog.version)
         end
-        button.Date:SetText(changelog[2])
-        button.CheckMark:SetVertexColor(unpack(colors[changelog[3]]));
-        button.TypeBackground:SetColorTexture(unpack(colors[changelog[3]]));
-        button.Type:SetText(changelog[4])
-        button.Author:SetText("Автор: " .. changelog[5])
-        button.Text:SetText(changelog[7])
+        button.Date:SetText(changelog.date)
+        button.CheckMark:SetVertexColor(unpack(colors[changelog.color]));
+        button.TypeBackground:SetColorTexture(unpack(colors[changelog.color]));
+        button.Type:SetText(changelog.type)
+        button.Author:SetText("Автор: " .. changelog.author)
+        button.Text:SetText(changelog.description)
 
         button:SetWidth(self.scrollFrame.scrollChild:GetWidth());
         button:SetHeight(math.floor(button.Text:GetHeight() + 80));
@@ -54,7 +55,7 @@ function WowUkrainizerChangelogsFrameMixin:RefreshLayout()
 
     local totalHeight = 0
     for itemIndex = 1, totalChanglogsCount do
-        self.CalculatedTextHook:SetText(self.items[itemIndex][7])
+        self.CalculatedTextHook:SetText(self.items[itemIndex].description)
         totalHeight = totalHeight + math.floor(self.CalculatedTextHook:GetHeight() + 80)
     end
 

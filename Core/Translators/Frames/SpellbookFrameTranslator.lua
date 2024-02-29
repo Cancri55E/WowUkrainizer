@@ -62,7 +62,7 @@ local function updateSkillLineTabsCallback()
                 elseif (i == 2) then
                     skillLineTab.tooltip = GetTranslatedClass(name, 1, gender);
                 else
-                    skillLineTab.tooltip = GetTranslatedSpecialization(name, 1, gender);
+                    skillLineTab.tooltip = GetTranslatedSpecialization(name);
                 end
             end
         end

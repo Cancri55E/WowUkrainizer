@@ -65,13 +65,13 @@ do
     ---@class UnitRepository : BaseRepository
     local repository = setmetatable({}, { __index = baseRepository })
 
-    --- Calculate the index based on gender and index values.
-    --- @param index number @ The index value.
-    --- @param gender number @ The gender value.
+    --- Calculate the index based on gender and case values.
+    --- @param case number @ The case value.
+    --- @param gender number? @ The gender value.
     --- @return number @ The calculated index.
-    local function calcIndex(index, gender)
-        if (not index or not gender) then return 1 end
-        return index * 2 - (3 - gender)
+    local function calculateClassTranslationIndex(case, gender)
+        if (not case or not gender) then return 1 end
+        return case * 2 - (3 - gender)
     end
 
     --- Get the translated unit name or the original (English) text if not translated.
@@ -121,13 +121,13 @@ do
     --- Get the translated class based on case and gender or the original (English) text if not translated.
     --- @param original string @ The original (English) text.
     --- @param case number @ The case value.
-    --- @param gender number @ The gender value.
+    --- @param gender number? @ The gender value.
     --- @return string @ The translated class or the original (English) text.
     function repository.GetTranslatedClass(original, case, gender)
         local class = repository._getValue(ns._db.Classes, original)
         if (not class) then return original end
 
-        return class[calcIndex(case, gender)] or original
+        return class[calculateClassTranslationIndex(case, gender)] or original
     end
 
     --- Get the translated specialization or the original (English) text if not translated.
@@ -445,15 +445,19 @@ do
         end
 
         local translatedObjectiveText = repository._getValue(objectives, objectiveText)
+
         if (progressText) then
             translatedObjectiveText = progressText .. " " .. translatedObjectiveText
         end
+
         if (optionalText) then
             translatedObjectiveText = translatedObjectiveText .. " (Необов'язково)"
         end
+
         if (completeText) then
             translatedObjectiveText = translatedObjectiveText .. " (Виконано)"
         end
+
         return repository._normalizeQuestString(translatedObjectiveText)
     end
 

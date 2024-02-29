@@ -99,7 +99,7 @@ function _settingsProviderPrototype.ShouldShowChangelog()
     local lastAutoShownChangelogVersion = WowUkrainizer_Options[WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION]
     local isFirstRun = WowUkrainizer_Options[WOW_UKRAINIZER_IS_FIRST_RUN_OPTION]
 
-    return not isFirstRun and ns._db.Changelogs[1][1] ~= lastAutoShownChangelogVersion
+    return not isFirstRun and ns._db.Changelogs[1].version ~= lastAutoShownChangelogVersion
 end
 
 --- Checks if the installer wizard should be shown.

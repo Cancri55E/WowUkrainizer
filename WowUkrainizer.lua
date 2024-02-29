@@ -346,7 +346,7 @@ local function OnPlayerLogin()
         settingsProvider.SetOption(WOW_UKRAINIZER_IS_FIRST_RUN_OPTION, false)
     elseif (settingsProvider.ShouldShowChangelog()) then
         ns.Frames["ChangelogsFrame"]:ToggleUI()
-        settingsProvider.SetOption(WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION, ns._db.Changelogs[1][1])
+        settingsProvider.SetOption(WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION, ns._db.Changelogs[1].version)
     end
 end
 
