@@ -6,13 +6,13 @@ local _G = _G
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 local SettingsProvider = ns:GetSettingsProvider()
 
-local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
-local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
-local GetGossipTitle = ns.DbContext.Gossips.GetGossipTitle
-local GetGossipOptionText = ns.DbContext.Gossips.GetGossipOptionText
-local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
-local GetQuestData = ns.DbContext.Quests.GetQuestData
-local GetQuestObjective = ns.DbContext.Quests.GetQuestObjective
+local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
+local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
+local GetTranslatedGossipText = ns.DbContext.Gossips.GetTranslatedGossipText
+local GetTranslatedGossipOptionText = ns.DbContext.Gossips.GetTranslatedGossipOptionText
+local GetTranslatedQuestTitle = ns.DbContext.Quests.GetTranslatedQuestTitle
+local GetTranslatedQuestData = ns.DbContext.Quests.GetTranslatedQuestData
+local GetTranslatedQuestObjective = ns.DbContext.Quests.GetTranslatedQuestObjective
 
 local FACTION_ALLIANCE = ns.FACTION_ALLIANCE
 local FACTION_HORDE = ns.FACTION_HORDE
@@ -71,7 +71,7 @@ local function copyTable(originalTable)
 end
 
 local function getQuestTitle(questID, isTrivial)
-    local translatedTitle = GetQuestTitle(questID)
+    local translatedTitle = GetTranslatedQuestTitle(questID)
     if (not translatedTitle) then return end
 
     if (isTrivial) then
@@ -82,7 +82,7 @@ local function getQuestTitle(questID, isTrivial)
 end
 
 local function getQuestFrameTranslationOrDefault(default)
-    return ns.DbContext.Frames.GetTranslationOrDefault("quest", default)
+    return ns.DbContext.Frames.GetTranslatedUIText("Quest", default)
 end
 
 local function translateUIFontString(fontString)
@@ -239,7 +239,7 @@ local function TranslteQuestObjective(objectiveFrame, questData, isQuestFrame)
     end
 
     if (not translatedText) then
-        translatedText = GetQuestObjective(questData.ID, text)
+        translatedText = GetTranslatedQuestObjective(questData.ID, text)
     end
 
     objectiveFrame:SetText(translatedText)
@@ -270,7 +270,7 @@ local function OnQuestFrameGreetingPanelShow(_)
         button:SetHeight(math.max(button:GetTextHeight() + 2, button.Icon:GetHeight()));
     end
 
-    local translatedTitle = GetGossipTitle(GreetingText:GetText())
+    local translatedTitle = GetTranslatedGossipText(GreetingText:GetText())
     if (translatedTitle) then
         GreetingText:SetText(translatedTitle)
     end
@@ -293,7 +293,7 @@ end
 
 local function OnGossipShow()
     local title = GossipFrameTitleText:GetText();
-    GossipFrameTitleText:SetText(GetUnitNameOrDefault(title));
+    GossipFrameTitleText:SetText(GetTranslatedUnitName(title));
 
     local optionHeightOffset = 0
     for _, childFrame in GossipFrame.GreetingPanel.ScrollBox:EnumerateFrames() do
@@ -301,7 +301,7 @@ local function OnGossipShow()
         local buttonType = data.buttonType
         if (buttonType == GOSSIP_BUTTON_TYPE_TITLE) then
             local currentHeight = childFrame.GreetingText:GetHeight()
-            childFrame.GreetingText:SetText(GetGossipTitle(childFrame.GreetingText:GetText()))
+            childFrame.GreetingText:SetText(GetTranslatedGossipText(childFrame.GreetingText:GetText()))
             optionHeightOffset = childFrame.GreetingText:GetHeight() - currentHeight
             if (optionHeightOffset < 1) then optionHeightOffset = 0 end
         elseif (buttonType == GOSSIP_BUTTON_TYPE_OPTION or buttonType == GOSSIP_BUTTON_TYPE_ACTIVE_QUEST or buttonType == GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST) then
@@ -313,7 +313,7 @@ local function OnGossipShow()
 
             local currentHeight = childFrame:GetHeight()
             if (buttonType == GOSSIP_BUTTON_TYPE_OPTION) then
-                childFrame:SetText(GetGossipOptionText(childFrame:GetText()))
+                childFrame:SetText(GetTranslatedGossipOptionText(childFrame:GetText()))
                 childFrame:Resize();
             else
                 local translatedTitle = getQuestTitle(tonumber(data.info.questID), data.info.isTrivial)
@@ -342,7 +342,7 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
     assert(info and not info.isHeader);
 
     local questID = info.questID;
-    local questData = GetQuestData(questID)
+    local questData = GetTranslatedQuestData(questID)
     if (not questData) then return end
 
     QuestMapFrame:GetParent():SetHighlightedQuestID(questID);
@@ -441,7 +441,7 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
                 if (finished) then
                     color = GRAY_FONT_COLOR;
                 end -- TODO: ?
-                local translatedText = GetQuestObjective(questID, text)
+                local translatedText = GetTranslatedQuestObjective(questID, text)
                 GameTooltip:AddLine(QUEST_DASH .. translatedText or text, color.r, color.g, color.b,
                     true);
                 needsSeparator = true;
@@ -486,7 +486,7 @@ local function OnQuestLogQuestsUpdate()
         local questID = titleFrame.questID
         if (not updatedHeight[questID]) then updatedHeight[questID] = 0 end
 
-        local translatedTitle = GetQuestTitle(questID)
+        local translatedTitle = GetTranslatedQuestTitle(questID)
         if (translatedTitle) then
             titleFrame.Text:SetText(translatedTitle)
         end
@@ -496,7 +496,7 @@ local function OnQuestLogQuestsUpdate()
     for objectiveFramePool in QuestScrollFrame.objectiveFramePool:EnumerateActive() do
         local questID = objectiveFramePool.questID
         if (not updatedHeight[questID]) then updatedHeight[questID] = 0 end
-        local objectiveHeight = TranslteQuestObjective(objectiveFramePool.Text, GetQuestData(questID), false)
+        local objectiveHeight = TranslteQuestObjective(objectiveFramePool.Text, GetTranslatedQuestData(questID), false)
         if (objectiveHeight > 0) then
             objectiveFramePool:SetHeight(objectiveHeight)
             updatedHeight[questID] = updatedHeight[questID] + objectiveHeight + 4
@@ -549,7 +549,7 @@ local function UpdateTrackerModule(module)
         local block = module:GetBlock(questID);
 
         local blockHeight = 0;
-        local questData = GetQuestData(tonumber(questID))
+        local questData = GetTranslatedQuestData(tonumber(questID))
         if (questData and questData.Title) then
             questObjectiveBlock.HeaderText:SetText(questData.Title)
             blockHeight = questObjectiveBlock.HeaderText:GetHeight()
@@ -578,7 +578,7 @@ local function ShowQuestPortrait()
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
 
-    local questData = GetQuestData(questID)
+    local questData = GetTranslatedQuestData(questID)
     if (not questData) then return end
 
     if (questData.TargetName) then QuestNPCModelNameText:SetText(questData.TargetName) end
@@ -592,14 +592,14 @@ local function DisplayQuestInfo(template, parentFrame)
     end
 
     local title = QuestFrameTitleText:GetText();
-    QuestFrameTitleText:SetText(GetUnitNameOrDefault(title));
+    QuestFrameTitleText:SetText(GetTranslatedUnitName(title));
 
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
 
-    local questData = GetQuestData(questID)
+    local questData = GetTranslatedQuestData(questID)
 
-    showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMTData)
+    showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMtData)
 
     local elementsTable = template.elements;
     for i = 1, #elementsTable, 3 do
@@ -669,14 +669,14 @@ end
 
 local function OnQuestFrameProgressPanelShow(_)
     local title = QuestFrameTitleText:GetText();
-    QuestFrameTitleText:SetText(GetUnitNameOrDefault(title));
+    QuestFrameTitleText:SetText(GetTranslatedUnitName(title));
 
     local questID = getQuestID()
     if (not questID or questID == 0) then return end
 
-    local questData = GetQuestData(questID)
+    local questData = GetTranslatedQuestData(questID)
 
-    showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMTData)
+    showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMtData)
 
     if (SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
         if (questData and questData.Title) then
@@ -706,7 +706,7 @@ local function OnStaticPopupShow(which, text_arg1, text_arg2)
         local frame = _findStaticPopup()
         if (not frame) then return end
 
-        frame.text:SetFormattedText(ABANDON_QUEST_CONFIRM_UA, GetQuestTitle(questId) or text_arg1, text_arg2)
+        frame.text:SetFormattedText(ABANDON_QUEST_CONFIRM_UA, GetTranslatedQuestTitle(questId) or text_arg1, text_arg2)
         frame.button1.Text:SetText(YES_UA)
         frame.button2.Text:SetText(NO_UA)
 
@@ -742,11 +742,11 @@ local function ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
     local playbackEvent = immersionFrame.playbackEvent
     if (playbackEvent == "QUEST_GREETING") then
         -- TODO: Check when gossip translations is ready
-        updateTalkBoxText(GetUnitNameOrDefault(title), GetGossipTitle(text))
+        updateTalkBoxText(GetTranslatedUnitName(title), GetTranslatedGossipText(text))
     else
-        local questData = GetQuestData(questID)
+        local questData = GetTranslatedQuestData(questID)
 
-        showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMTData)
+        showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMtData)
 
         if (questData) then
             if (playbackEvent == "QUEST_PROGRESS") then
@@ -774,7 +774,7 @@ local function ImmersionTalkBoxElementsDisplayHook(elements)
     do -- ShowObjectivesText
         local objectivesText = immersionObjectivesTextOriginal
         if (SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
-            local questData = GetQuestData(questID)
+            local questData = GetTranslatedQuestData(questID)
             if (questData and questData.ObjectivesText) then
                 objectivesText = questData.ObjectivesText
             end
@@ -796,7 +796,7 @@ local function ImmersionTalkBoxElementsDisplayHook(elements)
         local spellID, spellName, _ = GetCriteriaSpell()
         if (spellID) then
             translateUIFontString(elements.Content.SpecialObjectivesFrame.SpellObjectiveLearnLabel)
-            elements.Content.SpecialObjectivesFrame.SpellObjectiveFrame:SetText(GetSpellNameOrDefault(spellName))
+            elements.Content.SpecialObjectivesFrame.SpellObjectiveFrame:SetText(GetTranslatedSpellName(spellName))
         end
     end
 
@@ -822,7 +822,7 @@ local function ImmersionTalkBoxElementsDisplayHook(elements)
         for fontString in elements.Content.RewardsFrame.spellRewardPool:EnumerateActive() do
             local spellRewardName = fontString:GetText()
             if (fontString:GetText() ~= nil) then
-                fontString:SetText(GetSpellNameOrDefault(spellRewardName));
+                fontString:SetText(GetTranslatedSpellName(spellRewardName));
             end
         end
         -- TODO: Add Translation for followerRewardPool when followers module ready
@@ -950,7 +950,7 @@ local function OnUIErrorsFrameMessageAdded(_, message, _, _, _, _, messageType)
         for i = 1, C_QuestLog.GetNumQuestLogEntries() do
             local questID = C_QuestLog.GetQuestIDForLogIndex(i);
             if questID and questID > 0 then
-                local objective = GetQuestObjective(questID, text)
+                local objective = GetTranslatedQuestObjective(questID, text)
                 if (objective ~= text) then
                     translatedText = objective .. " (Виконано)"
                     break
@@ -976,7 +976,7 @@ local function OnUIErrorsFrameMessageAdded(_, message, _, _, _, _, messageType)
         for i = 1, C_QuestLog.GetNumQuestLogEntries() do
             local questID = C_QuestLog.GetQuestIDForLogIndex(i);
             if questID and questID > 0 then
-                local objective = GetQuestObjective(questID, text)
+                local objective = GetTranslatedQuestObjective(questID, text)
                 if (objective ~= text) then
                     translatedText = objective
                     if (progress) then translatedText = translatedText .. ": " .. progress end
@@ -1002,7 +1002,7 @@ local function OnUIErrorsFrameMessageAdded(_, message, _, _, _, _, messageType)
         for i = 1, C_QuestLog.GetNumQuestLogEntries() do
             local questID = C_QuestLog.GetQuestIDForLogIndex(i);
             if questID and questID > 0 then
-                local objective = GetQuestObjective(questID, text)
+                local objective = GetTranslatedQuestObjective(questID, text)
                 if (objective ~= text) then
                     translatedText = objective
                     if (progress) then translatedText = translatedText .. ": " .. progress end
@@ -1068,12 +1068,12 @@ local function GetTranslatedTooltip(frame, questID, questLogIndex, numPOITooltip
         end
 
         if text and not finished then
-            local translatedObjective = GetQuestObjective(questID, text)
+            local translatedObjective = GetTranslatedQuestObjective(questID, text)
             table.insert(translatedObjectives, QUEST_DASH .. translatedObjective or text)
         end
     end
 
-    local translatedTitle = GetQuestTitle(questID)
+    local translatedTitle = GetTranslatedQuestTitle(questID)
     if (not translatedTitle) then
         translatedTitle = C_QuestLog.GetTitleForQuestID(questID);
     else
@@ -1118,7 +1118,7 @@ end
 local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is QuestPinMixin:OnMouseEnter()
     local questID = button.questID;
     local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID);
-    local translatedTitle = GetQuestTitle(questID)
+    local translatedTitle = GetTranslatedQuestTitle(questID)
     if (not translatedTitle) then
         translatedTitle = C_QuestLog.GetTitleForQuestID(questID);
     else
@@ -1152,7 +1152,7 @@ local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is
                 if (text and not finished) then
                     local lineLeft = _G["GameTooltipTextLeft" .. objectiveOffset + i]
                     if (lineLeft) then
-                        local translatedObjective = GetQuestObjective(questID, text)
+                        local translatedObjective = GetTranslatedQuestObjective(questID, text)
                         if (translatedObjective) then
                             lineLeft:SetText(QUEST_DASH .. translatedObjective)
                         end
@@ -1166,7 +1166,7 @@ local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is
                 if (text and not finished) then
                     local lineLeft = _G["GameTooltipTextLeft" .. objectiveOffset + i]
                     if (lineLeft) then
-                        local translatedObjective = GetQuestObjective(questID, text)
+                        local translatedObjective = GetTranslatedQuestObjective(questID, text)
                         if (translatedObjective) then
                             lineLeft:SetText(QUEST_DASH .. translatedObjective)
                         end
@@ -1253,21 +1253,21 @@ local function OnMinimapMouseoverTooltipPostCall(tooltip, tooltipData)
                             end
                             local questID = questTitleToQuestIdCache[data.title]
                             if (questID) then
-                                local translatedTitle = GetQuestTitle(questID)
+                                local translatedTitle = GetTranslatedQuestTitle(questID)
                                 if (translatedTitle) then
                                     data.title = translatedTitle
                                 end
 
                                 for j = #data.objectives, 1, -1 do
                                     local objective = data.objectives[j]
-                                    local translatedObjective = GetQuestObjective(questID, objective)
+                                    local translatedObjective = GetTranslatedQuestObjective(questID, objective)
                                     if (translatedObjective) then
                                         data.objectives[j] = translatedObjective
                                     end
                                 end
                             end
                         elseif (data.type == 'NPC_OR_OBJECT') then
-                            local translatedTitle = GetUnitNameOrDefault(data.title)
+                            local translatedTitle = GetTranslatedUnitName(data.title)
                             if (translatedTitle == data.title) then
                                 -- TODO: Object Name
                             end
@@ -1325,7 +1325,7 @@ local function OnToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOf
         local questID = dropDownFrame.activeFrame.id
         local title = C_QuestLog.GetTitleForQuestID(questID);
         if (title) then
-            local translatedTitle = GetQuestTitle(questID);
+            local translatedTitle = GetTranslatedQuestTitle(questID);
             if (translatedTitle) then
                 _G[listFrameName .. "Button" .. buttonIndex]:SetText(translatedTitle)
             end
@@ -1344,7 +1344,7 @@ local function OnStorylineQuestPinMouseEnter(frame)
     if (questLineInfo) then
         GameTooltip:SetOwner(frame, "ANCHOR_LEFT");
         GameTooltip:SetText(questLineInfo.questName);
-        local translatedTitle = GetQuestTitle(tonumber(frame.questID))
+        local translatedTitle = GetTranslatedQuestTitle(tonumber(frame.questID))
         if (translatedTitle) then
             GameTooltip:SetText(translatedTitle)
         end
@@ -1398,7 +1398,7 @@ local function InitializeImmersion()
 
         for i, option in ipairs(gossipOptions) do
             local button = titleButtons:GetButton(i + numGossipAvailableQuests + numGossipActiveQuests)
-            button:SetText(GetGossipOptionText(option.name))
+            button:SetText(GetTranslatedGossipOptionText(option.name))
         end
     end)
 

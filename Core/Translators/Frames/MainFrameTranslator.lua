@@ -5,7 +5,7 @@ local translator = class("MainFrameTranslator", ns.Translators.BaseTranslator)
 ns.Translators.MainFrameTranslator = translator
 
 local function getTranslationOrDefault(default)
-    return ns.DbContext.Frames.GetTranslationOrDefault("main", default)
+    return ns.DbContext.Frames.GetTranslatedUIText("Main", default)
 end
 
 local function microButtonTooltipHook(button)

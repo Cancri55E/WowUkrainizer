@@ -4,8 +4,8 @@ local _, ns = ...;
 local utf8sub, utf8len = string.utf8sub, string.utf8len
 
 local StartsWith = ns.StringUtil.StartsWith
-local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
-local GetUnitSubnameOrDefault = ns.DbContext.Units.GetUnitSubnameOrDefault
+local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
+local GetTranslatedUnitSubname = ns.DbContext.Units.GetTranslatedUnitSubname
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
@@ -16,7 +16,7 @@ local function unitNameWrap(self, unitNameFunc)
     return function(unitName)
         local enText = unitNameFunc(unitName)
         if (not self:IsEnabled()) then return enText end
-        return GetUnitNameOrDefault(enText)
+        return GetTranslatedUnitName(enText)
     end
 end
 
@@ -24,7 +24,7 @@ local function nameTagWrap(self, nameFunc)
     return function(u, r)
         local enText = nameFunc(u, r)
         if (not self:IsEnabled()) then return enText end
-        return GetUnitNameOrDefault(enText)
+        return GetTranslatedUnitName(enText)
     end
 end
 
@@ -133,7 +133,7 @@ local function translateUIControlWrapper(control)
     if (not control) then return end
     if (not control.GetText or not control.SetText) then return end
 
-    local isOk, error = pcall(function() control:SetText(GetUnitNameOrDefault(control:GetText())) end)
+    local isOk, error = pcall(function() control:SetText(GetTranslatedUnitName(control:GetText())) end)
 end
 
 function translator:initialize()
@@ -169,7 +169,7 @@ function translator:initialize()
             if (plateFrame.ActorTitleSpecial:IsVisible()) then
                 if (not plateFrame.ActorTitleSpecial.GetText or not plateFrame.ActorTitleSpecial.SetText) then return end
                 local titleText = plateFrame.ActorTitleSpecial:GetText():match("<(.-)>")
-                plateFrame.ActorTitleSpecial:SetText("<" .. GetUnitSubnameOrDefault(titleText, UnitSex("target")) .. ">")
+                plateFrame.ActorTitleSpecial:SetText("<" .. GetTranslatedUnitSubname(titleText, UnitSex("target")) .. ">")
             end
         end)
     end

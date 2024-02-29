@@ -146,3 +146,21 @@ function internal.InsertNumericValues(str, numericValues)
     end)
     return result
 end
+
+--- Removes square brackets from the given string.
+---@param str string @ The input string.
+---@return string @ The string with square brackets removed.
+function internal.RemoveBrackets(str)
+    str = str:gsub("[%[%]]", "")
+    return str
+end
+
+--- Replaces square brackets with color tags in the given string.
+---@param str string @ The input string.
+---@param colorStr string @ The color string for the color tags.
+---@return string @ The string with square brackets replaced by color tags.
+function internal.ReplaceBracketsToColor(str, colorStr)
+    str = str:gsub("%[", "|c" .. colorStr)
+    str = str:gsub("%]", "|r")
+    return str
+end

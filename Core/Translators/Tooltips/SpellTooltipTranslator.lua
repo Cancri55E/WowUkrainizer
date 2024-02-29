@@ -18,10 +18,10 @@ local SPELL_NEXT_RANK_TRANSLATION = ns.SPELL_NEXT_RANK_TRANSLATION
 local TALENT_REPLACES_TRANSLATION = ns.TALENT_REPLACES_TRANSLATION
 local TALENT_REPLACED_BY_TRANSLATION = ns.TALENT_REPLACED_BY_TRANSLATION
 
-local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
-local GetSpellDescriptionOrDefault = ns.DbContext.Spells.GetSpellDescriptionOrDefault
-local GetSpellAttributeOrDefault = ns.DbContext.Spells.GetSpellAttributeOrDefault
-local GetAdditionalSpellTipsOrDefault = ns.DbContext.Frames.GetAdditionalSpellTipsOrDefault
+local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
+local GetTranslatedSpellDescription = ns.DbContext.Spells.GetTranslatedSpellDescription
+local GetTranslatedSpellAttribute = ns.DbContext.Spells.GetTranslatedSpellAttribute
+local GetTranslatedUISpellTooltip = ns.DbContext.Frames.GetTranslatedUISpellTooltip
 
 local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "^Replaced by%s+(.+)"
@@ -39,13 +39,13 @@ function translator:initialize(tooltipDataType)
         for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
             local lineLeft = _G["GameTooltipTextLeft" .. i]
             if (lineLeft) then
-                local leftTranslatedTips = GetAdditionalSpellTipsOrDefault(lineLeft:GetText() or '')
+                local leftTranslatedTips = GetTranslatedUISpellTooltip(lineLeft:GetText())
                 lineLeft:SetText(leftTranslatedTips)
             end
 
             local lineRight = _G["GameTooltipTextRight" .. i]
             if (lineRight) then
-                local rightTranslatedTips = GetAdditionalSpellTipsOrDefault(lineRight:GetText() or '')
+                local rightTranslatedTips = GetTranslatedUISpellTooltip(lineRight:GetText())
                 lineRight:SetText(rightTranslatedTips)
             end
         end
@@ -72,11 +72,11 @@ function translator:initialize(tooltipDataType)
                 local text = lineLeft:GetText() or ''
                 local requiresText, talentName = extractRequirementTalentName(text)
                 if (talentName ~= nil) then
-                    local translatedRequiresText = GetSpellAttributeOrDefault(requiresText)
-                    translatedRequiresText = translatedRequiresText:format(GetSpellNameOrDefault(talentName))
+                    local translatedRequiresText = GetTranslatedSpellAttribute(requiresText)
+                    translatedRequiresText = translatedRequiresText:format(GetTranslatedSpellName(talentName))
                     lineLeft:SetText(translatedRequiresText)
                 else
-                    lineLeft:SetText(GetAdditionalSpellTipsOrDefault(text))
+                    lineLeft:SetText(GetTranslatedUISpellTooltip(text))
                 end
             end
         end
@@ -260,7 +260,7 @@ local function translateTooltipSpellInfo(spellContainer)
 
     if (spellContainer.ResourceType) then
         for i = 2, #spellContainer.ResourceType do
-            spellContainer.ResourceType[i] = GetSpellAttributeOrDefault(spellContainer.ResourceType[i])
+            spellContainer.ResourceType[i] = GetTranslatedSpellAttribute(spellContainer.ResourceType[i])
         end
         table.insert(translatedTooltipLines, {
             index = spellContainer.ResourceType[1],
@@ -271,19 +271,19 @@ local function translateTooltipSpellInfo(spellContainer)
     if (spellContainer.Range) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.Range[1],
-            value = GetSpellAttributeOrDefault(spellContainer.Range[2])
+            value = GetTranslatedSpellAttribute(spellContainer.Range[2])
         })
     end
 
     if (spellContainer.Requires) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.Requires[1],
-            value = GetSpellAttributeOrDefault(spellContainer.Requires[2])
+            value = GetTranslatedSpellAttribute(spellContainer.Requires[2])
         })
     end
 
     if (spellContainer.ReplacedBy) then
-        local spellName = GetSpellNameOrDefault(spellContainer.ReplacedBy[2], false)
+        local spellName = GetTranslatedSpellName(spellContainer.ReplacedBy[2], false)
         table.insert(translatedTooltipLines, {
             index = spellContainer.ReplacedBy[1],
             value = TALENT_REPLACED_BY_TRANSLATION .. " " .. spellName
@@ -291,7 +291,7 @@ local function translateTooltipSpellInfo(spellContainer)
     end
 
     if (spellContainer.Replaces) then
-        local spellName = GetSpellNameOrDefault(spellContainer.Replaces[2], false)
+        local spellName = GetTranslatedSpellName(spellContainer.Replaces[2], false)
         table.insert(translatedTooltipLines, {
             index = spellContainer.Replaces[1],
             value = TALENT_REPLACES_TRANSLATION .. " " .. spellName
@@ -301,35 +301,35 @@ local function translateTooltipSpellInfo(spellContainer)
     if (spellContainer.CastTime) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.CastTime[1],
-            value = GetSpellAttributeOrDefault(spellContainer.CastTime[2])
+            value = GetTranslatedSpellAttribute(spellContainer.CastTime[2])
         })
     end
 
     if (spellContainer.Cooldown) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.Cooldown[1],
-            value = GetSpellAttributeOrDefault(spellContainer.Cooldown[2])
+            value = GetTranslatedSpellAttribute(spellContainer.Cooldown[2])
         })
     end
 
     if (spellContainer.CooldownRemaining) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.CooldownRemaining[1],
-            value = GetSpellAttributeOrDefault(spellContainer.CooldownRemaining[2])
+            value = GetTranslatedSpellAttribute(spellContainer.CooldownRemaining[2])
         })
     end
 
     if (spellContainer.MaxCharges) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.MaxCharges[1],
-            value = GetSpellAttributeOrDefault(spellContainer.MaxCharges[2])
+            value = GetTranslatedSpellAttribute(spellContainer.MaxCharges[2])
         })
     end
 
     if (spellContainer.EvokerSpellColor) then
         table.insert(translatedTooltipLines, {
             index = spellContainer.EvokerSpellColor[1],
-            value = GetSpellAttributeOrDefault(spellContainer.EvokerSpellColor[2])
+            value = GetTranslatedSpellAttribute(spellContainer.EvokerSpellColor[2])
         })
     end
 
@@ -351,7 +351,7 @@ local function translateTooltipSpellInfo(spellContainer)
         for _, spellTip in ipairs(spellContainer.AdditionalSpellTips) do
             table.insert(translatedTooltipLines, {
                 index = spellTip[1],
-                value = GetAdditionalSpellTipsOrDefault(spellTip[2])
+                value = GetTranslatedUISpellTooltip(spellTip[2])
             })
         end
     end
@@ -362,7 +362,7 @@ local function translateTooltipSpellInfo(spellContainer)
             if (value ~= "") then
                 table.insert(translatedTooltipLines, {
                     index = description.index,
-                    value = GetSpellDescriptionOrDefault(value, settingsProvider.IsNeedHighlightSpellNameInDescription()),
+                    value = GetTranslatedSpellDescription(value, settingsProvider.IsNeedHighlightSpellNameInDescription()),
                     originalValue = value,
                     tag = "Description"
                 })
@@ -479,7 +479,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
     local spellNameLang = settingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION)
     if (spellNameLang ~= "en") then
         local spellName = tooltipInfo.Name
-        local translatedValue = GetSpellNameOrDefault(tooltipInfo.Name, true)
+        local translatedValue = GetTranslatedSpellName(tooltipInfo.Name, true)
 
         if (spellName ~= translatedValue) then
             spellName = spellNameLang == "ua" and translatedValue or
@@ -498,7 +498,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         if (tooltipInfo.Form and tooltipInfo.Form ~= "") then
             table.insert(translatedTooltipLines, {
                 index = 2,
-                value = GetSpellAttributeOrDefault(tooltipInfo.Form)
+                value = GetTranslatedSpellAttribute(tooltipInfo.Form)
             })
         end
 

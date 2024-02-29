@@ -2,9 +2,9 @@
 local ns = select(2, ...);
 
 local GenerateUuid = ns.CommonUtil.GenerateUuid
-local GetMovieSubtitle = ns.DbContext.Subtitles.GetMovieSubtitle
-local GetCinematicSubtitle = ns.DbContext.NpcDialogs.GetCinematicSubtitle
-local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
+local GetTranslatedMovieSubtitle = ns.DbContext.Subtitles.GetTranslatedMovieSubtitle
+local GetTranslatedCinematicSubtitle = ns.DbContext.NpcDialogs.GetTranslatedCinematicSubtitle
+local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
@@ -46,9 +46,9 @@ function translator:initialize()
     eventHandler:Register(function(_, message, sender)
         local function translateMessage()
             if (instance.playCinematic) then
-                return GetCinematicSubtitle(message)
+                return GetTranslatedCinematicSubtitle(message)
             elseif (instance.playMovie) then
-                return GetMovieSubtitle(message)
+                return GetTranslatedMovieSubtitle(message)
             else
                 return message
             end
@@ -57,7 +57,7 @@ function translator:initialize()
         local translatedMessage = translateMessage()
         local body = translatedMessage
         if sender then
-            local translatedSender = GetUnitNameOrDefault(sender)
+            local translatedSender = GetTranslatedUnitName(sender)
             body = format(SUBTITLE_FORMAT, translatedSender, translatedMessage);
         end
 

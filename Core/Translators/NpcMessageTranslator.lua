@@ -7,10 +7,9 @@ local aceHook = LibStub("AceHook-3.0")
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 local GenerateUuid = ns.CommonUtil.GenerateUuid
-local Split, Trim = ns.StringUtil.Split, ns.StringUtil.Trim
 local SetFontStringText = ns.FontStringUtil.SetText
-local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
-local GetDialogText = ns.DbContext.NpcDialogs.GetDialogText
+local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
+local GetTranslatedNpcMessage = ns.DbContext.NpcDialogs.GetTranslatedNpcMessage
 
 local translator = class("NpcMessageTranslator", ns.Translators.BaseTranslator)
 ns.Translators.NpcMessageTranslator = translator
@@ -36,7 +35,7 @@ local function updateChatBubbleMessage(chatBubbles)
             local fontString = getFontString(chatBubble);
             if (fontString) then
                 local message = fontString:GetText() or "";
-                SetFontStringText(fontString, GetDialogText(message))
+                SetFontStringText(fontString, GetTranslatedNpcMessage(message))
             end
         end
     end
@@ -57,8 +56,8 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
         displayInTalkingHead = true
     end
 
-    local translatedAuthor = GetUnitNameOrDefault(author)
-    local translatedMsg = GetDialogText(msg)
+    local translatedAuthor = GetTranslatedUnitName(author)
+    local translatedMsg = GetTranslatedNpcMessage(msg)
 
     if (msg == translatedMsg) then
         local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
@@ -111,8 +110,8 @@ function translator:initialize()
     TalkingHeadFrame:HookScript("OnUpdate", function()
         if (not TalkingHeadFrame:IsVisible()) then return end
 
-        local translatedAuthor = GetUnitNameOrDefault(TalkingHeadFrame.NameFrame.Name:GetText())
-        local translatedMsg = GetDialogText(TalkingHeadFrame.TextFrame.Text:GetText())
+        local translatedAuthor = GetTranslatedUnitName(TalkingHeadFrame.NameFrame.Name:GetText())
+        local translatedMsg = GetTranslatedNpcMessage(TalkingHeadFrame.TextFrame.Text:GetText())
 
         SetFontStringText(TalkingHeadFrame.NameFrame.Name, translatedAuthor);
         SetFontStringText(TalkingHeadFrame.TextFrame.Text, translatedMsg);
