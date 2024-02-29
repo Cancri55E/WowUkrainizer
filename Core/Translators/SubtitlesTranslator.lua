@@ -1,5 +1,5 @@
---- @type string, WowUkrainizerInternals
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
 local GenerateUuid = ns.CommonUtil.GenerateUuid
 local GetMovieSubtitle = ns.DbContext.Subtitles.GetMovieSubtitle
@@ -16,7 +16,7 @@ function translator:initialize()
 
     local instance = self
     instance.currentMovieId = 0
-    instance.untranslatedDataStorage = ns.UntranslatedDataStorage:new()
+    instance.untranslatedDataStorage = ns:GetUntranslatedDataStorage()
 
     eventHandler:Register(function(event, movieID)
         if (event == "PLAY_MOVIE") then

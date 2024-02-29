@@ -1,5 +1,5 @@
---- @type string, WowUkrainizerInternals
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
 local chatBubbleTimer
 
@@ -80,7 +80,7 @@ function translator:initialize()
 
     local instance = self
     instance.hooks = aceHook.hooks
-    instance.untranslatedDataStorage = ns.UntranslatedDataStorage:new()
+    instance.untranslatedDataStorage = ns:GetUntranslatedDataStorage()
 
     local function onMonsterMessageReceivedHook(_, _, msg, author, ...)
         return onMonsterMessageReceived(instance, msg, author, ...)

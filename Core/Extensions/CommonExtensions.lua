@@ -20,8 +20,8 @@ end
 ---@param tbl table @The table to search.
 ---@param value any @The value to search for.
 ---@param key any @The key to check against (optional).
----@return boolean @True if the value is found, false otherwise.
----@return any @The matching row in the table if found.
+---@return boolean founded @True if the value is found, false otherwise.
+---@return any row @The matching row in the table if found.
 function internal.IsValueInTable(tbl, value, key)
     for _, row in ipairs(tbl) do
         if type(row) == "table" then
