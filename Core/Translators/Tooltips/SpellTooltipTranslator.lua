@@ -198,7 +198,7 @@ local function parseSpellTooltip(tooltipTexts)
     return spellTooltip
 end
 
-local function translateTooltipSpellInfo(spellContainer)
+local function translateTooltipSpellInfo(spellContainer, highlightSpellName)
     if (not spellContainer) then return end
 
     local translatedTooltipLines = {}
@@ -307,7 +307,7 @@ local function translateTooltipSpellInfo(spellContainer)
             if (value ~= "") then
                 table.insert(translatedTooltipLines, {
                     index = description.index,
-                    value = GetTranslatedSpellDescription(value, settingsProvider.IsNeedHighlightSpellNameInDescription()),
+                    value = GetTranslatedSpellDescription(value, highlightSpellName),
                     originalValue = value,
                     tag = "Description"
                 })
@@ -421,7 +421,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     local translatedTooltipLines = {}
 
-    local spellNameLang = settingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION)
+    local spellNameLang = self.settingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION)
     if (spellNameLang ~= "en") then
         local spellName = tooltipInfo.Name
         local translatedValue = GetTranslatedSpellName(tooltipInfo.Name, true)
@@ -439,7 +439,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         })
     end
 
-    if (settingsProvider.IsNeedTranslateSpellDescriptionInTooltip()) then
+    if (self.settingsProvider.IsNeedTranslateSpellDescriptionInTooltip()) then
         if (tooltipInfo.Form and tooltipInfo.Form ~= "") then
             table.insert(translatedTooltipLines, {
                 index = 2,
@@ -447,21 +447,25 @@ function translator:TranslateTooltipInfo(tooltipInfo)
             })
         end
 
+        local highlightSpellName = self.settingsProvider.IsNeedHighlightSpellNameInDescription()
+
         if (tooltipInfo.Spell) then
-            addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Spell))
+            addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Spell, highlightSpellName))
         elseif (tooltipInfo.Talent) then
             table.insert(translatedTooltipLines, {
                 index = 3,
                 value = SPELL_RANK_TRANSLATION .. " " .. tooltipInfo.Talent.MinRank .. "/" .. tooltipInfo.Talent.MaxRank
             })
-            addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.CurrentRank))
+            addRange(translatedTooltipLines,
+                translateTooltipSpellInfo(tooltipInfo.Talent.CurrentRank, highlightSpellName))
 
             if (tooltipInfo.Talent.NextRankIndex ~= -1) then
                 table.insert(translatedTooltipLines, {
                     index = tooltipInfo.Talent.NextRankIndex,
                     value = SPELL_NEXT_RANK_TRANSLATION
                 })
-                addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.NextRank))
+                addRange(translatedTooltipLines,
+                    translateTooltipSpellInfo(tooltipInfo.Talent.NextRank, highlightSpellName))
             end
         end
     end
@@ -517,7 +521,7 @@ function translator:Init()
                 local requiresText, talentName = extractRequirementTalentName(text)
                 if (talentName ~= nil) then
                     local translatedRequiresText = GetTranslatedSpellAttribute(requiresText)
-                    translatedRequiresText = translatedRequiresText:format(GetTranslatedSpellName(talentName))
+                    translatedRequiresText = translatedRequiresText:format(GetTranslatedSpellName(talentName, false))
                     lineLeft:SetText(translatedRequiresText)
                 else
                     lineLeft:SetText(GetTranslatedUISpellTooltip(text))

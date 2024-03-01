@@ -548,8 +548,9 @@ local function UpdateTrackerModule(module)
     for questID, questObjectiveBlock in pairs(objectiveTrackerBlockTemplate) do
         local block = module:GetBlock(questID);
 
+        questID = tonumber(questID)
         local blockHeight = 0;
-        local questData = GetTranslatedQuestData(tonumber(questID))
+        local questData = questID and GetTranslatedQuestData(questID)
         if (questData and questData.Title) then
             questObjectiveBlock.HeaderText:SetText(questData.Title)
             blockHeight = questObjectiveBlock.HeaderText:GetHeight()
@@ -794,9 +795,9 @@ local function ImmersionTalkBoxElementsDisplayHook(elements)
 
     do -- ShowSpecialObjectives
         local spellID, spellName, _ = GetCriteriaSpell()
-        if (spellID) then
+        if (spellID and spellName) then
             translateUIFontString(elements.Content.SpecialObjectivesFrame.SpellObjectiveLearnLabel)
-            elements.Content.SpecialObjectivesFrame.SpellObjectiveFrame:SetText(GetTranslatedSpellName(spellName))
+            elements.Content.SpecialObjectivesFrame.SpellObjectiveFrame:SetText(GetTranslatedSpellName(spellName, false))
         end
     end
 
@@ -822,7 +823,7 @@ local function ImmersionTalkBoxElementsDisplayHook(elements)
         for fontString in elements.Content.RewardsFrame.spellRewardPool:EnumerateActive() do
             local spellRewardName = fontString:GetText()
             if (fontString:GetText() ~= nil) then
-                fontString:SetText(GetTranslatedSpellName(spellRewardName));
+                fontString:SetText(GetTranslatedSpellName(spellRewardName, false));
             end
         end
         -- TODO: Add Translation for followerRewardPool when followers module ready
@@ -892,7 +893,8 @@ local function InitializeCommandButtons()
         button:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", offsetX, offsetY);
         button:SetNormalAtlas("UI-HUD-MicroMenu-Shop-Up");
         button:SetPushedAtlas("UI-HUD-MicroMenu-Shop-Down");
-        button:SetScript("OnMouseDown", function(_) _G.StaticPopup_Show("WowUkrainizer_WowheadLink", nil, nil, data) end)
+        button:SetScript("OnMouseDown",
+            function(_) _G["StaticPopup_Show"]("WowUkrainizer_WowheadLink", nil, nil, data) end)
         button:Show();
         return button
     end
@@ -1247,7 +1249,7 @@ local function OnMinimapMouseoverTooltipPostCall(tooltip, tooltipData)
                                     local questID = C_QuestLog.GetQuestIDForLogIndex(j);
                                     if (questID and questID > 0) then
                                         local questTitle = C_QuestLog.GetTitleForQuestID(questID)
-                                        questTitleToQuestIdCache[questTitle] = questID
+                                        if (questTitle) then questTitleToQuestIdCache[questTitle] = questID end
                                     end
                                 end
                             end
@@ -1340,11 +1342,13 @@ local function OnToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOf
 end
 
 local function OnStorylineQuestPinMouseEnter(frame)
-    local questLineInfo = C_QuestLine.GetQuestLineInfo(frame.questID, frame.mapID);
+    local questID = tonumber(frame.questID)
+    local questLineInfo = questID and C_QuestLine.GetQuestLineInfo(questID, frame.mapID);
     if (questLineInfo) then
         GameTooltip:SetOwner(frame, "ANCHOR_LEFT");
         GameTooltip:SetText(questLineInfo.questName);
-        local translatedTitle = GetTranslatedQuestTitle(tonumber(frame.questID))
+
+        local translatedTitle = questID and GetTranslatedQuestTitle(questID)
         if (translatedTitle) then
             GameTooltip:SetText(translatedTitle)
         end
