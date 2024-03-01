@@ -83,7 +83,7 @@ do
 
     --- Get the translated unit subname based on gender or the original (English) text if not translated.
     --- @param original string @ The original (English) text.
-    --- @param gender number @ The gender value.
+    --- @param gender number? @ The gender value.
     --- @return string @ The translated unit subname or the original (English) text.
     function repository.GetTranslatedUnitSubname(original, gender)
         local translatedUnitSubname = repository._getValue(ns._db.UnitSubnames, original):gsub("{sex|(.-)|(.-)}",
@@ -325,7 +325,7 @@ do
     function repository._normalizeQuestString(text)
         if text == nil or text == "" then return text end
 
-        local playerData = ns.PlayerData
+        local playerData = ns.PlayerInfo
 
         text = string.gsub(text, "%$[nN]", function(_)
             return playerData.Name

@@ -1,26 +1,13 @@
---- @type string, WowUkrainizerInternals
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
-ns.Translators = {}
+---@class BaseTranslator
+local baseTranslator = {}
+ns.BaseTranslator = baseTranslator
 
-local translator = class("BaseTranslator")
-ns.Translators.BaseTranslator = translator
-
-function translator:initialize()
-    self.enabled = false
+function baseTranslator:IsEnabled()
+    return false
 end
 
-function translator:SetEnabled(enabled)
-    self.enabled = enabled
-    if (enabled) then self:OnEnabled() else self:OnDisabled() end
-end
-
-function translator:OnEnabled()
-end
-
-function translator:OnDisabled()
-end
-
-function translator:IsEnabled()
-    return self.enabled
+function baseTranslator:Init()
 end

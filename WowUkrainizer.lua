@@ -4,76 +4,14 @@ local addonName = select(1, ...);
 --- @class WowUkrainizerInternals
 local ns = select(2, ...);
 
+local _G = _G
+
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 local settingsProvider = ns:GetSettingsProvider()
 
 local minimapDataBroker
 local addOnSettingsCategoryID
-
-local translators = {
-    {
-        name = "MainFrameTranslator",
-        args = nil,
-        isEnabled = function() return true end
-    },
-    {
-        name = "ClassTalentFrameTranslator",
-        args = nil,
-        isEnabled = function()
-            return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION)
-        end
-    },
-    {
-        name = "SpellbookFrameTranslator",
-        args = nil,
-        isEnabled = function()
-            return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION)
-        end
-    },
-    {
-        name = "NameplateAndUnitFrameTranslator",
-        args = nil,
-        isEnabled = function()
-            return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION)
-        end
-    },
-    {
-        name = "SpellTooltipTranslator",
-        args = Enum.TooltipDataType.Spell,
-        isEnabled = function()
-            return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELL_TOOLTIPS_OPTION)
-        end
-    },
-    {
-        name = "UnitTooltipTranslator",
-        args = Enum.TooltipDataType.Unit,
-        isEnabled = function()
-            return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_UNIT_TOOLTIPS_OPTION)
-        end
-    },
-    {
-        name = "SubtitlesTranslator",
-        args = nil,
-        isEnabled = function()
-            return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SUBTITLES_OPTION)
-        end
-    },
-    {
-        name = "NpcMessageTranslator",
-        args = nil,
-        isEnabled = function()
-            return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION)
-        end
-    },
-    {
-        name = "QuestTranslator",
-        args = nil,
-        isEnabled = function()
-            return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION)
-        end
-    },
-}
 
 local initialized = false
 
@@ -229,7 +167,7 @@ end
 local function initializeAddon()
     if (initialized) then return end
 
-    StaticPopupDialogs["WOW_UKRAINIZAER_RESET_SETTINGS"] = {
+    _G["StaticPopupDialogs"]["WOW_UKRAINIZAER_RESET_SETTINGS"] = {
         text = "Ви впевнені, що хочете скинути всі налаштування до стандартних значень?",
         button1 = "Продовжити",
         button2 = "Скасувати",
@@ -265,12 +203,7 @@ local function initializeAddon()
         version = "[alpha] " .. string.gsub(version, "-alpha$", "")
     end
 
-    --- Object containing common data such as release date and version information.
-    ---@class CommonData
-    ---@field ReleaseDate number @The release date timestamp obtained from the add-on metadata.
-    ---@field Version string @The version string obtained from the add-on metadata.
-    ---@field VesionStr string @A formatted string representing the version and release date.
-    ns.CommonData = {
+    ns.AddonInfo = {
         ReleaseDate = releaseDate,
         Version = version,
         VesionStr = "Версія: " ..
@@ -304,13 +237,7 @@ local function ShowUnsupportedLangWarning(locale)
 end
 
 local function OnPlayerLogin()
-    --- Object containing information about the player character.
-    ---@class PlayerData
-    ---@field Name string @The name of the player character.
-    ---@field Race string @The race of the player character.
-    ---@field Class string @The class of the player character.
-    ---@field Gender number? @The gender (sex) of the player character.
-    ns.PlayerData = {
+    ns.PlayerInfo = {
         Name = GetUnitName("player"),
         Race = UnitRace("player"),
         Class = UnitClass("player"),
@@ -324,22 +251,7 @@ local function OnPlayerLogin()
     ns.Frames["ChangelogsFrame"] = CreateFrame("Frame", "ChangelogsFrame", UIParent, "WowUkrainizerChangelogsFrame")
     ns.Frames["InstallerFrame"] = CreateFrame("Frame", "InstallerFrame", UIParent, "WowUkrainizerInstallerFrame")
 
-    local function createTranslator(translatorName, args)
-        local translator
-        if args ~= nil then
-            translator = ns.Translators[translatorName]:new(args)
-        else
-            translator = ns.Translators[translatorName]:new()
-        end
-        translator:SetEnabled(true)
-        return translator
-    end
-
-    for _, translatorData in ipairs(translators) do
-        if translatorData.isEnabled() then
-            translatorData.translator = createTranslator(translatorData.name, translatorData.args)
-        end
-    end
+    ns.TranslationsManager:Init()
 
     if (settingsProvider.ShouldShowInstallerWizard()) then
         ns.Frames["InstallerFrame"]:ToggleUI()
@@ -390,7 +302,7 @@ do
                 end,
                 OnTooltipShow = function(GameTooltip)
                     GameTooltip:SetText("WowUkrainizer", 1, 1, 1)
-                    GameTooltip:AddLine(ns.CommonData.VesionStr,
+                    GameTooltip:AddLine(ns.AddonInfo.VesionStr,
                         NORMAL_FONT_COLOR.r,
                         NORMAL_FONT_COLOR.g,
                         NORMAL_FONT_COLOR.b, 1)

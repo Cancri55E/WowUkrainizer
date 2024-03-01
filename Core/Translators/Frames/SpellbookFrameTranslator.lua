@@ -20,8 +20,8 @@ local function getTranslatedSpellbookFrameText(default)
     return ns.DbContext.Frames.GetTranslatedUIText("Spellbook", default)
 end
 
-local translator = class("SpellbookFrameTranslator", ns.Translators.BaseTranslator)
-ns.Translators.SpellbookFrameTranslator = translator
+---@class SpellbookFrameTranslator : BaseTranslator
+local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 local function updateSpellButtonCallback(spellButton)
     if (settingsProvider.IsNeedTranslateSpellNameInSpellbook()) then
@@ -110,7 +110,11 @@ local function spellButtonTooltipHook(button)
     GameTooltip:Show()
 end
 
-function translator:initialize()
+function translator:IsEnabled()
+    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION)
+end
+
+function translator:Init()
     SpellBookFrame_HelpPlate[1].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_1"])
     SpellBookFrame_HelpPlate[2].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_2"])
     SpellBookFrame_HelpPlate[3].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_3"])
@@ -154,3 +158,5 @@ function translator:initialize()
         unlearnButtonTooltipHook()
     end)
 end
+
+ns.TranslationsManager:AddTranslator(translator)

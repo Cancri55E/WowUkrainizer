@@ -21,8 +21,8 @@ local StartsWith = ns.StringUtil.StartsWith
 local ExtractNumericValues = ns.StringUtil.ExtractNumericValues
 local InsertNumericValues = ns.StringUtil.InsertNumericValues
 
-local translator = class("UnitTooltipTranslator", ns.Translators.BaseTooltipTranslator)
-ns.Translators.UnitTooltipTranslator = translator
+---@class UnitTooltipTranslator : BaseTooltipTranslator
+local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Unit }, { __index = ns.BaseTooltipTranslator })
 
 local function parseUnitTooltipLines(tooltipLines)
     local function parseSubnameInfo(tooltipLine)
@@ -123,7 +123,7 @@ function translator:ParseTooltip(tooltip, tooltipData)
     local unitKind = strsplit("-", tooltipData.guid)
     if (unitKind == "Creature" or unitKind == "Vehicle") then
         for i = 1, tooltip:NumLines() do
-            self:_addFontStringToIndexLookup(i, _G["GameTooltipTextLeft" .. i])
+            self:AddFontStringToIndexLookup(i, _G["GameTooltipTextLeft" .. i])
         end
         return parseUnitTooltipLines(tooltipData.lines)
     end
@@ -224,3 +224,9 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     return translatedTooltipLines
 end
+
+function translator:IsEnabled()
+    return self.settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_UNIT_TOOLTIPS_OPTION)
+end
+
+ns.TranslationsManager:AddTranslator(translator)

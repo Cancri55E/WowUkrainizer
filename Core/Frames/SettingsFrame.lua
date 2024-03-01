@@ -29,7 +29,7 @@ function WowUkrainizerSettingsFrameMixin:OnLoad()
 
     self.WarningFrame.WarningText:SetText(WOW_UKRAINIZER_SETTING_FRAME_WARNING_TEXT)
 
-    self.Version:SetText(ns.CommonData.VesionStr)
+    self.Version:SetText(ns.AddonInfo.VesionStr)
 
     PanelTemplates_SetNumTabs(self, 2)
     PanelTemplates_SetTab(self, 1)

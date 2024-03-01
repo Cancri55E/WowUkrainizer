@@ -1,18 +1,22 @@
---- @class WowUkrainizerInternals
+--- @type WowUkrainizerInternals
 local ns = select(2, ...);
 
+---@class Frame
+---@field elapsed integer
 local chatBubbleTimer
 
-local aceHook = LibStub("AceHook-3.0")
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
+local settingsProvider = ns:GetSettingsProvider()
+local untranslatedDataStorage = ns:GetUntranslatedDataStorage()
 
 local GenerateUuid = ns.CommonUtil.GenerateUuid
 local SetFontStringText = ns.FontStringUtil.SetText
 local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 local GetTranslatedNpcMessage = ns.DbContext.NpcDialogs.GetTranslatedNpcMessage
 
-local translator = class("NpcMessageTranslator", ns.Translators.BaseTranslator)
-ns.Translators.NpcMessageTranslator = translator
+---@class NpcMessageTranslator : BaseTranslator
+---@field talkingHeadUuid string?
+local translator = setmetatable({ talkingHeadUuid = nil }, { __index = ns.BaseTranslator })
 
 local function onPlaySoud(instance, soundKitID, channel, forceNoDuplicates, runFinishCallback)
     if (channel ~= "Talking Head") then return end
@@ -60,7 +64,7 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
     local translatedMsg = GetTranslatedNpcMessage(msg)
 
     if (msg == translatedMsg) then
-        local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
+        local untranslatedData = untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
         if (displayInTalkingHead) then
             untranslatedData.talkingHead = true
             untranslatedData.soundKitID = soundKitID
@@ -74,12 +78,12 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
     return false, translatedMsg, translatedAuthor, ...
 end
 
-function translator:initialize()
-    ns.Translators.BaseTranslator.initialize(self)
+function translator:IsEnabled()
+    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION)
+end
 
-    local instance = self
-    instance.hooks = aceHook.hooks
-    instance.untranslatedDataStorage = ns:GetUntranslatedDataStorage()
+function translator:Init()
+    local instance = self --[[@as NpcMessageTranslator]]
 
     local function onMonsterMessageReceivedHook(_, _, msg, author, ...)
         return onMonsterMessageReceived(instance, msg, author, ...)
@@ -125,3 +129,5 @@ function translator:initialize()
 
     hooksecurefunc("PlaySound", onPlaySoudHook)
 end
+
+ns.TranslationsManager:AddTranslator(translator)

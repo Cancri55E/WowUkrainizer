@@ -1,16 +1,18 @@
 --- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
+---@diagnostic disable-next-line: undefined-field
 local utf8sub, utf8len = string.utf8sub, string.utf8len
 
 local StartsWith = ns.StringUtil.StartsWith
 local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 local GetTranslatedUnitSubname = ns.DbContext.Units.GetTranslatedUnitSubname
 
+local settingsProvider = ns:GetSettingsProvider()
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
-local translator = class("NameplateAndUnitFrameTranslator", ns.Translators.BaseTranslator)
-ns.Translators.NameplateAndUnitFrameTranslator = translator
+---@class NameplateAndUnitFrameTranslator : BaseTranslator
+local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 local function unitNameWrap(self, unitNameFunc)
     return function(unitName)
@@ -136,9 +138,11 @@ local function translateUIControlWrapper(control)
     local isOk, error = pcall(function() control:SetText(GetTranslatedUnitName(control:GetText())) end)
 end
 
-function translator:initialize()
-    ns.Translators.BaseTranslator.initialize(self)
+function translator:IsEnabled()
+    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION)
+end
 
+function translator:Init()
     hooksecurefunc("CompactUnitFrame_UpdateName", function(control)
         if (not self:IsEnabled()) then return end
         if (not ShouldShowName(control)) then return end
@@ -206,3 +210,5 @@ function translator:initialize()
         translateUIControlWrapper(TargetFrame.name)
     end, "PLAYER_TARGET_CHANGED", "UNIT_NAME_UPDATE", "INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 end
+
+ns.TranslationsManager:AddTranslator(translator)

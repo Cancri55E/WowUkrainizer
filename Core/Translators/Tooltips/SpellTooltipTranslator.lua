@@ -3,8 +3,6 @@ local _, ns = ...;
 
 local _G = _G
 
-local settingsProvider = ns:GetSettingsProvider()
-
 local EndsWith = ns.StringUtil.EndsWith
 local StartsWith = ns.StringUtil.StartsWith
 local StringsAreEqual = ns.StringUtil.StringsAreEqual
@@ -28,61 +26,8 @@ local talentReplacedByPattern = "^Replaced by%s+(.+)"
 local talentReplacesPattern = "^Replaces%s+(.+)"
 local maxChargesPattern = "Max %d+ Charges"
 
-local translator = class("SpellTooltipTranslator", ns.Translators.BaseTooltipTranslator)
-ns.Translators.SpellTooltipTranslator = translator
-
-function translator:initialize(tooltipDataType)
-    ns.Translators.BaseTooltipTranslator.initialize(self, tooltipDataType)
-
-    hooksecurefunc(_G["TalentDisplayMixin"], "SetTooltipInternal", function(...)
-        if (not self._postCallLineCount) then return end
-        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
-            local lineLeft = _G["GameTooltipTextLeft" .. i]
-            if (lineLeft) then
-                local leftTranslatedTips = GetTranslatedUISpellTooltip(lineLeft:GetText())
-                lineLeft:SetText(leftTranslatedTips)
-            end
-
-            local lineRight = _G["GameTooltipTextRight" .. i]
-            if (lineRight) then
-                local rightTranslatedTips = GetTranslatedUISpellTooltip(lineRight:GetText())
-                lineRight:SetText(rightTranslatedTips)
-            end
-        end
-        GameTooltip:Show();
-    end)
-
-    EventRegistry:RegisterCallback("PvPTalentButton.TooltipHook", function(...)
-        local function extractRequirementTalentName(str)
-            local prefix = "Requires "
-            local suffix = " talent"
-            local start = str:find("^" .. prefix)
-            local _end = str:find(suffix .. "$")
-            if start and _end then
-                local extracted = str:sub(#prefix + 1, _end - 1)
-                return prefix .. "%s" .. suffix, extracted
-            end
-            return str
-        end
-
-        if (not self._postCallLineCount) then return end
-        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
-            local lineLeft = _G["GameTooltipTextLeft" .. i]
-            if (lineLeft) then
-                local text = lineLeft:GetText() or ''
-                local requiresText, talentName = extractRequirementTalentName(text)
-                if (talentName ~= nil) then
-                    local translatedRequiresText = GetTranslatedSpellAttribute(requiresText)
-                    translatedRequiresText = translatedRequiresText:format(GetTranslatedSpellName(talentName))
-                    lineLeft:SetText(translatedRequiresText)
-                else
-                    lineLeft:SetText(GetTranslatedUISpellTooltip(text))
-                end
-            end
-        end
-        GameTooltip:Show();
-    end, translator)
-end
+---@class SpellTooltipTranslator : BaseTooltipTranslator
+local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Spell }, { __index = ns.BaseTooltipTranslator })
 
 local function processResourceStrings(str)
     local function isResourceString(value)
@@ -443,14 +388,14 @@ function translator:ParseTooltip(tooltip, tooltipData)
         if (lineLeft) then
             local lli = #tooltipTexts + 1;
             tooltipTexts[lli] = lineLeft:GetText() or ''
-            self:_addFontStringToIndexLookup(lli, lineLeft)
+            self:AddFontStringToIndexLookup(lli, lineLeft)
         end
 
         local lineRight = _G[linePrefix .. "TextRight" .. i]
         if (lineRight) then
             local lri = #tooltipTexts + 1;
             tooltipTexts[lri] = lineRight:GetText() or ''
-            self:_addFontStringToIndexLookup(lri, lineRight)
+            self:AddFontStringToIndexLookup(lri, lineRight)
         end
     end
 
@@ -525,3 +470,62 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     return translatedTooltipLines
 end
+
+function translator:IsEnabled()
+    return self.settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELL_TOOLTIPS_OPTION)
+end
+
+function translator:Init()
+    ns.BaseTooltipTranslator.Init(self)
+
+    hooksecurefunc(_G["TalentDisplayMixin"], "SetTooltipInternal", function(...)
+        if (not self._postCallLineCount) then return end
+        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
+            local lineLeft = _G["GameTooltipTextLeft" .. i]
+            if (lineLeft) then
+                local leftTranslatedTips = GetTranslatedUISpellTooltip(lineLeft:GetText())
+                lineLeft:SetText(leftTranslatedTips)
+            end
+
+            local lineRight = _G["GameTooltipTextRight" .. i]
+            if (lineRight) then
+                local rightTranslatedTips = GetTranslatedUISpellTooltip(lineRight:GetText())
+                lineRight:SetText(rightTranslatedTips)
+            end
+        end
+        GameTooltip:Show();
+    end)
+
+    EventRegistry:RegisterCallback("PvPTalentButton.TooltipHook", function(...)
+        local function extractRequirementTalentName(str)
+            local prefix = "Requires "
+            local suffix = " talent"
+            local start = str:find("^" .. prefix)
+            local _end = str:find(suffix .. "$")
+            if start and _end then
+                local extracted = str:sub(#prefix + 1, _end - 1)
+                return prefix .. "%s" .. suffix, extracted
+            end
+            return str
+        end
+
+        if (not self._postCallLineCount) then return end
+        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
+            local lineLeft = _G["GameTooltipTextLeft" .. i]
+            if (lineLeft) then
+                local text = lineLeft:GetText() or ''
+                local requiresText, talentName = extractRequirementTalentName(text)
+                if (talentName ~= nil) then
+                    local translatedRequiresText = GetTranslatedSpellAttribute(requiresText)
+                    translatedRequiresText = translatedRequiresText:format(GetTranslatedSpellName(talentName))
+                    lineLeft:SetText(translatedRequiresText)
+                else
+                    lineLeft:SetText(GetTranslatedUISpellTooltip(text))
+                end
+            end
+        end
+        GameTooltip:Show();
+    end, translator)
+end
+
+ns.TranslationsManager:AddTranslator(translator)

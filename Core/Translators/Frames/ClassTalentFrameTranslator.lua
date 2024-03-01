@@ -12,9 +12,10 @@ local GetTranslatedSpecializationNote = ns.DbContext.Units.GetTranslatedSpeciali
 local SetText = ns.FontStringUtil.SetText
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
+local settingsProvider = ns:GetSettingsProvider()
 
-local translator = class("ClassTalentFrameTranslator", ns.Translators.BaseTranslator)
-ns.Translators.ClassTalentFrameTranslator = translator
+---@class ClassTalentFrameTranslator : BaseTranslator
+local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 local function getTranslationOrDefault(default)
     return ns.DbContext.Frames.GetTranslatedUIText("ClassTalent", default)
@@ -123,7 +124,7 @@ end
 local function pvpTalentList_OnUpdate(self, pvpTalentList)
     if (not self:IsEnabled()) then return end
     pvpTalentList.ScrollBox:ForEachFrame(function(listButton)
-        listButton.Name:SetText(GetTranslatedSpellName(listButton.talentInfo.name));
+        listButton.Name:SetText(GetTranslatedSpellName(listButton.talentInfo.name, false));
     end);
 end
 
@@ -205,7 +206,11 @@ local function onBlizzardClassTalentUILoaded(self)
     end)
 end
 
-function translator:initialize()
+function translator:IsEnabled()
+    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION)
+end
+
+function translator:Init()
     local function onAddonLoaded(_, addonName)
         if (addonName ~= 'Blizzard_ClassTalentUI') then return end
         onBlizzardClassTalentUILoaded(self)
@@ -220,3 +225,5 @@ function translator:initialize()
 
     eventHandler:Register(onAddonLoaded, "ADDON_LOADED")
 end
+
+ns.TranslationsManager:AddTranslator(translator)

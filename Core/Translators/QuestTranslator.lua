@@ -4,7 +4,7 @@ local _, ns = ...;
 local _G = _G
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
-local SettingsProvider = ns:GetSettingsProvider()
+local settingsProvider = ns:GetSettingsProvider()
 
 local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
@@ -55,8 +55,8 @@ local MinimapTooltipCache = {}
 local WorldMapStorylineQuestPinsCache = {}
 local WorldMapChildFramesCache = {}
 
-local translator = class("QuestTranslator", ns.Translators.BaseTranslator)
-ns.Translators.QuestTranslator = translator
+---@class QuestTranslator : BaseTranslator
+local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 local function copyTable(originalTable)
     local newTable = {}
@@ -156,7 +156,7 @@ local function showCommandButtonsForQuest(needToShow, isMTData)
     end
 end
 
-_G.StaticPopupDialogs["WowUkrainizer_WowheadLink"] = {
+_G["StaticPopupDialogs"]["WowUkrainizer_WowheadLink"] = {
     text = "Натисніть Ctrl+C, щоб скопіювати URL-адресу в буфер обміну",
     hasEditBox = 1,
     button1 = "Гаразд",
@@ -604,7 +604,7 @@ local function DisplayQuestInfo(template, parentFrame)
     local elementsTable = template.elements;
     for i = 1, #elementsTable, 3 do
         local shownFrame, _ = elementsTable[i](parentFrame);
-        local translateQuestText = SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
+        local translateQuestText = settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
         if (shownFrame) then
             local _, name = TryCallAPIFn("GetName", shownFrame)
             if (name == "QuestInfoTitleHeader") then
@@ -678,7 +678,7 @@ local function OnQuestFrameProgressPanelShow(_)
 
     showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMtData)
 
-    if (SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
+    if (settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
         if (questData and questData.Title) then
             QuestProgressTitleText:SetText(questData.Title)
         end
@@ -734,7 +734,7 @@ local function ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
         immersionWowheadButton:Show()
     end
 
-    if (not SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
+    if (not settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
         updateTalkBoxText(title, text)
         return
     end
@@ -773,7 +773,7 @@ local function ImmersionTalkBoxElementsDisplayHook(elements)
 
     do -- ShowObjectivesText
         local objectivesText = immersionObjectivesTextOriginal
-        if (SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
+        if (settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
             local questData = GetTranslatedQuestData(questID)
             if (questData and questData.ObjectivesText) then
                 objectivesText = questData.ObjectivesText
@@ -864,7 +864,7 @@ local function InitializeCommandButtons()
     local function CreateSwitchTranslationButton(parentFrame, onClickFunc, offsetX, offsetY)
         local button = CreateFrame("Button", nil, parentFrame, "UIPanelButtonTemplate");
         button:SetSize(90, 24);
-        if (SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
+        if (settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
             button:SetText("Оригінал");
         else
             button:SetText("Переклад");
@@ -872,8 +872,8 @@ local function InitializeCommandButtons()
         button:ClearAllPoints();
         button:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", offsetX, offsetY);
         button:SetScript("OnMouseDown", function(_)
-            local newValue = not SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
-            SettingsProvider.SetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION, newValue)
+            local newValue = not settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
+            settingsProvider.SetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION, newValue)
             if (newValue) then
                 button:SetText("Оригінал");
             else
@@ -1433,7 +1433,11 @@ local function InitializeImmersion()
     translateUIFontString(ImmersionFrame.TalkBox.Elements.Progress.ReqText)
 end
 
-function translator:initialize()
+function translator:IsEnabled()
+    settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION)
+end
+
+function translator:Init()
     InitializeCommandButtons()
 
     -- Gossip Frame
@@ -1540,3 +1544,5 @@ function translator:initialize()
         InitializeImmersion()
     end
 end
+
+ns.TranslationsManager:AddTranslator(translator)

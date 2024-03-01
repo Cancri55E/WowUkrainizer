@@ -80,7 +80,7 @@ end
 --- @param text string The input text.
 --- @return string @The normalized text.
 function internal.NormalizePersonalizedString(text)
-    local playerName = ns.PlayerData.Name
+    local playerName = ns.PlayerInfo.Name
     if (playerName) then
         text = string.gsub(text, playerName, function()
             return "{name}"
@@ -93,7 +93,7 @@ end
 --- @param text string The input text.
 --- @return string @The reconstructed text.
 function internal.ReconstructPersonalizedString(text)
-    local playerName = ns.PlayerData.Name
+    local playerName = ns.PlayerInfo.Name
     if (playerName) then
         text = string.gsub(text, "{name}", function()
             return playerName

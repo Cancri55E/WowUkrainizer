@@ -505,7 +505,10 @@
         "COLORS",
         "CreateFromMixins",
         "CallbackRegistryMixin",
-        "enabled"
+        "enabled",
+        "PanelTemplates_SetNumTabs",
+        "PanelTemplates_SetTab",
+        "ImmersionFrame"
     ],
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false,
