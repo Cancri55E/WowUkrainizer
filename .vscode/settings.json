@@ -512,9 +512,18 @@
         "ImmersionAPI",
         "ImmersionContentFrame"
     ],
+	"Lua.workspace.ignoreDir":[
+		".vscode",
+		"Libs"
+	],
+	"Lua.diagnostics.disable": [
+        "missing-fields"
+    ],
+	"Lua.format.defaultConfig":{
+		"indent_style": "space",
+		"indent_size": "4",
+        "max_line_length": "160"
+	},
     "gitlens.codeLens.authors.enabled": false,
     "gitlens.codeLens.recentChange.enabled": false,
-    "Lua.diagnostics.disable": [
-        "missing-fields"
-    ]
 }

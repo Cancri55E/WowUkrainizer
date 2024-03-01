@@ -427,8 +427,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         local translatedValue = GetTranslatedSpellName(tooltipInfo.Name, true)
 
         if (spellName ~= translatedValue) then
-            spellName = spellNameLang == "ua" and translatedValue or
-                "|cFF47D5FF" .. spellName .. "|r\n" .. translatedValue
+            spellName = spellNameLang == "ua" and translatedValue or "|cFF47D5FF" .. spellName .. "|r\n" .. translatedValue
         end
 
         table.insert(translatedTooltipLines, {
@@ -464,8 +463,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
                     index = tooltipInfo.Talent.NextRankIndex,
                     value = SPELL_NEXT_RANK_TRANSLATION
                 })
-                addRange(translatedTooltipLines,
-                    translateTooltipSpellInfo(tooltipInfo.Talent.NextRank, highlightSpellName))
+                addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.NextRank, highlightSpellName))
             end
         end
     end
