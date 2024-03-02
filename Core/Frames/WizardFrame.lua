@@ -375,7 +375,9 @@ do
         WowUkrainizerBasePageMixin.OnLoad(self)
     end
 
-    function WowUkrainizerTooltipSettingsPageMixin:OnCheckButtonChecked(_, checked)
+    function WowUkrainizerTooltipSettingsPageMixin:OnCheckButtonChecked(checkButton, checked)
+        if (checkButton ~= self.TranslateSpellTooltips) then return end
+
         if (checked) then
             self.HighlightSpellNameInDescriptionButton:EnableHook()
             self.SpellNameLanguageSelector:Enable()

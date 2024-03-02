@@ -1438,7 +1438,7 @@ local function InitializeImmersion()
 end
 
 function translator:IsEnabled()
-    settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION)
+    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION)
 end
 
 function translator:Init()
