@@ -212,6 +212,13 @@ local function initializeAddon()
 
     ns.Frames = {}
     ns.Frames["WarningFrame"] = CreateFrame("FRAME", "WarningFrame", UIParent, "WowUkrainizerWarningFrame")
+
+    if (settingsProvider.ShouldShowChangelog() or ns.AddonInfo.Version == "[alpha] 1.10.0") then
+        ns.Frames["WarningFrame"]:ShowWarning("|cffE60965Остання Alpha версія!|r",
+            "|cffFFD150УВАГА! 1.10.0 остання версія яка буде виходити як Alpha. " ..
+            "Тому, будь ласка, оновить додаток до Release версії (в CurseForge клієнті натисніть ПКМ на додатку -> Release Type -> Release)|r",
+            150)
+    end
 end
 
 local function ShowUnsupportedLangWarning(locale)
