@@ -1,31 +1,33 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local _G = _G
 
-local settingsProvider = ns.SettingsProvider:new()
+local settingsProvider = ns:GetSettingsProvider()
 
 local PAGE_TRANSLATION, SPELL_PASSIVE_TRANSLATION = ns.PAGE_TRANSLATION, ns.SPELL_PASSIVE_TRANSLATION
 local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
 local SPELL_GENERAL_TRANSLATION = ns.SPELL_GENERAL_TRANSLATION
 
-local StartsWith, SetText = ns.StringExtensions.StartsWith, ns.FontStringExtensions.SetText
-local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
-local GetSpellAttributeOrDefault = ns.DbContext.Spells.GetSpellAttributeOrDefault
-local GetClass, GetSpecialization = ns.DbContext.Units.GetClass, ns.DbContext.Units.GetSpecialization
-local GetAdditionalSpellTipsOrDefault = ns.DbContext.Frames.GetAdditionalSpellTipsOrDefault
+local StartsWith, SetText = ns.StringUtil.StartsWith, ns.FontStringUtil.SetText
+local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
+local GetTranslatedSpellAttribute = ns.DbContext.Spells.GetTranslatedSpellAttribute
+local GetTranslatedClass = ns.DbContext.Units.GetTranslatedClass
+local GetTranslatedSpecialization = ns.DbContext.Units.GetTranslatedSpecialization
+local GetTranslatedUISpellTooltip = ns.DbContext.Frames.GetTranslatedUISpellTooltip
 
-local function getTranslationOrDefault(default)
-    return ns.DbContext.Frames.GetTranslationOrDefault("spellbook", default)
+local function getTranslatedSpellbookFrameText(default)
+    return ns.DbContext.Frames.GetTranslatedUIText("Spellbook", default)
 end
 
-local translator = class("SpellbookFrameTranslator", ns.Translators.BaseTranslator)
-ns.Translators.SpellbookFrameTranslator = translator
+---@class SpellbookFrameTranslator : BaseTranslator
+local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 local function updateSpellButtonCallback(spellButton)
     if (settingsProvider.IsNeedTranslateSpellNameInSpellbook()) then
         local spellString = spellButton.SpellName
         if (spellString) then
-            SetText(spellString, GetSpellNameOrDefault(spellString:GetText(), false))
+            SetText(spellString, GetTranslatedSpellName(spellString:GetText(), false))
         end
     end
 
@@ -37,13 +39,13 @@ local function updateSpellButtonCallback(spellButton)
         elseif (StartsWith(subSpellName, "Rank")) then
             SetText(subSpellNameString, string.gsub(subSpellName, "Rank", SPELL_RANK_TRANSLATION))
         else
-            SetText(subSpellNameString, GetSpellAttributeOrDefault(subSpellName))
+            SetText(subSpellNameString, GetTranslatedSpellAttribute(subSpellName))
         end
     end
 
     if (spellButton.RequiredLevelString) then
         local requiredLevelStringText = spellButton.RequiredLevelString:GetText()
-        spellButton.RequiredLevelString:SetText(getTranslationOrDefault(requiredLevelStringText));
+        spellButton.RequiredLevelString:SetText(getTranslatedSpellbookFrameText(requiredLevelStringText));
     end
 end
 
@@ -58,9 +60,9 @@ local function updateSkillLineTabsCallback()
                 if (i == 1) then
                     skillLineTab.tooltip = SPELL_GENERAL_TRANSLATION
                 elseif (i == 2) then
-                    skillLineTab.tooltip = GetClass(name, 1, gender);
+                    skillLineTab.tooltip = GetTranslatedClass(name, 1, gender);
                 else
-                    skillLineTab.tooltip = GetSpecialization(name, 1, gender);
+                    skillLineTab.tooltip = GetTranslatedSpecialization(name);
                 end
             end
         end
@@ -73,12 +75,12 @@ end
 
 local function updateFrameCallback(...)
     local titleTextFontString = SpellBookFrame:GetTitleText()
-    titleTextFontString:SetText(getTranslationOrDefault(titleTextFontString:GetText()))
+    titleTextFontString:SetText(getTranslatedSpellbookFrameText(titleTextFontString:GetText()))
 
-    SpellBookFrameTabButton1:SetText(getTranslationOrDefault(SpellBookFrameTabButton1:GetText()))
-    SpellBookFrameTabButton2:SetText(getTranslationOrDefault(SpellBookFrameTabButton2:GetText()))
+    SpellBookFrameTabButton1:SetText(getTranslatedSpellbookFrameText(SpellBookFrameTabButton1:GetText()))
+    SpellBookFrameTabButton2:SetText(getTranslatedSpellbookFrameText(SpellBookFrameTabButton2:GetText()))
     if (SpellBookFrameTabButton3) then
-        SpellBookFrameTabButton3:SetText(getTranslationOrDefault(SpellBookFrameTabButton3:GetText()))
+        SpellBookFrameTabButton3:SetText(getTranslatedSpellbookFrameText(SpellBookFrameTabButton3:GetText()))
     end
 end
 
@@ -86,7 +88,7 @@ local function unlearnButtonTooltipHook()
     local tooltipLine = _G["GameTooltipTextLeft1"]
     if (tooltipLine) then
         local text = tooltipLine:GetText()
-        if (text) then tooltipLine:SetText(getTranslationOrDefault(text)) end
+        if (text) then tooltipLine:SetText(getTranslatedSpellbookFrameText(text)) end
     end
 end
 
@@ -99,19 +101,23 @@ local function spellButtonTooltipHook(button)
         if (lineLeft) then
             local text = lineLeft:GetText() or ''
             if (text == _G["SPELLBOOK_SPELL_NOT_ON_ACTION_BAR"]) then
-                lineLeft:SetText(GetAdditionalSpellTipsOrDefault(_G["SPELLBOOK_SPELL_NOT_ON_ACTION_BAR"]))
+                lineLeft:SetText(GetTranslatedUISpellTooltip(_G["SPELLBOOK_SPELL_NOT_ON_ACTION_BAR"]))
             elseif (text == _G["CLICK_BINDING_NOT_AVAILABLE"]) then
-                lineLeft:SetText(getTranslationOrDefault(_G["CLICK_BINDING_NOT_AVAILABLE"]))
+                lineLeft:SetText(getTranslatedSpellbookFrameText(_G["CLICK_BINDING_NOT_AVAILABLE"]))
             end
         end
     end
     GameTooltip:Show()
 end
 
-function translator:initialize()
-    SpellBookFrame_HelpPlate[1].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_1"])
-    SpellBookFrame_HelpPlate[2].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_2"])
-    SpellBookFrame_HelpPlate[3].ToolTipText = getTranslationOrDefault(_G["SPELLBOOK_HELP_3"])
+function translator:IsEnabled()
+    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION)
+end
+
+function translator:Init()
+    SpellBookFrame_HelpPlate[1].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_1"])
+    SpellBookFrame_HelpPlate[2].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_2"])
+    SpellBookFrame_HelpPlate[3].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_3"])
 
     for i = 1, 12, 1 do
         local spellButton = _G["SpellButton" .. i]
@@ -152,3 +158,5 @@ function translator:initialize()
         unlearnButtonTooltipHook()
     end)
 end
+
+ns.TranslationsManager:AddTranslator(translator)

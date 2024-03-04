@@ -1,21 +1,24 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local _G = _G
 
-local GetSpellNameOrDefault = ns.DbContext.Spells.GetSpellNameOrDefault
-local GetRole, GetAttribute = ns.DbContext.Units.GetRole, ns.DbContext.Units.GetAttribute
-local GetSpecialization, GetClass = ns.DbContext.Units.GetSpecialization, ns.DbContext.Units.GetClass
-local GetSpecializationNote = ns.DbContext.Units.GetSpecializationNote
-local GetTranslationOrDefault = ns.DbContext.Frames.GetTranslationOrDefault
-local SetText = ns.FontStringExtensions.SetText
+local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
+local GetTranslatedRole = ns.DbContext.Units.GetTranslatedRole
+local GetTranslatedAttribute = ns.DbContext.Units.GetTranslatedAttribute
+local GetTranslatedSpecialization = ns.DbContext.Units.GetTranslatedSpecialization
+local GetTranslatedClass = ns.DbContext.Units.GetTranslatedClass
+local GetTranslatedSpecializationNote = ns.DbContext.Units.GetTranslatedSpecializationNote
+local SetText = ns.FontStringUtil.SetText
 
-local eventHandler = ns.EventHandler:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
+local settingsProvider = ns:GetSettingsProvider()
 
-local translator = class("ClassTalentFrameTranslator", ns.Translators.BaseTranslator)
-ns.Translators.ClassTalentFrameTranslator = translator
+---@class ClassTalentFrameTranslator : BaseTranslator
+local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 local function getTranslationOrDefault(default)
-    return GetTranslationOrDefault("class_talent", default)
+    return ns.DbContext.Frames.GetTranslatedUIText("ClassTalent", default)
 end
 
 local function translateFontStringText(fontString, translationFunc)
@@ -62,16 +65,16 @@ local function updateSpecContents(self, specTab)
         local _, _, description, _, _, primaryStat = GetSpecializationInfo(specContentFrame.specIndex, false, false,
             nil, sex);
         if primaryStat and primaryStat ~= 0 then
-            local translatedStat = GetAttribute(SPEC_STAT_STRINGS[primaryStat])
-            local translatedDescription = GetSpecializationNote(description) ..
+            local translatedStat = GetTranslatedAttribute(SPEC_STAT_STRINGS[primaryStat])
+            local translatedDescription = GetTranslatedSpecializationNote(description) ..
                 "|n" .. getTranslationOrDefault(_G["SPEC_FRAME_PRIMARY_STAT"]):format(translatedStat)
             SetText(specContentFrame.Description, translatedDescription)
         end
-        translateFontStringText(specContentFrame.SpecName, GetSpecialization)
+        translateFontStringText(specContentFrame.SpecName, GetTranslatedSpecialization)
         translateFontStringText(specContentFrame.SampleAbilityText, getTranslationOrDefault)
         translateFontStringText(specContentFrame.ActivatedText, getTranslationOrDefault)
         translateFontStringText(specContentFrame.ActivateButton.Text, getTranslationOrDefault)
-        translateFontStringText(specContentFrame.RoleName, GetRole)
+        translateFontStringText(specContentFrame.RoleName, GetTranslatedRole)
     end
 end
 
@@ -84,8 +87,8 @@ local function updateFrameTitle(self, classTalentFrame)
         if inspectUnit then
             titleText = getTranslationOrDefault(_G["TALENTS_INSPECT_FORMAT"]):format(UnitName(inspectUnit));
         else
-            local classNameTranslated = GetClass(classTalentFrame:GetClassName(), 1, 2) -- TODO: Sex ?
-            local specNameTranslated = GetSpecialization(classTalentFrame:GetSpecName())
+            local classNameTranslated = GetTranslatedClass(classTalentFrame:GetClassName(), 1, 2) -- TODO: Sex ?
+            local specNameTranslated = GetTranslatedSpecialization(classTalentFrame:GetSpecName())
             titleText = getTranslationOrDefault(_G["TALENTS_LINK_FORMAT"]):format(specNameTranslated, classNameTranslated);
         end
     elseif classTalentFrame:GetTab() == classTalentFrame.specTabID then
@@ -101,11 +104,11 @@ local function talentsTab_OnShow(self, talentsTab) -- TODO: Fix
 
     local currencyDisplayFormat = getTranslationOrDefault(_G["TALENT_FRAME_CURRENCY_DISPLAY_FORMAT"])
 
-    local classNameTranslated = GetClass(talentsTab:GetClassName(), 1, 2) -- TODO: Sex ?
+    local classNameTranslated = GetTranslatedClass(talentsTab:GetClassName(), 1, 2) -- TODO: Sex ?
     talentsTab.ClassCurrencyDisplay.CurrencyLabel:SetText(
         string.upper(currencyDisplayFormat:format(classNameTranslated)));
 
-    local specNameTranslated = GetSpecialization(talentsTab:GetSpecName())
+    local specNameTranslated = GetTranslatedSpecialization(talentsTab:GetSpecName())
     talentsTab.SpecCurrencyDisplay.CurrencyLabel:SetText(
         string.upper(currencyDisplayFormat:format(specNameTranslated)));
 end
@@ -121,7 +124,7 @@ end
 local function pvpTalentList_OnUpdate(self, pvpTalentList)
     if (not self:IsEnabled()) then return end
     pvpTalentList.ScrollBox:ForEachFrame(function(listButton)
-        listButton.Name:SetText(GetSpellNameOrDefault(listButton.talentInfo.name));
+        listButton.Name:SetText(GetTranslatedSpellName(listButton.talentInfo.name, false));
     end);
 end
 
@@ -203,7 +206,11 @@ local function onBlizzardClassTalentUILoaded(self)
     end)
 end
 
-function translator:initialize()
+function translator:IsEnabled()
+    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION)
+end
+
+function translator:Init()
     local function onAddonLoaded(_, addonName)
         if (addonName ~= 'Blizzard_ClassTalentUI') then return end
         onBlizzardClassTalentUILoaded(self)
@@ -218,3 +225,5 @@ function translator:initialize()
 
     eventHandler:Register(onAddonLoaded, "ADDON_LOADED")
 end
+
+ns.TranslationsManager:AddTranslator(translator)

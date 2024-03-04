@@ -1,18 +1,22 @@
-local _, ns = ...;
+--- @type WowUkrainizerInternals
+local ns = select(2, ...);
 
+---@class Frame
+---@field elapsed integer
 local chatBubbleTimer
 
-local aceHook = LibStub("AceHook-3.0")
-local eventHandler = ns.EventHandler:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
+local settingsProvider = ns:GetSettingsProvider()
+local untranslatedDataStorage = ns:GetUntranslatedDataStorage()
 
-local GenerateUuid = ns.CommonExtensions.GenerateUuid
-local Split, Trim = ns.StringExtensions.Split, ns.StringExtensions.Trim
-local SetFontStringText = ns.FontStringExtensions.SetText
-local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
-local GetDialogText = ns.DbContext.NpcDialogs.GetDialogText
+local GenerateUuid = ns.CommonUtil.GenerateUuid
+local SetFontStringText = ns.FontStringUtil.SetText
+local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
+local GetTranslatedNpcMessage = ns.DbContext.NpcDialogs.GetTranslatedNpcMessage
 
-local translator = class("NpcMessageTranslator", ns.Translators.BaseTranslator)
-ns.Translators.NpcMessageTranslator = translator
+---@class NpcMessageTranslator : BaseTranslator
+---@field talkingHeadUuid string?
+local translator = setmetatable({ talkingHeadUuid = nil }, { __index = ns.BaseTranslator })
 
 local function onPlaySoud(instance, soundKitID, channel, forceNoDuplicates, runFinishCallback)
     if (channel ~= "Talking Head") then return end
@@ -35,7 +39,7 @@ local function updateChatBubbleMessage(chatBubbles)
             local fontString = getFontString(chatBubble);
             if (fontString) then
                 local message = fontString:GetText() or "";
-                SetFontStringText(fontString, GetDialogText(message))
+                SetFontStringText(fontString, GetTranslatedNpcMessage(message))
             end
         end
     end
@@ -56,11 +60,11 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
         displayInTalkingHead = true
     end
 
-    local translatedAuthor = GetUnitNameOrDefault(author)
-    local translatedMsg = GetDialogText(msg)
+    local translatedAuthor = GetTranslatedUnitName(author)
+    local translatedMsg = GetTranslatedNpcMessage(msg)
 
     if (msg == translatedMsg) then
-        local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
+        local untranslatedData = untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
         if (displayInTalkingHead) then
             untranslatedData.talkingHead = true
             untranslatedData.soundKitID = soundKitID
@@ -74,12 +78,12 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
     return false, translatedMsg, translatedAuthor, ...
 end
 
-function translator:initialize()
-    ns.Translators.BaseTranslator.initialize(self)
+function translator:IsEnabled()
+    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION)
+end
 
-    local instance = self
-    instance.hooks = aceHook.hooks
-    instance.untranslatedDataStorage = ns.UntranslatedDataStorage:new()
+function translator:Init()
+    local instance = self --[[@as NpcMessageTranslator]]
 
     local function onMonsterMessageReceivedHook(_, _, msg, author, ...)
         return onMonsterMessageReceived(instance, msg, author, ...)
@@ -110,8 +114,8 @@ function translator:initialize()
     TalkingHeadFrame:HookScript("OnUpdate", function()
         if (not TalkingHeadFrame:IsVisible()) then return end
 
-        local translatedAuthor = GetUnitNameOrDefault(TalkingHeadFrame.NameFrame.Name:GetText())
-        local translatedMsg = GetDialogText(TalkingHeadFrame.TextFrame.Text:GetText())
+        local translatedAuthor = GetTranslatedUnitName(TalkingHeadFrame.NameFrame.Name:GetText())
+        local translatedMsg = GetTranslatedNpcMessage(TalkingHeadFrame.TextFrame.Text:GetText())
 
         SetFontStringText(TalkingHeadFrame.NameFrame.Name, translatedAuthor);
         SetFontStringText(TalkingHeadFrame.TextFrame.Text, translatedMsg);
@@ -125,3 +129,5 @@ function translator:initialize()
 
     hooksecurefunc("PlaySound", onPlaySoudHook)
 end
+
+ns.TranslationsManager:AddTranslator(translator)

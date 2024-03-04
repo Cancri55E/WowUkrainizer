@@ -2,14 +2,6 @@
 https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
 	<Script file="ChangelogsFrame.lua"/>
     
-    <Font name="WowUkrainizerFrameTitleFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="15"/>
-    <Font name="WowUkrainizerFrameSecondaryTitleFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="14"/>
-    <Font name="WowUkrainizerFramePrimaryTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="12"/>
-    <Font name="WowUkrainizerSmallTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="11"/>
-	<Font name="WowUkrainizerSecondaryTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="11">
-        <Color r="0.604" g="0.592" b="0.725"/>
-    </Font>
-
 	<Button name="WowUkrainizerChangelogEntryTemplate" virtual="true">
         <Size y="80"/>
 
@@ -131,7 +123,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 		</Frames>
 	</ScrollFrame>   
 
-    <Frame name="WowUkrainizerBaseFrameTemplate" virtual="true">
+	<Frame name="WowUkrainizerBaseFrameTemplate" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
 				<FontString parentKey="CalculatedTextHook" inherits="WowUkrainizerFramePrimaryTextFont" justifyH="LEFT" wordwrap="true" hidden="true" text="calc str">
@@ -151,19 +143,19 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 		</Layers>
 	</Frame>
 
-    <Frame name="WowUkrainizerChangelogsFrame" inherits="WowUkrainizerBaseFrameTemplate" mixin="WowUkrainizerChangelogsFrameMixin" hidden="true" movable="false" resizable="true" virtual="true" toplevel="true" parent="UIParent">
+	<Frame name="WowUkrainizerChangelogsFrame" inherits="WowUkrainizerBaseFrameTemplate" mixin="WowUkrainizerChangelogsFrameMixin" hidden="true" movable="false" toplevel="true" resizable="true" virtual="true" enableMouse="true" parent="UIParent">
 		<Size x="535" y="500"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
 		</Anchors>
-        <Layers>
+		<Layers>
 			<Layer level="ARTWORK">
 				<FontString parentKey="Title" inherits="WowUkrainizerFrameTitleFont" wordwrap="false" text="WowUkrainizer - Що нового?">
 					<Anchors>
 						<Anchor point="TOP" y="-6"/>
 					</Anchors>
 				</FontString>
-                <Texture>
+				<Texture>
 					<Size y="2"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="20" y="-28"/>
@@ -174,8 +166,8 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 			</Layer>
 		</Layers>
 		<Scripts>
-            <OnLoad method="OnLoad"/>
-            <OnShow method="OnShow"/>
+			<OnLoad method="OnLoad"/>
+			<OnShow method="OnShow"/>
 		</Scripts>
 		<Frames>
 
@@ -202,6 +194,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 				</Anchors>
 			</ScrollFrame>
 
-        </Frames>
+		</Frames>
 	</Frame>
 </Ui>

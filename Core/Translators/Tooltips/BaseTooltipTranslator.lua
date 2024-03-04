@@ -1,43 +1,46 @@
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
-local SetText = ns.FontStringExtensions.SetText
+local SetText = ns.FontStringUtil.SetText
 
-local translator = class("BaseTooltipTranslator", ns.Translators.BaseTranslator)
-ns.Translators.BaseTooltipTranslator = translator
+---@class BaseTooltipTranslator : BaseTranslator
+---@field tooltipDataType Enum.TooltipDataType
+local translator = setmetatable({
+    fontStringIndexLookup = {},
+    settingsProvider = ns:GetSettingsProvider()
+}, { __index = ns.BaseTranslator })
+ns.BaseTooltipTranslator = translator
 
-function translator:initialize(tooltipDataType)
-    ns.Translators.BaseTranslator.initialize(self)
-    self.fontStringIndexLookup = {}
-    TooltipDataProcessor.AddTooltipPostCall(tooltipDataType,
-        function(tooltip, tooltipData) self:TooltipCallback(tooltip, tooltipData) end)
+function translator:Init()
+    TooltipDataProcessor.AddTooltipPostCall(self.tooltipDataType, function(tooltip, tooltipData)
+        self:TooltipCallback(tooltip, tooltipData)
+    end)
 end
 
-function translator:_clearFontStringIndexLookup()
-    self.fontStringIndexLookup = {}
-end
-
-function translator:_addFontStringToIndexLookup(index, obj)
+function translator:AddFontStringToIndexLookup(index, obj)
     if (not index or not obj) then return end
     self.fontStringIndexLookup[index] = obj
 end
 
+---@private
 function translator:_getFontStringFromIndexLookup(index)
     if (not index) then return end
     return self.fontStringIndexLookup[index]
 end
 
--- Parse the tooltip and tooltip data; to be overridden by custom logic in subclasses
+--- Parse the tooltip and tooltip data; to be overridden by custom logic in subclasses
+---@protected
 function translator:ParseTooltip(tooltip, tooltipData)
 end
 
--- Translate the tooltip info; to be overridden by custom logic in subclasses
+--- Translate the tooltip info; to be overridden by custom logic in subclasses
+---@protected
 function translator:TranslateTooltipInfo(tooltipInfo)
 end
 
+---@protected
 function translator:TooltipCallback(tooltip, tooltipData)
-    if (not self:IsEnabled()) then return end
-
-    self:_clearFontStringIndexLookup()
+    self.fontStringIndexLookup = {}
 
     local tooltipInfo = self:ParseTooltip(tooltip, tooltipData)
     if (not tooltipInfo) then return end

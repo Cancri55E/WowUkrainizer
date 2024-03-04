@@ -1,5 +1,3 @@
-local _, ns = ...;
-
 WowUkrainizerWarningFrameMixin = {}
 
 function WowUkrainizerWarningFrameMixin:ShowWarning(title, msg, height)

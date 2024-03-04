@@ -1,3 +1,4 @@
+--- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
 local _G = _G
@@ -8,20 +9,20 @@ local PET_LEVEL_TRANSLATION = ns.PET_LEVEL_TRANSLATION
 local PET_CAPTURABLE_TRANSLATION = ns.PET_CAPTURABLE_TRANSLATION
 local PET_COLLECTED_TRANSLATION = ns.PET_COLLECTED_TRANSLATION
 
-local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
-local GetUnitSubnameOrDefault = ns.DbContext.Units.GetUnitSubnameOrDefault
-local GetUnitTypeOrDefault = ns.DbContext.Units.GetUnitTypeOrDefault
-local GetUnitRankOrDefault = ns.DbContext.Units.GetUnitRankOrDefault
-local GetUnitFractionOrDefault = ns.DbContext.Units.GetUnitFractionOrDefault
-local GetQuestTitle = ns.DbContext.Quests.GetQuestTitle
-local GetQuestObjective = ns.DbContext.Quests.GetQuestObjective
+local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
+local GetTranslatedUnitSubname = ns.DbContext.Units.GetTranslatedUnitSubname
+local GetTranslatedUnitType = ns.DbContext.Units.GetTranslatedUnitType
+local GetTranslatedUnitRank = ns.DbContext.Units.GetTranslatedUnitRank
+local GetTranslatedUnitFraction = ns.DbContext.Units.GetTranslatedUnitFraction
+local GetTranslatedQuestTitle = ns.DbContext.Quests.GetTranslatedQuestTitle
+local GetTranslatedQuestObjective = ns.DbContext.Quests.GetTranslatedQuestObjective
 
-local StartsWith = ns.StringExtensions.StartsWith
-local ExtractNumericValues = ns.StringExtensions.ExtractNumericValues
-local InsertNumericValues = ns.StringExtensions.InsertNumericValues
+local StartsWith = ns.StringUtil.StartsWith
+local ExtractNumericValues = ns.StringUtil.ExtractNumericValues
+local InsertNumericValues = ns.StringUtil.InsertNumericValues
 
-local translator = class("UnitTooltipTranslator", ns.Translators.BaseTooltipTranslator)
-ns.Translators.UnitTooltipTranslator = translator
+---@class UnitTooltipTranslator : BaseTooltipTranslator
+local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Unit }, { __index = ns.BaseTooltipTranslator })
 
 local function parseUnitTooltipLines(tooltipLines)
     local function parseSubnameInfo(tooltipLine)
@@ -122,7 +123,7 @@ function translator:ParseTooltip(tooltip, tooltipData)
     local unitKind = strsplit("-", tooltipData.guid)
     if (unitKind == "Creature" or unitKind == "Vehicle") then
         for i = 1, tooltip:NumLines() do
-            self:_addFontStringToIndexLookup(i, _G["GameTooltipTextLeft" .. i])
+            self:AddFontStringToIndexLookup(i, _G["GameTooltipTextLeft" .. i])
         end
         return parseUnitTooltipLines(tooltipData.lines)
     end
@@ -134,12 +135,12 @@ function translator:TranslateTooltipInfo(tooltipInfo)
             return string.format("%s%s%s%s",
                 LEVEL_TRANSLATION,
                 levelInfo.level and " " .. levelInfo.level or "",
-                (levelInfo.unitType and " " .. GetUnitTypeOrDefault(levelInfo.unitType)) or "",
-                (levelInfo.rank and " (" .. GetUnitRankOrDefault(levelInfo.rank) .. ")") or "")
+                (levelInfo.unitType and " " .. GetTranslatedUnitType(levelInfo.unitType)) or "",
+                (levelInfo.rank and " (" .. GetTranslatedUnitRank(levelInfo.rank) .. ")") or "")
         else
             return string.format("%s %s",
                 string.gsub(PET_LEVEL_TRANSLATION, "{1}", levelInfo.level),
-                (levelInfo.unitType and GetUnitTypeOrDefault(levelInfo.unitType)) or "")
+                (levelInfo.unitType and GetTranslatedUnitType(levelInfo.unitType)) or "")
         end
     end
 
@@ -149,7 +150,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     table.insert(translatedTooltipLines, {
         index = 1,
-        value = GetUnitNameOrDefault(tooltipInfo.name)
+        value = GetTranslatedUnitName(tooltipInfo.name)
     })
 
     if (tooltipInfo.levelInfo) then
@@ -162,15 +163,15 @@ function translator:TranslateTooltipInfo(tooltipInfo)
     if (tooltipInfo.subnameInfo) then
         table.insert(translatedTooltipLines, {
             index = tooltipInfo.subnameInfo.index,
-            value = GetUnitSubnameOrDefault(tooltipInfo.subnameInfo.value, UnitSex("mouseover"))
+            value = GetTranslatedUnitSubname(tooltipInfo.subnameInfo.value, UnitSex("mouseover"))
         })
     end
 
     if (tooltipInfo.unitTypeOrFactionInfo) then
         local value = tooltipInfo.unitTypeOrFactionInfo.value
-        local translatedValue = GetUnitTypeOrDefault(value)
+        local translatedValue = GetTranslatedUnitType(value)
         if (translatedValue == value) then
-            translatedValue = GetUnitFractionOrDefault(value)
+            translatedValue = GetTranslatedUnitFraction(value)
         end
         table.insert(translatedTooltipLines, {
             index = tooltipInfo.unitTypeOrFactionInfo.index,
@@ -202,7 +203,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     if (tooltipInfo.questsInfo) then
         for questID, questInfo in pairs(tooltipInfo.questsInfo) do
-            local translatedTitle = GetQuestTitle(questID)
+            local translatedTitle = GetTranslatedQuestTitle(questID)
             if (translatedTitle) then
                 table.insert(translatedTooltipLines, {
                     index = questInfo.index,
@@ -210,7 +211,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
                 })
             end
             for index, objective in pairs(questInfo.objectives) do
-                local translatedObjective = GetQuestObjective(questID, objective)
+                local translatedObjective = GetTranslatedQuestObjective(questID, objective)
                 if (translatedObjective) then
                     table.insert(translatedTooltipLines, {
                         index = index,
@@ -223,3 +224,9 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     return translatedTooltipLines
 end
+
+function translator:IsEnabled()
+    return self.settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_UNIT_TOOLTIPS_OPTION)
+end
+
+ns.TranslationsManager:AddTranslator(translator)

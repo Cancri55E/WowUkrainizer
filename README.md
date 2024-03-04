@@ -17,9 +17,11 @@ Also you can download the last version from CurseForge: https://www.curseforge.c
 * Semerkhet
 
 ### Translators
-* KuprumLight, Glafira, Mark Tsemma, Olena Gorbenko, Алексей Коваль, Serhii Feelenko, Semerkhet, Mykyta Barmin, kasatushi, Валерій Бондаренко, Roman Yanyshyn, 
-* Dmytro Boryshpolets, NichnaVoitelka, Unbrkbl Opt1mist, Elanka, Shelby333, Nazar Kulchytskyi, Rolik33, RomenSkyJR, Дмитро Горєнков, Asturiel, Женя Браславська, 
-* Сергей Райдер, Лігво Друїда, losthost, Bokshchanin, Volodymyr Taras, Олексій Сьомін, Primarch, Ксенія Никонова, Natalie Dexter, Maxym Palamarchuk, Archenok
+* KuprumLight, Roman Yanyshyn, Glafira, Mark Tsemma, Olena Gorbenko, Viktor Krech, Алексей Коваль, kasatushi, Serhii Feelenko, Semerkhet, Mykyta Barmin, 
+* Валерій Бондаренко, Shannar de Kassal, Kademskyi Alexander, Володар смерті, Dmytro Boryshpolets, NichnaVoitelka, Unbrkbl Opt1mist, Elanka, Vadym Ivaniuk, 
+* Shelby333, Nazar Kulchytskyi, Rolik33, Станіслав Belinardo, Сергей Райдер, Artem Panchenko, RomenSkyJR, Дмитро Горєнков, Asturiel, Женя Браславська, FinniV, 
+* Лігво Друїда, Lutera1234, losthost, Bokshchanin, lanpae, Volodymyr Taras, Олексій Сьомін, Primarch, Ксения Никонова, Natalie Dexter, Дима Сердюк, Maxym Palamarchuk, 
+* Archenok
 
 ## License
 The WowUkrainizer is licensed under the MIT License. For the full text of the MIT License, please see the [LICENSE](LICENSE) file.

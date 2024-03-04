@@ -1,10 +1,11 @@
-local _, ns = ...;
+--- @type WowUkrainizerInternals
+local ns = select(2, ...);
 
-local translator = class("MainFrameTranslator", ns.Translators.BaseTranslator)
-ns.Translators.MainFrameTranslator = translator
+---@class MainFrameTranslator : BaseTranslator
+local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 local function getTranslationOrDefault(default)
-    return ns.DbContext.Frames.GetTranslationOrDefault("main", default)
+    return ns.DbContext.Frames.GetTranslatedUIText("Main", default)
 end
 
 local function microButtonTooltipHook(button)
@@ -30,7 +31,11 @@ local function microButtonTooltipHook(button)
     GameTooltip:Show()
 end
 
-function translator:initialize()
+function translator:IsEnabled()
+    return true
+end
+
+function translator:Init()
     GameMenuFrame.Header.Text:SetText(getTranslationOrDefault(GameMenuFrame.Header.Text:GetText()))
     for i = 1, GameMenuFrame:GetNumChildren() do
         local element = select(i, GameMenuFrame:GetChildren())
@@ -61,3 +66,5 @@ function translator:initialize()
         microButtonTooltipHook(ChatFrameToggleVoiceMuteButton)
     end)
 end
+
+ns.TranslationsManager:AddTranslator(translator)

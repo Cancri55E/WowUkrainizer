@@ -1,94 +1,51 @@
-local addonName, ns = ...;
+--- @type string
+local addonName = select(1, ...);
+
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
+
+local _G = _G
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
-local eventHandler = ns.EventHandler:new()
-local settingsProvider = ns.SettingsProvider:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
+local settingsProvider = ns:GetSettingsProvider()
 
-local dataBroker
-local wowUkrainizerOptions
-
-local translators = {
-    {
-        name = "MainFrameTranslator",
-        args = nil,
-        isEnabled = function() return true end
-    },
-    {
-        name = "ClassTalentFrameTranslator",
-        args = nil,
-        isEnabled = function()
-            return WowUkrainizer_Options
-                .TranslateClassTalentsFrame
-        end
-    },
-    {
-        name = "SpellbookFrameTranslator",
-        args = nil,
-        isEnabled = function()
-            return WowUkrainizer_Options
-                .TranslateSpellbookFrame
-        end
-    },
-    {
-        name = "NameplateAndUnitFrameTranslator",
-        args = nil,
-        isEnabled = function()
-            return WowUkrainizer_Options
-                .TranslateNameplatesAndUnitFrames
-        end
-    },
-    {
-        name = "SpellTooltipTranslator",
-        args = Enum.TooltipDataType.Spell,
-        isEnabled = function()
-            return
-                WowUkrainizer_Options.TranslateSpellTooltips
-        end
-    },
-    {
-        name = "UnitTooltipTranslator",
-        args = Enum.TooltipDataType.Unit,
-        isEnabled = function()
-            return
-                WowUkrainizer_Options.TranslateUnitTooltips
-        end
-    },
-    {
-        name = "SubtitlesTranslator",
-        args = nil,
-        isEnabled = function()
-            return
-                WowUkrainizer_Options.TranslateSubtitles
-        end
-    },
-    {
-        name = "NpcMessageTranslator",
-        args = nil,
-        isEnabled = function()
-            return
-                WowUkrainizer_Options.TranslateNpcMessages
-        end
-    },
-    {
-        name = "QuestTranslator",
-        args = nil,
-        isEnabled = function()
-            return WowUkrainizer_Options.TranslateQuestAndObjectivesFrame
-        end
-    },
-}
+local minimapDataBroker
+local addOnSettingsCategoryID
 
 local initialized = false
 
 local function createInterfaceOptions()
-    settingsProvider:Build()
+    local settingsFrame = CreateFrame("Frame", "WowUkrainizerSettings", nil, "WowUkrainizerSettingsFrameTemplate");
+    local category, _ = Settings.RegisterCanvasLayoutCategory(settingsFrame, addonName);
+    Settings.RegisterAddOnCategory(category);
+    addOnSettingsCategoryID = category:GetID()
 
-    local namespace = "WowUkrainizer"
-    LibStub("AceConfig-3.0"):RegisterOptionsTable(namespace, ns.Options)
+    local contributorsFrame = CreateFrame("Frame", "WowUkrainizerContributors", nil,
+        "WowUkrainizerContributorsFrameTemplate");
+    contributorsFrame:SetBestSize(680)
 
-    local configDialogLib = LibStub("AceConfigDialog-3.0")
-    wowUkrainizerOptions = configDialogLib:AddToBlizOptions(namespace, "WowUkrainizer", nil, "General")
-    configDialogLib:AddToBlizOptions(namespace, "Причетні", "WowUkrainizer", "Contributors")
+    Settings.RegisterCanvasLayoutSubcategory(category, contributorsFrame, "Причетні");
+end
+
+local function preloadAvailableFonts()
+    local preloader = CreateFrame('Frame')
+    preloader:SetPoint('TOP', UIParent, 'BOTTOM', 0, -500)
+    preloader:SetSize(100, 100)
+
+    local preloadFont = function(_, data)
+        local loadFont = preloader:CreateFontString()
+        loadFont:SetAllPoints()
+
+        if pcall(loadFont.SetFont, loadFont, data, 14) then
+            pcall(loadFont.SetText, loadFont, 'cache')
+        end
+    end
+
+    local sharedFonts = sharedMedia:HashTable('font')
+    for key, data in next, sharedFonts do
+        preloadFont(key, data)
+    end
 end
 
 local function setGameFonts()
@@ -98,155 +55,126 @@ local function setGameFonts()
         fontFamily:SetFont(fontName, height * scale, flags)
     end
 
-    local function _setFont(fontFamily, fontName, height)
-        if (not fontFamily) then return end
-        local _, _, flags = fontFamily:GetFont()
-        fontFamily:SetFont(fontName, height, flags)
-    end
-
-    local useDefaultFonts, fontName, fontScale, tooltipHeaderFontScale, tooltipFontScale =
+    local useDefaultFonts, mainFontName, mainFontScale, titleFontName, titleFontScale, tooltipFontName, tooltipFontScale =
         settingsProvider.GetFontSettings()
 
-    local questTitleFont = settingsProvider.GetQuestTitleFontFile()
-    local FRIZQTFont = settingsProvider.GetQuestFontFile()
+    if (useDefaultFonts) then return end
 
-    if not useDefaultFonts then
-        local fontElements = {
-            { element = SystemFont_Shadow_Med1,   scale = fontScale },
-            { element = SystemFont_Shadow_Small,  scale = fontScale },
-            { element = SystemFont_Shadow_Med2,   scale = fontScale },
-            { element = SystemFont_Shadow_Large2, scale = fontScale },
-            { element = Game30Font,               scale = fontScale },
-            { element = GameTooltipHeader,        scale = tooltipHeaderFontScale },
-            { element = Tooltip_Med,              scale = tooltipFontScale },
-            { element = Tooltip_Small,            scale = tooltipFontScale },
-            -- TODO: Other
-        }
-
-        for _, fontElement in ipairs(fontElements) do
-            _setScaledFont(fontElement.element, fontName, fontElement.scale)
-        end
-    else
-        local fontElements = {
-            -- fonts
-            { element = SystemFont_Outline_Small,         fontName = FRIZQTFont,     height = 10 },
-            { element = SystemFont_Outline,               fontName = FRIZQTFont,     height = 13 },
-            { element = SystemFont_InverseShadow_Small,   fontName = FRIZQTFont,     height = 10 },
-            { element = SystemFont_Huge1,                 fontName = FRIZQTFont,     height = 20 },
-            { element = SystemFont_Huge1_Outline,         fontName = FRIZQTFont,     height = 20 },
-            { element = SystemFont_OutlineThick_Huge2,    fontName = FRIZQTFont,     height = 22 },
-            { element = SystemFont_OutlineThick_Huge4,    fontName = FRIZQTFont,     height = 26 },
-            { element = SystemFont_OutlineThick_WTF,      fontName = FRIZQTFont,     height = 32 },
-            { element = NumberFont_GameNormal,            fontName = FRIZQTFont,     height = 10 },
-            { element = Game48FontShadow,                 fontName = FRIZQTFont,     height = 48 },
-            { element = Game15Font_o1,                    fontName = FRIZQTFont,     height = 15 },
-            { element = MailFont_Large,                   fontName = FRIZQTFont,     height = 15 },
-            { element = SpellFont_Small,                  fontName = FRIZQTFont,     height = 10 },
-            { element = InvoiceFont_Med,                  fontName = FRIZQTFont,     height = 12 },
-            { element = InvoiceFont_Small,                fontName = FRIZQTFont,     height = 10 },
-            { element = AchievementFont_Small,            fontName = FRIZQTFont,     height = 10 },
-            { element = ReputationDetailFont,             fontName = FRIZQTFont,     height = 10 },
-            { element = FriendsFont_Normal,               fontName = FRIZQTFont,     height = 12 },
-            { element = FriendsFont_11,                   fontName = FRIZQTFont,     height = 11 },
-            { element = FriendsFont_Small,                fontName = FRIZQTFont,     height = 10 },
-            { element = FriendsFont_Large,                fontName = FRIZQTFont,     height = 14 },
-            { element = GameFont_Gigantic,                fontName = FRIZQTFont,     height = 32 },
-            { element = ChatBubbleFont,                   fontName = FRIZQTFont,     height = 14 },
-            { element = SystemFont_NamePlateFixed,        fontName = FRIZQTFont,     height = 14 },
-            { element = SystemFont_LargeNamePlateFixed,   fontName = FRIZQTFont,     height = 20 },
-            { element = SystemFont_NamePlate,             fontName = FRIZQTFont,     height = 9 },
-            { element = SystemFont_LargeNamePlate,        fontName = FRIZQTFont,     height = 12 },
-            { element = SystemFont_NamePlateCastBar,      fontName = FRIZQTFont,     height = 10 },
-            { element = Fancy22Font,                      fontName = questTitleFont, height = 22 },
-            -- glue fonts
-            -- INFO: This font can't be changed sine in game they font object are equals nil
-            -- { element = SystemFont_Shadow_Outline_Small,    fontName = FRIZQTFont, height = 10 },
-            -- { element = SystemFont_Outline_Med1,            fontName = FRIZQTFont, height = 12 },
-            -- { element = SystemFont_Outline_Med2,            fontName = FRIZQTFont, height = 15 },
-            -- { element = SystemFont_Shadow_Outline_Large,    fontName = FRIZQTFont, height = 18 },
-            -- { element = SystemFont_Shadow_Outline_Gigantor, fontName = FRIZQTFont, height = 32 },
-            -- { element = OptionsFont,                        fontName = FRIZQTFont, height = 12 },
-            { element = OptionsFontSmall,                 fontName = FRIZQTFont,     height = 10 },
-            { element = OptionsFontLarge,                 fontName = FRIZQTFont,     height = 18 },
-            { element = OptionsFontHighlight,             fontName = FRIZQTFont,     height = 12 },
-            { element = OptionsFontHighlightSmall,        fontName = FRIZQTFont,     height = 10 },
-            -- shared fonts
-            { element = SystemFont_Tiny2,                 fontName = FRIZQTFont,     height = 8 },
-            { element = SystemFont_Tiny,                  fontName = FRIZQTFont,     height = 9 },
-            { element = SystemFont_Shadow_Small,          fontName = FRIZQTFont,     height = 10 },
-            { element = Game10Font_o1,                    fontName = FRIZQTFont,     height = 10 },
-            { element = SystemFont_Small,                 fontName = FRIZQTFont,     height = 10 },
-            { element = SystemFont_Small2,                fontName = FRIZQTFont,     height = 11 },
-            { element = SystemFont_Shadow_Small2,         fontName = FRIZQTFont,     height = 11 },
-            { element = SystemFont_Shadow_Small_Outline,  fontName = FRIZQTFont,     height = 10 },
-            { element = SystemFont_Shadow_Small2_Outline, fontName = FRIZQTFont,     height = 11 },
-            { element = SystemFont_Shadow_Med1_Outline,   fontName = FRIZQTFont,     height = 12 },
-            { element = SystemFont_Shadow_Med1,           fontName = FRIZQTFont,     height = 12 },
-            { element = SystemFont_Med2,                  fontName = FRIZQTFont,     height = 13 },
-            { element = SystemFont_Med3,                  fontName = FRIZQTFont,     height = 14 },
-            { element = SystemFont_Shadow_Med3,           fontName = FRIZQTFont,     height = 14 },
-            { element = SystemFont_Shadow_Med3_Outline,   fontName = FRIZQTFont,     height = 14 },
-            { element = SystemFont_Large,                 fontName = FRIZQTFont,     height = 16 },
-            { element = SystemFont_Shadow_Large_Outline,  fontName = FRIZQTFont,     height = 16 },
-            { element = SystemFont_Shadow_Med2,           fontName = FRIZQTFont,     height = 14 },
-            { element = SystemFont_Shadow_Med2_Outline,   fontName = FRIZQTFont,     height = 14 },
-            { element = SystemFont_Shadow_Large,          fontName = FRIZQTFont,     height = 16 },
-            { element = SystemFont_Shadow_Large2,         fontName = FRIZQTFont,     height = 18 },
-            { element = SystemFont_Shadow_Huge1,          fontName = FRIZQTFont,     height = 20 },
-            { element = SystemFont_Shadow_Huge1_Outline,  fontName = FRIZQTFont,     height = 20 },
-            { element = SystemFont_Huge2,                 fontName = FRIZQTFont,     height = 24 },
-            { element = SystemFont_Shadow_Huge2,          fontName = FRIZQTFont,     height = 24 },
-            { element = SystemFont_Shadow_Huge2_Outline,  fontName = FRIZQTFont,     height = 24 },
-            { element = SystemFont_Shadow_Huge3,          fontName = FRIZQTFont,     height = 25 },
-            { element = SystemFont_Shadow_Outline_Huge3,  fontName = FRIZQTFont,     height = 25 },
-            { element = SystemFont_Huge4,                 fontName = FRIZQTFont,     height = 27 },
-            { element = SystemFont_Shadow_Huge4,          fontName = FRIZQTFont,     height = 27 },
-            { element = SystemFont_Shadow_Huge4_Outline,  fontName = FRIZQTFont,     height = 27 },
-            { element = SystemFont_World,                 fontName = FRIZQTFont,     height = 64 },
-            { element = SystemFont_World_ThickOutline,    fontName = FRIZQTFont,     height = 64 },
-            { element = SystemFont22_Outline,             fontName = FRIZQTFont,     height = 22 },
-            { element = SystemFont22_Shadow_Outline,      fontName = FRIZQTFont,     height = 22 },
-            { element = SystemFont_Med1,                  fontName = FRIZQTFont,     height = 12 },
-            { element = SystemFont_WTF2,                  fontName = FRIZQTFont,     height = 36 },
-            { element = SystemFont_Outline_WTF2,          fontName = FRIZQTFont,     height = 36 },
-            { element = GameTooltipHeader,                fontName = FRIZQTFont,     height = 14 },
-            { element = System_IME,                       fontName = FRIZQTFont,     height = 16 },
-            { element = Tooltip_Med,                      fontName = FRIZQTFont,     height = 12 },
-            { element = Tooltip_Small,                    fontName = FRIZQTFont,     height = 10 },
-            { element = System15Font,                     fontName = FRIZQTFont,     height = 15 },
-            { element = Game30Font,                       fontName = FRIZQTFont,     height = 30 },
-        }
-        for _, fontElement in ipairs(fontElements) do
-            _setFont(fontElement.element, fontElement.fontName, fontElement.height)
-        end
-    end
-
-    local questFontSettings = {
-        { element = QuestFont_Large,              fontName = questTitleFont, height = 15 },
-        { element = QuestFont_Huge,               fontName = questTitleFont, height = 18 },
-        { element = QuestFont_30,                 fontName = questTitleFont, height = 30 },
-        { element = QuestFont_39,                 fontName = questTitleFont, height = 39 },
-        { element = QuestFont_Outline_Huge,       fontName = questTitleFont, height = 18 },
-        { element = QuestFont_Super_Huge,         fontName = questTitleFont, height = 24 },
-        { element = QuestFont_Super_Huge_Outline, fontName = questTitleFont, height = 24 },
-        { element = QuestFont_Enormous,           fontName = questTitleFont, height = 30 },
-        { element = QuestFont_Shadow_Small,       fontName = questTitleFont, height = 14 },
-        { element = SystemFont_Med2,              fontName = FRIZQTFont,     height = 13 },
+    local fontElements = {
+        -- fonts
+        { element = SystemFont_Outline_Small,         fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Outline,               fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_InverseShadow_Small,   fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Huge1,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Huge1_Outline,         fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_OutlineThick_Huge2,    fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_OutlineThick_Huge4,    fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_OutlineThick_WTF,      fontName = mainFontName,    scale = mainFontScale },
+        { element = NumberFont_GameNormal,            fontName = mainFontName,    scale = mainFontScale },
+        { element = Game48FontShadow,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = Game15Font_o1,                    fontName = mainFontName,    scale = mainFontScale },
+        { element = MailFont_Large,                   fontName = mainFontName,    scale = mainFontScale },
+        { element = SpellFont_Small,                  fontName = mainFontName,    scale = mainFontScale },
+        { element = InvoiceFont_Med,                  fontName = mainFontName,    scale = mainFontScale },
+        { element = InvoiceFont_Small,                fontName = mainFontName,    scale = mainFontScale },
+        { element = AchievementFont_Small,            fontName = mainFontName,    scale = mainFontScale },
+        { element = ReputationDetailFont,             fontName = mainFontName,    scale = mainFontScale },
+        { element = FriendsFont_Normal,               fontName = mainFontName,    scale = mainFontScale },
+        { element = FriendsFont_11,                   fontName = mainFontName,    scale = mainFontScale },
+        { element = FriendsFont_Small,                fontName = mainFontName,    scale = mainFontScale },
+        { element = FriendsFont_Large,                fontName = mainFontName,    scale = mainFontScale },
+        { element = GameFont_Gigantic,                fontName = mainFontName,    scale = mainFontScale },
+        { element = ChatBubbleFont,                   fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_NamePlateFixed,        fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_LargeNamePlateFixed,   fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_NamePlate,             fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_LargeNamePlate,        fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_NamePlateCastBar,      fontName = mainFontName,    scale = mainFontScale },
+        { element = Fancy22Font,                      fontName = titleFontName,   scale = titleFontScale },
+        -- glue fonts
+        -- INFO: This font can't be changed sine in game they font object are equals nil
+        -- { element = SystemFont_Shadow_Outline_Small,    fontName = mainFontName, scale = mainFontScale },
+        -- { element = SystemFont_Outline_Med1,            fontName = mainFontName, scale = mainFontScale },
+        -- { element = SystemFont_Outline_Med2,            fontName = mainFontName, scale = mainFontScale },
+        -- { element = SystemFont_Shadow_Outline_Large,    fontName = mainFontName, scale = mainFontScale },
+        -- { element = SystemFont_Shadow_Outline_Gigantor, fontName = mainFontName, scale = mainFontScale },
+        -- { element = OptionsFont,                        fontName = mainFontName, scale = mainFontScale },
+        { element = OptionsFontSmall,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = OptionsFontLarge,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = OptionsFontHighlight,             fontName = mainFontName,    scale = mainFontScale },
+        { element = OptionsFontHighlightSmall,        fontName = mainFontName,    scale = mainFontScale },
+        -- shared fonts
+        { element = SystemFont_Tiny2,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Tiny,                  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Small,          fontName = mainFontName,    scale = mainFontScale },
+        { element = Game10Font_o1,                    fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Small,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Small2,                fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Small2,         fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Small_Outline,  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Small2_Outline, fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Med1_Outline,   fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Med1,           fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Med2,                  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Med3,                  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Med3,           fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Med3_Outline,   fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Large,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Large_Outline,  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Med2,           fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Med2_Outline,   fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Large,          fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Large2,         fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Huge1,          fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Huge1_Outline,  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Huge2,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Huge2,          fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Huge2_Outline,  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Huge3,          fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Outline_Huge3,  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Huge4,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Huge4,          fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Shadow_Huge4_Outline,  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_World,                 fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_World_ThickOutline,    fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont22_Outline,             fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont22_Shadow_Outline,      fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Med1,                  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_WTF2,                  fontName = mainFontName,    scale = mainFontScale },
+        { element = SystemFont_Outline_WTF2,          fontName = mainFontName,    scale = mainFontScale },
+        { element = GameTooltipHeader,                fontName = tooltipFontName, scale = tooltipFontScale },
+        { element = System_IME,                       fontName = mainFontName,    scale = mainFontScale },
+        { element = Tooltip_Med,                      fontName = tooltipFontName, scale = tooltipFontScale },
+        { element = Tooltip_Small,                    fontName = tooltipFontName, scale = tooltipFontScale },
+        { element = System15Font,                     fontName = mainFontName,    scale = mainFontScale },
+        { element = Game30Font,                       fontName = mainFontName,    scale = mainFontScale },
+        -- quest fonts
+        { element = QuestFont_Large,                  fontName = titleFontName,   scale = titleFontScale },
+        { element = QuestFont_Huge,                   fontName = titleFontName,   scale = titleFontScale },
+        { element = QuestFont_30,                     fontName = titleFontName,   scale = titleFontScale },
+        { element = QuestFont_39,                     fontName = titleFontName,   scale = titleFontScale },
+        { element = QuestFont_Outline_Huge,           fontName = titleFontName,   scale = titleFontScale },
+        { element = QuestFont_Super_Huge,             fontName = titleFontName,   scale = titleFontScale },
+        { element = QuestFont_Super_Huge_Outline,     fontName = titleFontName,   scale = titleFontScale },
+        { element = QuestFont_Enormous,               fontName = titleFontName,   scale = titleFontScale },
+        { element = QuestFont_Shadow_Small,           fontName = titleFontName,   scale = titleFontScale },
     }
-
-    for _, fontElement in ipairs(questFontSettings) do
-        _setFont(fontElement.element, fontElement.fontName, fontElement.height)
+    for _, fontElement in ipairs(fontElements) do
+        _setScaledFont(fontElement.element, fontElement.fontName, fontElement.scale)
     end
 end
 
 local function initializeAddon()
     if (initialized) then return end
 
-    StaticPopupDialogs["WOW_UKRAINIZAER_RESET_SETTINGS"] = {
+    _G["StaticPopupDialogs"]["WOW_UKRAINIZAER_RESET_SETTINGS"] = {
         text = "Ви впевнені, що хочете скинути всі налаштування до стандартних значень?",
         button1 = "Продовжити",
         button2 = "Скасувати",
-        OnAccept = function() settingsProvider:Reset() end,
+        OnAccept = function()
+            settingsProvider:ResetToDefault()
+            ReloadUI()
+        end,
         OnShow = function() PlaySound(SOUNDKIT.RAID_WARNING) end,
         timeout = 0,
         whileDead = true,
@@ -256,24 +184,21 @@ local function initializeAddon()
 
     sharedMedia:Register("font", "Arsenal Regular", [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf]])
     sharedMedia:Register("font", "Arsenal Bold", [[Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf]])
+    sharedMedia:Register("font", WOW_UKRAINIZER_ADAPTED_MAIN_FONT_NAME, WOW_UKRAINIZER_ADAPTED_MAIN_FONT_PATH)
+    sharedMedia:Register("font", WOW_UKRAINIZER_ADAPTED_TITLE_FONT_NAME, WOW_UKRAINIZER_ADAPTED_TITLE_FONT_PATH)
 
     if type(WowUkrainizer_MinimapIcon) ~= "table" then
         WowUkrainizer_MinimapIcon = {}
     end
 
-    if LibStub("LibDBIcon-1.0", true) then
-        LibStub("LibDBIcon-1.0"):Register("WowUkrainizerMinimapIcon", dataBroker, WowUkrainizer_MinimapIcon)
+    if LibStub("LibDBIcon-1.0", true) and minimapDataBroker then
+        LibStub("LibDBIcon-1.0"):Register("WowUkrainizerMinimapIcon", minimapDataBroker, WowUkrainizer_MinimapIcon)
     end
 
     local releaseDate = tonumber(C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")) or 0
     local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
-    if string.match(version, "-[%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d]$") then
-        version = "[alpha] " .. version
-    elseif string.match(version, "-alpha$") then
-        version = "[alpha] " .. string.gsub(version, "-alpha$", "")
-    end
 
-    ns.CommonData = {
+    ns.AddonInfo = {
         ReleaseDate = releaseDate,
         Version = version,
         VesionStr = "Версія: " ..
@@ -282,9 +207,13 @@ local function initializeAddon()
 
     ns.Frames = {}
     ns.Frames["WarningFrame"] = CreateFrame("FRAME", "WarningFrame", UIParent, "WowUkrainizerWarningFrame")
-    ns.Frames["WarningFrame"]:SetFrameLevel(5000)
-    ns.Frames["ChangelogsFrame"] = CreateFrame("FRAME", "ChangelogsFrame", UIParent, "WowUkrainizerChangelogsFrame")
-    ns.Frames["ChangelogsFrame"]:SetFrameLevel(5000)
+
+    if (settingsProvider.ShouldShowChangelog() or ns.AddonInfo.Version == "[alpha] 1.10.0") then
+        ns.Frames["WarningFrame"]:ShowWarning("|cffE60965Остання Alpha версія!|r",
+            "|cffFFD150УВАГА! 1.10.0 остання версія яка буде виходити як Alpha. " ..
+            "Тому, будь ласка, оновить додаток до Release версії (в CurseForge клієнті натисніть ПКМ на додатку -> Release Type -> Release)|r",
+            150)
+    end
 end
 
 local function ShowUnsupportedLangWarning(locale)
@@ -310,38 +239,28 @@ local function ShowUnsupportedLangWarning(locale)
 end
 
 local function OnPlayerLogin()
-    ns.PlayerData = {
+    ns.PlayerInfo = {
         Name = GetUnitName("player"),
         Race = UnitRace("player"),
         Class = UnitClass("player"),
         Gender = UnitSex("player")
     }
 
-    settingsProvider:Load()
     createInterfaceOptions()
-    setGameFonts();
+    preloadAvailableFonts()
+    setGameFonts()
 
-    local function createTranslator(translatorName, args)
-        local translator
-        if args ~= nil then
-            translator = ns.Translators[translatorName]:new(args)
-        else
-            translator = ns.Translators[translatorName]:new()
-        end
-        translator:SetEnabled(true)
-        return translator
-    end
+    ns.Frames["ChangelogsFrame"] = CreateFrame("Frame", "ChangelogsFrame", UIParent, "WowUkrainizerChangelogsFrame")
+    ns.Frames["InstallerFrame"] = CreateFrame("Frame", "InstallerFrame", UIParent, "WowUkrainizerInstallerFrame")
 
-    for _, translatorData in ipairs(translators) do
-        if translatorData.isEnabled() then
-            translatorData.translator = createTranslator(translatorData.name, translatorData.args)
-        end
-    end
+    ns.TranslationsManager:Init()
 
-    local lastAutoShownChangelogVersion = WowUkrainizer_Options.LastAutoShownChangelogVersion
-    if (ns._db.Changelogs[1][1] ~= lastAutoShownChangelogVersion) then
+    if (settingsProvider.ShouldShowInstallerWizard()) then
+        ns.Frames["InstallerFrame"]:ToggleUI()
+        settingsProvider.SetOption(WOW_UKRAINIZER_IS_FIRST_RUN_OPTION, false)
+    elseif (settingsProvider.ShouldShowChangelog()) then
         ns.Frames["ChangelogsFrame"]:ToggleUI()
-        WowUkrainizer_Options.LastAutoShownChangelogVersion = ns._db.Changelogs[1][1]
+        settingsProvider.SetOption(WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION, ns._db.Changelogs[1].version)
     end
 end
 
@@ -363,12 +282,9 @@ local function OnAddOnLoaded(_, name)
     end
 end
 
-----------------------
---  Minimap Button  --
-----------------------
 do
     if LibStub("LibDataBroker-1.1", true) then
-        dataBroker = LibStub("LibDataBroker-1.1"):NewDataObject(
+        minimapDataBroker = LibStub("LibDataBroker-1.1"):NewDataObject(
             "WowUkrainizerMinimapIcon",
             {
                 type = "launcher",
@@ -382,13 +298,13 @@ do
                         if (locale ~= "enGB" and locale ~= "enUS") then
                             ShowUnsupportedLangWarning(locale)
                         else
-                            InterfaceOptionsFrame_OpenToCategory(wowUkrainizerOptions)
+                            Settings.OpenToCategory(addOnSettingsCategoryID)
                         end
                     end
                 end,
                 OnTooltipShow = function(GameTooltip)
                     GameTooltip:SetText("WowUkrainizer", 1, 1, 1)
-                    GameTooltip:AddLine(ns.CommonData.VesionStr,
+                    GameTooltip:AddLine(ns.AddonInfo.VesionStr,
                         NORMAL_FONT_COLOR.r,
                         NORMAL_FONT_COLOR.g,
                         NORMAL_FONT_COLOR.b, 1)

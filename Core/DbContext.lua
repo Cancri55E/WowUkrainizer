@@ -1,6 +1,9 @@
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
 if (ns.DbContext) then return end
+
+local SettingsProvider = ns:GetSettingsProvider()
 
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
 local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithNumerics
@@ -8,102 +11,151 @@ local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithN
 local NormalizePersonalizedString = ns.StringNormalizer.NormalizePersonalizedString
 local ReconstructPersonalizedString = ns.StringNormalizer.ReconstructPersonalizedString
 
+local RemoveBrackets = ns.StringUtil.RemoveBrackets
+local ReplaceBracketsToColor = ns.StringUtil.ReplaceBracketsToColor
+
+local GetHash = ns.StringUtil.GetHash
+
+---@class DbContext
 local dbContext = {}
 
-local function getValueOrDefault(hashTable, default)
-    if (not default) then return default end
-    local hash = ns.StringExtensions.GetHash(default)
-    return hashTable[hash] or default
+---@class BaseRepository
+local baseRepository = {}
+
+--- Protected method to get the translated or the original (English) text if not translated.
+---@param dbTable table<integer, string> @ The database table for translations.
+---@param original string @ The original (English) text.
+---@return string @ The translated or original value.
+---@protected
+function baseRepository._getValue(dbTable, original)
+    if (not original or original == "") then return original end
+    local hash = GetHash(original)
+    return dbTable[hash] or original
 end
 
-local function getFormattedValueOrDefault(hashTable, default)
-    if (not default) then return default end
-    local text, numValues = NormalizeStringAndExtractNumerics(default)
-    local translatedText = getValueOrDefault(hashTable, text)
+--- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain numeric values.
+---@param dbTable table<integer, string> @ The database table for translations.
+---@param original string @ The original (English) text.
+---@return string @ The translated or original value.
+---@protected
+function baseRepository:_getFormattedValue(dbTable, original)
+    if (not original) then return original end
+    local text, numValues = NormalizeStringAndExtractNumerics(original)
+
+    if (not text) then return original end
+
+    local translatedText = self._getValue(dbTable, text)
     return ReconstructStringWithNumerics(translatedText, numValues)
 end
 
-local function getPersonalizedValueOrDefault(hashTable, default)
-    if (not default) then return default end
-    local text = NormalizePersonalizedString(default)
-    local translatedText, hash = getValueOrDefault(hashTable, text)
-    return ReconstructPersonalizedString(translatedText), hash
-end
-
-local function removeBrackets(str)
-    return str:gsub("[%[%]]", "")
-end
-
-local function replaceBrackets(str)
-    str = str:gsub("%[", "|cFF47D5FF")
-    str = str:gsub("%]", "|r")
-    return str
+--- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain personalized values (player name, class, etc.).
+---@param dbTable table<integer, string> @ The database table for translations.
+---@param original string @ The original (English) text.
+---@return string @ The translated or original value.
+---@protected
+function baseRepository:_getPersonalizedValue(dbTable, original)
+    if (not original) then return original end
+    local text = NormalizePersonalizedString(original)
+    local translatedText = self._getValue(dbTable, text)
+    return ReconstructPersonalizedString(translatedText)
 end
 
 -- Units
 do
-    local repository = {}
+    ---@class UnitRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
 
-    local function calcIndex(index, gender)
-        if (not index or not gender) then return 1 end
-        --gender = 2 -- hook until table with translations not complited
-        return index * 2 - (3 - gender)
+    --- Calculate the index based on gender and case values.
+    --- @param case number @ The case value.
+    --- @param gender number? @ The gender value.
+    --- @return number @ The calculated index.
+    local function calculateClassTranslationIndex(case, gender)
+        if (not case or not gender) then return 1 end
+        return case * 2 - (3 - gender)
     end
 
-    function repository.GetUnitNameOrDefault(default)
-        return getValueOrDefault(ns._db.UnitNames, default)
+    --- Get the translated unit name or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated unit name or the original (English) text.
+    function repository.GetTranslatedUnitName(original)
+        return repository._getValue(ns._db.UnitNames, original)
     end
 
-    function repository.GetUnitSubnameOrDefault(default, gender)
-        return getValueOrDefault(ns._db.UnitSubnames, default):gsub("{sex|(.-)|(.-)}", function(male, female)
-            if (gender == 3) then
-                return female
-            else
-                return male
-            end
-        end)
+    --- Get the translated unit subname based on gender or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @param gender number? @ The gender value.
+    --- @return string @ The translated unit subname or the original (English) text.
+    function repository.GetTranslatedUnitSubname(original, gender)
+        local translatedUnitSubname = repository._getValue(ns._db.UnitSubnames, original):gsub("{sex|(.-)|(.-)}",
+            function(male, female)
+                if (gender == 3) then
+                    return female
+                else
+                    return male
+                end
+            end)
+        return translatedUnitSubname
     end
 
-    function repository.GetUnitTypeOrDefault(default)
-        return getValueOrDefault(ns._db.UnitTypes, default)
+    --- Get the translated unit type or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated unit type or the original (English) text.
+    function repository.GetTranslatedUnitType(original)
+        return repository._getValue(ns._db.UnitTypes, original)
     end
 
-    function repository.GetUnitRankOrDefault(default)
-        return getValueOrDefault(ns._db.UnitRanks, default)
+    --- Get the translated unit rank or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated unit rank or the original (English) text.
+    function repository.GetTranslatedUnitRank(original)
+        return repository._getValue(ns._db.UnitRanks, original)
     end
 
-    function repository.GetUnitFractionOrDefault(default)
-        if (not default) then return default end
-        return default -- TODO:
+    --- Get the translated unit fraction or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated unit fraction or the original (English) text.
+    function repository.GetTranslatedUnitFraction(original)
+        return original -- TODO:
     end
 
-    function repository.GetClass(default, case, gender)
-        if (not default) then return default end
+    --- Get the translated class based on case and gender or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @param case number @ The case value.
+    --- @param gender number? @ The gender value.
+    --- @return string @ The translated class or the original (English) text.
+    function repository.GetTranslatedClass(original, case, gender)
+        local class = repository._getValue(ns._db.Classes, original)
+        if (not class) then return original end
 
-        local class = getValueOrDefault(ns._db.Classes, default)
-        if (not class) then return default end
-
-        return class[calcIndex(case, gender)] or default
+        return class[calculateClassTranslationIndex(case, gender)] or original
     end
 
-    function repository.GetSpecialization(default)
-        if (not default) then return default end
-        return getValueOrDefault(ns._db.Specializations, default)
+    --- Get the translated specialization or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated specialization or the original (English) text.
+    function repository.GetTranslatedSpecialization(original)
+        return repository._getValue(ns._db.Specializations, original)
     end
 
-    function repository.GetSpecializationNote(default)
-        if (not default) then return default end
-        return getValueOrDefault(ns._db.SpecializationNotes, default)
+    --- Get the translated specialization note or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated specialization note or the original (English) text.
+    function repository.GetTranslatedSpecializationNote(original)
+        return repository._getValue(ns._db.SpecializationNotes, original)
     end
 
-    function repository.GetRole(default)
-        if (not default) then return default end
-        return getValueOrDefault(ns._db.Roles, default)
+    --- Get the translated role or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated role or the original (English) text.
+    function repository.GetTranslatedRole(original)
+        return repository._getValue(ns._db.Roles, original)
     end
 
-    function repository.GetAttribute(default)
-        if (not default) then return default end
-        return getValueOrDefault(ns._db.Attributes, default)
+    --- Get the translated attribute or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated attribute or the original (English) text.
+    function repository.GetTranslatedAttribute(original)
+        return repository._getValue(ns._db.Attributes, original)
     end
 
     dbContext.Units = repository
@@ -111,34 +163,46 @@ end
 
 -- Spells
 do
-    local repository = {}
+    ---@class SpellRepository : BaseRepository
+    local repository = setmetatable({ _spellColor = "FF47D4FF" }, { __index = baseRepository })
 
-    function repository.GetSpellNameOrDefault(default, highlight)
-        local result = getValueOrDefault(ns._db.SpellNames, default)
-        if (result ~= default) then
+    --- Get the translated or the original (English) spell name.
+    --- @param original string @ The the original (English) spell name.
+    --- @param highlight boolean @ Whether to highlight the result.
+    --- @return string @ The translated or the original (English) spell name.
+    function repository.GetTranslatedSpellName(original, highlight)
+        local result = repository._getValue(ns._db.SpellNames, original)
+        if (result ~= original) then
             if (highlight) then
-                return replaceBrackets(result)
+                return ReplaceBracketsToColor(result, repository._spellColor)
             else
-                return removeBrackets(result)
+                return RemoveBrackets(result)
             end
         end
-        return default
+        return original
     end
 
-    function repository.GetSpellDescriptionOrDefault(default, highlight)
-        local result = getFormattedValueOrDefault(ns._db.SpellDescriptions, default)
-        if (result ~= default) then
+    --- Get the translated or the original (English) spell description.
+    --- @param original string @ The the original (English) spell description.
+    --- @param highlight boolean @ Whether to highlight the result.
+    --- @return string @ The translated or the original (English) spell description.
+    function repository.GetTranslatedSpellDescription(original, highlight)
+        local result = repository:_getFormattedValue(ns._db.SpellDescriptions, original)
+        if (result ~= original) then
             if (highlight) then
-                return replaceBrackets(result)
+                return ReplaceBracketsToColor(result, repository._spellColor)
             else
-                return removeBrackets(result)
+                return RemoveBrackets(result)
             end
         end
-        return default
+        return original
     end
 
-    function repository.GetSpellAttributeOrDefault(default)
-        return getFormattedValueOrDefault(ns._db.CommonSpellAttributes, default)
+    --- Get the translated or the original (English) spell attribute.
+    --- @param original string @ The the original (English) spell attribute.
+    --- @return string @ The translated or default spell attribute.
+    function repository.GetTranslatedSpellAttribute(original)
+        return repository:_getFormattedValue(ns._db.CommonSpellAttributes, original)
     end
 
     dbContext.Spells = repository
@@ -146,22 +210,32 @@ end
 
 -- Frames
 do
-    local repository = {}
+    ---@class UIFrameRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
 
-    function repository.GetTranslationOrDefault(type, default)
-        if (type == "spellbook") then
-            return getFormattedValueOrDefault(ns._db.SpellbookFrameLines, default)
-        elseif (type == "class_talent") then
-            return getFormattedValueOrDefault(ns._db.ClassTalentFrameLines, default)
-        elseif (type == "main") then
-            return getFormattedValueOrDefault(ns._db.MainFrameLines, default)
-        elseif (type == "quest") then
-            return getValueOrDefault(ns._db.QuestFrameLines, default)
+    --- Get the translated or original (English) UI text based on the specified type.
+    --- @param type UIFrameType @ The type of UI frame.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated or original UI frame translation.
+    function repository.GetTranslatedUIText(type, original)
+        if (type == "Spellbook") then
+            return repository:_getFormattedValue(ns._db.SpellbookFrameLines, original)
+        elseif (type == "ClassTalent") then
+            return repository:_getFormattedValue(ns._db.ClassTalentFrameLines, original)
+        elseif (type == "Main") then
+            return repository:_getFormattedValue(ns._db.MainFrameLines, original)
+        elseif (type == "Quest") then
+            return repository._getValue(ns._db.QuestFrameLines, original)
         end
+
+        return original
     end
 
-    function repository.GetAdditionalSpellTipsOrDefault(default)
-        return getFormattedValueOrDefault(ns._db.AdditionalSpellTips, default)
+    --- Get the translated or original (English) additional spell tips.
+    --- @param original string @ The original (English) additional spell tips.
+    --- @return string @ The translated or original additional spell tips.
+    function repository.GetTranslatedUISpellTooltip(original)
+        return repository:_getFormattedValue(ns._db.AdditionalSpellTips, original)
     end
 
     dbContext.Frames = repository
@@ -169,10 +243,14 @@ end
 
 -- Subtitles
 do
-    local repository = {}
+    ---@class SubtitleRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
 
-    function repository.GetMovieSubtitle(default)
-        return getValueOrDefault(ns._db.MovieSubtitles, default)
+    --- Get the translated or original (English) movie subtitle.
+    --- @param original string @ The original (English) movie subtitle.
+    --- @return string @ The translated or original movie subtitle.
+    function repository.GetTranslatedMovieSubtitle(original)
+        return repository._getValue(ns._db.MovieSubtitles, original)
     end
 
     dbContext.Subtitles = repository
@@ -180,14 +258,21 @@ end
 
 -- NPC Dialogs
 do
-    local repository = {}
+    ---@class NpcDialogRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
 
-    function repository.GetDialogText(default)
-        return getPersonalizedValueOrDefault(ns._db.DialogTexts, default)
+    --- Get the translated or original (English) NPC message text.
+    --- @param original string @ The original (English) NPC dialog text.
+    --- @return string @ The translated or original NPC dialog text.
+    function repository.GetTranslatedNpcMessage(original)
+        return repository:_getPersonalizedValue(ns._db.DialogTexts, original)
     end
 
-    function repository.GetCinematicSubtitle(default)
-        return getPersonalizedValueOrDefault(ns._db.CinematicSubtitles, default)
+    --- Get the translated or original (English) cinematic subtitle for NPCs.
+    --- @param original string @ The original (English) cinematic subtitle.
+    --- @return string @ The translated or original cinematic subtitle.
+    function repository.GetTranslatedCinematicSubtitle(original)
+        return repository:_getPersonalizedValue(ns._db.CinematicSubtitles, original)
     end
 
     dbContext.NpcDialogs = repository
@@ -195,14 +280,21 @@ end
 
 -- Gossips
 do
-    local repository = {}
+    ---@class GossipRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
 
-    function repository.GetGossipTitle(default)
-        return getValueOrDefault(ns._db.GossipTitles, default)
+    --- Get the translated or original (English) gossip text.
+    --- @param original string @ The original (English) gossip text.
+    --- @return string @ The translated or original gossip text.
+    function repository.GetTranslatedGossipText(original)
+        return repository._getValue(ns._db.GossipTitles, original)
     end
 
-    function repository.GetGossipOptionText(default)
-        return getValueOrDefault(ns._db.GossipOptions, default)
+    --- Get the translated or original (English) gossip option text.
+    --- @param original string @ The original (English) gossip option text.
+    --- @return string @ The translated or original gossip option text.
+    function repository.GetTranslatedGossipOptionText(original)
+        return repository._getValue(ns._db.GossipOptions, original)
     end
 
     dbContext.Gossips = repository
@@ -210,24 +302,30 @@ end
 
 -- Quests
 do
-    local QUEST_TITLE = 1
-    local QUEST_DESCRIPTION = 2
-    local QUEST_OBJECTIVES_TEXT = 3
-    local QUEST_TARGET_NAME = 4
-    local QUEST_TARGET_DESCRIPTION = 5
-    local QUEST_COMPLETED_TARGET_NAME = 6
-    local QUEST_COMPLETED_TARGET_DESCRIPTION = 7
-    local QUEST_LOG_COMPLETION_TEXT = 8
-    local QUEST_REWARD_TEXT = 9
-    local QUEST_COMPLETED_TEXT = 10
-    local QUEST_AREA_DESCRIPTION = 11
+    ---Quest data in the database is stored as string arrays, and the indices are used to access specific information, like the quest title or description, within the array.
+    ---@enum QuestTranslationIndex
+    local QuestTranslationIndex = {
+        TITLE = 1,
+        DESCRIPTION = 2,
+        OBJECTIVES_TEXT = 3,
+        TARGET_NAME = 4,
+        TARGET_DESCRIPTION = 5,
+        COMPLETED_TARGET_NAME = 6,
+        COMPLETED_TARGET_DESCRIPTION = 7,
+        LOG_COMPLETION_TEXT = 8,
+        REWARD_TEXT = 9,
+        COMPLETED_TEXT = 10,
+        AREA_DESCRIPTION = 11
+    }
 
-    local repository = {}
+    ---@class QuestRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
 
-    local function normalizeQuestString(text)
+    ---@private
+    function repository._normalizeQuestString(text)
         if text == nil or text == "" then return text end
 
-        local playerData = ns.PlayerData
+        local playerData = ns.PlayerInfo
 
         text = string.gsub(text, "%$[nN]", function(_)
             return playerData.Name
@@ -260,14 +358,14 @@ do
                 case = 7
             end
 
-            local classStr = dbContext.Units.GetClass(playerData.Class, case, playerData.Gender)
+            local classStr = dbContext.Units.GetTranslatedClass(playerData.Class, case, playerData.Gender)
 
             if (marker == "$C") then return string.upper(classStr) end
             return classStr
         end)
 
         text = string.gsub(text, "%$[cC]", function(marker)
-            local classStr = dbContext.Units.GetClass(playerData.Class, 1, playerData.Gender)
+            local classStr = dbContext.Units.GetTranslatedClass(playerData.Class, 1, playerData.Gender)
 
             if (marker == "$C") then return string.upper(classStr) end
             return classStr
@@ -284,20 +382,24 @@ do
         return text
     end
 
-    function repository.GetQuestObjective(questId, default)
-        if (not default) then return default end
+    --- Retrieves the quest objective text based on the quest ID.
+    ---@param questId number The ID of the quest.
+    ---@param original string The original (English) value.
+    ---@return string @The translated and normalized quest objective text.
+    function repository.GetTranslatedQuestObjective(questId, original)
+        if (not original) then return original end
 
         local objectives = ns._db.QuestObjectives[questId]
-        if (not objectives and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+        if (not objectives and not SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
             objectives = ns._db.MTQuestObjectives[questId]
         end
 
-        if (not objectives) then return default end
+        if (not objectives) then return original end
 
         local progressText = nil
         local completeText = nil
         local optionalText = nil
-        local objectiveText = default
+        local objectiveText = original
 
         local containsProgressText = objectiveText:match("^(%d+/%d+)")
         if (containsProgressText) then
@@ -342,47 +444,62 @@ do
             end
         end
 
-        local translatedObjectiveText = getValueOrDefault(objectives, objectiveText)
+        local translatedObjectiveText = repository._getValue(objectives, objectiveText)
+
         if (progressText) then
             translatedObjectiveText = progressText .. " " .. translatedObjectiveText
         end
+
         if (optionalText) then
             translatedObjectiveText = translatedObjectiveText .. " (Необов'язково)"
         end
+
         if (completeText) then
             translatedObjectiveText = translatedObjectiveText .. " (Виконано)"
         end
-        return normalizeQuestString(translatedObjectiveText)
+
+        return repository._normalizeQuestString(translatedObjectiveText)
     end
 
-    function repository.GetQuestTitle(questId)
+    --- Retrieves the quest title based on the quest ID.
+    ---@param questId number The ID of the quest.
+    ---@return string? @The translated quest title.
+    function repository.GetTranslatedQuestTitle(questId)
         local data = ns._db.Quests[questId]
-        if (not data and not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
+        if (not data and not SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
             data = ns._db.MTQuests[questId]
         end
 
         if (not data) then return end
 
-        return data[QUEST_TITLE]
+        return data[QuestTranslationIndex.TITLE]
     end
 
-    function repository.GetQuestData(questId)
-        local data = ns._db.Quests[questId]
-        local mtData = nil
-        if (not WowUkrainizer_Options.DisableMTForTranslateQuestAndObjectivesFrame) then
-            mtData = ns._db.MTQuests[questId]
+    --- Gets translated quest data including title, description, objectives, and other details.
+    ---@param questId number @The ID of the quest.
+    ---@return TranslatedQuestData? @An object containing quest details.
+    function repository.GetTranslatedQuestData(questId)
+        local questData = ns._db.Quests[questId]
+        local mtQuestData = nil
+
+        if (not SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
+            mtQuestData = ns._db.MTQuests[questId]
         end
 
-        if (not data and not mtData) then return end
+        if (not questData and not mtQuestData) then return end
 
-        local isMTDataUsed = false
+        local isMtDataUsed = false
 
-        local function _getDataRow(index, postProcessFunc)
-            local dataRow = (data and data[index])
-            local mtDataRow = (mtData and mtData[index])
+        --- Retrieves a translated value from either the main data or the machine translation data.
+        --- @param index number The index of the data row to retrieve.
+        --- @param postProcessFunc function | nil The function to apply as a post-processing step on the retrieved data row.
+        --- @return string The retrieved translated value, optionally post-processed.
+        local function getTranslatedValue(index, postProcessFunc)
+            local dataRow = questData and questData[index]
+            local mtDataRow = mtQuestData and mtQuestData[index]
 
             if not dataRow and mtDataRow then
-                isMTDataUsed = true
+                isMtDataUsed = true
             end
 
             local value = dataRow or mtDataRow
@@ -394,27 +511,28 @@ do
             end
         end
 
-        local questData = {
+        ---@type TranslatedQuestData
+        local translatedQuestData = {
             ID = questId,
-            Title = _getDataRow(QUEST_TITLE),
-            Description = _getDataRow(QUEST_DESCRIPTION, normalizeQuestString),
-            ObjectivesText = _getDataRow(QUEST_OBJECTIVES_TEXT, normalizeQuestString),
+            Title = getTranslatedValue(QuestTranslationIndex.TITLE),
+            Description = getTranslatedValue(QuestTranslationIndex.DESCRIPTION, repository._normalizeQuestString),
+            ObjectivesText = getTranslatedValue(QuestTranslationIndex.OBJECTIVES_TEXT, repository._normalizeQuestString),
             ContainsObjectives = ns._db.QuestObjectives[questId] ~= nil or ns._db.MTQuestObjectives[questId] ~= nil,
-            CompletionText = _getDataRow(QUEST_LOG_COMPLETION_TEXT),
-            TargetName = _getDataRow(QUEST_TARGET_NAME),
-            TargetDescription = _getDataRow(QUEST_TARGET_DESCRIPTION),
-            TargetCompletedName = _getDataRow(QUEST_COMPLETED_TARGET_NAME),
-            TargetCompletedDescription = _getDataRow(QUEST_COMPLETED_TARGET_DESCRIPTION),
-            AreaDescription = _getDataRow(QUEST_AREA_DESCRIPTION),
-            RewardText = _getDataRow(QUEST_REWARD_TEXT, normalizeQuestString),
-            ProgressText = _getDataRow(QUEST_COMPLETED_TEXT, normalizeQuestString),
+            CompletionText = getTranslatedValue(QuestTranslationIndex.LOG_COMPLETION_TEXT),
+            TargetName = getTranslatedValue(QuestTranslationIndex.TARGET_NAME),
+            TargetDescription = getTranslatedValue(QuestTranslationIndex.TARGET_DESCRIPTION),
+            TargetCompletedName = getTranslatedValue(QuestTranslationIndex.COMPLETED_TARGET_NAME),
+            TargetCompletedDescription = getTranslatedValue(QuestTranslationIndex.COMPLETED_TARGET_DESCRIPTION),
+            AreaDescription = getTranslatedValue(QuestTranslationIndex.AREA_DESCRIPTION),
+            RewardText = getTranslatedValue(QuestTranslationIndex.REWARD_TEXT, repository._normalizeQuestString),
+            ProgressText = getTranslatedValue(QuestTranslationIndex.COMPLETED_TEXT, repository._normalizeQuestString),
         }
 
-        if (isMTDataUsed) then
-            questData.IsMTData = true
+        if (isMtDataUsed) then
+            translatedQuestData.IsMtData = true
         end
 
-        return questData
+        return translatedQuestData
     end
 
     dbContext.Quests = repository

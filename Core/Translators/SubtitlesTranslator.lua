@@ -1,21 +1,35 @@
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
 
-local GenerateUuid = ns.CommonExtensions.GenerateUuid
-local GetMovieSubtitle = ns.DbContext.Subtitles.GetMovieSubtitle
-local GetCinematicSubtitle = ns.DbContext.NpcDialogs.GetCinematicSubtitle
-local GetUnitNameOrDefault = ns.DbContext.Units.GetUnitNameOrDefault
+local GenerateUuid = ns.CommonUtil.GenerateUuid
+local GetTranslatedMovieSubtitle = ns.DbContext.Subtitles.GetTranslatedMovieSubtitle
+local GetTranslatedCinematicSubtitle = ns.DbContext.NpcDialogs.GetTranslatedCinematicSubtitle
+local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 
-local eventHandler = ns.EventHandler:new()
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
+local settingsProvider = ns:GetSettingsProvider()
+local untranslatedDataStorage = ns:GetUntranslatedDataStorage()
 
-local translator = class("SubtitlesTranslator", ns.Translators.BaseTranslator)
-ns.Translators.SubtitlesTranslator = translator
+---@class SubtitlesTranslator : BaseTranslator
+---@field playCinematic boolean
+---@field playMovie boolean
+---@field movieID integer?
+---@field cinematicUuid string?
+---@field subtitleOrder integer
+local translator = setmetatable({
+    playCinematic = false,
+    playMovie = false,
+    movieID = nil,
+    cinematicUuid = nil,
+    subtitleOrder = -1
+}, { __index = ns.BaseTranslator })
 
-function translator:initialize()
-    ns.Translators.BaseTranslator.initialize(self)
+function translator:IsEnabled()
+    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SUBTITLES_OPTION)
+end
 
-    local instance = self
-    instance.currentMovieId = 0
-    instance.untranslatedDataStorage = ns.UntranslatedDataStorage:new()
+function translator:Init()
+    local instance = self --[[@as SubtitlesTranslator]]
 
     eventHandler:Register(function(event, movieID)
         if (event == "PLAY_MOVIE") then
@@ -45,9 +59,9 @@ function translator:initialize()
     eventHandler:Register(function(_, message, sender)
         local function translateMessage()
             if (instance.playCinematic) then
-                return GetCinematicSubtitle(message)
+                return GetTranslatedCinematicSubtitle(message)
             elseif (instance.playMovie) then
-                return GetMovieSubtitle(message)
+                return GetTranslatedMovieSubtitle(message)
             else
                 return message
             end
@@ -56,16 +70,16 @@ function translator:initialize()
         local translatedMessage = translateMessage()
         local body = translatedMessage
         if sender then
-            local translatedSender = GetUnitNameOrDefault(sender)
+            local translatedSender = GetTranslatedUnitName(sender)
             body = format(SUBTITLE_FORMAT, translatedSender, translatedMessage);
         end
 
-        if (instance.playMovie and instance.movieID ~= 0) then
-            instance.untranslatedDataStorage:GetOrAdd("MovieSubtitles", instance.movieID, message)
+        if (instance.playMovie and instance.movieID and instance.movieID ~= 0) then
+            untranslatedDataStorage:GetOrAdd("MovieSubtitles", tostring(instance.movieID), message)
         end
         if (instance.playCinematic) then
             if (translatedMessage == message) then
-                local untranslatedData = instance.untranslatedDataStorage:GetOrAdd("NpcMessages", sender, message)
+                local untranslatedData = untranslatedDataStorage:GetOrAdd("NpcMessages", sender, message)
                 untranslatedData.cinematicUuid = instance.cinematicUuid
                 untranslatedData.subtitleOrder = instance.subtitleOrder
             end
@@ -121,3 +135,5 @@ function translator:initialize()
         end
     end
 end
+
+ns.TranslationsManager:AddTranslator(translator)

@@ -1,0 +1,166 @@
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.blizzard.com/wow/ui/" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
+    <Script file="SettingsFrame.lua"/>
+
+    <Font name="WowUkrainizerSwttingsFrameTitleFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="18">
+		<Color r="1" g="0.8" b="0"/>
+	</Font>
+
+    <Frame name="WowUkrainizerSettingsFrameTemplate" mixin="WowUkrainizerSettingsFrameMixin" hidden="true" virtual="true">
+        <Size x="680" y="520"/>
+        <Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Title" inherits="WowUkrainizerSwttingsFrameTitleFont" wordwrap="true" text="WowUkrainizer - Налаштування">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="-8" y="-16"/>
+						<Anchor point="TOPLEFT" x="8" y="-16"/>
+					</Anchors>
+				</FontString>
+                <FontString parentKey="Version" inherits="WowUkrainizerSmallTextFont" wordwrap="true" text="Версія: %s">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.Title" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+                    </Anchors>
+                </FontString>
+			</Layer>
+		</Layers>
+        <Frames>
+			<Frame parentKey="WarningFrame" inherits="BackdropTemplate">
+				<Size x="640" y="94"/>
+				<Anchors>
+					 <Anchor point="TOPLEFT" relativeKey="$parent.Version" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+				</Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <FontString parentKey="WarningText" inherits="WowUkrainizerSmallTextFont" wordwrap="true" text="Увага!">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" x="-12" y="-14"/>
+                                <Anchor point="TOPLEFT" x="12" y="-14"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Frames>
+                    <Button parentKey="ResetInterfaceButton" inherits="UIPanelButtonTemplate" text="Перезавантажити">
+                        <Size x="140" y="24"/>
+                        <NormalFont style="WowUkrainizerFramePrimaryTextFont"/>
+                        <HighlightFont style="WowUkrainizerFramePrimaryTextFont"/>
+                        <DisabledFont style="WowUkrainizerFramePrimaryTextFont"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.WarningText" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                ReloadUI()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Button parentKey="SetDefaultSettingsButton" inherits="UIPanelButtonTemplate" text="За замовчуванням">
+                        <Size x="140" y="24"/>
+                        <NormalFont style="WowUkrainizerFramePrimaryTextFont"/>
+                        <HighlightFont style="WowUkrainizerFramePrimaryTextFont"/>
+                        <DisabledFont style="WowUkrainizerFramePrimaryTextFont"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.ResetInterfaceButton" relativePoint="TOPRIGHT" x="4" y="0"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                StaticPopup_Show("WOW_UKRAINIZAER_RESET_SETTINGS")
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Button parentKey="ChangelogsButton" inherits="UIPanelButtonTemplate" text="Що Нового?">
+                        <Size x="120" y="24"/>
+                        <NormalFont style="WowUkrainizerFramePrimaryTextFont"/>
+                        <HighlightFont style="WowUkrainizerFramePrimaryTextFont"/>
+                        <DisabledFont style="WowUkrainizerFramePrimaryTextFont"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.SetDefaultSettingsButton" relativePoint="TOPRIGHT" x="4" y="0"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                self:GetParent():GetParent():ShowChangelogs()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                </Frames>
+			</Frame>
+            <Button name="Tab1" inherits="PanelTopTabButtonTemplate" text="Загальні" id="1">
+                <KeyValues>
+					<KeyValue key="minWidth" value="100" type="number"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.WarningFrame" relativePoint="BOTTOMLEFT" x="0" y="-8"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():SelectTab(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="Tab2" inherits="PanelTopTabButtonTemplate" text="Шрифти" id="2">
+                <KeyValues>
+					<KeyValue key="minWidth" value="100" type="number"/>
+				</KeyValues>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Tab1" relativePoint="TOPRIGHT" x="4" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():SelectTab(self);
+					</OnClick>
+				</Scripts>
+			</Button>
+            <Frame parentKey="SettingsFrame" inherits="BackdropTemplate" hidden="false">
+                <Size x="620" y="390"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.WarningFrame" relativePoint="BOTTOMLEFT" x="0" y="-38"/>
+                </Anchors>
+                <Frames>
+                    <ScrollFrame parentKey="SettingsScrollFrame" inherits="ScrollFrameTemplate">
+                        <KeyValues>
+                            <KeyValue key="scrollBarX" value="10" type="number"/>
+                            <KeyValue key="scrollBarTopY" value="-3" type="number"/>
+                            <KeyValue key="scrollBarBottomY" value="5" type="number"/>
+                        </KeyValues>
+                        <Size x="620" y="390"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="-8"/>
+                            <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="8"/>
+                        </Anchors>
+                        <ScrollChild>
+                            <Frame parentKey="SettingsScrollChildFrame">
+                                <Size x="620" y="386"/>
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" x="0" y="0"/>
+                                </Anchors>
+                                <Frames>
+                                    <Frame parentKey="ModuleSettingsFrame" inherits="WowUkrainizerModuleSettingsPageTemplate" hidden="false">
+                                        <Size x="620" y="386"/>
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" x="0" y="0"/>
+                                        </Anchors>
+                                    </Frame>
+                                    <Frame parentKey="TooltipSettingsFrame" inherits="WowUkrainizerTooltipSettingsPageTemplate" hidden="false">
+                                        <Size x="620" y="186"/>
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativeKey="$parent.ModuleSettingsFrame" relativePoint="BOTTOMLEFT" x="0" y="-140"/>
+                                        </Anchors>
+                                    </Frame>
+                                    <Frame parentKey="FontSettingsFrame" inherits="WowUkrainizerFontSettingsPageTemplate" hidden="true">
+                                        <Size x="620" y="386"/>
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" x="0" y="0"/>
+                                        </Anchors>
+                                    </Frame>
+                                </Frames>
+                            </Frame>
+                        </ScrollChild>
+                    </ScrollFrame>
+                </Frames>
+            </Frame>
+		</Frames>
+        <Scripts>
+			<OnLoad method="OnLoad"/>
+		</Scripts>
+    </Frame>
+</Ui>
