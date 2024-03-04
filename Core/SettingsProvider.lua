@@ -41,15 +41,6 @@ local _settingsProviderPrototype = {
     }
 }
 
---- Initializes the addon options.
-function _settingsProviderPrototype:InitializeSettings()
-    WowUkrainizer_Options = WowUkrainizer_Options or {}
-
-    for k, v in pairs(self.defaultOptions) do
-        WowUkrainizer_Options[k] = WowUkrainizer_Options[k] or v
-    end
-end
-
 --- Resets addon options to their default values. WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION and WOW_UKRAINIZER_IS_FIRST_RUN_OPTION not ressets
 function _settingsProviderPrototype:ResetToDefault()
     local currentLastAutoShownChangelogVersion =
@@ -140,12 +131,17 @@ function _settingsProviderPrototype.SetOption(name, value)
     WowUkrainizer_Options[name] = value
 end
 
---- Retrieves the singleton instance of the SettingsProvider.
----@return SettingsProvider @The singleton instance of the SettingsProvider.
-function ns:GetSettingsProvider()
-    if not self._settingsProvider then
-        self._settingsProvider = setmetatable({}, { __index = _settingsProviderPrototype })
-        self._settingsProvider:InitializeSettings()
+--- Create the singleton instance of the SettingsProvider.
+function ns:CreateSettingsProvider()
+    if not self.SettingsProvider then
+        self.SettingsProvider = setmetatable({}, { __index = _settingsProviderPrototype })
+
+        WowUkrainizer_Options = WowUkrainizer_Options or {}
+
+        for k, v in pairs(_settingsProviderPrototype.defaultOptions) do
+            if (WowUkrainizer_Options[k] == nil) then
+                WowUkrainizer_Options[k] = v
+            end
+        end
     end
-    return self._settingsProvider
 end

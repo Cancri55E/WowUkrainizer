@@ -6,8 +6,6 @@ local ns = select(2, ...);
 local chatBubbleTimer
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
-local settingsProvider = ns:GetSettingsProvider()
-local untranslatedDataStorage = ns:GetUntranslatedDataStorage()
 
 local GenerateUuid = ns.CommonUtil.GenerateUuid
 local SetFontStringText = ns.FontStringUtil.SetText
@@ -64,7 +62,7 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
     local translatedMsg = GetTranslatedNpcMessage(msg)
 
     if (msg == translatedMsg) then
-        local untranslatedData = untranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
+        local untranslatedData = ns.UntranslatedDataStorage:GetOrAdd("NpcMessages", author, msg)
         if (displayInTalkingHead) then
             untranslatedData.talkingHead = true
             untranslatedData.soundKitID = soundKitID
@@ -79,7 +77,7 @@ local function onMonsterMessageReceived(instance, msg, author, ...)
 end
 
 function translator:IsEnabled()
-    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION)
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION)
 end
 
 function translator:Init()

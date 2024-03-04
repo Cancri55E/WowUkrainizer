@@ -6,8 +6,7 @@ local SetText = ns.FontStringUtil.SetText
 ---@class BaseTooltipTranslator : BaseTranslator
 ---@field tooltipDataType Enum.TooltipDataType
 local translator = setmetatable({
-    fontStringIndexLookup = {},
-    settingsProvider = ns:GetSettingsProvider()
+    fontStringIndexLookup = {}
 }, { __index = ns.BaseTranslator })
 ns.BaseTooltipTranslator = translator
 

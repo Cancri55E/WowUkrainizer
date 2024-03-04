@@ -421,7 +421,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     local translatedTooltipLines = {}
 
-    local spellNameLang = self.settingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION)
+    local spellNameLang = ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION)
     if (spellNameLang ~= "en") then
         local spellName = tooltipInfo.Name
         local translatedValue = GetTranslatedSpellName(tooltipInfo.Name, true)
@@ -438,7 +438,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         })
     end
 
-    if (self.settingsProvider.IsNeedTranslateSpellDescriptionInTooltip()) then
+    if (ns.SettingsProvider.IsNeedTranslateSpellDescriptionInTooltip()) then
         if (tooltipInfo.Form and tooltipInfo.Form ~= "") then
             table.insert(translatedTooltipLines, {
                 index = 2,
@@ -446,7 +446,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
             })
         end
 
-        local highlightSpellName = self.settingsProvider.IsNeedHighlightSpellNameInDescription()
+        local highlightSpellName = ns.SettingsProvider.IsNeedHighlightSpellNameInDescription()
 
         if (tooltipInfo.Spell) then
             addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Spell, highlightSpellName))
@@ -474,7 +474,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 end
 
 function translator:IsEnabled()
-    return self.settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELL_TOOLTIPS_OPTION)
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELL_TOOLTIPS_OPTION)
 end
 
 function translator:Init()

@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Update AddOn Version
         id: addon_version
         uses: PaulHatch/semantic-version@v5.4.0
@@ -30,8 +30,8 @@ jobs:
           minor_pattern: "feat:"
           version_format: "v${major}.${minor}.${patch}"
           bump_each_commit: true
-          bump_each_commit_patch_pattern: "/^(?!doc|chore|ci|build)/"
-          
+          bump_each_commit_patch_pattern: "/^(?!doc|chore|ci|build|refactor)/"
+
       - name: Check Versions
         id: check_version_changed
         run: |
@@ -47,7 +47,7 @@ jobs:
           tag_name: ${{ steps.addon_version.outputs.version }}
           name: ${{ steps.addon_version.outputs.version }}
           prerelease: false
-          
+
       - name: Trigger workflow to publish new version
         if: "${{ steps.check_version_changed.outputs.ADDON_VERSION_CHANGED == 'true' }}"
         run: |

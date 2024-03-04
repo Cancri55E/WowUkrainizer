@@ -46,7 +46,7 @@ commit_parsers = [
   { message = "^fix", group = "🐛 Bug Fixes" },
   { message = "^doc", group = "📚 Documentation", skip = true  },
   { message = "^perf", group = "🐎 Performance" },
-  { message = "^refactor", group = "🔨 Refactor" },
+  { message = "^refactor", group = "🔨 Refactor", skip = true },
   { message = "^test", group = "🚨 Testing" },
   { message = "^chore", group = "🤷 Miscellaneous Tasks", skip = true },
   { message = "^ci", group = "🧱 Build", skip = true },

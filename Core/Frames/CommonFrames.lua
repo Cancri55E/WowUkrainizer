@@ -1,8 +1,6 @@
 --- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local settingsProvider = ns:GetSettingsProvider()
-
 -- WowUkrainizerCheckButtonMixin
 do
     WowUkrainizerCheckButtonMixin = { BehaveAsRadioButton = false }
@@ -21,7 +19,7 @@ do
     function WowUkrainizerCheckButtonMixin:SetOption(checked)
         local optionName = self:GetAttribute("optionName")
         if (optionName) then
-            settingsProvider.SetOption(_G[optionName], checked)
+            ns.SettingsProvider.SetOption(_G[optionName], checked)
         end
     end
 

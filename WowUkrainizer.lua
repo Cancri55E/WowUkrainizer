@@ -8,7 +8,6 @@ local _G = _G
 
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
-local settingsProvider = ns:GetSettingsProvider()
 
 local minimapDataBroker
 local addOnSettingsCategoryID
@@ -56,7 +55,7 @@ local function setGameFonts()
     end
 
     local useDefaultFonts, mainFontName, mainFontScale, titleFontName, titleFontScale, tooltipFontName, tooltipFontScale =
-        settingsProvider.GetFontSettings()
+        ns.SettingsProvider.GetFontSettings()
 
     if (useDefaultFonts) then return end
 
@@ -167,12 +166,15 @@ end
 local function initializeAddon()
     if (initialized) then return end
 
+    ns:CreateSettingsProvider()
+    ns:CreateUntranslatedDataStorage()
+
     _G["StaticPopupDialogs"]["WOW_UKRAINIZAER_RESET_SETTINGS"] = {
         text = "Ви впевнені, що хочете скинути всі налаштування до стандартних значень?",
         button1 = "Продовжити",
         button2 = "Скасувати",
         OnAccept = function()
-            settingsProvider:ResetToDefault()
+            ns.SettingsProvider:ResetToDefault()
             ReloadUI()
         end,
         OnShow = function() PlaySound(SOUNDKIT.RAID_WARNING) end,
@@ -208,7 +210,7 @@ local function initializeAddon()
     ns.Frames = {}
     ns.Frames["WarningFrame"] = CreateFrame("FRAME", "WarningFrame", UIParent, "WowUkrainizerWarningFrame")
 
-    if (settingsProvider.ShouldShowChangelog() or ns.AddonInfo.Version == "[alpha] 1.10.0") then
+    if (ns.SettingsProvider.ShouldShowChangelog() and ns.AddonInfo.Version == "[alpha] 1.10.0") then
         ns.Frames["WarningFrame"]:ShowWarning("|cffE60965Остання Alpha версія!|r",
             "|cffFFD150УВАГА! 1.10.0 остання версія яка буде виходити як Alpha. " ..
             "Тому, будь ласка, оновить додаток до Release версії (в CurseForge клієнті натисніть ПКМ на додатку -> Release Type -> Release)|r",
@@ -255,12 +257,15 @@ local function OnPlayerLogin()
 
     ns.TranslationsManager:Init()
 
-    if (settingsProvider.ShouldShowInstallerWizard()) then
-        ns.Frames["InstallerFrame"]:ToggleUI()
-        settingsProvider.SetOption(WOW_UKRAINIZER_IS_FIRST_RUN_OPTION, false)
-    elseif (settingsProvider.ShouldShowChangelog()) then
-        ns.Frames["ChangelogsFrame"]:ToggleUI()
-        settingsProvider.SetOption(WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION, ns._db.Changelogs[1].version)
+    local settingsProvider = ns.SettingsProvider
+    if (settingsProvider) then
+        if (settingsProvider.ShouldShowInstallerWizard()) then
+            ns.Frames["InstallerFrame"]:ToggleUI()
+            settingsProvider.SetOption(WOW_UKRAINIZER_IS_FIRST_RUN_OPTION, false)
+        elseif (settingsProvider.ShouldShowChangelog()) then
+            ns.Frames["ChangelogsFrame"]:ToggleUI()
+            settingsProvider.SetOption(WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION, ns._db.Changelogs[1].version)
+        end
     end
 end
 

@@ -226,7 +226,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 end
 
 function translator:IsEnabled()
-    return self.settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_UNIT_TOOLTIPS_OPTION)
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_UNIT_TOOLTIPS_OPTION)
 end
 
 ns.TranslationsManager:AddTranslator(translator)

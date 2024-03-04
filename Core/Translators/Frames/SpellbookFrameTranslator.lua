@@ -3,8 +3,6 @@ local _, ns = ...;
 
 local _G = _G
 
-local settingsProvider = ns:GetSettingsProvider()
-
 local PAGE_TRANSLATION, SPELL_PASSIVE_TRANSLATION = ns.PAGE_TRANSLATION, ns.SPELL_PASSIVE_TRANSLATION
 local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
 local SPELL_GENERAL_TRANSLATION = ns.SPELL_GENERAL_TRANSLATION
@@ -24,7 +22,7 @@ end
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 local function updateSpellButtonCallback(spellButton)
-    if (settingsProvider.IsNeedTranslateSpellNameInSpellbook()) then
+    if (ns.SettingsProvider.IsNeedTranslateSpellNameInSpellbook()) then
         local spellString = spellButton.SpellName
         if (spellString) then
             SetText(spellString, GetTranslatedSpellName(spellString:GetText(), false))
@@ -111,7 +109,7 @@ local function spellButtonTooltipHook(button)
 end
 
 function translator:IsEnabled()
-    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION)
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION)
 end
 
 function translator:Init()

@@ -8,7 +8,6 @@ local StartsWith = ns.StringUtil.StartsWith
 local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 local GetTranslatedUnitSubname = ns.DbContext.Units.GetTranslatedUnitSubname
 
-local settingsProvider = ns:GetSettingsProvider()
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 ---@class NameplateAndUnitFrameTranslator : BaseTranslator
@@ -139,7 +138,7 @@ local function translateUIControlWrapper(control)
 end
 
 function translator:IsEnabled()
-    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION)
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION)
 end
 
 function translator:Init()

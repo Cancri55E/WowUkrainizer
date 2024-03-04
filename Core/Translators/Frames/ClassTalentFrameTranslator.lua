@@ -12,7 +12,6 @@ local GetTranslatedSpecializationNote = ns.DbContext.Units.GetTranslatedSpeciali
 local SetText = ns.FontStringUtil.SetText
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
-local settingsProvider = ns:GetSettingsProvider()
 
 ---@class ClassTalentFrameTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
@@ -207,7 +206,7 @@ local function onBlizzardClassTalentUILoaded(self)
 end
 
 function translator:IsEnabled()
-    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION)
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION)
 end
 
 function translator:Init()

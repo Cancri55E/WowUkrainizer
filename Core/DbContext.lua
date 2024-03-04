@@ -3,8 +3,6 @@ local ns = select(2, ...);
 
 if (ns.DbContext) then return end
 
-local SettingsProvider = ns:GetSettingsProvider()
-
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
 local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithNumerics
 
@@ -390,7 +388,7 @@ do
         if (not original) then return original end
 
         local objectives = ns._db.QuestObjectives[questId]
-        if (not objectives and not SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
+        if (not objectives and not ns.SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
             objectives = ns._db.MTQuestObjectives[questId]
         end
 
@@ -466,7 +464,7 @@ do
     ---@return string? @The translated quest title.
     function repository.GetTranslatedQuestTitle(questId)
         local data = ns._db.Quests[questId]
-        if (not data and not SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
+        if (not data and not ns.SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
             data = ns._db.MTQuests[questId]
         end
 
@@ -482,7 +480,7 @@ do
         local questData = ns._db.Quests[questId]
         local mtQuestData = nil
 
-        if (not SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
+        if (not ns.SettingsProvider.GetOption(WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION)) then
             mtQuestData = ns._db.MTQuests[questId]
         end
 
