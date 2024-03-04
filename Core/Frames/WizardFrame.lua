@@ -1,7 +1,6 @@
 --- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local settingsProvider = ns:GetSettingsProvider()
 local sharedMedia = LibStub("LibSharedMedia-3.0")
 local dropdownLib = LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 
@@ -93,7 +92,7 @@ do
 
         local stepSize = settingData.sliderDisplayInfo.stepSize or 1;
         local steps = (settingData.sliderDisplayInfo.maxValue - settingData.sliderDisplayInfo.minValue) / stepSize;
-        local currentValue = settingsProvider.GetOption(settingData.fontScaleOption) * 100
+        local currentValue = ns.SettingsProvider.GetOption(settingData.fontScaleOption) * 100
         self.formatters = {};
         self.formatters[MinimalSliderWithSteppersMixin.Label.Right] = CreateMinimalSliderFormatter(
             MinimalSliderWithSteppersMixin.Label.Right);
@@ -106,9 +105,9 @@ do
             items = settingData.fonts,
             width = 150,
             selectedValue = ns.CommonUtil.FindKeyByValue(
-                settingData.fonts, settingsProvider.GetOption(settingData.fontNameOption)),
+                settingData.fonts, ns.SettingsProvider.GetOption(settingData.fontNameOption)),
             selectedItemChangedCallback = function(selectedItem)
-                settingsProvider.SetOption(self.fontNameOption, settingData.fonts[selectedItem])
+                ns.SettingsProvider.SetOption(self.fontNameOption, settingData.fonts[selectedItem])
                 self:UpdateExampleText()
             end
         })
@@ -121,15 +120,15 @@ do
 
     function WowUkrainizerFontSettingsFrameMixin:OnSliderValueChanged(value)
         if not self.initInProgress then
-            settingsProvider.SetOption(self.fontScaleOption, value / 100)
+            ns.SettingsProvider.SetOption(self.fontScaleOption, value / 100)
             self:UpdateExampleText()
         end
     end
 
     function WowUkrainizerFontSettingsFrameMixin:UpdateExampleText()
         local _, _, flags = self.ExampleText:GetFont()
-        local font = sharedMedia:Fetch('font', settingsProvider.GetOption(self.fontNameOption))
-        local size = self.defaultExampleTextSize * settingsProvider.GetOption(self.fontScaleOption)
+        local font = sharedMedia:Fetch('font', ns.SettingsProvider.GetOption(self.fontNameOption))
+        local size = self.defaultExampleTextSize * ns.SettingsProvider.GetOption(self.fontScaleOption)
         self.ExampleText:SetFont(font, size, flags)
     end
 end
@@ -146,7 +145,7 @@ do
                 if type(settingButton.SetChecked) == "function" then
                     local optionName = settingButton:GetAttribute("optionName")
                     if (optionName) then
-                        local checked = settingsProvider.GetOption(_G[optionName])
+                        local checked = ns.SettingsProvider.GetOption(_G[optionName])
                         if (checked ~= nil) then
                             settingButton:SetChecked(checked)
                             self:OnCheckButtonChecked(settingButton, checked)
@@ -352,9 +351,9 @@ do
                 ["en"]   = "Англійська",
             },
             width = 190,
-            selectedValue = settingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION),
+            selectedValue = ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION),
             selectedItemChangedCallback = function(selectedItem)
-                settingsProvider.SetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION, selectedItem)
+                ns.SettingsProvider.SetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION, selectedItem)
             end
         })
         self.SpellNameLanguageSelector:SetPoint("LEFT", self.SpellNameLanguageTitle, "RIGHT", 8, -4)
@@ -365,9 +364,9 @@ do
                 ["en"] = "Англійська",
             },
             width = 190,
-            selectedValue = settingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION),
+            selectedValue = ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION),
             selectedItemChangedCallback = function(selectedItem)
-                settingsProvider.SetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION, selectedItem)
+                ns.SettingsProvider.SetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION, selectedItem)
             end
         })
         self.SpellDescriptionLanguageSelector:SetPoint("LEFT", self.SpellDescriptionLanguageTitle, "RIGHT", 13, -3)
@@ -568,7 +567,7 @@ do
     end
 
     function WowUkrainizerInstallerFrameMixin:LeaveDefaultSettings()
-        settingsProvider.ResetToDefault()
+        ns.SettingsProvider:ResetToDefault()
         setInstallerPage(self, #self._pages)
     end
 end

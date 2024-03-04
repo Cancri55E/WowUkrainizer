@@ -7,8 +7,6 @@ local GetTranslatedCinematicSubtitle = ns.DbContext.NpcDialogs.GetTranslatedCine
 local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
-local settingsProvider = ns:GetSettingsProvider()
-local untranslatedDataStorage = ns:GetUntranslatedDataStorage()
 
 ---@class SubtitlesTranslator : BaseTranslator
 ---@field playCinematic boolean
@@ -25,7 +23,7 @@ local translator = setmetatable({
 }, { __index = ns.BaseTranslator })
 
 function translator:IsEnabled()
-    return settingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SUBTITLES_OPTION)
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SUBTITLES_OPTION)
 end
 
 function translator:Init()
@@ -75,11 +73,11 @@ function translator:Init()
         end
 
         if (instance.playMovie and instance.movieID and instance.movieID ~= 0) then
-            untranslatedDataStorage:GetOrAdd("MovieSubtitles", tostring(instance.movieID), message)
+            ns.UntranslatedDataStorage:GetOrAdd("MovieSubtitles", tostring(instance.movieID), message)
         end
         if (instance.playCinematic) then
             if (translatedMessage == message) then
-                local untranslatedData = untranslatedDataStorage:GetOrAdd("NpcMessages", sender, message)
+                local untranslatedData = ns.UntranslatedDataStorage:GetOrAdd("NpcMessages", sender, message)
                 untranslatedData.cinematicUuid = instance.cinematicUuid
                 untranslatedData.subtitleOrder = instance.subtitleOrder
             end

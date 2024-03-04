@@ -37,8 +37,8 @@
 ---@class WowUkrainizerInternals
 ---@field PlayerInfo PlayerData @Object containing information about the player character.
 ---@field AddonInfo AddonData @Object containing common data such as release date and version information.
----@field private _settingsProvider SettingsProvider? @Singleton instance of the SettingsProvider.
----@field private _untranslatedDataStorage UntranslatedDataStorage? @Singleton instance of the UntranslatedDataStorage.
+---@field SettingsProvider SettingsProvider? @Instance of the SettingsProvider. To create instance call CreateSettingsProvider
+---@field UntranslatedDataStorage UntranslatedDataStorage? @Singleton instance of the UntranslatedDataStorage. To create instance call CreateUntranslatedDataStorage
 
 ---@class (exact) TranslatedQuestData
 ---@field ID number The unique identifier of the quest.

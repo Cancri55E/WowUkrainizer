@@ -1,21 +1,14 @@
 --- @class WowUkrainizerInternals
 local ns = select(2, ...);
 
+local _G = _G
 local IsValueInTable = ns.CommonUtil.IsValueInTable
 local GetBuildInfo = GetBuildInfo
 
 --- Prototype for UntranslatedDataStorage, providing methods for initializing and managing untranslated data.
 ---@class UntranslatedDataStorage
+---@field gameBuild string @Return string buildNumber from GetBuildInfo
 local _dataStoragePrototype = {}
-
---- Initializes the UntranslatedDataStorage by creating necessary data structures.
-function _dataStoragePrototype:Initialize()
-    if (not _G.WowUkrainizerData) then _G.WowUkrainizerData = {} end
-    if (not _G.WowUkrainizerData.UntranslatedData) then _G.WowUkrainizerData.UntranslatedData = {} end
-
-    local _, build = GetBuildInfo()
-    self.gameBuild = build
-end
 
 --- Retrieves or adds data to the UntranslatedDataStorage.
 --- @param category string @The category of the data.
@@ -45,11 +38,15 @@ function _dataStoragePrototype:GetOrAdd(category, subCategory, data)
 end
 
 --- Retrieves the singleton instance of the UntranslatedDataStorage.
----@return UntranslatedDataStorage @The singleton instance of the UntranslatedDataStorage.
-function ns:GetUntranslatedDataStorage()
-    if not self._untranslatedDataStorage then
-        self._untranslatedDataStorage = setmetatable({}, { __index = _dataStoragePrototype })
-        self._untranslatedDataStorage:Initialize()
+function ns:CreateUntranslatedDataStorage()
+    if not self.UntranslatedDataStorage then
+        self.UntranslatedDataStorage = setmetatable({}, { __index = _dataStoragePrototype })
+
+        ---@diagnostic disable-next-line: inject-field
+        if (not _G.WowUkrainizerData) then _G.WowUkrainizerData = {} end
+        if (not _G.WowUkrainizerData.UntranslatedData) then _G.WowUkrainizerData.UntranslatedData = {} end
+
+        local _, build = GetBuildInfo()
+        self.UntranslatedDataStorage.gameBuild = build
     end
-    return self._untranslatedDataStorage
 end
