@@ -197,11 +197,6 @@ local function initializeAddon()
 
     local releaseDate = tonumber(C_AddOns.GetAddOnMetadata(addonName, "X-ReleaseDate")) or 0
     local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
-    if string.match(version, "-[%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d][%w%d]$") then
-        version = "[alpha] " .. version
-    elseif string.match(version, "-alpha$") then
-        version = "[alpha] " .. string.gsub(version, "-alpha$", "")
-    end
 
     ns.AddonInfo = {
         ReleaseDate = releaseDate,

@@ -1,11 +1,7 @@
-name: Build and Deploy Package with Detailed Logs
+name: Build and Deploy Package
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Continuous Integration"]
-    types:
-      - completed
 
 jobs:
   package:
@@ -18,7 +14,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -28,7 +24,7 @@ jobs:
           dotnet-version: "7.0.x"
 
       - name: Checkout DevTools
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: feature/refactoring
           repository: Cancri55E/WowUkrainizer-DevTools
@@ -36,7 +32,7 @@ jobs:
           path: DevTools
 
       - name: Checkout RawData
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: main
           repository: Cancri55E/WowUkrainizer-Data
@@ -58,7 +54,7 @@ jobs:
         run: |
           cat log.txt
 
-      - name: Generate Detailed Changelog
+      - name: Generate CHANGELOG.md
         uses: orhun/git-cliff-action@v2
         with:
           config: cliff.toml
@@ -66,7 +62,7 @@ jobs:
         env:
           OUTPUT: CHANGELOG.md
           
-      - name: Build and Deploy Package
+      - name: Deploy AddOn
         uses: BigWigsMods/packager@v2
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
