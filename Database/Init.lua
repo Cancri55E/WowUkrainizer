@@ -33,7 +33,7 @@ ns._db = {}
 ns._db.Changelogs = {
     {
         version = "1.10.0",
-        date = "01 березня 2024",
+        date = "05 березня 2024",
         color = "purple",
         type = "Новий функціонал",
         author = "Cancri",
