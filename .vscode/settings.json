@@ -510,7 +510,20 @@
         "PanelTemplates_SetTab",
         "ImmersionFrame",
         "ImmersionAPI",
-        "ImmersionContentFrame"
+        "ImmersionContentFrame",
+        "Game17Font_Shadow",
+        "Game16Font",
+        "Game32Font_Shadow2",
+        "Game36Font_Shadow2",
+        "Game40Font_Shadow2",
+        "Game46Font_Shadow2",
+        "Game52Font_Shadow2",
+        "Game58Font_Shadow2",
+        "Game69Font_Shadow2",
+        "Game72Font",
+        "Game72Font_Shadow",
+        "SystemFont_Large2",
+        "SystemFont_Shadow_Large2_Outline"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",
