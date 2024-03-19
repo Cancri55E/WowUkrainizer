@@ -25,6 +25,7 @@ local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "^Replaced by%s+(.+)"
 local talentReplacesPattern = "^Replaces%s+(.+)"
 local maxChargesPattern = "Max %d+ Charges"
+local nextRankText = "Next Rank:"
 
 ---@class SpellTooltipTranslator : BaseTooltipTranslator
 local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Spell }, { __index = ns.BaseTooltipTranslator })
@@ -119,10 +120,8 @@ local function parseSpellTooltip(tooltipTexts)
         if (minRank and maxRank) then
             local talent = { MinRank = tonumber(minRank), MaxRank = tonumber(maxRank), CurrentRank = {} }
 
-            if (talent.MaxRank > 1 and talent.MinRank < talent.MaxRank) then
-                talent.NextRankIndex = -1
-                talent.NextRank = {}
-            end
+            talent.NextRankIndex = -1
+            talent.NextRank = {}
 
             spellTooltip.Talent = talent
 
@@ -158,7 +157,7 @@ local function parseSpellTooltip(tooltipTexts)
                         else
                             spellContainer.ReplacedBy = { i, replacedBy:trim() }
                         end
-                    elseif (text == "Next Rank:") then
+                    elseif (text == nextRankText) then
                         spellTooltip.Talent.NextRankIndex = i
                         spellContainer = spellTooltip.Talent.NextRank
                     elseif isAdditionalSpellTips(text) then
@@ -399,12 +398,23 @@ function translator:ParseTooltip(tooltip, tooltipData)
         end
     end
 
+    local tooltipOwner = tooltip:GetOwner()
+
+    -- HOOK: No Rank 1/2+ info in multirang talent tooltip. In this case client send another callback.
+    if (tooltipOwner.nodeInfo) then
+        local currentRank = tooltipOwner.nodeInfo.currentRank
+        local maxRanks = tooltipOwner.nodeInfo.maxRanks
+
+        local containsNextRank = ns.CommonUtil.FindKeyByValue(tooltipTexts, nextRankText)
+        if (currentRank ~= 0 and not containsNextRank) then
+            if ((currentRank < maxRanks) or (currentRank == maxRanks and tooltipOwner:IsRefundInvalid())) then
+                return
+            end
+        end
+    end
+
     local tooltipInfo = parseSpellTooltip(tooltipTexts)
-
     if (not tooltipInfo) then return end
-
-    -- HOOK: No Rank 1/2+ info in multirang talent tooltip. In this case client send another callback. Need to find why
-    if (tooltipInfo and tooltipInfo.Talent and (tooltipInfo.Talent.MinRank ~= 0 and tooltipInfo.Talent.NextRankIndex == -1)) then return end
 
     tooltipInfo.SpellId = tonumber(tooltipData.id)
 
