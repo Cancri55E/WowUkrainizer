@@ -130,11 +130,11 @@ local function healthDeficitPercentNameTagHook(tags, textFormat)
     end
 end
 
-local function translateUIControlWrapper(control)
+local function translateUIControlWrapper(control, gender)
     if (not control) then return end
     if (not control.GetText or not control.SetText) then return end
 
-    local isOk, error = pcall(function() control:SetText(GetTranslatedUnitName(control:GetText())) end)
+    local isOk, error = pcall(function() control:SetText(GetTranslatedUnitName(control:GetText(), gender)) end)
 end
 
 function translator:IsEnabled()
@@ -154,13 +154,15 @@ function translator:Init()
 
         local reaction = UnitReaction(unitID, "player")
 
+        local gender = UnitSex(unitID)
+
         local isEnemy = reaction and reaction <= 2
 
         local inInstance, instanceType = IsInInstance()
 
         if (inInstance and (instanceType == "raid" or instanceType == "party") and not isEnemy) then return end
 
-        translateUIControlWrapper(control.name)
+        translateUIControlWrapper(control.name, gender)
     end)
 
     if (_G["Plater"]) then
