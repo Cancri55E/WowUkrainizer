@@ -150,7 +150,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     table.insert(translatedTooltipLines, {
         index = 1,
-        value = GetTranslatedUnitName(tooltipInfo.name)
+        value = GetTranslatedUnitName(tooltipInfo.name, UnitSex("mouseover"))
     })
 
     if (tooltipInfo.levelInfo) then

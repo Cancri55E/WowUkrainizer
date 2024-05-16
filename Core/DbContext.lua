@@ -74,9 +74,13 @@ do
 
     --- Get the translated unit name or the original (English) text if not translated.
     --- @param original string @ The original (English) text.
+    --- @param gender number? @ The gender value.
     --- @return string @ The translated unit name or the original (English) text.
-    function repository.GetTranslatedUnitName(original)
-        return repository._getValue(ns._db.UnitNames, original)
+    function repository.GetTranslatedUnitName(original, gender)
+        --return repository._getValue(ns._db.UnitNames, original)
+        local translatedUnitName = repository._getValue(ns._db.UnitNames, original):gsub("{sex|(.-)|(.-)}",
+            function(male, female) if (gender == 3) then return female else return male end end)
+        return translatedUnitName
     end
 
     --- Get the translated unit subname based on gender or the original (English) text if not translated.
@@ -85,13 +89,7 @@ do
     --- @return string @ The translated unit subname or the original (English) text.
     function repository.GetTranslatedUnitSubname(original, gender)
         local translatedUnitSubname = repository._getValue(ns._db.UnitSubnames, original):gsub("{sex|(.-)|(.-)}",
-            function(male, female)
-                if (gender == 3) then
-                    return female
-                else
-                    return male
-                end
-            end)
+            function(male, female) if (gender == 3) then return female else return male end end)
         return translatedUnitSubname
     end
 
@@ -399,16 +397,17 @@ do
         local optionalText = nil
         local objectiveText = original
 
+        local tmp;
         local containsProgressText = objectiveText:match("^(%d+/%d+)")
         if (containsProgressText) then
-            objectiveText:gsub("^(%d+/%d+)(.*)%s*(%b())%s*(%b())%s*$", function(p, o, op, c)
+            tmp = objectiveText:gsub("^(%d+/%d+)(.*)%s*(%b())%s*(%b())%s*$", function(p, o, op, c)
                 progressText = p
                 objectiveText = o
                 completeText = c
                 optionalText = op
             end)
             if (not optionalText) then
-                objectiveText:gsub("^(%d+/%d+)(.*)%s*(%b())%s*$", function(p, o, c)
+                tmp = objectiveText:gsub("^(%d+/%d+)(.*)%s*(%b())%s*$", function(p, o, c)
                     progressText = p
                     objectiveText = o
                     if (c == '(Complete)') then
@@ -418,20 +417,20 @@ do
                     end
                 end)
                 if (not completeText and not optionalText) then
-                    objectiveText:gsub("^(%d+/%d+)(.*)", function(p, o)
+                    tmp = objectiveText:gsub("^(%d+/%d+)(.*)", function(p, o)
                         progressText = p
                         objectiveText = o
                     end)
                 end
             end
         else
-            objectiveText:gsub("^(.*)%s*(%b())%s*(%b())%s*$", function(o, op, c)
+            tmp = objectiveText:gsub("^(.*)%s*(%b())%s*(%b())%s*$", function(o, op, c)
                 objectiveText = o
                 completeText = c
                 optionalText = op
             end)
             if (not optionalText) then
-                objectiveText:gsub("^(.*)%s*(%b())%s*$", function(o, c)
+                tmp = objectiveText:gsub("^(.*)%s*(%b())%s*$", function(o, c)
                     objectiveText = o
                     if (c == '(Complete)') then
                         completeText = c
