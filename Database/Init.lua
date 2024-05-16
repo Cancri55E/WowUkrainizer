@@ -32,6 +32,16 @@ ns._db = {}
 
 ns._db.Changelogs = {
     {
+        version = "1.10.4",
+        date = "16 травня 2024",
+        color = "red",
+        type = "Виправлення",
+        author = "Cancri",
+        title = nil,
+        description =
+        "Виправлено помилку що виникали при переході до вікна завдань."
+    },
+    {
         version = "1.10.3",
         date = "16 травня 2024",
         color = "blue",
