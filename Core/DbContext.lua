@@ -78,6 +78,7 @@ do
     --- @return string @ The translated unit name or the original (English) text.
     function repository.GetTranslatedUnitName(original, gender)
         --return repository._getValue(ns._db.UnitNames, original)
+        if (not original) then return original end
         local translatedUnitName = repository._getValue(ns._db.UnitNames, original):gsub("{sex|(.-)|(.-)}",
             function(male, female) if (gender == 3) then return female else return male end end)
         return translatedUnitName
@@ -88,6 +89,7 @@ do
     --- @param gender number? @ The gender value.
     --- @return string @ The translated unit subname or the original (English) text.
     function repository.GetTranslatedUnitSubname(original, gender)
+        if (not original) then return original end
         local translatedUnitSubname = repository._getValue(ns._db.UnitSubnames, original):gsub("{sex|(.-)|(.-)}",
             function(male, female) if (gender == 3) then return female else return male end end)
         return translatedUnitSubname
