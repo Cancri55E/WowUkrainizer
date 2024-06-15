@@ -39,6 +39,7 @@
 ---@field AddonInfo AddonData @Object containing common data such as release date and version information.
 ---@field SettingsProvider SettingsProvider? @Instance of the SettingsProvider. To create instance call CreateSettingsProvider
 ---@field UntranslatedDataStorage UntranslatedDataStorage? @Singleton instance of the UntranslatedDataStorage. To create instance call CreateUntranslatedDataStorage
+---@field IngameDataCacher IngameDataCacher? @Singleton instance of the IngameDataCacher. To create instance call CreateIngameDataCacher
 
 ---@class (exact) TranslatedQuestData
 ---@field ID number The unique identifier of the quest.

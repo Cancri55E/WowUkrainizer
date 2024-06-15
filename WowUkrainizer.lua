@@ -181,6 +181,7 @@ local function initializeAddon()
 
     ns:CreateSettingsProvider()
     ns:CreateUntranslatedDataStorage()
+    ns:CreateIngameDataCacher()
 
     _G["StaticPopupDialogs"]["WOW_UKRAINIZAER_RESET_SETTINGS"] = {
         text = "Ви впевнені, що хочете скинути всі налаштування до стандартних значень?",

@@ -6,7 +6,7 @@ local GetTranslatedMovieSubtitle = ns.DbContext.Subtitles.GetTranslatedMovieSubt
 local GetTranslatedCinematicSubtitle = ns.DbContext.NpcDialogs.GetTranslatedCinematicSubtitle
 local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 
-local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
+local _eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 ---@class SubtitlesTranslator : BaseTranslator
 ---@field playCinematic boolean
@@ -19,7 +19,7 @@ local translator = setmetatable({
     playMovie = false,
     movieID = nil,
     cinematicUuid = nil,
-    subtitleOrder = -1
+    subtitleOrder = 0
 }, { __index = ns.BaseTranslator })
 
 function translator:IsEnabled()
@@ -29,7 +29,7 @@ end
 function translator:Init()
     local instance = self --[[@as SubtitlesTranslator]]
 
-    eventHandler:Register(function(event, movieID)
+    _eventHandler:Register(function(event, movieID)
         if (event == "PLAY_MOVIE") then
             instance.playMovie = true
             instance.playCinematic = false
@@ -40,7 +40,7 @@ function translator:Init()
         end
     end, "PLAY_MOVIE", "STOP_MOVIE")
 
-    eventHandler:Register(function(event)
+    _eventHandler:Register(function(event)
         instance.movieID = nil
         if (event == "CINEMATIC_START") then
             instance.playMovie = false
@@ -50,11 +50,11 @@ function translator:Init()
         else
             instance.playCinematic = false
             instance.cinematicUuid = ''
-            instance.subtitleOrder = -1
+            instance.subtitleOrder = 0
         end
     end, "CINEMATIC_START", "CINEMATIC_STOP")
 
-    eventHandler:Register(function(_, message, sender)
+    _eventHandler:Register(function(_, message, sender)
         local function translateMessage()
             if (instance.playCinematic) then
                 return GetTranslatedCinematicSubtitle(message)
@@ -72,17 +72,19 @@ function translator:Init()
             body = format(SUBTITLE_FORMAT, translatedSender, translatedMessage);
         end
 
-        if (instance.playMovie and instance.movieID and instance.movieID ~= 0) then
-            ns.UntranslatedDataStorage:GetOrAdd("MovieSubtitles", tostring(instance.movieID), message)
-        end
-        if (instance.playCinematic) then
-            if (translatedMessage == message) then
-                local untranslatedData = ns.UntranslatedDataStorage:GetOrAdd("NpcMessages", sender, message)
-                untranslatedData.cinematicUuid = instance.cinematicUuid
-                untranslatedData.subtitleOrder = instance.subtitleOrder
+        if (ns.IngameDataCacher) then
+            local metadata = { order = instance.subtitleOrder }
+
+            if (instance.playMovie and instance.movieID and instance.movieID ~= 0) then
+                ns.IngameDataCacher:GetOrAdd({ "movie-subtitles", tostring(instance.movieID) }, message, metadata)
             end
-            instance.subtitleOrder = instance.subtitleOrder + 1
+            if (instance.playCinematic) then
+                metadata.cinematicUuid = instance.cinematicUuid
+                ns.IngameDataCacher:GetOrAdd({ "npc-texts", sender }, message, metadata)
+            end
         end
+
+        instance.subtitleOrder = instance.subtitleOrder + 1
 
         local fontString
         for _, value in pairs(SubtitlesFrame.Subtitles) do

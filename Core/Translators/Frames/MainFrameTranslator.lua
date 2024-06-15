@@ -45,8 +45,8 @@ function translator:Init()
     end
 
     CharacterMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(CharacterMicroButton) end)
-    TalentMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(TalentMicroButton) end)
-    SpellbookMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(SpellbookMicroButton) end)
+    ProfessionMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(ProfessionMicroButton) end)
+    PlayerSpellsMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(PlayerSpellsMicroButton) end)
     AchievementMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(AchievementMicroButton) end)
     QuestLogMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(QuestLogMicroButton) end)
     LFDMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(LFDMicroButton) end)
