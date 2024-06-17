@@ -52,8 +52,6 @@ local function onChatBubbleTimerUpdate(self, elapsed)
 end
 
 local function onMonsterMessageReceived(_, msg, author, ...)
-    print("onMonsterMessageReceived", msg, author)
-
     local displayInTalkingHead = false
     local _, _, soundKitID, _, _, _, talkingHeadAuthor, talkingHeadMsg, _, _ = C_TalkingHead.GetCurrentLineInfo();
     if (talkingHeadMsg == msg and talkingHeadAuthor == author) then
@@ -64,8 +62,6 @@ local function onMonsterMessageReceived(_, msg, author, ...)
     local translatedMsg = GetTranslatedNpcMessage(msg)
 
     if (ns.IngameDataCacher) then
-        print("onMonsterMessageReceived: IngameDataCacher", msg, author)
-
         local metadata;
         if (displayInTalkingHead) then
             metadata.talkingHead = true

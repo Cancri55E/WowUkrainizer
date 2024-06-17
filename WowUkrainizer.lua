@@ -181,7 +181,6 @@ local function initializeAddon()
 
     ns:CreateSettingsProvider()
     ns:CreateUntranslatedDataStorage()
-    ns:CreateIngameDataCacher()
 
     _G["StaticPopupDialogs"]["WOW_UKRAINIZAER_RESET_SETTINGS"] = {
         text = "Ви впевнені, що хочете скинути всі налаштування до стандартних значень?",
@@ -257,11 +256,13 @@ end
 local function OnPlayerLogin()
     ns.PlayerInfo = {
         Name = GetUnitName("player"),
+        Realm = GetRealmName(),
         Race = UnitRace("player"),
         Class = UnitClass("player"),
         Gender = UnitSex("player")
     }
 
+    ns:CreateIngameDataCacher()
     createInterfaceOptions()
     preloadAvailableFonts()
     setGameFonts()

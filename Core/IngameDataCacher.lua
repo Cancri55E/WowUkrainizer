@@ -7,8 +7,22 @@ local GetBuildInfo = GetBuildInfo
 
 --- Prototype for IngameDataCacher, providing methods for initializing and managing cached data.
 ---@class IngameDataCacher
----@field gameBuild string @Return string buildNumber from GetBuildInfo
+---@field playerHash number @Return hash for current character
 local _ingameDataCacherPrototype = {}
+
+--- Retrieves or adds category to the IngameDataCacher.
+--- @param categories table @A list of categories forming the chain.
+function _ingameDataCacherPrototype:GetOrAddCategory(categories)
+    local currentCategory = _G.WowUkrainizerData.Cache
+    for _, category in ipairs(categories) do
+        if not currentCategory[category] then
+            currentCategory[category] = {}
+        end
+        currentCategory = currentCategory[category]
+    end
+
+    return currentCategory
+end
 
 --- Retrieves or adds data to the IngameDataCacher.
 --- @param categories table @A list of categories forming the chain.
@@ -16,19 +30,13 @@ local _ingameDataCacherPrototype = {}
 --- @param metadata any @The metadata to be stored for data.
 --- @return table @The table containing the data, either retrieved or added.
 function _ingameDataCacherPrototype:GetOrAdd(categories, data, metadata)
-    local currentCache = _G.WowUkrainizerData.Cache
-    for _, category in ipairs(categories) do
-        if not currentCache[category] then
-            currentCache[category] = {}
-        end
-        currentCache = currentCache[category]
-    end
+    local currentCache = self:GetOrAddCategory(categories)
 
     local cacheRowFounded, currentValue = IsValueInTable(currentCache, data, "data")
 
     local cacheRow;
     if not cacheRowFounded then
-        cacheRow = { data = data, build = self.gameBuild }
+        cacheRow = { data = data, player = self.playerHash, date = date("%d.%m.%y %H:%M:%S") }
         table.insert(currentCache, cacheRow)
     else
         cacheRow = currentValue
@@ -51,6 +59,20 @@ function ns:CreateIngameDataCacher()
         if (not _G.WowUkrainizerData.Cache) then _G.WowUkrainizerData.Cache = {} end
 
         local _, build = GetBuildInfo()
-        self.IngameDataCacher.gameBuild = build
+        local playerData = ns.PlayerInfo
+        local playerHash = ns.StringUtil.GetHash(playerData.Name .. "-" .. playerData.Realm)
+
+        local characterCategory = self.IngameDataCacher:GetOrAddCategory({ "characters" })
+        if (not characterCategory[tostring(playerHash)]) then
+            characterCategory[tostring(playerHash)] = playerData
+        end
+
+        local todayBuildCategory = self.IngameDataCacher:GetOrAddCategory({ "builds", tostring(date("%d.%m.%y")) })
+        local founded = IsValueInTable(todayBuildCategory, build)
+        if (not founded) then
+            table.insert(todayBuildCategory, build)
+        end
+
+        self.IngameDataCacher.playerHash = playerHash
     end
 end

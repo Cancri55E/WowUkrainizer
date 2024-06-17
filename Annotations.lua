@@ -25,6 +25,7 @@
 
 ---@class (exact) PlayerData
 ---@field Name string @The name of the player character.
+---@field Realm string @The realm of the player character.
 ---@field Race string @The race of the player character.
 ---@field Class string @The class of the player character.
 ---@field Gender number? @The gender (sex) of the player character.

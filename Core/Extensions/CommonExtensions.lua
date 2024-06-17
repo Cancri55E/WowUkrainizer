@@ -25,9 +25,19 @@ end
 function internal.IsValueInTable(tbl, value, key)
     for _, row in ipairs(tbl) do
         if type(row) == "table" then
-            if row[key] == value then
-                return true, row
+            if key then
+                if row[key] == value then
+                    return true, row
+                end
+            else
+                for _, v in pairs(row) do
+                    if v == value then
+                        return true, row
+                    end
+                end
             end
+        elseif row == value then
+            return true, row
         end
     end
     return false
