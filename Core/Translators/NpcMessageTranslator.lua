@@ -62,7 +62,7 @@ local function onMonsterMessageReceived(_, msg, author, ...)
     local translatedMsg = GetTranslatedNpcMessage(msg)
 
     if (ns.IngameDataCacher) then
-        local metadata;
+        local metadata = {}
         if (displayInTalkingHead) then
             metadata.talkingHead = true
             metadata.soundKitID = soundKitID

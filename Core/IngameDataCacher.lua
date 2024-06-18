@@ -25,28 +25,30 @@ function _ingameDataCacherPrototype:GetOrAddCategory(categories)
 end
 
 --- Retrieves or adds data to the IngameDataCacher.
+--- @param category any @Category forming the chain.
+--- @param key string @The data key to be stored or retrieved.
+--- @param data any @The data to be stored or retrieved.
+--- @param metadata any @The metadata to be stored for data.
+--- @return table @The table containing the data, either retrieved or added.
+function _ingameDataCacherPrototype:GetOrAddToCategory(category, key, data, metadata)
+    local founded, currentValue = IsValueInTable(category, data, key)
+    if not founded then
+        local newValue = { metadata = metadata, player = self.playerHash, date = date("%d.%m.%y %H:%M:%S") }
+        newValue[key] = data
+        table.insert(category, newValue)
+        return newValue;
+    else
+        return currentValue
+    end
+end
+
+--- Retrieves or adds data to the IngameDataCacher.
 --- @param categories table @A list of categories forming the chain.
 --- @param data any @The data to be stored or retrieved.
 --- @param metadata any @The metadata to be stored for data.
 --- @return table @The table containing the data, either retrieved or added.
 function _ingameDataCacherPrototype:GetOrAdd(categories, data, metadata)
-    local currentCache = self:GetOrAddCategory(categories)
-
-    local cacheRowFounded, currentValue = IsValueInTable(currentCache, data, "data")
-
-    local cacheRow;
-    if not cacheRowFounded then
-        cacheRow = { data = data, player = self.playerHash, date = date("%d.%m.%y %H:%M:%S") }
-        table.insert(currentCache, cacheRow)
-    else
-        cacheRow = currentValue
-    end
-
-    if (metadata) then
-        cacheRow.metadata = metadata
-    end
-
-    return cacheRow;
+    return self:GetOrAddToCategory(self:GetOrAddCategory(categories), "data", data, metadata)
 end
 
 --- Retrieves the singleton instance of the IngameDataCacher.
