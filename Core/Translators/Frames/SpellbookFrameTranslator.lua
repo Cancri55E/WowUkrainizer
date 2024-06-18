@@ -109,7 +109,9 @@ local function spellButtonTooltipHook(button)
 end
 
 function translator:IsEnabled()
-    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION)
+    return false
+    -- TODO: Rework obsolet spellbook
+    --return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION)
 end
 
 function translator:Init()

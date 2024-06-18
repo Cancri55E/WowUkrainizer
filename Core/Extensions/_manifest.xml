@@ -3,4 +3,5 @@
 	<Script file="StringExtensions.lua"/>
 	<Script file="FontStringExtensions.lua"/>
 	<Script file="CommonExtensions.lua"/>
+	<Script file="GameApiExtensions.lua"/>
 </Ui>

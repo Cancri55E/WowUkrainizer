@@ -1459,27 +1459,30 @@ function translator:Init()
     translateUIFontString(CurrentQuestsText)
     translateUIFontString(AvailableQuestsText)
     -- Objectives Frame
-    translateUIFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.AdventureHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.ScenarioHeader.Text)
+    -- TODO: Fix for 11.0
+    --translateUIFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.AdventureHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.ScenarioHeader.Text)
     -- Quest popup
     translateUIFontString(QuestLogPopupDetailFrame.ShowMapButton.Text)
     translateButton(QuestLogPopupDetailFrame.AbandonButton)
     translateButton(QuestLogPopupDetailFrame.ShareButton)
     -- Quest map
     translateUIFontString(MapQuestInfoRewardsFrame.TitleFrame.Name)
-    for _, region in ipairs({ QuestMapFrame.DetailsFrame.RewardsFrame:GetRegions() }) do
-        if region:GetObjectType() == "FontString" then
-            translateUIFontString(region)
-        end
-    end
+    -- TODO: Fix for 11.0
+    -- for _, region in ipairs({ QuestMapFrame.DetailsFrame.RewardsFrame:GetRegions() }) do
+    --     if region:GetObjectType() == "FontString" then
+    --         translateUIFontString(region)
+    --     end
+    -- end
     translateButton(QuestMapFrame.DetailsFrame.AbandonButton, 90, 22)
     translateButton(QuestMapFrame.DetailsFrame.ShareButton, 90, 22)
-    translateButton(QuestMapFrame.DetailsFrame.BackButton, nil, 24)
+    -- TODO: Fix for 11.0
+    -- translateButton(QuestMapFrame.DetailsFrame.BackButton, nil, 24)
     translateUIFontString(QuestScrollFrame.CampaignTooltip.CompleteRewardText)
 
     eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
@@ -1499,9 +1502,10 @@ function translator:Init()
     QuestFrameProgressPanel:HookScript("OnShow", OnQuestFrameProgressPanelShow)
     hooksecurefunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
 
-    ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
-    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
-    hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
+    -- TODO: Fix for 11.0
+    -- ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
+    -- hooksecurefunc(QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
+    -- hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
 
     hooksecurefunc("StaticPopup_Show", OnStaticPopupShow)
 

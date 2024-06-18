@@ -256,11 +256,13 @@ end
 local function OnPlayerLogin()
     ns.PlayerInfo = {
         Name = GetUnitName("player"),
+        Realm = GetRealmName(),
         Race = UnitRace("player"),
         Class = UnitClass("player"),
         Gender = UnitSex("player")
     }
 
+    ns:CreateIngameDataCacher()
     createInterfaceOptions()
     preloadAvailableFonts()
     setGameFonts()
