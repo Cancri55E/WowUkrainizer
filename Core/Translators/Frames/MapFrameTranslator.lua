@@ -2,6 +2,7 @@
 local ns = select(2, ...);
 
 local GetTranslatedZoneText = ns.DbContext.ZoneTexts.GetTranslatedZoneText
+local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 
 ---@class MapFrameTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
@@ -12,7 +13,7 @@ end
 
 function translator:Init()
     WorldMapFrame.NavBar.homeButton.text:SetFontObject(SystemFont_Shadow_Med1)
-    WorldMapFrame.NavBar.homeButton.text:SetText("Світ")
+    WorldMapFrame.NavBar.homeButton.text:SetText(GetTranslatedGlobalString(WORLD))
 
     hooksecurefunc(WorldMapFrame.NavBar, "Refresh", function(navBar)
         for _, button in ipairs(navBar.navList) do

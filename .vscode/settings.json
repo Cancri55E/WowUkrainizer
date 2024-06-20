@@ -544,7 +544,8 @@
         "FACTION_ALLIANCE",
         "FACTION_HORDE",
         "MinimapZoneText",
-        "MinimapCluster"
+        "MinimapCluster",
+        "WORLD"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",
