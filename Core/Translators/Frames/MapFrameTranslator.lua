@@ -1,11 +1,11 @@
 --- @class WowUkrainizerInternals
 local ns = select(2, ...);
 
----@class MinimapTranslator : BaseTranslator
+---@class MapFrameTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 function translator:IsEnabled()
-    return true
+    return false
 end
 
 function translator:Init()

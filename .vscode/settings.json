@@ -542,7 +542,9 @@
         "AUTOFOLLOWSTOP",
         "ALL",
         "FACTION_ALLIANCE",
-        "FACTION_HORDE"
+        "FACTION_HORDE",
+        "MinimapZoneText",
+        "MinimapCluster"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",
