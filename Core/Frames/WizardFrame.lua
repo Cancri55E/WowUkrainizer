@@ -135,7 +135,7 @@ end
 
 -- WowUkrainizerBasePageMixin
 do
-    WowUkrainizerBasePageMixin = { UISettingDescriptions = {} }
+    WowUkrainizerBasePageMixin = { UISettingDescriptions = {}, UIFontStringTexts = {} }
 
     function WowUkrainizerBasePageMixin:OnLoad()
         if (self.UISettingElements) then
@@ -152,6 +152,18 @@ do
                         end
                     end
                 end
+            end
+        end
+
+        if (self.UIFontStrings) then
+            for _, fontString in ipairs(self.UIFontStrings) do
+                if (fontString.parentName) then
+                    local topOffset = fontString.topOffset or 0
+                    fontString:SetPoint("TOPLEFT", self[fontString.parentName], "BOTTOMLEFT", fontString.leftOffset, topOffset)
+                    fontString:SetPoint("TOPRIGHT", -12, -12)
+                end
+
+                fontString:SetText(self.UIFontStringTexts[fontString.id]);
             end
         end
     end
@@ -218,10 +230,32 @@ do
         [1] = "Перекладати вікно \"Спеціалізація та таланти\"",
         [2] = "Перекладати вікно \"Книга здібностей та професії\"",
         [3] = "Перекладати шильдики (nameplates) та фрейми неігрових персонажів",
-        [4] = "Перекладати субтитри в відеороликах",
-        [5] = "Перекласти діалоги неігрових персонажів",
-        [6] = "Перекладати завдання",
-        [7] = "Не використовувати машинний переклад при перекладі завдань",
+        [4] = "Перекладати назви ігрових локацій",
+        [5] = "Перекладати субтитри в відеороликах",
+        [6] = "Перекласти діалоги неігрових персонажів",
+        [7] = "Перекладати завдання",
+        [8] = "Не використовувати машинний переклад при перекладі завдань",
+    }
+
+    WowUkrainizerModuleSettingsPageMixin.UIFontStringTexts = {
+        [1] = "Інтерфейс користувача",
+        [2] = "Є повна сумісність з такими додатками як Plater та ElvUI.",
+        [3] = "Переклад буде застосовано до вспливаючого тексту під час переходу між локаціями, а також до тексту на карті та мінікарті.",
+        [4] = "Субтитри та діалоги",
+        [5] = "Додає переклад для субтитрів у пререндерованих відеороликах гри (не плутати з кат-сценами).",
+        [6] = "Додає переклад діалогів неігрових персонажів. Перекладений текст буде відображатися у вікні чату, а також в 'бульбашках' " ..
+            "над головою персонажа, a також в кат-сценах. |n|nУВАГА! Через обмеження які ввела компанія Blizzard в ігровому клієнту " ..
+            "переклад діалогів всередині групового контенту (підземелля, рейди та ін.) можливий переклад лише в чаті гри. Текст в бульбашках залишатиметься англійським.",
+        [7] = "Завдання",
+        [8] = "Додає переклад ігрових завдань і пов'язанних з ними елементів гри. Будуть перекладені не лише тексти самих завдань, " ..
+            "а вікна які відповідають за їх відображення, позначки завдань на мапі світу та міні мапі, а також буде перекладений список " ..
+            "завдань, що відстежуються.|n|nДля того, щоб перемикатися між оригінальним текстом завдання і перекладом у вікні з описом буде спеціальна кнопка. " ..
+            "Також поруч буде окрема кнопка яка дозволить вам скопіювати посилання на wowhead з описом завдання.",
+        [9] = "Гра World of Warcraft має тисячі завдань та мільйони слів котрі необхідно перекласти. Силами фанатів це може зайняти роки, щоб перекласти все. " ..
+            "Тому було вирішено додати машинний переклад за допомогою ШІ, щоб пришвидшити переклад завдань і ті хто погано розуміють англійську вже зараз " ..
+            "могли насолоджуватися грою.|n|nПріоритет перекладу від ШІ завжди нижче ніж перекладу який зробила людина, тому додаток автоматично буде використовувати " ..
+            "переклад який зробила людина якщо він є у наявності.|n|nУ вікні з текстом завдання поруч з кнопкою перемикання перекладу буде відображена " ..
+            "спеціальна іконка (голова робота) якщо ви бачите повний або частковий машинний переклад.",
     }
 
     function WowUkrainizerModuleSettingsPageMixin:OnCheckButtonChecked(checkButton, checked)
@@ -539,11 +573,11 @@ do
         _initializeButtons()
 
         self._pages = {
-            [1] = self.WelcomePage,
-            [2] = self.ModuleSettingsPage,
-            [3] = self.TooltipSettingsPage,
-            [4] = self.FontSettingsPage,
-            [5] = self.FinishPage
+            [1] = self.SettingsScrollFrame.SettingsScrollChildFrame.WelcomePage,
+            [2] = self.SettingsScrollFrame.SettingsScrollChildFrame.ModuleSettingsPage,
+            [3] = self.SettingsScrollFrame.SettingsScrollChildFrame.TooltipSettingsPage,
+            [4] = self.SettingsScrollFrame.SettingsScrollChildFrame.FontSettingsPage,
+            [5] = self.SettingsScrollFrame.SettingsScrollChildFrame.FinishPage
         }
 
         setInstallerPage(self, 1)
