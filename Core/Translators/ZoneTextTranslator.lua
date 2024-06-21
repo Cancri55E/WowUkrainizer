@@ -86,7 +86,7 @@ local function _onMinimapSetTooltip(pvpType, factionName, worldMap)
 
     if (translatedPvpText) then
         i = i + 1
-        _G["GameTooltipTextLeft" .. i]:SetText(GetTranslatedGlobalString(_G["GameTooltipTextLeft" .. i]:GetText()))
+        _G["GameTooltipTextLeft" .. i]:SetText(translatedPvpText)
     end
 
     if (worldMap) then
