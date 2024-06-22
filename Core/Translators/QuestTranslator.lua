@@ -304,9 +304,12 @@ local function OnGossipShow()
         local titlesCategory = ns.IngameDataCacher:GetOrAddCategory({ "npc-gossips", npcID, "titles" })
         ns.IngameDataCacher:GetOrAddToCategory(titlesCategory, "title", C_GossipInfo.GetText())
 
-        local optionsCategory = ns.IngameDataCacher:GetOrAddCategory({ "npc-gossips", npcID, "options" })
-        for i, gossipOption in C_GossipInfo.GetOptions() do
-            ns.IngameDataCacher:GetOrAddToCategory(optionsCategory, "option", gossipOption.name)
+        local options = C_GossipInfo.GetOptions()
+        if (options and #options ~= 0) then
+            local optionsCategory = ns.IngameDataCacher:GetOrAddCategory({ "npc-gossips", npcID, "options" })
+            for _, gossipOption in ipairs(options) do
+                ns.IngameDataCacher:GetOrAddToCategory(optionsCategory, "option", gossipOption.name)
+            end
         end
     end
 end
