@@ -296,6 +296,22 @@ local function OnGossipShow()
             end
         end
     end
+
+    local npcGUID = UnitGUID("npc")
+    if (npcGUID) then
+        local _, _, _, _, _, npcID = strsplit("-", npcGUID)
+
+        local titlesCategory = ns.IngameDataCacher:GetOrAddCategory({ "npc-gossips", npcID, "titles" })
+        ns.IngameDataCacher:GetOrAddToCategory(titlesCategory, "title", C_GossipInfo.GetText())
+
+        local options = C_GossipInfo.GetOptions()
+        if (options and #options ~= 0) then
+            local optionsCategory = ns.IngameDataCacher:GetOrAddCategory({ "npc-gossips", npcID, "options" })
+            for _, gossipOption in ipairs(options) do
+                ns.IngameDataCacher:GetOrAddToCategory(optionsCategory, "option", gossipOption.name)
+            end
+        end
+    end
 end
 
 local function OnObjectiveTrackerQuestHeaderUpdated()
@@ -1407,6 +1423,16 @@ function translator:IsEnabled()
 end
 
 function translator:Init()
+    local function _addQuestInfoToCache(progressText, completeText)
+        local category = ns.IngameDataCacher:GetOrAddCategory({ "quests", GetQuestID() })
+        if (progressText) then
+            ns.IngameDataCacher:GetOrAddToCategory(category, "progress", progressText)
+        end
+
+        if (completeText) then
+            ns.IngameDataCacher:GetOrAddToCategory(category, "complete", completeText)
+        end
+    end
     InitializeCommandButtons()
 
     -- Gossip Frame
@@ -1450,6 +1476,9 @@ function translator:Init()
     -- TODO: Fix for 11.0
     -- translateButton(QuestMapFrame.DetailsFrame.BackButton, nil, 24)
     translateUIFontString(QuestScrollFrame.CampaignTooltip.CompleteRewardText)
+
+    eventHandler:Register(function() _addQuestInfoToCache(GetProgressText()) end, "QUEST_PROGRESS")
+    eventHandler:Register(function() _addQuestInfoToCache(nil, GetRewardText()) end, "QUEST_COMPLETE")
 
     eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
     eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
