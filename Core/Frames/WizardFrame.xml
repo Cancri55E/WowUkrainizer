@@ -84,52 +84,77 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 	<!-- SETTINGS PAGES -->
 
 	<Frame name="WowUkrainizerModuleSettingsPageTemplate" mixin="WowUkrainizerModuleSettingsPageMixin" hidden="true" virtual="true">
-		<Size x="780" y="520"/>
+		<Size x="770" y="506"/>
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString parentKey="UISettingsTitle" inherits="WowUkrainizerFrameSecondaryTitleFont" wordwrap="true" text="Інтерфейс користувача">
+				<FontString parentKey="UISettingsTitle" parentArray="UIFontStrings" inherits="WowUkrainizerFrameSecondaryTitleFont" wordwrap="true">
+					<KeyValues>
+						<KeyValue key="id" value="1" type="number"/>
+					</KeyValues>
 					<Anchors>
 						<Anchor point="TOPRIGHT" x="-20" y="-12"/>
 						<Anchor point="TOPLEFT" x="20" y="-12"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="TranslateNameplatesAndUnitFramesDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Є повна сумісність з такими додатками як Plater та ElvUI.">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.UISettingsTitle" relativePoint="BOTTOMLEFT" x="32" y="-54"/>
-					</Anchors>
+				<FontString parentKey="TranslateNameplatesAndUnitFramesDescription" parentArray="UIFontStrings" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true">
+					<KeyValues>
+						<KeyValue key="id" value="2" type="number"/>
+						<KeyValue key="parentName" value="TranslateNameplatesAndUnitFrames" type="string"/>
+						<KeyValue key="leftOffset" value="26" type="number"/>
+					</KeyValues>
 				</FontString>
-				<FontString parentKey="SubtitleSettingsTitle" inherits="WowUkrainizerFrameSecondaryTitleFont" wordwrap="true" text="Субтитри та діалоги">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.UISettingsTitle" relativePoint="BOTTOMLEFT" x="0" y="-78"/>
-					</Anchors>
+				<FontString parentKey="TranslateZoneTextFramesDescription" parentArray="UIFontStrings" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true">
+					<KeyValues>
+						<KeyValue key="id" value="3" type="number"/>
+						<KeyValue key="parentName" value="TranslateZoneTextFrames" type="string"/>
+						<KeyValue key="leftOffset" value="26" type="number"/>
+					</KeyValues>
 				</FontString>
-				<FontString parentKey="TranslateSubtitlesDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Додає переклад для субтитрів у пререндерованих відеороликах гри (не плутати з кат-сценами).">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.TranslateNameplatesAndUnitFramesDescription" relativePoint="BOTTOMLEFT" x="0" y="-56"/>
-					</Anchors>
+
+				<FontString parentKey="SubtitleSettingsTitle" parentArray="UIFontStrings" inherits="WowUkrainizerFrameSecondaryTitleFont" wordwrap="true">
+					<KeyValues>
+						<KeyValue key="id" value="4" type="number"/>
+						<KeyValue key="parentName" value="TranslateZoneTextFramesDescription" type="string"/>
+						<KeyValue key="leftOffset" value="-34" type="number"/>
+						<KeyValue key="topOffset" value="-18" type="number"/>
+					</KeyValues>
 				</FontString>
-				<FontString parentKey="QuestSettingsTitle" inherits="WowUkrainizerFrameSecondaryTitleFont" wordwrap="true" text="Завдання">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.UISettingsTitle" relativePoint="BOTTOMLEFT" x="0" y="-224"/>
-					</Anchors>
+				<FontString parentKey="TranslateSubtitlesDescription" parentArray="UIFontStrings" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true">
+					<KeyValues>
+						<KeyValue key="id" value="5" type="number"/>
+						<KeyValue key="parentName" value="TranslateSubtitles" type="string"/>
+						<KeyValue key="leftOffset" value="26" type="number"/>
+					</KeyValues>
 				</FontString>
-				<FontString parentKey="TranslateNpcMessagesDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Додає переклад діалогів неігрових персонажів. Перекладений текст буде відображатися у вікні чату, а також в 'бульбашках' над головою персонажа, a також в кат-сценах. |n|nУВАГА! Через обмеження які ввела компанія Blizzard в ігровому клієнту переклад діалогів всередині групового контенту (підземелля, рейди та ін.) можливий переклад лише в чаті гри. Текст в бульбашках залишатиметься англійським.">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.TranslateSubtitlesDescription" relativePoint="BOTTOMLEFT" x="0" y="-26"/>
-						<Anchor point="TOPRIGHT" x="-12" y="-12"/>
-					</Anchors>
+				<FontString parentKey="TranslateNpcMessagesDescription" parentArray="UIFontStrings" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true">
+					<KeyValues>
+						<KeyValue key="id" value="6" type="number"/>
+						<KeyValue key="parentName" value="TranslateNpcMessages" type="string"/>
+						<KeyValue key="leftOffset" value="26" type="number"/>
+					</KeyValues>
 				</FontString>
-				<FontString parentKey="TranslateQuestAndObjectivesFrameDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Додає переклад ігрових завдань і пов'язанних з ними елементів гри. Будуть перекладені не лише тексти самих завдань, а вікна які відповідають за їх відображення, позначки завдань на мапі світу та міні мапі, а також буде перекладений список завдань, що відстежуються.|n|nДля того, щоб перемикатися між оригінальним текстом завдання і перекладом у вікні з описом буде спеціальна кнопка. Також поруч буде окрема кнопка яка дозволить вам скопіювати посилання на wowhead з описом завдання.">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.TranslateNpcMessagesDescription" relativePoint="BOTTOMLEFT" x="0" y="-52"/>
-						<Anchor point="TOPRIGHT" x="-12" y="-12"/>
-					</Anchors>
+
+				<FontString parentKey="QuestSettingsTitle" parentArray="UIFontStrings" inherits="WowUkrainizerFrameSecondaryTitleFont" wordwrap="true">
+					<KeyValues>
+						<KeyValue key="id" value="7" type="number"/>
+						<KeyValue key="parentName" value="TranslateNpcMessagesDescription" type="string"/>
+						<KeyValue key="leftOffset" value="-34" type="number"/>
+						<KeyValue key="topOffset" value="-18" type="number"/>
+					</KeyValues>
 				</FontString>
-				<FontString parentKey="DisableMTForQuestsDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Гра World of Warcraft має тисячі завдань та мільйони слів котрі необхідно перекласти. Силами фанатів це може зайняти роки, щоб перекласти все. Тому було вирішено додати машинний переклад за допомогою ШІ, щоб пришвидшити переклад завдань і ті хто погано розуміють англійську вже зараз могли насолоджуватися грою.|n|nПріоритет перекладу від ШІ завжди нижче ніж перекладу який зробила людина, тому додаток автоматично буде використовувати переклад який зробила людина якщо він є у наявності.|n|nУ вікні з текстом завдання поруч з кнопкою перемикання перекладу буде відображена спеціальна іконка (голова робота) якщо ви бачите повний або частковий машинний переклад.">
-					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.TranslateQuestAndObjectivesFrameDescription" relativePoint="BOTTOMLEFT" x="18" y="-28"/>
-						<Anchor point="TOPRIGHT" x="-12" y="-12"/>
-					</Anchors>
+				<FontString parentKey="TranslateQuestAndObjectivesFrameDescription" parentArray="UIFontStrings" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true">
+					<KeyValues>
+						<KeyValue key="id" value="8" type="number"/>
+						<KeyValue key="parentName" value="TranslateQuestAndObjectivesFrame" type="string"/>
+						<KeyValue key="leftOffset" value="26" type="number"/>
+					</KeyValues>
+				</FontString>
+				<FontString parentKey="DisableMTForQuestsDescription" parentArray="UIFontStrings" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true">
+					<KeyValues>
+						<KeyValue key="id" value="9" type="number"/>
+						<KeyValue key="parentName" value="DisableMTForQuests" type="string"/>
+						<KeyValue key="leftOffset" value="26" type="number"/>
+					</KeyValues>
 				</FontString>
 			</Layer>
 		</Layers>
@@ -158,7 +183,15 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION"/>
 				</Attributes>
 			</CheckButton>
-			<CheckButton parentKey="TranslateSubtitles" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="4">
+			<CheckButton parentKey="TranslateZoneTextFrames" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateNameplatesAndUnitFrames" relativePoint="BOTTOMLEFT" x="0" y="-14"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_ZONE_TEXTS_OPTION"/>
+				</Attributes>
+			</CheckButton>
+			<CheckButton parentKey="TranslateSubtitles" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="5">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.SubtitleSettingsTitle" relativePoint="BOTTOMLEFT" x="8" y="-8"/>
 				</Anchors>
@@ -166,15 +199,15 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_SUBTITLES_OPTION"/>
 				</Attributes>
 			</CheckButton>
-			<CheckButton parentKey="TranslateNpcMessages" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="5">
+			<CheckButton parentKey="TranslateNpcMessages" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="6">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateSubtitlesDescription" relativePoint="BOTTOMLEFT" x="-24" y="-4"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateSubtitlesDescription" relativePoint="BOTTOMLEFT" x="-26" y="-8"/>
 				</Anchors>
 				<Attributes>
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_NPC_MESSAGES_OPTION"/>
 				</Attributes>
 			</CheckButton>
-			<CheckButton parentKey="TranslateQuestAndObjectivesFrame" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="6">
+			<CheckButton parentKey="TranslateQuestAndObjectivesFrame" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="7">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.QuestSettingsTitle" relativePoint="BOTTOMLEFT" x="8" y="-8"/>
 				</Anchors>
@@ -182,9 +215,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION"/>
 				</Attributes>
 			</CheckButton>
-			<CheckButton parentKey="DisableMTForQuests" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="7">
+			<CheckButton parentKey="DisableMTForQuests" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="8">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateQuestAndObjectivesFrameDescription" relativePoint="BOTTOMLEFT" x="-4" y="-4"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateQuestAndObjectivesFrameDescription" relativePoint="BOTTOMLEFT" x="-4" y="-8"/>
 				</Anchors>
 				<Attributes>
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_DISABLE_MT_FOR_QUESTS_OPTION"/>
@@ -197,7 +230,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 	</Frame>
 
 	<Frame name="WowUkrainizerTooltipSettingsPageTemplate" mixin="WowUkrainizerTooltipSettingsPageMixin" hidden="true" virtual="true">
-		<Size x="780" y="520"/>
+		<Size x="770" y="506"/>
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString parentKey="UISettingsTitle" inherits="WowUkrainizerFrameSecondaryTitleFont" wordwrap="true" text="Налаштування екранних підказок">
@@ -250,7 +283,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 	</Frame>
 
 	<Frame name="WowUkrainizerFontSettingsPageTemplate" mixin="WowUkrainizerFontSettingsPageMixin" hidden="true" virtual="true">
-		<Size x="780" y="520"/>
+		<Size x="770" y="506"/>
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString parentKey="UISettingsTitle" inherits="WowUkrainizerFrameSecondaryTitleFont" wordwrap="true" text="Налаштування шрифтів">
@@ -326,7 +359,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 	</Frame>
 
 	<Frame name="WowUkrainizerContributorsFrameTemplate" mixin="WowUkrainizerFinishPageMixin" hidden="true" virtual="true">
-		<Size x="780" y="520"/>
+		<Size x="770" y="506"/>
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString parentKey="Title" inherits="WowUkrainizerSmallTextFont" wordwrap="true">
@@ -438,90 +471,111 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 			</Layer>
 		</Layers>
 		<Frames>
-			<!-- PAGES -->
-			<Frame parentKey="WelcomePage" mixin="WowUkrainizerInstallerWelcomePageMixin" hidden="true">
-				<Size x="700" y="530"/>
+			<ScrollFrame parentKey="SettingsScrollFrame" inherits="ScrollFrameTemplate">
+				<KeyValues>
+					<KeyValue key="scrollBarX" value="-20" type="number"/>
+					<KeyValue key="scrollBarTopY" value="-3" type="number"/>
+					<KeyValue key="scrollBarBottomY" value="5" type="number"/>
+				</KeyValues>
+				<Size x="800" y="600"/>
 				<Anchors>
-					<Anchor point="TOP" x="0" y="-35"/>
-					<Anchor point="BOTTOM" x="0" y="40"/>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="-38"/>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="0" y="56"/>
 				</Anchors>
-				<Layers>
-					<Layer level="ARTWORK">
-						<FontString parentKey="Title" inherits="WowUkrainizerFrameTitleFont" wordwrap="false">
-							<Anchors>
-								<Anchor point="TOP" y="-16"/>
-							</Anchors>
-						</FontString>
-						<FontString parentKey="Description" inherits="WowUkrainizerFramePrimaryTextFont" wordwrap="true">
-							<Anchors>
-								<Anchor point="TOP" relativeKey="$parent.Title" relativePoint="BOTTOM" y="-36"/>
-								<Anchor point="TOPRIGHT" x="-20"/>
-								<Anchor point="BOTTOMLEFT" x="20"/>
-							</Anchors>
-						</FontString>
-						<Texture parentKey="Logo" file="Interface\AddOns\WowUkrainizer\assets\images\logo_big.png">
-							<Size y="192" x="192"/>
-							<Anchors>
-								<Anchor point="TOP" relativeKey="$parent.Description" relativePoint="BOTTOM" y="280"/>
-							</Anchors>
-						</Texture>
-					</Layer>
-				</Layers>
-				<Frames>
-					<Button name="$parentLeaveDefaultButton" parentKey="LeaveDefaultButton" inherits="WowUkrainizerCommandButtonTemplate">
-						<Size x="280" y="28"/>
+				<ScrollChild>
+					<Frame parentKey="SettingsScrollChildFrame">
+						<Size x="770" y="506"/>
 						<Anchors>
-							<Anchor point="BOTTOM" y="32"/>
+							<Anchor point="TOPLEFT" x="0" y="0"/>
 						</Anchors>
-						<Scripts>
-							<OnClick>
-								self:GetParent():GetParent():LeaveDefaultSettings()
-							</OnClick>
-						</Scripts>
-					</Button>
-				</Frames>
-				<Scripts>
-					<OnLoad method="OnLoad"/>
-				</Scripts>
-			</Frame>
-			<Frame parentKey="ModuleSettingsPage" inherits="WowUkrainizerModuleSettingsPageTemplate" hidden="true">
-				<Anchors>
-					<Anchor point="TOP" x="0" y="-35"/>
-					<Anchor point="BOTTOM" x="0" y="40"/>
-				</Anchors>
-			</Frame>
-			<Frame parentKey="TooltipSettingsPage" inherits="WowUkrainizerTooltipSettingsPageTemplate" hidden="true">
-				<Anchors>
-					<Anchor point="TOP" x="0" y="-35"/>
-					<Anchor point="BOTTOM" x="0" y="40"/>
-				</Anchors>
-			</Frame>
-			<Frame parentKey="FontSettingsPage" inherits="WowUkrainizerFontSettingsPageTemplate" hidden="true">
-				<Anchors>
-					<Anchor point="TOP" x="0" y="-35"/>
-					<Anchor point="BOTTOM" x="0" y="40"/>
-				</Anchors>
-			</Frame>
-			<Frame parentKey="FinishPage" inherits="WowUkrainizerContributorsFrameTemplate" hidden="true">
-				<Anchors>
-					<Anchor point="TOP" x="0" y="-35"/>
-					<Anchor point="BOTTOM" x="0" y="40"/>
-				</Anchors>
-				<Frames>
-					<Button parentKey="CompleteButton" inherits="WowUkrainizerCommandButtonTemplate">
-						<Size x="280" y="28"/>
-						<Anchors>
-							<Anchor point="BOTTOM" y="32"/>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								ReloadUI()
-							</OnClick>
-						</Scripts>
-					</Button>
-				</Frames>
-			</Frame>
-			
+						<Frames>
+							<!-- PAGES -->
+							<Frame parentKey="WelcomePage" mixin="WowUkrainizerInstallerWelcomePageMixin" hidden="true">
+								<Size x="770" y="506"/>
+								<Anchors>
+									<Anchor point="TOPLEFT" x="20" y="0"/>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString parentKey="Title" inherits="WowUkrainizerFrameTitleFont" wordwrap="false">
+											<Anchors>
+												<Anchor point="TOP" y="-16"/>
+											</Anchors>
+										</FontString>
+										<FontString parentKey="Description" inherits="WowUkrainizerFramePrimaryTextFont" wordwrap="true">
+											<Anchors>
+												<Anchor point="TOP" relativeKey="$parent.Title" relativePoint="BOTTOM" y="-36"/>
+												<Anchor point="TOPRIGHT" x="-20"/>
+												<Anchor point="BOTTOMLEFT" x="20"/>
+											</Anchors>
+										</FontString>
+										<Texture parentKey="Logo" file="Interface\AddOns\WowUkrainizer\assets\images\logo_big.png">
+											<Size y="192" x="192"/>
+											<Anchors>
+												<Anchor point="TOP" relativeKey="$parent.Description" relativePoint="BOTTOM" y="280"/>
+											</Anchors>
+										</Texture>
+									</Layer>
+								</Layers>
+								<Frames>
+									<Button name="$parentLeaveDefaultButton" parentKey="LeaveDefaultButton" inherits="WowUkrainizerCommandButtonTemplate">
+										<Size x="280" y="28"/>
+										<Anchors>
+											<Anchor point="BOTTOM" y="16"/>
+										</Anchors>
+										<Scripts>
+											<OnClick>
+												self:GetParent():GetParent():LeaveDefaultSettings()
+											</OnClick>
+										</Scripts>
+									</Button>
+								</Frames>
+								<Scripts>
+									<OnLoad method="OnLoad"/>
+								</Scripts>
+							</Frame>
+							<Frame parentKey="ModuleSettingsPage" inherits="WowUkrainizerModuleSettingsPageTemplate" hidden="true">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="20" y="0"/>
+									<Anchor point="TOPRIGHT" x="0" y="0"/>
+								</Anchors>
+							</Frame>
+							<Frame parentKey="TooltipSettingsPage" inherits="WowUkrainizerTooltipSettingsPageTemplate" hidden="true">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="20" y="0"/>
+									<Anchor point="TOPRIGHT" x="0" y="0"/>
+								</Anchors>
+							</Frame>
+							<Frame parentKey="FontSettingsPage" inherits="WowUkrainizerFontSettingsPageTemplate" hidden="true">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="20" y="0"/>
+									<Anchor point="TOPRIGHT" x="0" y="0"/>
+								</Anchors>
+							</Frame>
+							<Frame parentKey="FinishPage" inherits="WowUkrainizerContributorsFrameTemplate" hidden="true">
+								<Anchors>
+									<Anchor point="TOPLEFT" x="20" y="0"/>
+									<Anchor point="TOPRIGHT" x="0" y="0"/>
+								</Anchors>
+								<Frames>
+									<Button parentKey="CompleteButton" inherits="WowUkrainizerCommandButtonTemplate">
+										<Size x="280" y="28"/>
+										<Anchors>
+											<Anchor point="BOTTOM" y="32"/>
+										</Anchors>
+										<Scripts>
+											<OnClick>
+												ReloadUI()
+											</OnClick>
+										</Scripts>
+									</Button>
+								</Frames>
+							</Frame>
+						</Frames>
+					</Frame>
+				</ScrollChild>
+			</ScrollFrame>
+
 			<!-- BUTTONS -->
 			<Button name="$parentNextButton" parentKey="NextButton" inherits="WowUkrainizerCommandButtonTemplate">
 				<Anchors>
