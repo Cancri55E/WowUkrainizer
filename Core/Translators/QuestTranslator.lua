@@ -5,6 +5,7 @@ local _G = _G
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
+local TryCallAPIFn = ns.CommonUtil.TryCallAPIFn
 local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
 local GetTranslatedGossipText = ns.DbContext.Gossips.GetTranslatedGossipText
@@ -177,41 +178,6 @@ _G["StaticPopupDialogs"]["WowUkrainizer_WowheadLink"] = {
     whileDead = 1,
     hideOnEscape = 1
 }
-
-function TryCallAPIFn(fnName, value)
-    -- this function is helper fn to get table type from wow api.
-    -- if there is GetObjectType then we will return it.
-    -- returns Button, Frame or something like this
-
-    -- VALIDATION
-    if type(value) ~= "table" then
-        return
-    end
-
-    -- VALIDATION FIX if __index is function we don't want to execute it
-    -- Example in ACP.L
-    local metatable = getmetatable(value)
-    if metatable and type(metatable) == "table" and type(metatable.__index) == "function" then
-        return
-    end
-
-    -- VALIDATION is forbidden from wow api
-    if value.IsForbidden then
-        local ok, forbidden = pcall(value.IsForbidden, value)
-        if not ok or (ok and forbidden) then
-            return
-        end
-    end
-
-    local fn = value[fnName]
-    -- VALIDATION has WoW API
-    if not fn or type(fn) ~= "function" then
-        return
-    end
-
-    -- MAIN PART:
-    return pcall(fn, value)
-end
 
 local function TranslteQuestObjective(objectiveFrame, questData, isQuestFrame)
     local originalHeight = objectiveFrame:GetHeight()

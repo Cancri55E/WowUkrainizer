@@ -187,3 +187,16 @@ function internal.ReplaceBracketsToColor(str, colorStr)
     str = str:gsub("%]", "|r")
     return str
 end
+
+--- Extracts dynamic parts from input text based on a given text mask.
+---@param textMask string @ The pattern mask containing %s for strings and %d for numbers.
+---@param inputText string @ The text from which to extract the dynamic parts.
+---@return ... @ The extracted parts from the input text, or nil.
+function internal.ExtractFromText(textMask, inputText)
+    local pattern = textMask:gsub("%%s", "(.+)"):gsub("%%d", "([%%d,]+)")
+    local results = { inputText:match(pattern) }
+    if #results == 0 then
+        return nil
+    end
+    return rtable.unpack(results)
+end

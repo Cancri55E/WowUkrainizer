@@ -9,7 +9,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 		<Color r="1" g="0.8" b="0"/>
 	</Font>
     <Font name="WowUkrainizerSmallTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="11"/>
-	<Font name="WowUkrainizerSecondaryTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="11">
+	<Font name="WowUkrainizerSecondaryTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="12">
         <Color r="0.604" g="0.592" b="0.725"/>
     </Font>
     <Font name="WowUkrainizerUrlTextFont" justifyH="LEFT" justifyV="TOP" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="13">
