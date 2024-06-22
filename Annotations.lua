@@ -96,4 +96,7 @@
 ---@field MovieSubtitles table<integer, string>
 ---@field UnitNames table<integer, string>
 ---@field UnitSubnames table<integer, string>
+---@field ZoneTexts table<integer, string>
+---@field GlobalStrings table<integer, string>
+---@field Factions table<integer, string>
 -- TODO: @field Voiceover

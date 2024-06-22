@@ -537,4 +537,49 @@ do
     dbContext.Quests = repository
 end
 
+-- Zone Texts
+do
+    ---@class ZoneTextRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
+
+    --- Get the translated or original (English) zone or subzone text.
+    --- @param original string @ The original (English) zone or subzone text.
+    --- @return string @ The translated or original zone or subzone text.
+    function repository.GetTranslatedZoneText(original)
+        return repository._getValue(ns._db.ZoneTexts, original)
+    end
+
+    dbContext.ZoneTexts = repository
+end
+
+-- Global strings
+do
+    ---@class GlobalStringRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
+
+    --- Get the translated or original (English) global string.
+    --- @param original string @ The original (English) global string.
+    --- @return string @ The translated or original global string.
+    function repository.GetTranslatedGlobalString(original)
+        return repository._getValue(ns._db.GlobalStrings, original)
+    end
+
+    dbContext.GlobalStrings = repository
+end
+
+-- Reputations and Factions
+do
+    ---@class FactionRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
+
+    --- Get the translated or original (English) faction.
+    --- @param original string @ The original (English) faction.
+    --- @return string @ The translated or original faction.
+    function repository.GetTranslatedFaction(original)
+        return repository._getValue(ns._db.GlobalStrings, original)
+    end
+
+    dbContext.Factions = repository
+end
+
 ns.DbContext = dbContext

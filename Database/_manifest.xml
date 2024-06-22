@@ -10,4 +10,6 @@
 	<Script file="Gossips.lua"/>
 	<Script file="Quests.lua"/>
 	<Script file="MtQuests.lua"/>
+	<Script file="ZoneTexts.lua"/>
+	<Script file="GlobalStrings.lua"/>
 </Ui>

@@ -53,3 +53,38 @@ function internal.FindKeyByValue(tbl, value)
     end
     return nil
 end
+
+function internal.TryCallAPIFn(fnName, value)
+    -- this function is helper fn to get table type from wow api.
+    -- if there is GetObjectType then we will return it.
+    -- returns Button, Frame or something like this
+
+    -- VALIDATION
+    if type(value) ~= "table" then
+        return
+    end
+
+    -- VALIDATION FIX if __index is function we don't want to execute it
+    -- Example in ACP.L
+    local metatable = getmetatable(value)
+    if metatable and type(metatable) == "table" and type(metatable.__index) == "function" then
+        return
+    end
+
+    -- VALIDATION is forbidden from wow api
+    if value.IsForbidden then
+        local ok, forbidden = pcall(value.IsForbidden, value)
+        if not ok or (ok and forbidden) then
+            return
+        end
+    end
+
+    local fn = value[fnName]
+    -- VALIDATION has WoW API
+    if not fn or type(fn) ~= "function" then
+        return
+    end
+
+    -- MAIN PART:
+    return pcall(fn, value)
+end
