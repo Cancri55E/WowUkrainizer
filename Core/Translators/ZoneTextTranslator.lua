@@ -17,7 +17,7 @@ function translator:IsEnabled()
     return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_ZONE_TEXTS_OPTION)
 end
 
-local function _getPvpText(pvpType, factionName)
+local function GetPvpText(pvpType, factionName)
     if (pvpType == "sanctuary") then
         return GetTranslatedGlobalString(SANCTUARY_TERRITORY);
     elseif (pvpType == "arena") then
@@ -41,7 +41,7 @@ local function _getPvpText(pvpType, factionName)
     end
 end
 
-local function _onZoneEventHandled()
+local function OnZoneEventHandled()
     local pvpType, isSubZonePvP, factionName = C_PvP.GetZonePVPInfo();
 
     local pvpTextString = PVPInfoTextString;
@@ -49,7 +49,7 @@ local function _onZoneEventHandled()
         pvpTextString = PVPArenaTextString;
     end
 
-    local translatedPvpText = _getPvpText(pvpType, factionName)
+    local translatedPvpText = GetPvpText(pvpType, factionName)
     if (translatedPvpText) then
         SetFontStringText(pvpTextString, translatedPvpText);
     end
@@ -58,7 +58,7 @@ local function _onZoneEventHandled()
     SetFontStringText(SubZoneTextString, GetTranslatedZoneText(SubZoneTextString:GetText()))
 end
 
-local function _onAutoFollowEventHandled(eventName)
+local function OnAutoFollowEventHandled(eventName)
     local globalString = eventName == "AUTOFOLLOW_BEGIN" and AUTOFOLLOWSTART or AUTOFOLLOWSTOP
     local unitName = ExtractFromText(globalString, AutoFollowStatusText:GetText())
     if (unitName and unitName ~= "") then
@@ -67,12 +67,12 @@ local function _onAutoFollowEventHandled(eventName)
     SetFontStringText(AutoFollowStatusText, string.format(GetTranslatedGlobalString(globalString), unitName))
 end
 
-local function _onMinimapUpdate()
+local function OnMinimapUpdate()
     SetFontStringText(MinimapZoneText, GetTranslatedZoneText(GetMinimapZoneText()))
 end
 
-local function _onMinimapSetTooltip(pvpType, factionName, worldMap)
-    local translatedPvpText = _getPvpText(pvpType, factionName)
+local function OnMinimapSetTooltip(pvpType, factionName, worldMap)
+    local translatedPvpText = GetPvpText(pvpType, factionName)
     local zoneName = GetZoneText();
     local subzoneName = GetSubZoneText();
 
@@ -81,33 +81,39 @@ local function _onMinimapSetTooltip(pvpType, factionName, worldMap)
 
     if (subzoneName ~= zoneName) then
         i = i + 1
-        _G["GameTooltipTextLeft" .. i]:SetText(GetTranslatedZoneText(_G["GameTooltipTextLeft" .. i]:GetText()))
+        if (_G["GameTooltipTextLeft" .. i]) then
+            _G["GameTooltipTextLeft" .. i]:SetText(GetTranslatedZoneText(_G["GameTooltipTextLeft" .. i]:GetText()))
+        end
     end
 
     if (translatedPvpText) then
         i = i + 1
-        _G["GameTooltipTextLeft" .. i]:SetText(translatedPvpText)
+        if (_G["GameTooltipTextLeft" .. i]) then
+            _G["GameTooltipTextLeft" .. i]:SetText(translatedPvpText)
+        end
     end
 
     if (worldMap) then
         i = i + 1
-        _G["GameTooltipTextLeft" .. i]:SetText(MicroButtonTooltipText(GetTranslatedGlobalString(WORLDMAP_BUTTON), "TOGGLEWORLDMAP"))
+        if (_G["GameTooltipTextLeft" .. i]) then
+            _G["GameTooltipTextLeft" .. i]:SetText(MicroButtonTooltipText(GetTranslatedGlobalString(WORLDMAP_BUTTON), "TOGGLEWORLDMAP"))
+        end
     end
 end
 
-local function _onZoneTextButtonEnter()
+local function OnZoneTextButtonEnter()
     local pvpType, _, factionName = C_PvP.GetZonePVPInfo();
-    _onMinimapSetTooltip(pvpType, factionName, true)
+    OnMinimapSetTooltip(pvpType, factionName, true)
 end
 
 function translator:Init()
-    eventHandler:Register(_onZoneEventHandled, "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA")
-    eventHandler:Register(_onAutoFollowEventHandled, "AUTOFOLLOW_BEGIN", "AUTOFOLLOW_END")
+    eventHandler:Register(OnZoneEventHandled, "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA")
+    eventHandler:Register(OnAutoFollowEventHandled, "AUTOFOLLOW_BEGIN", "AUTOFOLLOW_END")
 
-    hooksecurefunc("Minimap_Update", _onMinimapUpdate)
-    hooksecurefunc("Minimap_SetTooltip", _onMinimapSetTooltip)
+    hooksecurefunc("Minimap_Update", OnMinimapUpdate)
+    hooksecurefunc("Minimap_SetTooltip", OnMinimapSetTooltip)
 
-    MinimapCluster.ZoneTextButton:HookScript("OnEnter", _onZoneTextButtonEnter)
+    MinimapCluster.ZoneTextButton:HookScript("OnEnter", OnZoneTextButtonEnter)
 end
 
 ns.TranslationsManager:AddTranslator(translator)

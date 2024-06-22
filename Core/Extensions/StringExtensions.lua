@@ -175,5 +175,5 @@ function internal.ExtractFromText(textMask, inputText)
     if #results == 0 then
         return nil
     end
-    return table.unpack(results)
+    return rtable.unpack(results)
 end

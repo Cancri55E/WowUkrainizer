@@ -7,6 +7,7 @@
 	<Script file="NpcMessageTranslator.lua"/>
 	<Script file="SubtitlesTranslator.lua"/>
 	<Script file="ZoneTextTranslator.lua"/>
+	<Script file="UIErrorsTranslator.lua"/>
 	<Script file="Tooltips\BaseTooltipTranslator.lua"/>
 	<Script file="Tooltips\UnitTooltipTranslator.lua"/>
 	<Script file="Tooltips\SpellTooltipTranslator.lua"/>
