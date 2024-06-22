@@ -443,47 +443,51 @@ do
         "KuprumLight, " ..
         "Roman Yanyshyn, " ..
         "Glafira, " ..
-        "Mark Tsemma, " ..
-        "Olena Gorbenko, " ..
-        "Viktor Krech, " ..
-        "Алексей Коваль, " ..
         "kasatushi, " ..
+        "Olena Gorbenko, " ..
+        "Kabandis, " ..
+        "Lutera1234, " ..
+        "FinniV, " ..
+        "Kiborg Kozak, " ..
+        "Viktor Krech, " ..
+        "Mark Tsemma, " ..
+        "Алексей Коваль, " ..
+        "SinRoot, " ..
         "Serhii Feelenko, " ..
         "Semerkhet, " ..
         "Mykyta Barmin, " ..
         "Валерій Бондаренко, " ..
         "Shannar de Kassal, " ..
-        "Kademskyi Alexander, " ..
+        "Dourmain-Kazzak, " ..
         "Володар смерті, " ..
         "Dmytro Boryshpolets, " ..
         "NichnaVoitelka, " ..
-        "Unbrkbl Opt1mist,  " ..
+        "Unbrkbl Opt1mist, " ..
         "Elanka, " ..
         "Vadym Ivaniuk, " ..
         "Shelby333, " ..
         "Nazar Kulchytskyi, " ..
         "Rolik33, " ..
-        "Станіслав Belinardo, " ..
+        "Belinardo, " ..
         "Сергей Райдер, " ..
         "Artem Panchenko, " ..
         "RomenSkyJR, " ..
         "Дмитро Горєнков, " ..
         "Asturiel, " ..
         "Женя Браславська, " ..
-        "FinniV, " ..
         "Лігво Друїда, " ..
-        "Lutera1234, " ..
         "losthost, " ..
         "Bokshchanin, " ..
         "lanpae, " ..
         "Volodymyr Taras, " ..
         "Олексій Сьомін, " ..
-        "Primarch, " ..
         "Ксения Никонова, " ..
+        "Primarch, " ..
+        "Mykyta Vlasov, " ..
         "Natalie Dexter, " ..
         "Дима Сердюк, " ..
         "Maxym Palamarchuk, " ..
-        "Archenok"
+        "Archenok "
 
     WowUkrainizerFinishPageMixin = CreateFromMixins(WowUkrainizerBasePageMixin);
 
@@ -497,7 +501,7 @@ do
 
         self.ContributorsHeader.Header:SetText("Причетні")
         self.Author:SetInfo("Розробник:", "Cancri", contributorTitleWidth)
-        self.Proofreaders:SetInfo("Редактор:", "Semerkhet", contributorTitleWidth)
+        self.Proofreaders:SetInfo("Редактор:", "KuprumLight, Kasatushi, Nimfiel", contributorTitleWidth)
         self.Translators:SetInfo("Перекладачі:", WOW_UKRAINIZER_FINISH_PAGE_TRANSLATORS_TEXT, contributorTitleWidth)
         self.Developments:SetInfo("Виправлення:", "Лігво Друїда (molaf)", contributorTitleWidth)
 
