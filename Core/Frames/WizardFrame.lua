@@ -481,7 +481,7 @@ do
         "lanpae, " ..
         "Volodymyr Taras, " ..
         "Олексій Сьомін, " ..
-        "Ксения Никонова, " ..
+        "Ксенія Никонова, " ..
         "Primarch, " ..
         "Mykyta Vlasov, " ..
         "Natalie Dexter, " ..
