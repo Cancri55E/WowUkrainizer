@@ -11,7 +11,7 @@ local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobal
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 function translator:IsEnabled()
-    return true
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_MAP_AND_QUEST_LOG_FRAME_OPTION)
 end
 
 --- Extract and separate level text from a given string.
@@ -32,21 +32,12 @@ local function _extractLevelText(text)
     return text, levelText
 end
 
-local function _getTranslatedZoneTextHook(zoneText)
-    -- hook. TODO: remove hook after crowdin files will be changed
-    if (zoneText == "Azeroth") then
-        return "Азерот"
-    else
-        return GetTranslatedZoneText(zoneText)
-    end
-end
-
 local function _onUIDropDownMenuShow()
     local _, name = TryCallAPIFn("GetName", _G["DropDownList1"].dropdown.Button)
     if (name == "WorldMapFrameButton") then
         for i = 1, _G["DropDownList1"].numButtons, 1 do
             local button = _G["DropDownList1Button" .. i]
-            button:SetText(_getTranslatedZoneTextHook(button:GetText()))
+            button:SetText(GetTranslatedZoneText(button:GetText()))
         end
     end
 end
@@ -74,7 +65,7 @@ function translator:Init()
                             local areaLabelInfo = areaNameLabels.labelInfoByType[areaLabelType];
                             if (name) then
                                 local nameText, levelText = _extractLevelText(name)
-                                local translatedName = _getTranslatedZoneTextHook(nameText)
+                                local translatedName = GetTranslatedZoneText(nameText)
 
                                 if (nameText ~= translatedName) then
                                     areaLabelInfo.name = translatedName
@@ -100,7 +91,7 @@ function translator:Init()
             end
 
             for _, button in ipairs(navBar.navList) do
-                local text = _getTranslatedZoneTextHook(button:GetText())
+                local text = GetTranslatedZoneText(button:GetText())
                 button:SetText(text)
                 if (button.MenuArrowButton) then
                     local buttonExtraWidth;
