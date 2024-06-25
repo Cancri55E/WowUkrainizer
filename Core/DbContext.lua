@@ -13,6 +13,7 @@ local RemoveBrackets = ns.StringUtil.RemoveBrackets
 local ReplaceBracketsToColor = ns.StringUtil.ReplaceBracketsToColor
 
 local GetHash = ns.StringUtil.GetHash
+local GetNameHash = ns.StringUtil.GetNameHash
 
 ---@class DbContext
 local dbContext = {}
@@ -28,6 +29,17 @@ local baseRepository = {}
 function baseRepository._getValue(dbTable, original)
     if (not original or original == "") then return original end
     local hash = GetHash(original)
+    return dbTable[hash] or original
+end
+
+--- Protected method to get the translated or the original (English) name if not translated.
+---@param dbTable table<integer, string> @ The database table for translations.
+---@param original string @ The original (English) name.
+---@return string @ The translated or original value.
+---@protected
+function baseRepository._getNameValue(dbTable, original)
+    if (not original or original == "") then return original end
+    local hash = GetNameHash(original)
     return dbTable[hash] or original
 end
 
@@ -546,7 +558,7 @@ do
     --- @param original string @ The original (English) zone or subzone text.
     --- @return string @ The translated or original zone or subzone text.
     function repository.GetTranslatedZoneText(original)
-        return repository._getValue(ns._db.ZoneTexts, original)
+        return repository._getNameValue(ns._db.ZoneTexts, original)
     end
 
     dbContext.ZoneTexts = repository
