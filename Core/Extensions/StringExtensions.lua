@@ -13,18 +13,7 @@ function internal.Trim(str)
     return str:match("^%s*(.-)%s*$")
 end
 
---- Get a hash value for a string.
----@param str string @The input string.
----@return number @The hash value.
-function internal.GetHash(str)
-    if (str == nil or type(str) ~= "string" or str == "") then
-        return -1
-    end
-
-    str = internal.Trim(str) -- Trim the input string
-
-    str = str:gsub("%s+", "_"):gsub("[\n\r’`.,]", ""):lower()
-
+local function CalculateHash(str)
     local counter = 1
     local len = string.len(str)
     for i = 1, len, 3 do
@@ -36,10 +25,25 @@ function internal.GetHash(str)
     return math.fmod(counter, 4294967291) -- 2^32 - 5: Prime (and different from the prime in the loop)
 end
 
---- Get a hash value for a dialog string.
----@param str string @The input dialog string.
+--- Get a hash value for a string.
+---@param str string @The input string.
 ---@return number @The hash value.
-function internal.GetDialogMessageHash(str)
+function internal.GetHash(str) -- TODO: Rename when backend completed
+    if (str == nil or type(str) ~= "string" or str == "") then
+        return -1
+    end
+
+    str = internal.Trim(str) -- Trim the input string
+
+    str = str:gsub("%s+", "_"):gsub("[\n\r’`.,]", ""):lower()
+
+    return CalculateHash(str)
+end
+
+--- Get a hash value for a name string (unit name, localtion etc.).
+---@param str string @The input string.
+---@return number @The hash value.
+function internal.GetNameHash(str)
     if (str == nil or type(str) ~= "string" or str == "") then
         return -1
     end
@@ -48,15 +52,7 @@ function internal.GetDialogMessageHash(str)
 
     str = str:gsub("%s+", "_"):gsub("[\n\r’`]", "")
 
-    local counter = 1
-    local len = string.len(str)
-    for i = 1, len, 3 do
-        counter = math.fmod(counter * 8161, 4294967279) + -- 2^32 - 17: Prime!
-            (string.byte(str, i) * 16776193) +
-            ((string.byte(str, i + 1) or (len - i + 256)) * 8372226) +
-            ((string.byte(str, i + 2) or (len - i + 256)) * 3932164)
-    end
-    return math.fmod(counter, 4294967291) -- 2^32 - 5: Prime (and different from the prime in the loop)
+    return CalculateHash(str)
 end
 
 --- Check if a string ends with a specified suffix.

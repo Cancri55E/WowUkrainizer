@@ -175,9 +175,17 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION"/>
 				</Attributes>
 			</CheckButton>
-			<CheckButton parentKey="TranslateNameplatesAndUnitFrames" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="3">
+			<CheckButton parentKey="TranslateMapAndQuestLogFrame" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="9">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateClassTalentsFrame" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_MAP_AND_QUEST_LOG_FRAME_OPTION"/>
+				</Attributes>
+			</CheckButton>
+			<CheckButton parentKey="TranslateNameplatesAndUnitFrames" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateMapAndQuestLogFrame" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 				</Anchors>
 				<Attributes>
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION"/>

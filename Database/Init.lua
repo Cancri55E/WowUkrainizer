@@ -32,6 +32,15 @@ ns._db = {}
 
 ns._db.Changelogs = {
     {
+        version = "1.11.1",
+        date = "25 березня 2024",
+        color = "blue",
+        type = "Покращення",
+        author = "Cancri",
+        title = nil,
+        description = "На прохання гравців додана можливість окремо керувати перекладами у вікні \"Карта та журнал завдань\""
+    },
+    {
         version = "1.11.0",
         date = "22 березня 2024",
         color = "purple",
