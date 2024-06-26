@@ -73,7 +73,7 @@ function translator:Init()
         end
 
         if (ns.IngameDataCacher) then
-            local metadata = { order = instance.subtitleOrder }
+            local metadata = { order = instance.subtitleOrder, zoneText = GetZoneText() }
 
             if (instance.playMovie and instance.movieID and instance.movieID ~= 0) then
                 ns.IngameDataCacher:GetOrAdd({ "movie-subtitles", tostring(instance.movieID) }, message, metadata)
