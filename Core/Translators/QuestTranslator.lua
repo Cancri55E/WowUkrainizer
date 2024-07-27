@@ -296,6 +296,22 @@ local function OnGossipShow()
             end
         end
     end
+
+    local npcGUID = UnitGUID("npc")
+    if (npcGUID) then
+        local _, _, _, _, _, npcID = strsplit("-", npcGUID)
+
+        local titlesCategory = ns.IngameDataCacher:GetOrAddCategory({ "npc-gossips", npcID, "titles" })
+        ns.IngameDataCacher:GetOrAddToCategory(titlesCategory, "title", C_GossipInfo.GetText())
+
+        local options = C_GossipInfo.GetOptions()
+        if (options and #options ~= 0) then
+            local optionsCategory = ns.IngameDataCacher:GetOrAddCategory({ "npc-gossips", npcID, "options" })
+            for _, gossipOption in ipairs(options) do
+                ns.IngameDataCacher:GetOrAddToCategory(optionsCategory, "option", gossipOption.name)
+            end
+        end
+    end
 end
 
 local function OnObjectiveTrackerQuestHeaderUpdated()
@@ -1407,6 +1423,16 @@ function translator:IsEnabled()
 end
 
 function translator:Init()
+    local function _addQuestInfoToCache(progressText, completeText)
+        local category = ns.IngameDataCacher:GetOrAddCategory({ "quests", GetQuestID() })
+        if (progressText) then
+            ns.IngameDataCacher:GetOrAddToCategory(category, "progress", progressText)
+        end
+
+        if (completeText) then
+            ns.IngameDataCacher:GetOrAddToCategory(category, "complete", completeText)
+        end
+    end
     InitializeCommandButtons()
 
     -- Gossip Frame
@@ -1425,28 +1451,34 @@ function translator:Init()
     translateUIFontString(CurrentQuestsText)
     translateUIFontString(AvailableQuestsText)
     -- Objectives Frame
-    translateUIFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.AdventureHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text)
-    translateUIFontString(ObjectiveTrackerBlocksFrame.ScenarioHeader.Text)
+    -- TODO: Fix for 11.0
+    --translateUIFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.AdventureHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text)
+    -- translateUIFontString(ObjectiveTrackerBlocksFrame.ScenarioHeader.Text)
     -- Quest popup
     translateUIFontString(QuestLogPopupDetailFrame.ShowMapButton.Text)
     translateButton(QuestLogPopupDetailFrame.AbandonButton)
     translateButton(QuestLogPopupDetailFrame.ShareButton)
     -- Quest map
     translateUIFontString(MapQuestInfoRewardsFrame.TitleFrame.Name)
-    for _, region in ipairs({ QuestMapFrame.DetailsFrame.RewardsFrame:GetRegions() }) do
-        if region:GetObjectType() == "FontString" then
-            translateUIFontString(region)
-        end
-    end
+    -- TODO: Fix for 11.0
+    -- for _, region in ipairs({ QuestMapFrame.DetailsFrame.RewardsFrame:GetRegions() }) do
+    --     if region:GetObjectType() == "FontString" then
+    --         translateUIFontString(region)
+    --     end
+    -- end
     translateButton(QuestMapFrame.DetailsFrame.AbandonButton, 90, 22)
     translateButton(QuestMapFrame.DetailsFrame.ShareButton, 90, 22)
-    translateButton(QuestMapFrame.DetailsFrame.BackButton, nil, 24)
+    -- TODO: Fix for 11.0
+    -- translateButton(QuestMapFrame.DetailsFrame.BackButton, nil, 24)
     translateUIFontString(QuestScrollFrame.CampaignTooltip.CompleteRewardText)
+
+    eventHandler:Register(function() _addQuestInfoToCache(GetProgressText()) end, "QUEST_PROGRESS")
+    eventHandler:Register(function() _addQuestInfoToCache(nil, GetRewardText()) end, "QUEST_COMPLETE")
 
     eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
     eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
@@ -1465,9 +1497,10 @@ function translator:Init()
     QuestFrameProgressPanel:HookScript("OnShow", OnQuestFrameProgressPanelShow)
     hooksecurefunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
 
-    ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
-    hooksecurefunc(QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
-    hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
+    -- TODO: Fix for 11.0
+    -- ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
+    -- hooksecurefunc(QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
+    -- hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
 
     hooksecurefunc("StaticPopup_Show", OnStaticPopupShow)
 

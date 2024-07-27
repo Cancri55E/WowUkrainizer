@@ -4,6 +4,7 @@
 	<Include file="Extensions\_manifest.xml"/>
 	<Script file="EventHandler.lua"/>
 	<Script file="UntranslatedDataStorage.lua"/>
+	<Script file="IngameDataCacher.lua"/>
 	<Script file="SettingsProvider.lua"/>
 	<Script file="StringNormalizer.lua"/>
 	<Script file="DbContext.lua"/>

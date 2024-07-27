@@ -25,6 +25,7 @@
 
 ---@class (exact) PlayerData
 ---@field Name string @The name of the player character.
+---@field Realm string @The realm of the player character.
 ---@field Race string @The race of the player character.
 ---@field Class string @The class of the player character.
 ---@field Gender number? @The gender (sex) of the player character.
@@ -39,6 +40,7 @@
 ---@field AddonInfo AddonData @Object containing common data such as release date and version information.
 ---@field SettingsProvider SettingsProvider? @Instance of the SettingsProvider. To create instance call CreateSettingsProvider
 ---@field UntranslatedDataStorage UntranslatedDataStorage? @Singleton instance of the UntranslatedDataStorage. To create instance call CreateUntranslatedDataStorage
+---@field IngameDataCacher IngameDataCacher? @Singleton instance of the IngameDataCacher. To create instance call CreateIngameDataCacher
 
 ---@class (exact) TranslatedQuestData
 ---@field ID number The unique identifier of the quest.

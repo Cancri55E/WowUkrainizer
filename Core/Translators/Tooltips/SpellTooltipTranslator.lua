@@ -26,6 +26,7 @@ local talentReplacedByPattern = "^Replaced by%s+(.+)"
 local talentReplacesPattern = "^Replaces%s+(.+)"
 local maxChargesPattern = "Max %d+ Charges"
 local nextRankText = "Next Rank:"
+local ptrHelpText = "|c0042b1fePress F6 to submit an issue for this Spell"
 
 ---@class SpellTooltipTranslator : BaseTooltipTranslator
 local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Spell }, { __index = ns.BaseTooltipTranslator })
@@ -181,6 +182,8 @@ local function parseSpellTooltip(tooltipTexts)
                         spellContainer.Passive = i
                     elseif text == "Upgrade" then
                         spellContainer.Upgrade = i
+                    elseif text == ptrHelpText then
+                        -- ignore
                     elseif i % 2 == 1 then
                         if not spellContainer.Descriptions then spellContainer.Descriptions = {} end
                         table.insert(spellContainer.Descriptions, { index = i, value = text })
@@ -317,7 +320,7 @@ local function translateTooltipSpellInfo(spellContainer, highlightSpellName)
     return translatedTooltipLines
 end
 
-local function addUntranslatedSpellToDataStorage(spellId, translatedTooltipLines)
+local function addUntranslatedSpellInfoToCache(spellID, translatedTooltipLines)
     local function findUntranslatedDescriptions(tooltipLines)
         local results = {}
         for _, obj in ipairs(tooltipLines) do
@@ -327,8 +330,6 @@ local function addUntranslatedSpellToDataStorage(spellId, translatedTooltipLines
         end
         return results
     end
-
-    local _, build = GetBuildInfo()
 
     local originalName
     if translatedTooltipLines[1] then
@@ -342,36 +343,35 @@ local function addUntranslatedSpellToDataStorage(spellId, translatedTooltipLines
 
     if (#untranslatedDescriptions == 0 and untranslatedName == "") then return end
 
-    local className = UnitClass("player")
-    local specializationId, specializationName = GetSpecializationInfo(GetSpecialization())
+    local classID, specID, isTalent
+    local spellBookItemSlotIndex, spellBookItemSpellBank = C_SpellBook.FindSpellBookSlotForSpell(spellID, true, true, true, true)
 
-    if (not _G.WowUkrainizerData) then _G.WowUkrainizerData = {} end
-    if (not _G.WowUkrainizerData.UntranslatedData) then _G.WowUkrainizerData.UntranslatedData = {} end
-    if (not _G.WowUkrainizerData.UntranslatedData.Spells) then _G.WowUkrainizerData.UntranslatedData.Spells = {} end
+    if (PlayerSpellsFrame and PlayerSpellsFrame:IsShown()) then
+        classID = PlayerSpellsFrame:GetClassID();
+        specID = PlayerSpellsFrame:GetSpecID();
 
-    local untranslatedSpells = _G.WowUkrainizerData.UntranslatedData.Spells
-
-    if (not untranslatedSpells[className]) then untranslatedSpells[className] = {} end
-    if (not untranslatedSpells[className][specializationId]) then
-        untranslatedSpells[className][specializationId] = { Name = specializationName, Values = {} }
+        if (PlayerSpellsFrame:IsInspecting() and PlayerSpellsFrame:GetInspectUnit()) then
+            isTalent = true
+        else
+            isTalent = C_Spell.IsClassTalentSpell(spellID) or C_Spell.IsPvPTalentSpell(spellID)
+        end
+    else
+        _, _, classID = UnitClass("player")
+        specID, _ = GetSpecializationInfo(GetSpecialization())
+        isTalent = C_Spell.IsClassTalentSpell(spellID) or C_Spell.IsPvPTalentSpell(spellID)
     end
 
-    if (not untranslatedSpells[className][specializationId].Values[originalName]) then
-        untranslatedSpells[className][specializationId].Values[originalName] = {}
+    local spellCategory
+    if (not spellBookItemSlotIndex and not spellBookItemSpellBank and not isTalent) then
+        spellCategory = ns.IngameDataCacher:GetOrAddCategory({ "spells", "others", spellID })
+    else
+        spellCategory = ns.IngameDataCacher:GetOrAddCategory({ "spells", classID, specID, spellID })
     end
 
-    local untranslatedSpell = untranslatedSpells[className][specializationId].Values[originalName]
-    untranslatedSpell.UntranslatedName = untranslatedName ~= ""
-
-    if not untranslatedSpell[spellId] then untranslatedSpell[spellId] = {} end
-
-    local spellInfo = untranslatedSpell[spellId]
+    ns.IngameDataCacher:GetOrAddToCategory(spellCategory, "name", originalName)
     for _, desc in ipairs(untranslatedDescriptions) do
         local formattedDesc, _ = NormalizeStringAndExtractNumerics(desc)
-        local isValueInTable = IsValueInTable(spellInfo, formattedDesc, "desc")
-        if (not isValueInTable) then
-            table.insert(spellInfo, { build = build, desc = formattedDesc })
-        end
+        ns.IngameDataCacher:GetOrAddToCategory(spellCategory, "desc", formattedDesc)
     end
 end
 
@@ -478,7 +478,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         end
     end
 
-    addUntranslatedSpellToDataStorage(tooltipInfo.SpellId, translatedTooltipLines)
+    addUntranslatedSpellInfoToCache(tooltipInfo.SpellId, translatedTooltipLines)
 
     return translatedTooltipLines
 end
