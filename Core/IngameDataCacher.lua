@@ -32,7 +32,7 @@ end
 --- @return table @The table containing the data, either retrieved or added.
 function _ingameDataCacherPrototype:GetOrAddToCategory(category, key, data, metadata)
     local founded, currentValue = IsValueInTable(category, data, key)
-    if not founded then
+    if not founded or currentValue.player ~= self.playerHash then
         local newValue = { metadata = metadata, player = self.playerHash, date = date("%d.%m.%y %H:%M:%S") }
         newValue[key] = data
         table.insert(category, newValue)
