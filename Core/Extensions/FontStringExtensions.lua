@@ -17,3 +17,12 @@ function internal.SetText(fontString, value)
     fontString:SetText(value)
     fontString:SetTextColor(r, g, b)
 end
+
+--- This function updates the text of a given UI font string element using a provided translation function.
+--- It takes a font string object and a translation function as parameters, then sets the font string's
+--- text to the translated version of its current text.
+--- @param fontStringObject FontString @The UI font string object to be updated
+--- @param translationFunc function @The function used for translation
+function internal.UpdateTextWithTranslation(fontStringObject, translationFunc)
+    fontStringObject:SetText(translationFunc(fontStringObject:GetText()))
+end
