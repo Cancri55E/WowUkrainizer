@@ -6,6 +6,7 @@ local Split = ns.StringUtil.Split
 local TryCallAPIFn = ns.CommonUtil.TryCallAPIFn
 local GetTranslatedZoneText = ns.DbContext.ZoneTexts.GetTranslatedZoneText
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
+local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 
 ---@class MapFrameTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
@@ -42,14 +43,30 @@ local function _onUIDropDownMenuShow()
     end
 end
 
+local function _translateMapLegend()
+    UpdateTextWithTranslation(QuestMapFrame.MapLegend.TitleText, GetTranslatedGlobalString)
+    UpdateTextWithTranslation(QuestMapFrame.MapLegend.BackButton.Text, GetTranslatedGlobalString)
+    for _, categoryFrame in pairs({ QuestMapFrame.MapLegend.ScrollFrame.ScrollChild:GetChildren() }) do
+        for _, layoutTable in pairs({ categoryFrame:GetLayoutChildren() }) do
+            for _, legendItemFrame in ipairs(layoutTable) do
+                UpdateTextWithTranslation(legendItemFrame, GetTranslatedGlobalString)
+                if (legendItemFrame.nameText) then
+                    legendItemFrame.nameText = GetTranslatedGlobalString(legendItemFrame.nameText)
+                end
+                if (legendItemFrame.tooltipText) then
+                    legendItemFrame.tooltipText = GetTranslatedGlobalString(legendItemFrame.tooltipText)
+                end
+            end
+        end
+    end
+end
+
 function translator:Init()
     hooksecurefunc(WorldMapFrame.BorderFrame, "SetTitle", function(borderFrame)
-        local currentText = borderFrame:GetTitleText():GetText()
-        local translatedText = GetTranslatedGlobalString(currentText)
-        if (currentText ~= translatedText) then
-            borderFrame:SetTitle(translatedText);
-        end
+        UpdateTextWithTranslation(borderFrame:GetTitleText(), GetTranslatedGlobalString)
     end)
+
+    _translateMapLegend();
 
     if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_ZONE_TEXTS_OPTION)) then
         WorldMapFrame.NavBar.homeButton.text:SetFontObject(SystemFont_Shadow_Med1)
@@ -80,9 +97,10 @@ function translator:Init()
                                 local translatedDescription = GetTranslatedGlobalString(descriptionText)
 
                                 if (descriptionText ~= translatedDescription) then
-                                    areaLabelInfo.description = translatedDescription
                                     if (levelText) then
                                         areaLabelInfo.description = translatedDescription .. " " .. levelText
+                                    else
+                                        areaLabelInfo.description = translatedDescription
                                     end
                                 end
                             end

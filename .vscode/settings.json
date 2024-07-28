@@ -560,7 +560,8 @@
         "LE_GAME_ERR_ZONE_EXPLORED_XP",
         "ERR_ZONE_EXPLORED_XP",
         "ERR_NEWTAXIPATH",
-        "MICRO_BUTTONS"
+        "MICRO_BUTTONS",
+        "LE_SCRIPT_BINDING_TYPE_INTRINSIC_POSTCALL"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",
