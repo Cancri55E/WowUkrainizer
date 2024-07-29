@@ -1,11 +1,9 @@
---- @type string, WowUkrainizerInternals
-local _, ns = ...;
+--- @class WowUkrainizerInternals
+local ns = select(2, ...);
+
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 local _G = _G
-
-local PAGE_TRANSLATION, SPELL_PASSIVE_TRANSLATION = ns.PAGE_TRANSLATION, ns.SPELL_PASSIVE_TRANSLATION
-local SPELL_RANK_TRANSLATION = ns.SPELL_RANK_TRANSLATION
-local SPELL_GENERAL_TRANSLATION = ns.SPELL_GENERAL_TRANSLATION
 
 local StartsWith, SetText = ns.StringUtil.StartsWith, ns.FontStringUtil.SetText
 local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
@@ -14,62 +12,15 @@ local GetTranslatedClass = ns.DbContext.Units.GetTranslatedClass
 local GetTranslatedSpecialization = ns.DbContext.Units.GetTranslatedSpecialization
 local GetTranslatedUISpellTooltip = ns.DbContext.Frames.GetTranslatedUISpellTooltip
 
+local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
+local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
+
 local function getTranslatedSpellbookFrameText(default)
     return ns.DbContext.Frames.GetTranslatedUIText("Spellbook", default)
 end
 
 ---@class SpellbookFrameTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
-
-local function updateSpellButtonCallback(spellButton)
-    if (ns.SettingsProvider.IsNeedTranslateSpellNameInSpellbook()) then
-        local spellString = spellButton.SpellName
-        if (spellString) then
-            SetText(spellString, GetTranslatedSpellName(spellString:GetText(), false))
-        end
-    end
-
-    local subSpellNameString = spellButton.SpellSubName
-    local subSpellName = subSpellNameString and subSpellNameString:GetText() or nil;
-    if (subSpellName) then
-        if (subSpellName == "Passive") then
-            SetText(subSpellNameString, SPELL_PASSIVE_TRANSLATION)
-        elseif (StartsWith(subSpellName, "Rank")) then
-            SetText(subSpellNameString, string.gsub(subSpellName, "Rank", SPELL_RANK_TRANSLATION))
-        else
-            SetText(subSpellNameString, GetTranslatedSpellAttribute(subSpellName))
-        end
-    end
-
-    if (spellButton.RequiredLevelString) then
-        local requiredLevelStringText = spellButton.RequiredLevelString:GetText()
-        spellButton.RequiredLevelString:SetText(getTranslatedSpellbookFrameText(requiredLevelStringText));
-    end
-end
-
-local function updateSkillLineTabsCallback()
-    local numSkillLineTabs = GetNumSpellTabs();
-    local gender = UnitSex("player")
-    for i = 1, MAX_SKILLLINE_TABS do
-        local skillLineTab = _G["SpellBookSkillLineTab" .. i];
-        if (i <= numSkillLineTabs and SpellBookFrame.bookType == BOOKTYPE_SPELL) then
-            local name, _, _, _, _, _, shouldHide, _ = GetSpellTabInfo(i);
-            if (not shouldHide) then
-                if (i == 1) then
-                    skillLineTab.tooltip = SPELL_GENERAL_TRANSLATION
-                elseif (i == 2) then
-                    skillLineTab.tooltip = GetTranslatedClass(name, 1, gender);
-                else
-                    skillLineTab.tooltip = GetTranslatedSpecialization(name);
-                end
-            end
-        end
-    end
-end
-
-local function updatePagesCallback()
-    SetText(SpellBookPageText, string.gsub(SpellBookPageText:GetText(), "Page", PAGE_TRANSLATION))
-end
 
 local function updateFrameCallback(...)
     local titleTextFontString = SpellBookFrame:GetTitleText()
@@ -109,54 +60,98 @@ local function spellButtonTooltipHook(button)
 end
 
 function translator:IsEnabled()
-    return false
-    -- TODO: Rework obsolet spellbook
-    --return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION)
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION)
+end
+
+function translator:PagedContentFrame_OnUpdate()
+    for _, frame in PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame:EnumerateFrames() do
+        if frame.HasValidData and frame:HasValidData() then
+            if (ns.SettingsProvider.IsNeedTranslateSpellNameInSpellbook()) then
+                print(frame.Name:GetText())
+                UpdateTextWithTranslation(frame.Name, GetTranslatedSpellName)
+            end
+
+            if (frame.SubName:IsVisible()) then
+                local subNameText = frame.SubName:GetText()
+                if (subNameText and string.match(subNameText, TRADESKILL_RANK_HEADER)) then
+                    local rank = C_Spell.GetSpellSkillLineAbilityRank(frame.spellBookItemInfo.spellID)
+                    frame.SubName:SetText(string.format(GetTranslatedGlobalString(TRADESKILL_RANK_HEADER), rank))
+                else
+                    UpdateTextWithTranslation(frame.SubName, GetTranslatedGlobalString)
+                end
+            end
+
+            if (frame.RequiredLevel:IsVisible()) then
+                local requiredLevel = C_SpellBook.GetSpellBookItemLevelLearned(frame.slotIndex, frame.spellBank);
+                frame.RequiredLevel:SetText(string.format(GetTranslatedGlobalString(SPELLBOOK_AVAILABLE_AT), requiredLevel))
+            end
+        else
+            local elementData = frame:GetElementData()
+            if (elementData.spellGroup) then
+                if (elementData.spellGroup.specID) then
+                    UpdateTextWithTranslation(frame.Text, GetTranslatedSpecialization)
+                else
+                    UpdateTextWithTranslation(frame.Text, GetTranslatedClass)
+                end
+            else
+                UpdateTextWithTranslation(frame.Text, GetTranslatedGlobalString)
+            end
+        end
+    end
+end
+
+local function PlayerSpellsFrame_UpdateFrameTitle(playerSpellsFrame)
+    if playerSpellsFrame:IsInspecting() then
+        local inspectUnit = playerSpellsFrame:GetInspectUnit();
+        if inspectUnit then
+            playerSpellsFrame:SetTitle(GetTranslatedGlobalString(TALENTS_INSPECT_FORMAT):format(UnitName(playerSpellsFrame:GetInspectUnit())));
+        else
+            playerSpellsFrame:SetTitle(GetTranslatedGlobalString(TALENTS_LINK_FORMAT):format(
+                GetTranslatedSpecialization(playerSpellsFrame:GetSpecName()),
+                GetTranslatedClass(playerSpellsFrame:GetClassName())));
+        end
+    else
+        UpdateTextWithTranslation(playerSpellsFrame:GetTitleText(), GetTranslatedGlobalString)
+    end
 end
 
 function translator:Init()
-    SpellBookFrame_HelpPlate[1].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_1"])
-    SpellBookFrame_HelpPlate[2].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_2"])
-    SpellBookFrame_HelpPlate[3].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_3"])
+    local function OnAddOnLoaded(_, name)
+        if (name == "Blizzard_PlayerSpells") then
+            for i = 1, 3, 1 do
+                UpdateTextWithTranslation(PlayerSpellsFrame.TabSystem.tabs[i].Text, GetTranslatedGlobalString)
+            end
 
-    for i = 1, 12, 1 do
-        local spellButton = _G["SpellButton" .. i]
+            local spellBookFrame = PlayerSpellsFrame.SpellBookFrame
+            UpdateTextWithTranslation(spellBookFrame.CategoryTabSystem.tabs[1].Text, GetTranslatedClass)
+            UpdateTextWithTranslation(spellBookFrame.CategoryTabSystem.tabs[2].Text, GetTranslatedGlobalString)
+            UpdateTextWithTranslation(spellBookFrame.CategoryTabSystem.tabs[3].Text, GetTranslatedGlobalString)
 
-        hooksecurefunc(spellButton, "UpdateButton", function()
-            if (not self:IsEnabled()) then return end
-            updateSpellButtonCallback(spellButton)
-        end)
+            UpdateTextWithTranslation(spellBookFrame.HidePassivesCheckButton.Label, GetTranslatedGlobalString)
+            UpdateTextWithTranslation(spellBookFrame.SearchBox.Instructions, GetTranslatedGlobalString)
+            spellBookFrame.SearchBox.instructionText = GetTranslatedGlobalString(spellBookFrame.SearchBox.instructionText)
 
-        spellButton:HookScript("OnUpdate", function()
-            if (not self:IsEnabled()) then return end
-            spellButtonTooltipHook(spellButton)
-        end)
+            local pagedSpellsFrame = spellBookFrame.PagedSpellsFrame
+            pagedSpellsFrame.PagingControls.currentPageOnlyText = GetTranslatedGlobalString(pagedSpellsFrame.PagingControls.currentPageOnlyText)
+            pagedSpellsFrame.PagingControls.currentPageWithMaxText = GetTranslatedGlobalString(pagedSpellsFrame.PagingControls.currentPageWithMaxText)
+
+            hooksecurefunc(PlayerSpellsFrame, "UpdateFrameTitle", PlayerSpellsFrame_UpdateFrameTitle)
+
+            pagedSpellsFrame:RegisterCallback(PagedContentFrameBaseMixin.Event.OnUpdate, self.PagedContentFrame_OnUpdate, self);
+
+            eventHandler:Unregister(OnAddOnLoaded, "ADDON_LOADED")
+        end
     end
+    eventHandler:Register(OnAddOnLoaded, "ADDON_LOADED")
 
-    hooksecurefunc("SpellBookFrame_UpdateSkillLineTabs", function()
-        if (not self:IsEnabled()) then return end
-        updateSkillLineTabsCallback()
-    end)
+    -- SpellBookFrame_HelpPlate[1].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_1"])
+    -- SpellBookFrame_HelpPlate[2].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_2"])
+    -- SpellBookFrame_HelpPlate[3].ToolTipText = getTranslatedSpellbookFrameText(_G["SPELLBOOK_HELP_3"])
 
-    hooksecurefunc("SpellBookFrame_UpdatePages", function()
-        if (not self:IsEnabled()) then return end
-        updatePagesCallback()
-    end)
-
-    hooksecurefunc("SpellBookFrame_Update", function(_)
-        if (not self:IsEnabled()) then return end
-        updateFrameCallback()
-    end)
-
-    PrimaryProfession1.UnlearnButton:HookScript("OnEnter", function()
-        if (not self:IsEnabled()) then return end
-        unlearnButtonTooltipHook()
-    end)
-
-    PrimaryProfession2.UnlearnButton:HookScript("OnEnter", function()
-        if (not self:IsEnabled()) then return end
-        unlearnButtonTooltipHook()
-    end)
+    -- hooksecurefunc("SpellBookFrame_Update", function(_)
+    --     if (not self:IsEnabled()) then return end
+    --     updateFrameCallback()
+    -- end)
 end
 
 ns.TranslationsManager:AddTranslator(translator)
