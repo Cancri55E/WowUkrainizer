@@ -12,7 +12,8 @@
 	<Script file="Tooltips\UnitTooltipTranslator.lua"/>
 	<Script file="Tooltips\SpellTooltipTranslator.lua"/>
 	<Script file="Frames\MainFrameTranslator.lua"/>
-	<Script file="Frames\SpellbookFrameTranslator.lua"/>
-	<Script file="Frames\ClassTalentFrameTranslator.lua"/>
+	<Script file="Frames\PlayerSpellsFrame\PlayerSpellsFrameTranslator.lua"/>
+	<Script file="Frames\PlayerSpellsFrame\SpellbookFrameTranslator.lua"/>
+	<Script file="Frames\PlayerSpellsFrame\ClassTalentFrameTranslator.lua"/>
 	<Script file="Frames\MapFrameTranslator.lua"/>
 </Ui>

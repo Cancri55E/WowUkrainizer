@@ -110,21 +110,25 @@ local function WorldMapFrame_NavBar_Refresh(navBar)
     end
 end
 
-local function WorldMapFrame_BorderFrame_SetTitle(borderFrame)
-    UpdateTextWithTranslation(borderFrame:GetTitleText(), GetTranslatedGlobalString)
+local function SetupBorderFrameHook()
+    hooksecurefunc(WorldMapFrame.BorderFrame, "SetTitle", function(borderFrame)
+        UpdateTextWithTranslation(borderFrame:GetTitleText(), GetTranslatedGlobalString)
+    end)
 end
 
-function translator:Init()
-    hooksecurefunc(WorldMapFrame.BorderFrame, "SetTitle", WorldMapFrame_BorderFrame_SetTitle)
-
-    TranslateMapLegend();
-
+local function SetupAndTranslateNavBar()
     if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_ZONE_TEXTS_OPTION)) then
         WorldMapFrame.NavBar.homeButton.text:SetFontObject(SystemFont_Shadow_Med1)
         UpdateTextWithTranslation(WorldMapFrame.NavBar.homeButton.text, GetTranslatedGlobalString)
 
         hooksecurefunc(WorldMapFrame.NavBar, "Refresh", WorldMapFrame_NavBar_Refresh)
     end
+end
+
+function translator:Init()
+    SetupBorderFrameHook()
+    SetupAndTranslateNavBar()
+    TranslateMapLegend();
 end
 
 ns.TranslationsManager:AddTranslator(translator)
