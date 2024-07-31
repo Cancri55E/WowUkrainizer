@@ -19,7 +19,7 @@ local TALENT_REPLACED_BY_TRANSLATION = ns.TALENT_REPLACED_BY_TRANSLATION
 local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
 local GetTranslatedSpellDescription = ns.DbContext.Spells.GetTranslatedSpellDescription
 local GetTranslatedSpellAttribute = ns.DbContext.Spells.GetTranslatedSpellAttribute
-local GetTranslatedUISpellTooltip = ns.DbContext.Frames.GetTranslatedUISpellTooltip
+local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 
 local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "^Replaced by%s+(.+)"
@@ -298,7 +298,7 @@ local function translateTooltipSpellInfo(spellContainer, highlightSpellName)
         for _, spellTip in ipairs(spellContainer.AdditionalSpellTips) do
             table.insert(translatedTooltipLines, {
                 index = spellTip[1],
-                value = GetTranslatedUISpellTooltip(spellTip[2])
+                value = GetTranslatedGlobalString(spellTip[2])
             })
         end
     end
@@ -495,13 +495,13 @@ function translator:Init()
         for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
             local lineLeft = _G["GameTooltipTextLeft" .. i]
             if (lineLeft) then
-                local leftTranslatedTips = GetTranslatedUISpellTooltip(lineLeft:GetText())
+                local leftTranslatedTips = GetTranslatedGlobalString(lineLeft:GetText())
                 lineLeft:SetText(leftTranslatedTips)
             end
 
             local lineRight = _G["GameTooltipTextRight" .. i]
             if (lineRight) then
-                local rightTranslatedTips = GetTranslatedUISpellTooltip(lineRight:GetText())
+                local rightTranslatedTips = GetTranslatedGlobalString(lineRight:GetText())
                 lineRight:SetText(rightTranslatedTips)
             end
         end
@@ -532,7 +532,7 @@ function translator:Init()
                     translatedRequiresText = translatedRequiresText:format(GetTranslatedSpellName(talentName, false))
                     lineLeft:SetText(translatedRequiresText)
                 else
-                    lineLeft:SetText(GetTranslatedUISpellTooltip(text))
+                    lineLeft:SetText(GetTranslatedGlobalString(text))
                 end
             end
         end
