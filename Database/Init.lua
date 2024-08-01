@@ -32,6 +32,15 @@ ns._db = {}
 
 ns._db.Changelogs = {
     {
+        version = "1.12.1",
+        date = "01 серпня 2024",
+        color = "red",
+        type = "Виправлення",
+        author = "Cancri",
+        title = nil,
+        description = "Виправлено помилку, яка виникала, коли гравець використовував заклинання з книги заклинань або панелі дій."
+    },
+    {
         version = "1.12.0",
         date = "27 липня 2024",
         color = "purple",
