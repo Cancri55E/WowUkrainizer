@@ -196,3 +196,20 @@ function internal.ExtractFromText(textMask, inputText)
     end
     return rtable.unpack(results)
 end
+
+local utf8_char_pattern = "[^\128-\191][\128-\191]*"
+local cyrillic_lower_to_upper = {
+    ["ї"] = "Ї",
+    ["і"] = "І",
+    ["є"] = "Є",
+    ["ґ"] = "Ґ"
+}
+
+--- Converts a given string to uppercase, handling specific Cyrillic characters.
+---@param str string @ The input string to be converted to uppercase.
+---@return string @ The resulting string with all characters converted to uppercase.
+function internal.Uft8Upper(str)
+    return (str:gsub(utf8_char_pattern, function(c)
+        return cyrillic_lower_to_upper[c] or string.upper(c)
+    end))
+end

@@ -43,7 +43,7 @@ function baseRepository._getNameValue(dbTable, original)
     return dbTable[hash] or original
 end
 
---- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain numeric values.
+--- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain numeric values and use 'Default' hash algorithm.
 ---@param dbTable table<integer, string> @ The database table for translations.
 ---@param original string @ The original (English) text.
 ---@return string @ The translated or original value.
@@ -55,6 +55,21 @@ function baseRepository:_getFormattedValue(dbTable, original)
     if (not text) then return original end
 
     local translatedText = self._getValue(dbTable, text)
+    return ReconstructStringWithNumerics(translatedText, numValues)
+end
+
+--- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain numeric values and use 'Name' hash algorithm.
+---@param dbTable table<integer, string> @ The database table for translations.
+---@param original string @ The original (English) text.
+---@return string @ The translated or original value.
+---@protected
+function baseRepository:_getFormattedNameValue(dbTable, original)
+    if (not original) then return original end
+    local text, numValues = NormalizeStringAndExtractNumerics(original)
+
+    if (not text) then return original end
+
+    local translatedText = self._getNameValue(dbTable, text)
     return ReconstructStringWithNumerics(translatedText, numValues)
 end
 
@@ -239,13 +254,6 @@ do
         end
 
         return original
-    end
-
-    --- Get the translated or original (English) additional spell tips.
-    --- @param original string @ The original (English) additional spell tips.
-    --- @return string @ The translated or original additional spell tips.
-    function repository.GetTranslatedUISpellTooltip(original)
-        return repository:_getFormattedValue(ns._db.AdditionalSpellTips, original)
     end
 
     dbContext.Frames = repository
@@ -573,7 +581,7 @@ do
     --- @param original string @ The original (English) global string.
     --- @return string @ The translated or original global string.
     function repository.GetTranslatedGlobalString(original)
-        return repository._getValue(ns._db.GlobalStrings, original)
+        return repository:_getFormattedNameValue(ns._db.GlobalStrings, original)
     end
 
     dbContext.GlobalStrings = repository

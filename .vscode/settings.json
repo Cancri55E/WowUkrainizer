@@ -559,7 +559,14 @@
         "LE_GAME_ERR_NEWTAXIPATH",
         "LE_GAME_ERR_ZONE_EXPLORED_XP",
         "ERR_ZONE_EXPLORED_XP",
-        "ERR_NEWTAXIPATH"
+        "ERR_NEWTAXIPATH",
+        "MICRO_BUTTONS",
+        "LE_SCRIPT_BINDING_TYPE_INTRINSIC_POSTCALL",
+        "NavBar_OverflowItemOnClick",
+        "NavBar_ClearTrailingButtons",
+        "WorldMapNavBarButtonMixin",
+        "SPELLBOOK_AVAILABLE_AT",
+        "TRADESKILL_RANK_HEADER"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",

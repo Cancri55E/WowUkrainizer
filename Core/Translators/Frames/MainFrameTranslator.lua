@@ -1,12 +1,31 @@
 --- @type WowUkrainizerInternals
 local ns = select(2, ...);
 
+local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
+local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
+
 ---@class MainFrameTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
-local function getTranslationOrDefault(default)
-    return ns.DbContext.Frames.GetTranslatedUIText("Main", default)
-end
+local MicroButtons = {
+    "CharacterMicroButton",
+    "ProfessionMicroButton",
+    "PlayerSpellsMicroButton",
+    "AchievementMicroButton",
+    "QuestLogMicroButton",
+    "LFDMicroButton",
+    "CollectionsMicroButton",
+    "EJMicroButton",
+    "StoreMicroButton",
+    "CharacterFrameTab1",
+    "CharacterFrameTab2",
+    "CharacterFrameTab3",
+    "GuildMicroButton",
+    "MainMenuMicroButton",
+    "ChatFrameChannelButton",
+    "QuickJoinToastButton",
+    "ChatFrameToggleVoiceMuteButton"
+}
 
 local function microButtonTooltipHook(button)
     if (not button) then return end
@@ -23,9 +42,9 @@ local function microButtonTooltipHook(button)
             return t
         end)
         if (not bindingKeyText) then
-            tooltipTitle:SetText(getTranslationOrDefault(text))
+            tooltipTitle:SetText(GetTranslatedGlobalString(text))
         else
-            tooltipTitle:SetText(getTranslationOrDefault(text) .. bindingKeyText)
+            tooltipTitle:SetText(GetTranslatedGlobalString(text) .. bindingKeyText)
         end
     end
     GameTooltip:Show()
@@ -36,35 +55,17 @@ function translator:IsEnabled()
 end
 
 function translator:Init()
-    GameMenuFrame.Header.Text:SetText(getTranslationOrDefault(GameMenuFrame.Header.Text:GetText()))
-    for i = 1, GameMenuFrame:GetNumChildren() do
-        local element = select(i, GameMenuFrame:GetChildren())
-        if element and element:IsObjectType("Button") and element.GetText then
-            element:SetText(getTranslationOrDefault(element:GetText()))
+    UpdateTextWithTranslation(GameMenuFrame.Header.Text, GetTranslatedGlobalString)
+
+    hooksecurefunc(GameMenuFrame, "InitButtons", function(frame)
+        for buttonFrame in frame.buttonPool:EnumerateActive() do
+            UpdateTextWithTranslation(buttonFrame, GetTranslatedGlobalString)
         end
+    end);
+
+    for i = 1, #MicroButtons do
+        _G[MicroButtons[i]]:HookScript("OnEnter", microButtonTooltipHook);
     end
-
-    CharacterMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(CharacterMicroButton) end)
-    ProfessionMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(ProfessionMicroButton) end)
-    PlayerSpellsMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(PlayerSpellsMicroButton) end)
-    AchievementMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(AchievementMicroButton) end)
-    QuestLogMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(QuestLogMicroButton) end)
-    LFDMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(LFDMicroButton) end)
-    CollectionsMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(CollectionsMicroButton) end)
-    EJMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(EJMicroButton) end)
-    StoreMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(StoreMicroButton) end)
-
-    CharacterFrameTab1:HookScript("OnEnter", function() microButtonTooltipHook(CharacterFrameTab1) end)
-    CharacterFrameTab2:HookScript("OnEnter", function() microButtonTooltipHook(CharacterFrameTab2) end)
-    CharacterFrameTab3:HookScript("OnEnter", function() microButtonTooltipHook(CharacterFrameTab3) end)
-
-    GuildMicroButton:HookScript("OnEnter", function() microButtonTooltipHook(GuildMicroButton) end)
-    MainMenuMicroButton:HookScript("OnUpdate", function() microButtonTooltipHook(MainMenuMicroButton) end)
-    ChatFrameChannelButton:HookScript("OnEnter", function() microButtonTooltipHook(ChatFrameChannelButton) end)
-    QuickJoinToastButton:HookScript("OnEnter", function() microButtonTooltipHook(QuickJoinToastButton) end)
-    ChatFrameToggleVoiceMuteButton:HookScript("OnEnter", function()
-        microButtonTooltipHook(ChatFrameToggleVoiceMuteButton)
-    end)
 end
 
 ns.TranslationsManager:AddTranslator(translator)

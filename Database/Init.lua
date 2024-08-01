@@ -6,11 +6,11 @@ ns.FACTION_ALLIANCE = "Альянс"
 ns.FACTION_HORDE = "Орда"
 
 ns.LEVEL_TRANSLATION = "Рівень"
-ns.PAGE_TRANSLATION = "Сторінка"
+ns.PAGE_TRANSLATION = "Сторінка" -- TODO: Remove
 ns.LEADER_TRANSLATION = "Ватажок"
 
 ns.SPELL_GENERAL_TRANSLATION = "Загальні"
-ns.SPELL_PASSIVE_TRANSLATION = "Пасивний"
+ns.SPELL_PASSIVE_TRANSLATION = "Пасивний" -- TODO: Remove
 ns.SPELL_RANK_TRANSLATION = "Pівень"
 ns.SPELL_NEXT_RANK_TRANSLATION = "Наступний рівень:"
 
