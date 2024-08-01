@@ -63,6 +63,15 @@ local function PagedContentFrame_OnUpdate()
     end
 end
 
+local function PagingControls_UpdateControls(pagedSpellsFrame)
+    if pagedSpellsFrame.displayMaxPages then
+        pagedSpellsFrame.PageText:SetFormattedText(GetTranslatedGlobalString(pagedSpellsFrame.currentPageWithMaxText),
+            pagedSpellsFrame.currentPage, pagedSpellsFrame.maxPages);
+    else
+        pagedSpellsFrame.PageText:SetFormattedText(GetTranslatedGlobalString(pagedSpellsFrame.currentPageOnlyText), pagedSpellsFrame.currentPage);
+    end
+end
+
 local function TranslateSpellBookFrame()
     local spellBookFrame = PlayerSpellsFrame.SpellBookFrame
     UpdateTextWithTranslation(spellBookFrame.CategoryTabSystem.tabs[1].Text, GetTranslatedClass)
@@ -71,17 +80,14 @@ local function TranslateSpellBookFrame()
 
     UpdateTextWithTranslation(spellBookFrame.HidePassivesCheckButton.Label, GetTranslatedGlobalString)
     UpdateTextWithTranslation(spellBookFrame.SearchBox.Instructions, GetTranslatedGlobalString)
-    spellBookFrame.SearchBox.instructionText = GetTranslatedGlobalString(spellBookFrame.SearchBox.instructionText)
 end
 
-local function SetupAndTranslatePagedSpellsFrame(self)
+local function SetupPagedSpellsFrameHooks()
     PlayerSpellsFrame.SpellBookFrame:HookScript("OnShow", PagedContentFrame_OnUpdate)
 
     local pagedSpellsFrame = PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame
-    pagedSpellsFrame.PagingControls.currentPageOnlyText = GetTranslatedGlobalString(pagedSpellsFrame.PagingControls.currentPageOnlyText)
-    pagedSpellsFrame.PagingControls.currentPageWithMaxText = GetTranslatedGlobalString(pagedSpellsFrame.PagingControls.currentPageWithMaxText)
-
-    pagedSpellsFrame:RegisterCallback(PagedContentFrameBaseMixin.Event.OnUpdate, PagedContentFrame_OnUpdate, self);
+    hooksecurefunc(pagedSpellsFrame.PagingControls, "UpdateControls", PagingControls_UpdateControls)
+    pagedSpellsFrame:RegisterCallback(PagedContentFrameBaseMixin.Event.OnUpdate, PagedContentFrame_OnUpdate);
 end
 
 function translator:IsEnabled()
@@ -91,7 +97,7 @@ end
 function translator:Init()
     local function OnAddOnLoaded(_, name)
         if (name == "Blizzard_PlayerSpells") then
-            SetupAndTranslatePagedSpellsFrame(self)
+            SetupPagedSpellsFrameHooks()
             TranslateSpellBookFrame()
             eventHandler:Unregister(OnAddOnLoaded, "ADDON_LOADED")
         end
