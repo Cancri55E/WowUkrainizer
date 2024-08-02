@@ -6,11 +6,9 @@ ns.FACTION_ALLIANCE = "Альянс"
 ns.FACTION_HORDE = "Орда"
 
 ns.LEVEL_TRANSLATION = "Рівень"
-ns.PAGE_TRANSLATION = "Сторінка" -- TODO: Remove
 ns.LEADER_TRANSLATION = "Ватажок"
 
-ns.SPELL_GENERAL_TRANSLATION = "Загальні"
-ns.SPELL_PASSIVE_TRANSLATION = "Пасивний" -- TODO: Remove
+ns.SPELL_PASSIVE_TRANSLATION = "Пасивний"
 ns.SPELL_RANK_TRANSLATION = "Pівень"
 ns.SPELL_NEXT_RANK_TRANSLATION = "Наступний рівень:"
 
@@ -31,6 +29,17 @@ ns.NO_UA = "Ні"
 ns._db = {}
 
 ns._db.Changelogs = {
+    {
+        version = "1.12.2",
+        date = "02 серпня 2024",
+        color = "blue",
+        type = "Покращення",
+        author = "Cancri",
+        title = nil,
+        description = [[Додано переклад для вікна |cffFFD150"Що нового?"|r. Це дозволить вам своєчасно дізнаватися про останні нововведення в доповненні.
+
+Виправлено текстові помилки та неточності в налаштуваннях доповнення]]
+    },
     {
         version = "1.12.1",
         date = "01 серпня 2024",
@@ -74,6 +83,7 @@ ns._db.Changelogs = {
         title = nil,
         description =
         [[|cffFFD150Додані переклади ігрових локацій.|r
+
 Відтепер при переході між локаціями, над мінікартою та на карті будуть відображатися перекладені назви локацій.
 На момент виходу оновлення перекладена більшість локацій, але не всі.
 

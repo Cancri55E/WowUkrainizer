@@ -17,4 +17,5 @@
 	<Script file="Frames\PlayerSpellsFrame\ClassTalentsFrameTranslator.lua"/>
 	<Script file="Frames\PlayerSpellsFrame\ClassSpecFrameTranslator.lua"/>
 	<Script file="Frames\MapFrameTranslator.lua"/>
+	<Script file="Frames\SplashFrameTranslator.lua"/>
 </Ui>
