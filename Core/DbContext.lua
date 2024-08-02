@@ -256,6 +256,10 @@ do
         return original
     end
 
+    function repository.GetWhatsNewFrameInfo(version)
+        return ns._db.SplashFrames.WhatsNew[version]
+    end
+
     dbContext.Frames = repository
 end
 

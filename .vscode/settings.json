@@ -566,7 +566,10 @@
         "NavBar_ClearTrailingButtons",
         "WorldMapNavBarButtonMixin",
         "SPELLBOOK_AVAILABLE_AT",
-        "TRADESKILL_RANK_HEADER"
+        "TRADESKILL_RANK_HEADER",
+        "SplashFrame",
+        "SPLASH_BASE_HEADER",
+        "SPLASH_NEW_HEADER_SEASON"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",

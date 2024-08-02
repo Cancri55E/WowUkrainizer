@@ -247,12 +247,12 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 						<Anchor point="TOPLEFT" x="20" y="-12"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="SpellNameLanguageTitle" inherits="WowUkrainizerFramePrimaryTextFont" wordwrap="true" text="Мова якою виводиться назва:">
+				<FontString parentKey="SpellNameLanguageTitle" inherits="WowUkrainizerFramePrimaryTextFont" wordwrap="true" text="Мова, якою виводиться назва:">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.UISettingsTitle" relativePoint="BOTTOMLEFT" x="32" y="-86"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="SpellDescriptionLanguageTitle" inherits="WowUkrainizerFramePrimaryTextFont" wordwrap="true" text="Мова якою виводиться опис:">
+				<FontString parentKey="SpellDescriptionLanguageTitle" inherits="WowUkrainizerFramePrimaryTextFont" wordwrap="true" text="Мова, якою виводиться опис:">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.SpellNameLanguageTitle" relativePoint="BOTTOMLEFT" x="0" y="-22"/>
 					</Anchors>
@@ -300,19 +300,19 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 						<Anchor point="TOPLEFT" x="20" y="-12"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="UseDefaultFontsDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Використовуйте цей режим якщо вже ви користуєтесь будь-якою глобальною модифікацією котра має свою систему шрифтів, наприклад ElvUI. В такому випадку, щоб не створювати конфлікти, ви маєте налаштовувати шрифти через неї.">
+				<FontString parentKey="UseDefaultFontsDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Використовуйте цей режим, якщо ви вже користуєтесь будь-якою глобальною модифікацією, яка має свою систему шрифтів, наприклад ElvUI. У такому випадку, щоб не створювати конфлікти, ви маєте налаштовувати шрифти через неї.">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.UISettingsTitle" relativePoint="BOTTOMLEFT" x="32" y="-28"/>
 						<Anchor point="TOPRIGHT" x="-12" y="-12"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="UseExtendedBlizzardFontsDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Використовуйте цей режим якщо ви звикли або вам подобаються стандартні шрифти від Blizzard. Вони залишаться незмінними, але до них будуть додані українські символи.">
+				<FontString parentKey="UseExtendedBlizzardFontsDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Використовуйте цей режим, якщо ви звикли або вам подобаються стандартні шрифти від Blizzard. Вони залишаться незмінними, але до них будуть додані українські символи.">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.UseDefaultFontsDescription" relativePoint="BOTTOMLEFT" x="0" y="-26"/>
 						<Anchor point="TOPRIGHT" x="-12" y="-12"/>
 					</Anchors>
 				</FontString>
-				<FontString parentKey="UseCustomFontsDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Використовуйте цей режим якщо ви хочете замінити шрифт на будь-який інший. Перевірте що вибраний вами шрифт підтримує українську мову! Інакше це призведе до проблем з відображенням тексту. |n|nНаш додаток автоматично знаходить всі шрифти які встановлені в грі за допомогою LibSharedMedia-3.0 (наприклад з інших модифікацій) тому ви можете сміливо її використовувати, щоб додати свій улюблений шрифт.">
+				<FontString parentKey="UseCustomFontsDescription" inherits="WowUkrainizerSecondaryTextFont" wordwrap="true" text="Використовуйте цей режим, якщо ви хочете замінити шрифт на будь-який інший. Перевірте, що вибраний вами шрифт підтримує українську мову! Інакше це призведе до проблем з відображенням тексту. |n|nНаш додаток автоматично знаходить всі шрифти, які встановлені в грі за допомогою бібліотеки LibSharedMedia-3.0 (наприклад, з інших модифікацій), тому ви можете сміливо її використовувати, щоб додати свій улюблений шрифт.">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeKey="$parent.UseExtendedBlizzardFontsDescription" relativePoint="BOTTOMLEFT" x="0" y="-26"/>
 						<Anchor point="TOPRIGHT" x="-12" y="-12"/>

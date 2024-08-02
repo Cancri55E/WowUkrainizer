@@ -54,8 +54,8 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
                             </OnClick>
                         </Scripts>
                     </Button>
-                    <Button parentKey="SetDefaultSettingsButton" inherits="UIPanelButtonTemplate" text="За замовчуванням">
-                        <Size x="140" y="24"/>
+                    <Button parentKey="SetDefaultSettingsButton" inherits="UIPanelButtonTemplate" text="Стандартні налаштування">
+                        <Size x="160" y="24"/>
                         <NormalFont style="WowUkrainizerFramePrimaryTextFont"/>
                         <HighlightFont style="WowUkrainizerFramePrimaryTextFont"/>
                         <DisabledFont style="WowUkrainizerFramePrimaryTextFont"/>

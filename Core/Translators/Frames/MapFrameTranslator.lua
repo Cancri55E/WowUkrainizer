@@ -10,10 +10,6 @@ local areaLabelDataProviderHooked
 ---@class MapFrameTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
-function translator:IsEnabled()
-    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_MAP_AND_QUEST_LOG_FRAME_OPTION)
-end
-
 --- Extract and separate level text from a given string.
 --- @param text string @The input string containing the zone name and level text.
 --- @return string modifiedText @The text with the level text removed.
@@ -123,6 +119,10 @@ local function SetupAndTranslateNavBar()
 
         hooksecurefunc(WorldMapFrame.NavBar, "Refresh", WorldMapFrame_NavBar_Refresh)
     end
+end
+
+function translator:IsEnabled()
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_MAP_AND_QUEST_LOG_FRAME_OPTION)
 end
 
 function translator:Init()
