@@ -5,8 +5,8 @@ local spell_book_item_icon_enter_hooks = {}
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
-local GetTranslatedClass = ns.DbContext.Units.GetTranslatedClass
-local GetTranslatedSpecialization = ns.DbContext.Units.GetTranslatedSpecialization
+local GetTranslatedClass = ns.DbContext.Player.GetTranslatedClass
+local GetTranslatedSpecialization = ns.DbContext.Player.GetTranslatedSpecialization
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 

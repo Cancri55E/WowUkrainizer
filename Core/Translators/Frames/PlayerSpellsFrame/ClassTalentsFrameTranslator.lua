@@ -5,8 +5,8 @@ local _G = _G
 
 local Uft8Upper = ns.StringUtil.Uft8Upper
 local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
-local GetTranslatedSpecialization = ns.DbContext.Units.GetTranslatedSpecialization
-local GetTranslatedClass = ns.DbContext.Units.GetTranslatedClass
+local GetTranslatedSpecialization = ns.DbContext.Player.GetTranslatedSpecialization
+local GetTranslatedClass = ns.DbContext.Player.GetTranslatedClass
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 

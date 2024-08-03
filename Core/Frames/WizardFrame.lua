@@ -376,6 +376,9 @@ do
         [1] = "Перекладати підказки до неігрових персонажів",
         [2] = "Перекладати підказки до заклинань, здібностей та талантів",
         [3] = "Підсвічувати блакитним кольором назви заклинань, здібностей та талантів в описі",
+        [4] = "Перекладати підказки до предметів",
+        [5] = "Не перекладати назву предмета",
+        [6] = "Не перекладати характеристики предмета (Сила, Інтелект, Майстерність і тп.)",
     }
 
     function WowUkrainizerTooltipSettingsPageMixin:OnLoad()
@@ -410,22 +413,30 @@ do
     end
 
     function WowUkrainizerTooltipSettingsPageMixin:OnCheckButtonChecked(checkButton, checked)
-        if (checkButton ~= self.TranslateSpellTooltips) then return end
+        if (checkButton == self.TranslateSpellTooltips) then
+            if (checked) then
+                self.HighlightSpellNameInDescriptionButton:EnableHook()
+                self.SpellNameLanguageSelector:Enable()
+                self.SpellDescriptionLanguageSelector:Enable()
 
-        if (checked) then
-            self.HighlightSpellNameInDescriptionButton:EnableHook()
-            self.SpellNameLanguageSelector:Enable()
-            self.SpellDescriptionLanguageSelector:Enable()
+                self:EnableFontString(self.SpellNameLanguageTitle)
+                self:EnableFontString(self.SpellDescriptionLanguageTitle)
+            else
+                self.HighlightSpellNameInDescriptionButton:DisableHook()
+                self.SpellNameLanguageSelector:Disable()
+                self.SpellDescriptionLanguageSelector:Disable()
 
-            self:EnableFontString(self.SpellNameLanguageTitle)
-            self:EnableFontString(self.SpellDescriptionLanguageTitle)
-        else
-            self.HighlightSpellNameInDescriptionButton:DisableHook()
-            self.SpellNameLanguageSelector:Disable()
-            self.SpellDescriptionLanguageSelector:Disable()
-
-            self:DisableFontString(self.SpellNameLanguageTitle)
-            self:DisableFontString(self.SpellDescriptionLanguageTitle)
+                self:DisableFontString(self.SpellNameLanguageTitle)
+                self:DisableFontString(self.SpellDescriptionLanguageTitle)
+            end
+        elseif (checkButton == self.TranslateItemTooltips) then
+            if (checked) then
+                self.DoNotTranslateItemNameButton:EnableHook()
+                self.DoNotTranslateItemAttributesButton:EnableHook()
+            else
+                self.DoNotTranslateItemNameButton:DisableHook()
+                self.DoNotTranslateItemAttributesButton:DisableHook()
+            end
         end
     end
 end

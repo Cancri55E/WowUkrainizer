@@ -90,15 +90,6 @@ do
     ---@class UnitRepository : BaseRepository
     local repository = setmetatable({}, { __index = baseRepository })
 
-    --- Calculate the index based on gender and case values.
-    --- @param case number @ The case value.
-    --- @param gender number? @ The gender value.
-    --- @return number @ The calculated index.
-    local function calculateClassTranslationIndex(case, gender)
-        if (not case or not gender) then return 1 end
-        return case * 2 - (3 - gender)
-    end
-
     --- Get the translated unit name or the original (English) text if not translated.
     --- @param original string @ The original (English) text.
     --- @param gender number? @ The gender value.
@@ -143,6 +134,23 @@ do
         return original -- TODO:
     end
 
+    dbContext.Units = repository
+end
+
+-- Player
+do
+    ---@class PlayerRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
+
+    --- Calculate the index based on gender and case values.
+    --- @param case number @ The case value.
+    --- @param gender number? @ The gender value.
+    --- @return number @ The calculated index.
+    local function calculateClassTranslationIndex(case, gender)
+        if (not case or not gender) then return 1 end
+        return case * 2 - (3 - gender)
+    end
+
     --- Get the translated class based on case and gender or the original (English) text if not translated.
     --- @param original string @ The original (English) text.
     --- @param case number @ The case value.
@@ -183,7 +191,7 @@ do
         return repository._getValue(ns._db.Attributes, original)
     end
 
-    dbContext.Units = repository
+    dbContext.Player = repository
 end
 
 -- Spells
@@ -380,14 +388,14 @@ do
                 case = 7
             end
 
-            local classStr = dbContext.Units.GetTranslatedClass(playerData.Class, case, playerData.Gender)
+            local classStr = dbContext.Player.GetTranslatedClass(playerData.Class, case, playerData.Gender)
 
             if (marker == "$C") then return string.upper(classStr) end
             return classStr
         end)
 
         text = string.gsub(text, "%$[cC]", function(marker)
-            local classStr = dbContext.Units.GetTranslatedClass(playerData.Class, 1, playerData.Gender)
+            local classStr = dbContext.Player.GetTranslatedClass(playerData.Class, 1, playerData.Gender)
 
             if (marker == "$C") then return string.upper(classStr) end
             return classStr
@@ -589,6 +597,28 @@ do
     end
 
     dbContext.GlobalStrings = repository
+end
+
+-- Items
+do
+    ---@class ItemsRepository : BaseRepository
+    local repository = setmetatable({}, { __index = baseRepository })
+
+    --- Get the translated or original (English) name.
+    --- @param original string @ The original (English) name.
+    --- @return string @ The translated or original name.
+    function repository.GetTranslatedItemName(original)
+        return original
+    end
+
+    --- Get the translated or original (English) description.
+    --- @param original string @ The original (English) description.
+    --- @return string @ The translated or original description.
+    function repository.GetTranslatedItemDescription(original)
+        return original
+    end
+
+    dbContext.Items = repository
 end
 
 -- Reputations and Factions
