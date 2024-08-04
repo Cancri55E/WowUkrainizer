@@ -74,7 +74,7 @@ local function AreaLabelDataProvider_SetLabel(areaNameLabels, areaLabelType, nam
     end
 
     if (description) then
-        local translatedText = getTranslatedText(description, GetTranslatedZoneText)
+        local translatedText = getTranslatedText(description, GetTranslatedGlobalString)
         if (translatedText) then
             areaLabelInfo.description = translatedText
         end
