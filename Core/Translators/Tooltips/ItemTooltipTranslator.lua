@@ -4,6 +4,7 @@ local ns = select(2, ...);
 local NullOrEmpty = ns.StringUtil.NullOrEmpty
 local GetTranslatedItemName = ns.DbContext.Items.GetTranslatedItemName
 local GetTranslatedItemDescription = ns.DbContext.Items.GetTranslatedItemDescription
+local GetTranslatedItemAttribute = ns.DbContext.Items.GetTranslatedItemAttribute
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 
 ---@class ItemTooltipTranslator : BaseTooltipTranslator
@@ -22,9 +23,14 @@ local TOOLTIP_CATEGORY_PROFESSION_CRAFTING_QUALITY = "Profession Crafting Qualit
 local TOOLTIP_CATEGORY_EQUIP_SLOT = "Equip Slot"
 local TOOLTIP_CATEGORY_RESTRICTED_LEVEL = "Restricted Level"
 local TOOLTIP_CATEGORY_ITEM_BINDING = "Item Binding"
+local TOOLTIP_CATEGORY_UNCLASSIFIED = "Unclassified"
 
 local function HandleAttributes(data, index)
-    return { TOOLTIP_CATEGORY_ATTRIBUTES }, { value = data[1], name = data[2], index = index }
+    if (#data == 3) then
+        return { TOOLTIP_CATEGORY_ATTRIBUTES }, { min = data[1], max = data[2], name = data[3], index = index }
+    else
+        return { TOOLTIP_CATEGORY_ATTRIBUTES }, { value = data[1], name = data[2], index = index }
+    end
 end
 
 local function HandleItemLevel(data, index)
@@ -61,6 +67,7 @@ end
 
 local patterns = {
     { pattern = "^%+(%d+)%s(.*)$",                    func = HandleAttributes },
+    { pattern = "^%+(%d+)-(%d+)%s(.*)$",              func = HandleAttributes },
     { pattern = "^(%d+)%sArmor$",                     func = HandleArmor },
     { pattern = '^"(.*)"$',                           func = HandleDescription },
     { pattern = '^Durability (%d+) / (%d+)$',         func = HandleDurability },
@@ -97,21 +104,35 @@ function translator:ParseTooltip(tooltip, tooltipData)
             end
             table.insert(currentCategory, leftTextData)
         else
-            result[text] = { unclassified = true, index = index, right = isRightText }
+            if (not result[TOOLTIP_CATEGORY_UNCLASSIFIED]) then result[TOOLTIP_CATEGORY_UNCLASSIFIED] = {} end
+            table.insert(result[TOOLTIP_CATEGORY_UNCLASSIFIED], { value = text, index = index, right = isRightText })
         end
     end
 
-    DevTool:AddData(tooltipData, "ParseTooltip")
+    -- DevTool:AddData(tooltipData, "ParseTooltip")
 
+    self._postCallLineCount = tonumber(tooltip:NumLines())
+
+    local tooltipLine = {}
     for i = 1, tooltip:NumLines() do
-        self:AddFontStringToIndexLookup(i, _G["GameTooltipTextLeft" .. i])
+        -- local leftText = _G["GameTooltipTextLeft" .. i]
+        -- if (leftText) then
+        --     local currentIndex = #tooltipLine + 1;
+        --     tooltipLine[currentIndex] = leftText:GetText() or ''
+        --     self:AddFontStringToIndexLookup(currentIndex, leftText)
+        -- end
+
+        -- local rightText = _G["GameTooltipTextRight" .. i]
+        -- if (rightText) then
+        --     local currentIndex = #tooltipLine + 1;
+        --     tooltipLine[currentIndex] = rightText:GetText() or ''
+        --     self:AddFontStringToIndexLookup(currentIndex, rightText)
+        -- end
     end
 
-    local tooltipLines = tooltipData.lines
-
     local result = {}
-    for i = 1, #tooltipLines, 1 do
-        local tooltipLine = tooltipLines[i]
+    for i = 1, #tooltipLine, 1 do
+        local tooltipLine = tooltipLine[i]
         if (tooltipLine.type == Enum.TooltipDataLineType.Blank) then
             -- ignore
         elseif (tooltipLine.type == Enum.TooltipDataLineType.ItemName) then
@@ -137,7 +158,7 @@ function translator:ParseTooltip(tooltip, tooltipData)
 end
 
 function translator:TranslateTooltipInfo(tooltipInfo)
-    DevTool:AddData(tooltipInfo, "TranslateTooltipInfo")
+    DevTool:AddData(tooltipInfo, "tooltipInfo")
 
     if (not tooltipInfo.Name) then return end
 
@@ -145,25 +166,86 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     table.insert(translatedTooltipLines, {
         index = 1,
-        value = GetTranslatedItemName(tooltipInfo.name)
+        value = GetTranslatedItemName(tooltipInfo.Name)
     })
 
     if (tooltipInfo[TOOLTIP_CATEGORY_ATTRIBUTES]) then
+        for _, attribute in ipairs(tooltipInfo[TOOLTIP_CATEGORY_ATTRIBUTES]) do
+            if (attribute.value) then
+                table.insert(translatedTooltipLines, {
+                    index = attribute.index,
+                    value = ("+%d %s"):format(attribute.value, GetTranslatedItemAttribute(attribute.name))
+                })
+            else
+                table.insert(translatedTooltipLines, {
+                    index = attribute.index,
+                    value = ("+%d-%d %s"):format(attribute.min, attribute.max, GetTranslatedItemAttribute(attribute.name))
+                })
+            end
+        end
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_ITEM_LEVEL]) then
 
     end
-    -- local TOOLTIP_CATEGORY_ATTRIBUTES = "Attributes"
-    -- local TOOLTIP_CATEGORY_ITEM_LEVEL = "Item Level"
-    -- local TOOLTIP_CATEGORY_ARMOR = "Armor"
-    -- local TOOLTIP_CATEGORY_DESCRIPTION = "Description"
-    -- local TOOLTIP_CATEGORY_DURABILITY = "Durability"
-    -- local TOOLTIP_CATEGORY_MADE_BY = "Made By"
-    -- local TOOLTIP_CATEGORY_DPS = "DPS"
-    -- local TOOLTIP_CATEGORY_WEAPON_DAMAGE = "Weapon Damage"
-    -- local TOOLTIP_CATEGORY_WEAPON_SPEED = "Weapon Speed"
-    -- local TOOLTIP_CATEGORY_PROFESSION_CRAFTING_QUALITY = "Profession Crafting Quality"
-    -- local TOOLTIP_CATEGORY_EQUIP_SLOT = "Equip Slot"
-    -- local TOOLTIP_CATEGORY_RESTRICTED_LEVEL = "Restricted Level"
-    -- local TOOLTIP_CATEGORY_ITEM_BINDING = "Item Binding"
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_ARMOR]) then
+        local armor = tooltipInfo[TOOLTIP_CATEGORY_ARMOR][1]
+        table.insert(translatedTooltipLines, {
+            index = armor.index,
+            value = ("%d Броні"):format(armor.value)
+        })
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_DESCRIPTION]) then
+        local description = tooltipInfo[TOOLTIP_CATEGORY_DESCRIPTION][1]
+        table.insert(translatedTooltipLines, {
+            index = description.index,
+            value = "\"" .. GetTranslatedItemDescription(description.text) .. "\"" -- TODO: Add Color
+        })
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_DURABILITY]) then
+
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_MADE_BY]) then
+
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_DPS]) then
+
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_WEAPON_DAMAGE]) then
+
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_WEAPON_SPEED]) then
+
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_PROFESSION_CRAFTING_QUALITY]) then
+
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_EQUIP_SLOT]) then
+        -- GetTranslatedGlobalString
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_RESTRICTED_LEVEL]) then
+
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_ITEM_BINDING]) then
+
+    end
+
+    if (tooltipInfo[TOOLTIP_CATEGORY_UNCLASSIFIED]) then
+
+    end
+
+    DevTool:AddData(translatedTooltipLines, "translatedTooltipLines")
 
     return translatedTooltipLines
 end

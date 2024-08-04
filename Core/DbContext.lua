@@ -618,6 +618,13 @@ do
         return original
     end
 
+    --- Get the translated or original (English) description.
+    --- @param original string @ The original (English) description.
+    --- @return string @ The translated or original description.
+    function repository.GetTranslatedItemAttribute(original)
+        return repository._getValue(ns._db.ItemAttributes, original)
+    end
+
     dbContext.Items = repository
 end
 

@@ -99,4 +99,5 @@
 ---@field ZoneTexts table<integer, string>
 ---@field GlobalStrings table<integer, string>
 ---@field Factions table<integer, string>
+---@field ItemAttributes table<integer, string>
 -- TODO: @field Voiceover
