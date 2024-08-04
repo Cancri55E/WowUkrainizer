@@ -576,7 +576,12 @@
         "ITEM_MIN_LEVEL",
         "PROFESSIONS_CRAFTING_QUALITY",
         "ITEM_CREATED_BY",
-        "DPS_TEMPLATE"
+        "DPS_TEMPLATE",
+        "INVTYPE_CLOAK",
+        "EQUIPMENT_SETS",
+        "SELL_PRICE",
+        "MoneyFrame_Update",
+        "DAMAGE_TEMPLATE"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",

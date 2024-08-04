@@ -592,7 +592,10 @@ do
     --- Get the translated or original (English) global string.
     --- @param original string @ The original (English) global string.
     --- @return string @ The translated or original global string.
-    function repository.GetTranslatedGlobalString(original)
+    function repository.GetTranslatedGlobalString(original, withoutFormatting)
+        if (withoutFormatting) then
+            return repository._getNameValue(ns._db.GlobalStrings, original)
+        end
         return repository:_getFormattedNameValue(ns._db.GlobalStrings, original)
     end
 
