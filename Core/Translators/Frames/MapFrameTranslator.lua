@@ -47,29 +47,36 @@ local function TranslateMapLegend()
 end
 
 local function AreaLabelDataProvider_SetLabel(areaNameLabels, areaLabelType, name, description, _, _, _)
+    local function getTranslatedText(obj, translateFunc)
+        local value = obj
+        if (type(value) == "function") then
+            value = obj()
+        end
+
+        local text, levelText = ExtractLevelText(value)
+        local translatedText = translateFunc(text)
+
+        if (text ~= translatedText) then
+            if (levelText) then
+                translatedText = translatedText .. " " .. levelText
+            end
+
+            return translatedText
+        end
+    end
+
     local areaLabelInfo = areaNameLabels.labelInfoByType[areaLabelType];
     if (name) then
-        local nameText, levelText = ExtractLevelText(name)
-        local translatedName = GetTranslatedZoneText(nameText)
-
-        if (nameText ~= translatedName) then
-            areaLabelInfo.name = translatedName
-            if (levelText) then
-                areaLabelInfo.name = translatedName .. levelText
-            end
+        local translatedText = getTranslatedText(name, GetTranslatedZoneText)
+        if (translatedText) then
+            areaLabelInfo.name = translatedText
         end
     end
 
     if (description) then
-        local descriptionText, levelText = ExtractLevelText(description)
-        local translatedDescription = GetTranslatedGlobalString(descriptionText)
-
-        if (descriptionText ~= translatedDescription) then
-            if (levelText) then
-                areaLabelInfo.description = translatedDescription .. " " .. levelText
-            else
-                areaLabelInfo.description = translatedDescription
-            end
+        local translatedText = getTranslatedText(description, GetTranslatedZoneText)
+        if (translatedText) then
+            areaLabelInfo.description = translatedText
         end
     end
 end
