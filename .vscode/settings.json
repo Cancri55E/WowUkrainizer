@@ -569,7 +569,14 @@
         "TRADESKILL_RANK_HEADER",
         "SplashFrame",
         "SPLASH_BASE_HEADER",
-        "SPLASH_NEW_HEADER_SEASON"
+        "SPLASH_NEW_HEADER_SEASON",
+        "ARMOR_TEMPLATE",
+        "DURABILITY_TEMPLATE",
+        "ITEM_LEVEL",
+        "ITEM_MIN_LEVEL",
+        "PROFESSIONS_CRAFTING_QUALITY",
+        "ITEM_CREATED_BY",
+        "DPS_TEMPLATE"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",
