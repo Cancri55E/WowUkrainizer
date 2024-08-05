@@ -1,6 +1,8 @@
 --- @type WowUkrainizerInternals
 local ns = select(2, ...);
 
+local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
+
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 
@@ -66,6 +68,14 @@ function translator:Init()
     for i = 1, #MicroButtons do
         _G[MicroButtons[i]]:HookScript("OnEnter", microButtonTooltipHook);
     end
+
+    local function OnAddOnLoaded(_, name)
+        if (name == "Blizzard_ItemSocketingUI") then
+            UpdateTextWithTranslation(ItemSocketingSocketButton, GetTranslatedGlobalString) -- TODO: Maybe someday move to ItemSocketingFrame Translator
+            eventHandler:Unregister(OnAddOnLoaded, "ADDON_LOADED")
+        end
+    end
+    eventHandler:Register(OnAddOnLoaded, "ADDON_LOADED")
 end
 
 ns.TranslationsManager:AddTranslator(translator)

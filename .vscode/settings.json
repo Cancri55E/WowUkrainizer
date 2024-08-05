@@ -581,7 +581,20 @@
         "EQUIPMENT_SETS",
         "SELL_PRICE",
         "MoneyFrame_Update",
-        "DAMAGE_TEMPLATE"
+        "DAMAGE_TEMPLATE",
+        "ITEM_UPGRADE_TOOLTIP_FORMAT",
+        "ITEM_UPGRADE_TOOLTIP_FORMAT_STRING",
+        "GameTooltip_ShowCompareItem",
+        "TooltipComparisonManager",
+        "ITEM_DELTA_DUAL_WIELD_COMPARISON_MAINHAND_DESCRIPTION",
+        "ITEM_DELTA_DUAL_WIELD_COMPARISON_OFFHAND_DESCRIPTION",
+        "ITEM_COMPARISON_SWAP_ITEM_MAINHAND_DESCRIPTION",
+        "ITEM_COMPARISON_SWAP_ITEM_OFFHAND_DESCRIPTION",
+        "STAT_STURDINESS",
+        "ITEM_CLASSES_ALLOWED",
+        "ItemSocketingSocketButton",
+        "ItemSocketingFrame_OnLoad",
+        "ItemSocketingFrame"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",

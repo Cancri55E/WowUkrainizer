@@ -122,6 +122,18 @@ function _settingsProviderPrototype.IsNeedHighlightSpellNameInDescription()
     return WowUkrainizer_Options[WOW_UKRAINIZER_HIGHLIGHT_SPELL_NAME_IN_DESCRIPTION_OPTION] == true
 end
 
+--- Checks if item name in tooltips should be translated to Ukrainian.
+---@return boolean @True if item name in tooltips should be translated to Ukrainian; otherwise, false.
+function _settingsProviderPrototype.IsNeedToTranslateItemNameInTooltip()
+    return WowUkrainizer_Options[WOW_UKRAINIZER_DO_NOT_TRANSLATE_ITEM_NAME_OPTION] == false
+end
+
+--- Checks if item attribute in tooltips should be translated to Ukrainian.
+---@return boolean @True if item attribute in tooltips should be translated to Ukrainian; otherwise, false.
+function _settingsProviderPrototype.IsNeedToTranslateItemAttributesInTooltip()
+    return WowUkrainizer_Options[WOW_UKRAINIZER_DO_NOT_TRANSLATE_ITEM_ATTRIBUTES_OPTION] == false
+end
+
 --- Retrieves the value of an option from addon options.
 ---@param name string @The name of the option.
 ---@return any @The value of the option.
