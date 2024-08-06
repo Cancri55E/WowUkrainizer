@@ -3,8 +3,8 @@ local ns = select(2, ...);
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
-local GetTranslatedClass = ns.DbContext.Units.GetTranslatedClass
-local GetTranslatedSpecialization = ns.DbContext.Units.GetTranslatedSpecialization
+local GetTranslatedClass = ns.DbContext.Player.GetTranslatedClass
+local GetTranslatedSpecialization = ns.DbContext.Player.GetTranslatedSpecialization
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 

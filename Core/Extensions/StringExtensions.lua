@@ -197,6 +197,10 @@ function internal.ExtractFromText(textMask, inputText)
     return rtable.unpack(results)
 end
 
+function internal.NullOrEmpty(inputText)
+    return not inputText or inputText == ''
+end
+
 local utf8_char_pattern = "[^\128-\191][\128-\191]*"
 local cyrillic_lower_to_upper = {
     ["ї"] = "Ї",
