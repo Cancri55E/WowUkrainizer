@@ -38,8 +38,11 @@ local _settingsProviderPrototype = {
         [WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION] = "both",
         [WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_DESCRIPTION_OPTION] = "ua",
         [WOW_UKRAINIZER_HIGHLIGHT_SPELL_NAME_IN_DESCRIPTION_OPTION] = true,
+        [WOW_UKRAINIZER_TRANSLATE_ITEM_TOOLTIPS_OPTION] = true,
+        [WOW_UKRAINIZER_DO_NOT_TRANSLATE_ITEM_NAME_OPTION] = false,
+        [WOW_UKRAINIZER_DO_NOT_TRANSLATE_ITEM_ATTRIBUTES_OPTION] = false,
         -- Changelogs
-        [WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION] = "1.12.2",
+        [WOW_UKRAINIZER_LAST_AUTO_SHOWN_CHANGELOG_VERSION_OPTION] = "1.12.4",
     }
 }
 
@@ -117,6 +120,18 @@ end
 ---@return boolean @True if spell names should be highlighted in spell descriptions; otherwise, false.
 function _settingsProviderPrototype.IsNeedHighlightSpellNameInDescription()
     return WowUkrainizer_Options[WOW_UKRAINIZER_HIGHLIGHT_SPELL_NAME_IN_DESCRIPTION_OPTION] == true
+end
+
+--- Checks if item name in tooltips should be translated to Ukrainian.
+---@return boolean @True if item name in tooltips should be translated to Ukrainian; otherwise, false.
+function _settingsProviderPrototype.IsNeedToTranslateItemNameInTooltip()
+    return WowUkrainizer_Options[WOW_UKRAINIZER_DO_NOT_TRANSLATE_ITEM_NAME_OPTION] == false
+end
+
+--- Checks if item attribute in tooltips should be translated to Ukrainian.
+---@return boolean @True if item attribute in tooltips should be translated to Ukrainian; otherwise, false.
+function _settingsProviderPrototype.IsNeedToTranslateItemAttributesInTooltip()
+    return WowUkrainizer_Options[WOW_UKRAINIZER_DO_NOT_TRANSLATE_ITEM_ATTRIBUTES_OPTION] == false
 end
 
 --- Retrieves the value of an option from addon options.

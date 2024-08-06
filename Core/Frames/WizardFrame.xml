@@ -284,6 +284,30 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_HIGHLIGHT_SPELL_NAME_IN_DESCRIPTION_OPTION"/>
 				</Attributes>
 			</CheckButton>
+			<CheckButton parentKey="TranslateItemTooltips" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.SpellDescriptionLanguageTitle" relativePoint="BOTTOMLEFT" x="-24" y="-10"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_ITEM_TOOLTIPS_OPTION"/>
+				</Attributes>
+			</CheckButton>
+			<CheckButton parentKey="DoNotTranslateItemNameButton" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateItemTooltips" relativePoint="BOTTOMLEFT" x="20" y="0"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_DO_NOT_TRANSLATE_ITEM_NAME_OPTION"/>
+				</Attributes>
+			</CheckButton>
+			<CheckButton parentKey="DoNotTranslateItemAttributesButton" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.DoNotTranslateItemNameButton" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_DO_NOT_TRANSLATE_ITEM_ATTRIBUTES_OPTION"/>
+				</Attributes>
+			</CheckButton>
 		</Frames>
 		<Scripts>
 			<OnLoad method="OnLoad"/>

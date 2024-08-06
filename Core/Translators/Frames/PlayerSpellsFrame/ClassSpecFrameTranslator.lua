@@ -3,11 +3,11 @@ local ns = select(2, ...);
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
-local GetTranslatedSpecialization = ns.DbContext.Units.GetTranslatedSpecialization
+local GetTranslatedSpecialization = ns.DbContext.Player.GetTranslatedSpecialization
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
-local GetTranslatedRole = ns.DbContext.Units.GetTranslatedRole
-local GetTranslatedAttribute = ns.DbContext.Units.GetTranslatedAttribute
-local GetTranslatedSpecializationNote = ns.DbContext.Units.GetTranslatedSpecializationNote
+local GetTranslatedRole = ns.DbContext.Player.GetTranslatedRole
+local GetTranslatedAttribute = ns.DbContext.Player.GetTranslatedAttribute
+local GetTranslatedSpecializationNote = ns.DbContext.Player.GetTranslatedSpecializationNote
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 local SetText = ns.FontStringUtil.SetText
 
