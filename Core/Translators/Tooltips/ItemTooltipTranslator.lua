@@ -4,14 +4,13 @@ local ns = select(2, ...);
 local _G = _G
 local NullOrEmpty = ns.StringUtil.NullOrEmpty
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
-local GetTranslatedItemName = ns.DbContext.Items.GetTranslatedItemName
-local GetTranslatedItemDescription = ns.DbContext.Items.GetTranslatedItemDescription
+local GetItemTranslation = ns.DbContext.Items.GetItemTranslation
 local GetTranslatedItemAttribute = ns.DbContext.Items.GetTranslatedItemAttribute
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local GetTranslatedClass = ns.DbContext.Player.GetTranslatedClass
 
 ---@class ItemTooltipTranslator : BaseTooltipTranslator
-local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Item, _tooltipName = "" }, { __index = ns.BaseTooltipTranslator })
+local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Item }, { __index = ns.BaseTooltipTranslator })
 
 local TOOLTIP_CATEGORY_ATTRIBUTES = "Attributes"
 local TOOLTIP_CATEGORY_ITEM_LEVEL = "Item Level"
@@ -29,7 +28,9 @@ local TOOLTIP_CATEGORY_ITEM_BINDING = "Item Binding"
 local TOOLTIP_CATEGORY_EQUIPMENT_SETS = "Equipment Sets"
 local TOOLTIP_CATEGORY_UNCLASSIFIED = "Unclassified"
 local TOOLTIP_CATEGORY_UPGRADE_LEVEL = "Upgrade Level"
-local TOOLTIP_CATEGORY_CLASSES = "HandleClasses"
+local TOOLTIP_CATEGORY_CLASSES = "Classes"
+local TOOLTIP_CATEGORY_COOLDOWN_REMAINING = "Cooldown remaining"
+local TOOLTIP_CATEGORY_ITEM_PET_KNOWN = "Collected"
 
 local function HandleAttributes(data, index)
     if (#data == 3) then
@@ -97,33 +98,51 @@ local function HandleClasses(data, index)
     return { TOOLTIP_CATEGORY_CLASSES }, { value = table.concat(splitClasses(data[1]), ", "), index = index }
 end
 
+local function HandleCollected(data, index)
+    return { TOOLTIP_CATEGORY_ITEM_PET_KNOWN }, { min = data[1], max = data[2], index = index }
+end
+
+local function HandleCooldownRemaining(data, index)
+    return { TOOLTIP_CATEGORY_COOLDOWN_REMAINING }, { value = data[1], index = index }
+end
+
 local patterns = {
-    { pattern = "^%+([%d,.]+)%s(.*)$",                                       func = HandleAttributes },
-    { pattern = "^%+([%d,.]+)-([%d,.]+)%s(.*)$",                             func = HandleAttributes },
-    { pattern = "^([%d,.]+)%sArmor$",                                        func = HandleArmor },
-    { pattern = '^"(.*)"$',                                                  func = HandleDescription },
-    { pattern = '^Durability (%d+) / (%d+)$',                                func = HandleDurability },
-    { pattern = '^|cff00ff00<Made by (.*)>|r$',                              func = HandleMadeBy },
-    { pattern = '^%((.*) damage per second%)$',                              func = HandleDps },
-    { pattern = '^([%d,]+)%s*-%s*([%d,]+)%s*Damage$',                        func = HandleWeaponDamage },
-    { pattern = '^Speed ([%d,.]+)$',                                         func = HandleWeaponSpeed },
-    { pattern = '^Item Level (%d+)$',                                        func = HandleItemLevel },
-    { pattern = '^Equipment Sets: (.*)|r$',                                  func = HandleEquipmentSets },
-    { pattern = '^Upgrade Level: (.*) (%d)/(%d)$',                           func = HandleUpgradeLevel },
-    { pattern = '^Upgrade Level: (%d)/(%d)$',                                func = HandleUpgradeLevel },
-    { pattern = '^|c(........)(.*)%s*|n%s*Upgrade Level: (.*) (%d)/(%d)|r$', func = HandleUpgradeLevel },
-    { pattern = '^Classes:%s*(.+)$',                                         func = HandleClasses },
+    { pattern = "^%+([%d,.]+)%s(.*)$",                func = HandleAttributes },
+    { pattern = "^%+([%d,.]+)-([%d,.]+)%s(.*)$",      func = HandleAttributes },
+    { pattern = "^([%d,.]+)%sArmor$",                 func = HandleArmor },
+    { pattern = '^"(.*)"$',                           func = HandleDescription },
+    { pattern = '^Durability (%d+) / (%d+)$',         func = HandleDurability },
+    { pattern = '^|cff00ff00<Made by (.*)>|r$',       func = HandleMadeBy },
+    { pattern = '^%((.*) damage per second%)$',       func = HandleDps },
+    { pattern = '^([%d,]+)%s*-%s*([%d,]+)%s*Damage$', func = HandleWeaponDamage },
+    { pattern = '^Speed ([%d,.]+)$',                  func = HandleWeaponSpeed },
+    { pattern = '^Item Level (%d+)$',                 func = HandleItemLevel },
+    { pattern = '^Equipment Sets: (.*)|r$',           func = HandleEquipmentSets },
+    { pattern = '^Upgrade Level: (.*) (%d)/(%d)$',    func = HandleUpgradeLevel },
+    { pattern = '^Upgrade Level: (%d)/(%d)$',         func = HandleUpgradeLevel },
+    {
+        pattern = '^|c(........)(.*)%s*|n%s*Upgrade Level: (.*) (%d)/(%d)|r$',
+        func = HandleUpgradeLevel
+    },
+    { pattern = COOLDOWN_REMAINING .. "(.*)", func = HandleCooldownRemaining },
+    { pattern = '^Classes:%s*(.+)$',          func = HandleClasses },
+    {
+        pattern = ITEM_PET_KNOWN:gsub("%(", "%%("):gsub("%)", "%%)"):gsub("%%d", "(%%d)"),
+        func = HandleCollected
+    },
 }
 
-local function TranslateCompareItemAttributes(data, tooltipLine)
-    if (data[3] == STAT_STURDINESS) then
-        tooltipLine:SetText("|c" .. data[1] .. data[2] .. "|r " .. GetTranslatedGlobalString(data[3]))
-    else
-        tooltipLine:SetText("|c" .. data[1] .. data[2] .. "|r " .. GetTranslatedItemAttribute(data[3]))
-    end
-end
 local compareItemPatterns = {
-    { pattern = "^|c(........)([-+][%d,.]*)%s*|r%s*(.*)$", func = TranslateCompareItemAttributes },
+    {
+        pattern = "^|c(........)([-+][%d,.]*)%s*|r%s*(.*)$",
+        func = function(data, tooltipLine)
+            if (data[3] == STAT_STURDINESS) then
+                tooltipLine:SetText("|c" .. data[1] .. data[2] .. "|r " .. GetTranslatedGlobalString(data[3]))
+            else
+                tooltipLine:SetText("|c" .. data[1] .. data[2] .. "|r " .. GetTranslatedItemAttribute(data[3]))
+            end
+        end
+    },
     {
         pattern = "^" .. ITEM_DELTA_DUAL_WIELD_COMPARISON_MAINHAND_DESCRIPTION
             :gsub("%(", "%%("):gsub("%)", "%%)"):gsub("%-", "%%-"):gsub("|c%%s%%s|r", "|c(%%x%%x%%x%%x%%x%%x%%x%%x)(.*)|r") .. "$",
@@ -184,16 +203,18 @@ function translator:ParseTooltip(tooltip, tooltipData)
     end
 
     self._postCallLineCount = tonumber(tooltip:NumLines())
-    self._tooltipName = tooltip:GetName()
+    local tooltipName = tooltip:GetName()
 
     for i = 1, tooltip:NumLines() do
-        self:AddFontStringToIndexLookup(i * 2 - 1, _G[self._tooltipName .. "TextLeft" .. i])
-        self:AddFontStringToIndexLookup(i * 2, _G[self._tooltipName .. "TextRight" .. i])
+        self:AddFontStringToIndexLookup(i * 2 - 1, _G[tooltipName .. "TextLeft" .. i])
+        self:AddFontStringToIndexLookup(i * 2, _G[tooltipName .. "TextRight" .. i])
     end
 
     local tooltipLines = tooltipData.lines
 
     local result = {}
+    result.ID = tonumber(tooltipData.id)
+
     for i = 1, #tooltipLines, 1 do
         local tooltipLine = tooltipLines[i]
         if (tooltipLine.type == Enum.TooltipDataLineType.Blank or tooltipLine.type == Enum.TooltipDataLineType.SellPrice) then
@@ -234,14 +255,18 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     if (not tooltipInfo.Name) then return end
 
+    local itemTranslation = GetItemTranslation(tooltipInfo.ID)
+
     local translatedTooltipLines = {}
 
     if (tooltipInfo[TOOLTIP_CATEGORY_DESCRIPTION]) then
         local description = tooltipInfo[TOOLTIP_CATEGORY_DESCRIPTION][1]
-        table.insert(translatedTooltipLines, {
-            index = getTooltipIndex(description.index),
-            value = "\"" .. GetTranslatedItemDescription(description.value) .. "\""
-        })
+        if (itemTranslation and itemTranslation.Description) then
+            table.insert(translatedTooltipLines, {
+                index = getTooltipIndex(description.index),
+                value = "\"" .. itemTranslation.Description .. "\""
+            })
+        end
     end
 
     if (tooltipInfo[TOOLTIP_CATEGORY_ITEM_LEVEL]) then
@@ -332,6 +357,14 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         end
     end
 
+    if (tooltipInfo[TOOLTIP_CATEGORY_ITEM_PET_KNOWN]) then
+        local collected = tooltipInfo[TOOLTIP_CATEGORY_ITEM_PET_KNOWN][1]
+        table.insert(translatedTooltipLines, {
+            index = getTooltipIndex(collected.index),
+            value = GetTranslatedGlobalString(ITEM_PET_KNOWN):format(collected.min, collected.max)
+        })
+    end
+
     if (tooltipInfo[TOOLTIP_CATEGORY_UNCLASSIFIED]) then
         for _, unclassified in ipairs(tooltipInfo[TOOLTIP_CATEGORY_UNCLASSIFIED]) do
             table.insert(translatedTooltipLines, {
@@ -341,12 +374,35 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         end
     end
 
+    if (tooltipInfo[TOOLTIP_CATEGORY_COOLDOWN_REMAINING]) then
+        local function translateTime(timeLeft)
+            local numbers = {}
+            for number in timeLeft:gmatch("(%d+)") do
+                table.insert(numbers, tonumber(number))
+            end
+
+            if (#numbers == 6) then
+                return numbers[1] .. " год " .. numbers[3] .. " хв " .. numbers[5] .. " сек"
+            elseif (#numbers == 4) then
+                return numbers[1] .. " хв " .. numbers[3] .. " сек"
+            else
+                return numbers[1] .. " сек"
+            end
+        end
+
+        local cooldownRemaining = tooltipInfo[TOOLTIP_CATEGORY_COOLDOWN_REMAINING][1]
+        table.insert(translatedTooltipLines, {
+            index = getTooltipIndex(cooldownRemaining.index),
+            value = GetTranslatedGlobalString(COOLDOWN_REMAINING) .. " " .. translateTime(cooldownRemaining.value)
+        })
+    end
+
     ---@diagnostic disable-next-line: need-check-nil
-    if (ns.SettingsProvider.IsNeedToTranslateItemNameInTooltip()) then
+    if (ns.SettingsProvider.IsNeedToTranslateItemNameInTooltip() and itemTranslation and itemTranslation.Title) then
         local name = tooltipInfo.Name
         table.insert(translatedTooltipLines, {
             index = getTooltipIndex(name.index),
-            value = GetTranslatedItemName(name.value)
+            value = itemTranslation.Title
         })
     end
 
@@ -456,14 +512,25 @@ function translator:Init()
         if (primaryTooltip:IsShown() and secondaryTooltip:IsShown()) then
             UpdateTextWithTranslation(_G[secondaryTooltip:GetName() .. "TextLeft1"], GetTranslatedGlobalString)
         end
+        UpdateTextWithTranslation(_G[primaryTooltip:GetName() .. "TextLeft1"], GetTranslatedGlobalString)
 
-        local tooltipName = primaryTooltip:GetName()
-        UpdateTextWithTranslation(_G[tooltipName .. "TextLeft1"], GetTranslatedGlobalString)
+        if (primaryTooltip:NumLines() > self._postCallLineCount + 2) then
+            local tooltipName = primaryTooltip:GetName()
+            for i = self._postCallLineCount + 2, primaryTooltip:NumLines() do
+                local lineLeft = _G[tooltipName .. "TextLeft" .. i]
+                if (lineLeft) then
+                    translateTooltipLineText(lineLeft)
+                end
+            end
+        end
 
-        for i = self._postCallLineCount + 2, primaryTooltip:NumLines() do
-            local lineLeft = _G[tooltipName .. "TextLeft" .. i]
-            if (lineLeft) then
-                translateTooltipLineText(lineLeft)
+        if (secondaryTooltip:IsShown() and secondaryTooltip:NumLines() > self._postCallLineCount + 2) then
+            local tooltipName = secondaryTooltip:GetName()
+            for i = self._postCallLineCount + 2, secondaryTooltip:NumLines() do
+                local lineLeft = _G[tooltipName .. "TextLeft" .. i]
+                if (lineLeft) then
+                    translateTooltipLineText(lineLeft)
+                end
             end
         end
 

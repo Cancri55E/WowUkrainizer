@@ -594,7 +594,10 @@
         "ITEM_CLASSES_ALLOWED",
         "ItemSocketingSocketButton",
         "ItemSocketingFrame_OnLoad",
-        "ItemSocketingFrame"
+        "ItemSocketingFrame",
+        "ITEM_PET_KNOWN",
+        "COOLDOWN_REMAINING",
+        "ID"
     ],
 	"Lua.workspace.ignoreDir":[
 		".vscode",

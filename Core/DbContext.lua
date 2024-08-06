@@ -604,21 +604,30 @@ end
 
 -- Items
 do
+    ---Item data in the database is stored as string arrays, and the indices are used to access specific information, like the title, within the array.
+    ---@enum ItemTranslationIndex
+    local ItemTranslationIndex = {
+        TITLE = 1,
+        DESCRIPTION = 2,
+    }
+
     ---@class ItemsRepository : BaseRepository
     local repository = setmetatable({}, { __index = baseRepository })
 
-    --- Get the translated or original (English) name.
-    --- @param original string @ The original (English) name.
-    --- @return string @ The translated or original name.
-    function repository.GetTranslatedItemName(original)
-        return original
-    end
+    --- Get the translated item data including title and description
+    --- @param itemID number @The ID of the item.
+    --- @return TranslatedItemData? @An object containing translated item data.
+    function repository.GetItemTranslation(itemID)
+        local itemData = ns._db.Items[itemID]
 
-    --- Get the translated or original (English) description.
-    --- @param original string @ The original (English) description.
-    --- @return string @ The translated or original description.
-    function repository.GetTranslatedItemDescription(original)
-        return original
+        if (not itemData) then return end
+
+        ---@type TranslatedItemData
+        local translatedData = {
+            Title = itemData[ItemTranslationIndex.TITLE],
+            Description = itemData[ItemTranslationIndex.DESCRIPTION],
+        }
+        return translatedData
     end
 
     --- Get the translated or original (English) description.
