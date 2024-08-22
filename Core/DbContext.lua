@@ -14,6 +14,7 @@ local ReplaceBracketsToColor = ns.StringUtil.ReplaceBracketsToColor
 
 local GetHash = ns.StringUtil.GetHash
 local GetNameHash = ns.StringUtil.GetNameHash
+local Uft8Upper = ns.StringUtil.Uft8Upper
 
 ---@class DbContext
 local dbContext = {}
@@ -81,7 +82,7 @@ end
 function baseRepository:_getPersonalizedValue(dbTable, original)
     if (not original) then return original end
     local text = NormalizePersonalizedString(original)
-    local translatedText = self._getValue(dbTable, text)
+    local translatedText = self._getNameValue(dbTable, text)
     return ReconstructPersonalizedString(translatedText)
 end
 
@@ -366,7 +367,7 @@ do
         end)
 
         text = string.gsub(text, "%$[rR]", function(marker) -- TODO: case like class
-            if (marker == "$R") then return string.upper(playerData.Race) end
+            if (marker == "$R") then return Uft8Upper(playerData.Race) end
             return playerData.Race
         end)
 
@@ -390,14 +391,14 @@ do
 
             local classStr = dbContext.Player.GetTranslatedClass(playerData.Class, case, playerData.Gender)
 
-            if (marker == "$C") then return string.upper(classStr) end
+            if (marker == "$C") then return Uft8Upper(classStr) end
             return classStr
         end)
 
         text = string.gsub(text, "%$[cC]", function(marker)
             local classStr = dbContext.Player.GetTranslatedClass(playerData.Class, 1, playerData.Gender)
 
-            if (marker == "$C") then return string.upper(classStr) end
+            if (marker == "$C") then return Uft8Upper(classStr) end
             return classStr
         end)
 

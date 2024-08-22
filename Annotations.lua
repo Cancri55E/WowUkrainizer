@@ -22,6 +22,7 @@
 ---|"blue"
 ---|"red"
 ---|"green"
+---|"legendary"
 
 ---@class (exact) PlayerData
 ---@field Name string @The name of the player character.

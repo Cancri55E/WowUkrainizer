@@ -4,6 +4,7 @@ local ns = select(2, ...);
 local ExtractNumericValues = ns.StringUtil.ExtractNumericValues
 local InsertNumericValues = ns.StringUtil.InsertNumericValues
 local DeclensionWord = ns.StringUtil.DeclensionWord
+local Uft8Upper = ns.StringUtil.Uft8Upper
 
 --- Utility class providing string normalization functions for addon.
 --- @class StringNormalizer
@@ -83,7 +84,17 @@ function internal.NormalizePersonalizedString(text)
     local playerName = ns.PlayerInfo.Name
     if (playerName) then
         text = string.gsub(text, playerName, function()
-            return "{name}"
+            return "$n"
+        end)
+    end
+    local playerRace = ns.PlayerInfo.Race
+    if (playerRace) then
+        text = string.gsub(text, playerRace, function()
+            if (string.match(string.sub(playerRace, 1, 1), "%u")) then
+                return "$R"
+            else
+                return "$r"
+            end
         end)
     end
     return text
@@ -95,9 +106,70 @@ end
 function internal.ReconstructPersonalizedString(text)
     local playerName = ns.PlayerInfo.Name
     if (playerName) then
-        text = string.gsub(text, "{name}", function()
+        text = string.gsub(text, "$n", function()
             return playerName
         end)
     end
+
     return text
 end
+
+-- function repository._normalizeQuestString(text)
+--     if text == nil or text == "" then return text end
+
+--     local playerData = ns.PlayerInfo
+
+--     text = string.gsub(text, "%$[nN]", function(_)
+--         return playerData.Name
+--     end)
+
+--     text = string.gsub(text, "%$[pP]", function(_)
+--         return playerData.Name
+--     end)
+
+--     text = string.gsub(text, "%$[rR]", function(marker) -- TODO: case like class
+--         if (marker == "$R") then return Uft8Upper(playerData.Race) end
+--         return playerData.Race
+--     end)
+
+--     text = string.gsub(text, "(%$[cC]):([^\128-\191][\128-\191])", function(marker, caseLetter)
+--         local case = 1
+--         if (caseLetter == 'н' or caseLetter == 'Н') then
+--             case = 1
+--         elseif (caseLetter == 'р' or caseLetter == 'Р') then
+--             case = 2
+--         elseif (caseLetter == 'д' or caseLetter == 'Д') then
+--             case = 3
+--         elseif (caseLetter == 'з' or caseLetter == 'З') then
+--             case = 4
+--         elseif (caseLetter == 'о' or caseLetter == 'О') then
+--             case = 5
+--         elseif (caseLetter == 'м' or caseLetter == 'М') then
+--             case = 6
+--         elseif (caseLetter == 'к' or caseLetter == 'К') then
+--             case = 7
+--         end
+
+--         local classStr = dbContext.Player.GetTranslatedClass(playerData.Class, case, playerData.Gender)
+
+--         if (marker == "$C") then return Uft8Upper(classStr) end
+--         return classStr
+--     end)
+
+--     text = string.gsub(text, "%$[cC]", function(marker)
+--         local classStr = dbContext.Player.GetTranslatedClass(playerData.Class, 1, playerData.Gender)
+
+--         if (marker == "$C") then return Uft8Upper(classStr) end
+--         return classStr
+--     end)
+
+--     text = string.gsub(text, "{sex|(.-)|(.-)}", function(male, female)
+--         if (playerData.Gender == 3) then
+--             return female
+--         else
+--             return male
+--         end
+--     end)
+
+--     return text
+-- end

@@ -6,6 +6,7 @@ local colors = {
     green = { 0.271, 0.561, 0.094, 1.0 },
     blue = { 0.188, 0.412, 0.996, 1.0 },
     purple = { 0.541, 0.212, 0.706, 1.0 },
+    legendary = { 0.922, 0.502, 0, 1.0 },
 }
 
 local localFrame = CreateFrame("Frame", nil, UIParent)
