@@ -66,7 +66,7 @@ local function UpdateCommandButtonsVisibility(needToShow, isMTData)
     end
 end
 
-local function ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
+local function ImmersionFrame_UpdateTalkingHead(immersionFrame, title, text)
     local function updateTalkBoxText(translatedTitle, translatedText)
         if (translatedTitle and translatedTitle ~= "") then
             immersionFrame.TalkBox.NameFrame.Name:SetText(translatedTitle)
@@ -110,11 +110,11 @@ local function ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
     end
 end
 
-local function ImmersionTalkBoxElementsDisplayHook(elements)
+local function ImmersionFrame_TalkBox_Elements_Display(elements)
     local SEAL_QUESTS = {
         [40519] = '|cff04aaffКороль|nВаріан Рінн|r',
         [43926] = '|cff480404Воєначальник|nВол\'джин|r',
-        [46730] = '|cff2f0a48Хадґар|r',
+        [46730] = '|cff2f0a48Кадґар|r',
     }
 
     local SuggestedPlayers = 'Рекомендована кількість гравців: [%d]'
@@ -193,8 +193,8 @@ local function InitializeCommandButtons()
         { getQuestID = function() return GetQuestID() end })
 
     immersionFrameSwitchTranslationButton = CreateSwitchTranslationButton(immersionWowheadButton, function()
-        ImmersionUpdateTalkingHeadHook(ImmersionFrame, immersionTitleOriginal, immersionTextOriginal)
-        ImmersionTalkBoxElementsDisplayHook(ImmersionFrame.TalkBox.Elements)
+        ImmersionFrame_UpdateTalkingHead(ImmersionFrame, immersionTitleOriginal, immersionTextOriginal)
+        ImmersionFrame_TalkBox_Elements_Display(ImmersionFrame.TalkBox.Elements)
         ImmersionFrame.TalkBox.TextFrame.Text:RepeatTexts();
     end, 92, 0)
 
@@ -209,12 +209,12 @@ function translator:Init()
     hooksecurefunc(ImmersionFrame, "UpdateTalkingHead", function(immersionFrame, title, text)
         immersionTitleOriginal = title
         immersionTextOriginal = text
-        ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
+        ImmersionFrame_UpdateTalkingHead(immersionFrame, title, text)
     end)
 
     hooksecurefunc(ImmersionFrame.TalkBox.Elements, "Display", function(elements)
         immersionObjectivesTextOriginal = elements.Content.ObjectivesText:GetText()
-        ImmersionTalkBoxElementsDisplayHook(elements)
+        ImmersionFrame_TalkBox_Elements_Display(elements)
     end)
 
     hooksecurefunc(ImmersionFrame.TitleButtons, "UpdateAvailableQuests", function(titleButtons, availableQuests)
@@ -278,3 +278,5 @@ function translator:Init()
     UpdateTextWithTranslation(ImmersionFrame.TalkBox.Elements.Progress.MoneyText, GetQuestFrameTranslationOrDefault)
     UpdateTextWithTranslation(ImmersionFrame.TalkBox.Elements.Progress.ReqText, GetQuestFrameTranslationOrDefault)
 end
+
+ns.TranslationsManager:AddTranslator(translator)
