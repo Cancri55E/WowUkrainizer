@@ -4,4 +4,5 @@
 	<Script file="FontStringExtensions.lua"/>
 	<Script file="CommonExtensions.lua"/>
 	<Script file="GameApiExtensions.lua"/>
+	<Script file="QuestUIExtensions.lua"/>
 </Ui>

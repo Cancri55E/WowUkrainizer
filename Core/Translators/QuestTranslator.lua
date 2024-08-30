@@ -7,12 +7,15 @@ local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
 local TryCallAPIFn = ns.CommonUtil.TryCallAPIFn
 local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
-local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
 local GetTranslatedGossipText = ns.DbContext.Gossips.GetTranslatedGossipText
 local GetTranslatedGossipOptionText = ns.DbContext.Gossips.GetTranslatedGossipOptionText
 local GetTranslatedQuestTitle = ns.DbContext.Quests.GetTranslatedQuestTitle
 local GetTranslatedQuestData = ns.DbContext.Quests.GetTranslatedQuestData
 local GetTranslatedQuestObjective = ns.DbContext.Quests.GetTranslatedQuestObjective
+
+local CreateSwitchTranslationButton = ns.QuestFrameUtil.CreateSwitchTranslationButton
+local CreateMtIconTexture = ns.QuestFrameUtil.CreateMtIconTexture
+local CreateWowheadButton = ns.QuestFrameUtil.CreateWowheadButton
 
 local FACTION_ALLIANCE = ns.FACTION_ALLIANCE
 local FACTION_HORDE = ns.FACTION_HORDE
@@ -31,9 +34,6 @@ local questPopupFrameSwitchTranslationButton
 local questPopupFrameMTIcon
 local questMapDetailsFrameSwitchTranslationButton
 local questMapDetailsFrameMTIcon
-local immersionFrameSwitchTranslationButton
-local immersionFrameMTIcon
-local immersionWowheadButton
 
 local ERR_QUEST_OBJECTIVE_COMPLETE_S = 302
 local ERR_QUEST_UNKNOWN_COMPLETE = 303
@@ -121,23 +121,14 @@ local function showCommandButtonsForQuest(needToShow, isMTData)
         questFrameSwitchTranslationButton:Show()
         questPopupFrameSwitchTranslationButton:Show()
         questMapDetailsFrameSwitchTranslationButton:Show()
-        if (immersionFrameSwitchTranslationButton) then
-            immersionFrameSwitchTranslationButton:Show()
-        end
         if (isMTData) then
             questFrameMTIcon:Show()
             questPopupFrameMTIcon:Show()
             questMapDetailsFrameMTIcon:Show()
-            if (immersionFrameMTIcon) then
-                immersionFrameMTIcon:Show()
-            end
         else
             questFrameMTIcon:Hide()
             questPopupFrameMTIcon:Hide()
             questMapDetailsFrameMTIcon:Hide()
-            if (immersionFrameMTIcon) then
-                immersionFrameMTIcon:Hide()
-            end
         end
     else
         questFrameSwitchTranslationButton:Hide()
@@ -146,13 +137,6 @@ local function showCommandButtonsForQuest(needToShow, isMTData)
         questPopupFrameMTIcon:Hide()
         questMapDetailsFrameSwitchTranslationButton:Hide()
         questMapDetailsFrameMTIcon:Hide()
-
-        if (immersionFrameSwitchTranslationButton) then
-            immersionFrameSwitchTranslationButton:Hide()
-        end
-        if (immersionFrameMTIcon) then
-            immersionFrameMTIcon:Hide()
-        end
     end
 end
 
@@ -696,190 +680,7 @@ local function OnStaticPopupShow(which, text_arg1, text_arg2)
     end
 end
 
-local immersionTitleOriginal, immersionTextOriginal, immersionObjectivesTextOriginal
-
-local function ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
-    local function updateTalkBoxText(translatedTitle, translatedText)
-        if (translatedTitle and translatedTitle ~= "") then
-            immersionFrame.TalkBox.NameFrame.Name:SetText(translatedTitle)
-        end
-        if (translatedText and translatedText ~= "") then
-            immersionFrame.TalkBox.TextFrame.Text:SetText(translatedText)
-        end
-    end
-
-    local questID = GetQuestID()
-
-    if (questID == 0) then
-        immersionWowheadButton:Hide()
-    else
-        immersionWowheadButton:Show()
-    end
-
-    if (not ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
-        updateTalkBoxText(title, text)
-        return
-    end
-
-    local playbackEvent = immersionFrame.playbackEvent
-    if (playbackEvent == "QUEST_GREETING") then
-        -- TODO: Check when gossip translations is ready
-        updateTalkBoxText(GetTranslatedUnitName(title), GetTranslatedGossipText(text))
-    else
-        local questData = GetTranslatedQuestData(questID)
-
-        showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMtData)
-
-        if (questData) then
-            if (playbackEvent == "QUEST_PROGRESS") then
-                updateTalkBoxText(questData.Title, questData.ProgressText)
-            elseif (playbackEvent == "QUEST_COMPLETE") then
-                updateTalkBoxText(questData.Title, questData.RewardText)
-            elseif (playbackEvent == "QUEST_DETAIL") then
-                updateTalkBoxText(questData.Title, questData.Description)
-            end
-        end
-    end
-end
-
-local function ImmersionTalkBoxElementsDisplayHook(elements)
-    local SEAL_QUESTS = {
-        [40519] = '|cff04aaffКороль|nВаріан Рінн|r',
-        [43926] = '|cff480404Воєначальник|nВол\'джин|r',
-        [46730] = '|cff2f0a48Хадґар|r',
-    }
-
-    local SuggestedPlayers = 'Рекомендована кількість гравців: [%d]'
-
-    local questID = GetQuestID()
-
-    do -- ShowObjectivesText
-        local objectivesText = immersionObjectivesTextOriginal
-        if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
-            local questData = GetTranslatedQuestData(questID)
-            if (questData and questData.ObjectivesText) then
-                objectivesText = questData.ObjectivesText
-            end
-        end
-
-        elements.Content.ObjectivesText:SetText(objectivesText)
-    end
-
-    do -- ShowGroupSize
-        if (elements.Content.GroupSize:IsVisible()) then
-            local groupNum = ImmersionAPI:GetSuggestedGroupNum()
-            if (groupNum > 0) then
-                elements.Content.GroupSize:SetText(SuggestedPlayers:format(groupNum))
-            end
-        end
-    end
-
-    do -- ShowSpecialObjectives
-        local spellID, spellName, _ = GetCriteriaSpell()
-        if (spellID and spellName) then
-            translateUIFontString(elements.Content.SpecialObjectivesFrame.SpellObjectiveLearnLabel)
-            elements.Content.SpecialObjectivesFrame.SpellObjectiveFrame:SetText(GetTranslatedSpellName(spellName, false))
-        end
-    end
-
-    do -- ShowSeal
-        if (elements.Content.SealFrame:IsVisible()) then
-            local sealInfo = SEAL_QUESTS[questID]
-            if (sealInfo) then
-                elements.Content.SealFrame.Text:SetText(sealInfo)
-            end
-        end
-    end
-
-    do --ShowRewards
-        translateUIFontString(elements.Content.RewardsFrame.ItemChooseText)
-        translateUIFontString(elements.Content.RewardsFrame.ItemReceiveText)
-        translateUIFontString(elements.Content.RewardsFrame.HonorFrame.Name)
-
-        for fontString in elements.Content.RewardsFrame.spellHeaderPool:EnumerateActive() do
-            if (fontString:GetText() ~= nil) then
-                translateUIFontString(fontString);
-            end
-        end
-        for fontString in elements.Content.RewardsFrame.spellRewardPool:EnumerateActive() do
-            local spellRewardName = fontString:GetText()
-            if (fontString:GetText() ~= nil) then
-                fontString:SetText(GetTranslatedSpellName(spellRewardName, false));
-            end
-        end
-        -- TODO: Add Translation for followerRewardPool when followers module ready
-    end
-
-    do -- TODO: Uncomment when GetTranslatedPlayerTitle ready
-        -- local playerTitle = ImmersionAPI:GetRewardTitle()
-        -- if (playerTitle) then
-        --     elements.Content.RewardsFrame.TitleFrame.Name:SetText(GetTranslatedPlayerTitle(playerTitle))
-        -- end
-    end
-end
-
 local function InitializeCommandButtons()
-    local function CreateMtIconTexture(parentFrame, offsetX, offsetY)
-        local icon = parentFrame:CreateTexture(nil, "OVERLAY");
-        icon:ClearAllPoints();
-        icon:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", offsetX, offsetY);
-        icon:SetWidth(24);
-        icon:SetHeight(24);
-        icon:SetTexture([[Interface\AddOns\WowUkrainizer\assets\images\robot.png]]);
-        icon:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT");
-            GameTooltip:ClearLines();
-            GameTooltip:SetText("Перекладено за допомогою ШІ.", 1, 1, 1)
-            GameTooltip:AddLine(
-                "Ви завжди можете вимкнути переклади зроблені |nза допомогою ШІ в налаштуваннях додатку.",
-                RAID_CLASS_COLORS.MAGE.r,
-                RAID_CLASS_COLORS.MAGE.g,
-                RAID_CLASS_COLORS.MAGE.b)
-            GameTooltip:Show()
-        end)
-        icon:SetScript("OnLeave", function(_)
-            GameTooltip:Hide()
-        end);
-        return icon
-    end
-
-    local function CreateSwitchTranslationButton(parentFrame, onClickFunc, offsetX, offsetY)
-        local button = CreateFrame("Button", nil, parentFrame, "UIPanelButtonTemplate");
-        button:SetSize(90, 24);
-        if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
-            button:SetText("Оригінал");
-        else
-            button:SetText("Переклад");
-        end
-        button:ClearAllPoints();
-        button:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", offsetX, offsetY);
-        button:SetScript("OnMouseDown", function(_)
-            local newValue = not ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
-            ns.SettingsProvider.SetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION, newValue)
-            if (newValue) then
-                button:SetText("Оригінал");
-            else
-                button:SetText("Переклад");
-            end
-            onClickFunc()
-        end)
-        button:Show();
-        return button
-    end
-
-    local function CreateWowheadButton(parentFrame, offsetX, offsetY, data)
-        local button = CreateFrame("Button", nil, parentFrame, "UIPanelButtonTemplate");
-        button:SetSize(24, 24);
-        button:ClearAllPoints();
-        button:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", offsetX, offsetY);
-        button:SetNormalAtlas("UI-HUD-MicroMenu-Shop-Up");
-        button:SetPushedAtlas("UI-HUD-MicroMenu-Shop-Down");
-        button:SetScript("OnMouseDown",
-            function(_) _G["StaticPopup_Show"]("WowUkrainizer_WowheadLink", nil, nil, data) end)
-        button:Show();
-        return button
-    end
-
     questFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestFrame, function()
         if (QuestFrameProgressPanel:IsShown()) then
             QuestFrameProgressPanel_OnShow(QuestFrameProgressPanel)
@@ -887,39 +688,25 @@ local function InitializeCommandButtons()
             QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
                 QuestInfoFrame.mapView)
         end
-    end, -64, -30)
-    questFrameMTIcon = CreateMtIconTexture(QuestFrame, -34, -30)
-    CreateWowheadButton(QuestFrame, -6, -30, { getQuestID = function() return GetQuestID() end })
+    end, -64, -32)
+    questFrameMTIcon = CreateMtIconTexture(QuestFrame, -34, -32)
+    CreateWowheadButton(QuestFrame, -6, -32, { getQuestID = function() return GetQuestID() end })
 
     questPopupFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestLogPopupDetailFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
-    end, -188, -28)
-    questPopupFrameMTIcon = CreateMtIconTexture(QuestLogPopupDetailFrame, -162, -28)
-    CreateWowheadButton(QuestLogPopupDetailFrame, -2, -28,
+    end, -188, -30)
+    questPopupFrameMTIcon = CreateMtIconTexture(QuestLogPopupDetailFrame, -162, -30)
+    CreateWowheadButton(QuestLogPopupDetailFrame, -4, -30,
         { getQuestID = function() return C_QuestLog.GetSelectedQuest() end })
 
     questMapDetailsFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestMapDetailsScrollFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
-    end, -44, 30)
-    questMapDetailsFrameMTIcon = CreateMtIconTexture(QuestMapDetailsScrollFrame, -16, 30)
-    CreateWowheadButton(QuestMapDetailsScrollFrame, 12, 30,
+    end, -60, 32)
+    questMapDetailsFrameMTIcon = CreateMtIconTexture(QuestMapDetailsScrollFrame, -32, 32)
+    CreateWowheadButton(QuestMapDetailsScrollFrame, -4, 32,
         { getQuestID = function() return C_QuestLog.GetSelectedQuest() end })
-
-    if (ImmersionFrame) then
-        local immersionModelFrame = ImmersionFrame.TalkBox.MainFrame.Model
-
-        local yOffset = immersionModelFrame:GetHeight() * -1 + 20
-        immersionWowheadButton = CreateWowheadButton(immersionModelFrame, 30, yOffset,
-            { getQuestID = function() return GetQuestID() end })
-        immersionFrameSwitchTranslationButton = CreateSwitchTranslationButton(immersionWowheadButton, function()
-            ImmersionUpdateTalkingHeadHook(ImmersionFrame, immersionTitleOriginal, immersionTextOriginal)
-            ImmersionTalkBoxElementsDisplayHook(ImmersionFrame.TalkBox.Elements)
-            ImmersionFrame.TalkBox.TextFrame.Text:RepeatTexts();
-        end, 92, 0)
-        immersionFrameMTIcon = CreateMtIconTexture(immersionFrameSwitchTranslationButton, 24, 0)
-    end
 end
 
 local function OnUIErrorsFrameMessageAdded(_, message, _, _, _, _, messageType)
@@ -1343,80 +1130,6 @@ local function OnStorylineQuestPinMouseEnter(frame)
     end
 end
 
--- Immersion
-local function InitializeImmersion()
-    hooksecurefunc(ImmersionFrame, "UpdateTalkingHead", function(immersionFrame, title, text)
-        immersionTitleOriginal = title
-        immersionTextOriginal = text
-        ImmersionUpdateTalkingHeadHook(immersionFrame, title, text)
-    end)
-
-    hooksecurefunc(ImmersionFrame.TalkBox.Elements, "Display", function(elements)
-        immersionObjectivesTextOriginal = elements.Content.ObjectivesText:GetText()
-        ImmersionTalkBoxElementsDisplayHook(elements)
-    end)
-
-    hooksecurefunc(ImmersionFrame.TitleButtons, "UpdateAvailableQuests", function(titleButtons, availableQuests)
-        for i, quest in ipairs(availableQuests) do
-            local button = titleButtons:GetButton(i)
-            local questTitle = getQuestTitle(quest.questID, quest.isTrivial)
-            if (questTitle) then
-                button:SetText(questTitle)
-            end
-        end
-    end)
-
-    hooksecurefunc(ImmersionFrame.TitleButtons, "UpdateActiveQuests", function(titleButtons, activeQuests)
-        local numGossipAvailableQuests = #ImmersionAPI:GetGossipAvailableQuests()
-        for i, quest in ipairs(activeQuests) do
-            local button = titleButtons:GetButton(i + numGossipAvailableQuests)
-            local questTitle = getQuestTitle(quest.questID, quest.isTrivial)
-            if (questTitle) then
-                button:SetText(questTitle)
-            end
-        end
-    end)
-
-    hooksecurefunc(ImmersionFrame.TitleButtons, "UpdateGossipOptions", function(titleButtons, gossipOptions)
-        local numGossipAvailableQuests = #ImmersionAPI:GetGossipAvailableQuests()
-        local numGossipActiveQuests = #ImmersionAPI:GetGossipActiveQuests()
-
-        for i, option in ipairs(gossipOptions) do
-            local button = titleButtons:GetButton(i + numGossipAvailableQuests + numGossipActiveQuests)
-            button:SetText(GetTranslatedGossipOptionText(option.name))
-        end
-    end)
-
-    hooksecurefunc(ImmersionFrame.TitleButtons, "UpdateActiveGreetingQuests", function(titleButtons, numActiveQuests)
-        for i = 1, numActiveQuests do
-            local button = titleButtons:GetButton(i)
-            local questTitle = getQuestTitle(GetActiveQuestID(i), IsActiveQuestTrivial(i))
-            if (questTitle) then
-                button:SetText(questTitle)
-            end
-        end
-    end)
-
-    hooksecurefunc(ImmersionFrame.TitleButtons, "UpdateAvailableGreetingQuests",
-        function(titleButtons, numAvailableQuests)
-            local numActiveQuests = ImmersionAPI:GetNumActiveQuests()
-            for i = 1, numAvailableQuests do
-                local isTrivial, _, _, _, questID = ImmersionAPI:GetAvailableQuestInfo(i)
-                local button = titleButtons:GetButton(i + numActiveQuests)
-                local questTitle = getQuestTitle(questID, isTrivial)
-                if (questTitle) then
-                    button:SetText(questTitle)
-                end
-            end
-        end)
-
-    -- Consts
-    translateUIFontString(ImmersionContentFrame.ObjectivesHeader)
-    translateUIFontString(ImmersionContentFrame.RewardsFrame.Header)
-    translateUIFontString(ImmersionContentFrame.RewardsFrame.XPFrame.ReceiveText)
-    translateUIFontString(ImmersionFrame.TalkBox.Elements.Progress.MoneyText)
-    translateUIFontString(ImmersionFrame.TalkBox.Elements.Progress.ReqText)
-end
 
 function translator:IsEnabled()
     return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION)
@@ -1541,10 +1254,6 @@ function translator:Init()
             end
         end
     end)
-
-    if (ImmersionFrame ~= nil) then
-        InitializeImmersion()
-    end
 end
 
 ns.TranslationsManager:AddTranslator(translator)

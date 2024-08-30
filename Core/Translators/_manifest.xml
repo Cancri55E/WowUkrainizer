@@ -20,4 +20,5 @@
 	<Script file="Frames\PlayerSpellsFrame\ClassSpecFrameTranslator.lua"/>
 	<Script file="Frames\MapFrameTranslator.lua"/>
 	<Script file="Frames\SplashFrameTranslator.lua"/>
+	<Script file="ThirdPartyAddons\ImmersionTranslator.lua"/>
 </Ui>
