@@ -4,6 +4,7 @@ local ns = select(2, ...);
 local ExtractFromText = ns.StringUtil.ExtractFromText
 local GetTranslatedZoneText = ns.DbContext.ZoneTexts.GetTranslatedZoneText
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
+local GetTranslatedQuestObjective = ns.DbContext.Quests.GetTranslatedQuestObjective
 
 ---@class UIErrorsTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
@@ -18,7 +19,16 @@ local ZoneMessages = {
     [LE_GAME_ERR_NEWTAXIPATH] = {},
 }
 
-local function ProcessZoneMessages(messageType, message)
+local QuestMessages = {
+    [LE_GAME_ERR_QUEST_OBJECTIVE_COMPLETE_S] = {},
+    [LE_GAME_ERR_QUEST_UNKNOWN_COMPLETE] = {},
+    [LE_GAME_ERR_QUEST_ADD_KILL_SII] = {},
+    [LE_GAME_ERR_QUEST_ADD_FOUND_SII] = {},
+    [LE_GAME_ERR_QUEST_ADD_ITEM_SII] = {},
+    [LE_GAME_ERR_QUEST_ADD_PLAYER_KILL_SII] = {},
+}
+
+local function ProcessZoneMessage(messageType, message)
     if (not ZoneMessages[messageType]) then return end
 
     if (messageType == LE_GAME_ERR_ZONE_EXPLORED) then
@@ -32,6 +42,95 @@ local function ProcessZoneMessages(messageType, message)
         table.insert(ZoneMessages[LE_GAME_ERR_ZONE_EXPLORED_XP], { text = message, translatedText = translatedText })
     elseif (messageType == LE_GAME_ERR_NEWTAXIPATH) then
         table.insert(ZoneMessages[LE_GAME_ERR_NEWTAXIPATH], { text = message, translatedText = GetTranslatedGlobalString(ERR_NEWTAXIPATH) })
+    end
+end
+
+local function ProcessQuestMessage(messageType, message)
+    if (messageType == LE_GAME_ERR_QUEST_OBJECTIVE_COMPLETE_S) then
+        local text = message
+        message:gsub("(.*) %(Complete%)", function(t)
+            text = t
+        end)
+
+        local translatedText = nil
+        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
+            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
+            if questID and questID > 0 then
+                local objective = GetTranslatedQuestObjective(questID, text)
+                if (objective ~= text) then
+                    translatedText = objective .. " (Виконано)"
+                    break
+                end
+            end
+        end
+
+        if (not translatedText) then return end
+
+        table.insert(QuestMessages[messageType], { text = message, translatedText = translatedText })
+    end
+
+    if (messageType == LE_GAME_ERR_QUEST_ADD_ITEM_SII or messageType == LE_GAME_ERR_QUEST_ADD_FOUND_SII) then
+        local text = message
+        local progress = nil
+        message:gsub("(.*): (%d+/%d+)", function(o, p)
+            text = o
+            progress = p
+        end)
+
+        local translatedText = nil
+        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
+            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
+            if questID and questID > 0 then
+                local objective = GetTranslatedQuestObjective(questID, text)
+                if (objective ~= text) then
+                    translatedText = objective
+                    if (progress) then translatedText = translatedText .. ": " .. progress end
+                    break
+                end
+            end
+        end
+
+        if (not translatedText) then return end
+
+        table.insert(QuestMessages[messageType], { text = message, translatedText = translatedText })
+    end
+
+    if (messageType == LE_GAME_ERR_QUEST_ADD_KILL_SII) then
+        local text = message
+        local progress = nil
+        message:gsub("(.*) slain: (%d+/%d+)", function(o, p)
+            text = o .. " slain"
+            progress = p
+        end)
+
+        local translatedText = nil
+        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
+            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
+            if questID and questID > 0 then
+                local objective = GetTranslatedQuestObjective(questID, text)
+                if (objective ~= text) then
+                    translatedText = objective
+                    if (progress) then translatedText = translatedText .. ": " .. progress end
+                    break
+                end
+            end
+        end
+
+        if (not translatedText) then return end
+
+        table.insert(QuestMessages[messageType], { text = message, translatedText = translatedText })
+    end
+
+
+    if (messageType == LE_GAME_ERR_QUEST_UNKNOWN_COMPLETE) then
+        table.insert(QuestMessages[messageType], { text = message, translatedText = "Завдання виконано." })
+    end
+
+    if (messageType == LE_GAME_ERR_QUEST_ADD_PLAYER_KILL_SII) then
+        local translatedText = message:gsub("Players slain: (%d+/%d+)", function(progress)
+            return "Вбито гравців: " .. progress
+        end)
+        table.insert(QuestMessages[messageType], { text = message, translatedText = translatedText })
     end
 end
 
@@ -51,23 +150,30 @@ local function ApplyTranslation(messageCache)
     end
 end
 
-local function OnMessageAdded(_, message, _, _, _, _, messageType)
+local function UIErrorsFrame_AddMessage(_, message, _, _, _, _, messageType)
     if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_ZONE_TEXTS_OPTION)) then
-        ProcessZoneMessages(messageType, message)
+        ProcessZoneMessage(messageType, message)
+    end
+
+    if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION)) then
+        ProcessQuestMessage(messageType, message)
     end
 end
 
-local function OnUpdated()
+local function UIErrorsFrame_OnUpdated()
     if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_ZONE_TEXTS_OPTION)) then
         ApplyTranslation(ZoneMessages)
+    end
+    if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION)) then
+        ApplyTranslation(QuestMessages)
     end
 end
 
 function translator:Init()
-    hooksecurefunc(UIErrorsFrame, "AddMessage", OnMessageAdded)
-    UIErrorsFrame:HookScript("OnUpdate", OnUpdated)
+    hooksecurefunc(UIErrorsFrame, "AddMessage", UIErrorsFrame_AddMessage)
+    UIErrorsFrame:HookScript("OnUpdate", UIErrorsFrame_OnUpdated)
     hooksecurefunc(UIErrorsFrame, "SetScript", function(_, _, value)
-        if (not value) then UIErrorsFrame:HookScript("OnUpdate", OnUpdated) end
+        if (not value) then UIErrorsFrame:HookScript("OnUpdate", UIErrorsFrame_OnUpdated) end
     end)
 end
 

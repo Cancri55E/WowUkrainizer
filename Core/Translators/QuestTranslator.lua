@@ -35,40 +35,11 @@ local questPopupFrameMTIcon
 local questMapDetailsFrameSwitchTranslationButton
 local questMapDetailsFrameMTIcon
 
-local ERR_QUEST_OBJECTIVE_COMPLETE_S = 302
-local ERR_QUEST_UNKNOWN_COMPLETE = 303
-local ERR_QUEST_ADD_KILL_SII = 304
-local ERR_QUEST_ADD_FOUND_SII = 305
-local ERR_QUEST_ADD_ITEM_SII = 306
-local ERR_QUEST_ADD_PLAYER_KILL_SII = 307
-
-local UIInfoMessageChange = {
-    [ERR_QUEST_OBJECTIVE_COMPLETE_S] = {},
-    [ERR_QUEST_UNKNOWN_COMPLETE] = {},
-    [ERR_QUEST_ADD_KILL_SII] = {},
-    [ERR_QUEST_ADD_FOUND_SII] = {},
-    [ERR_QUEST_ADD_ITEM_SII] = {},
-    [ERR_QUEST_ADD_PLAYER_KILL_SII] = {},
-}
-
-local MinimapTooltipCache = {}
 local WorldMapStorylineQuestPinsCache = {}
 local WorldMapChildFramesCache = {}
 
 ---@class QuestTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
-
-local function copyTable(originalTable)
-    local newTable = {}
-    for key, value in pairs(originalTable) do
-        if type(value) == "table" then
-            newTable[key] = copyTable(value)
-        else
-            newTable[key] = value
-        end
-    end
-    return newTable
-end
 
 local function getQuestTitle(questID, isTrivial)
     local translatedTitle = GetTranslatedQuestTitle(questID)
@@ -709,114 +680,6 @@ local function InitializeCommandButtons()
         { getQuestID = function() return C_QuestLog.GetSelectedQuest() end })
 end
 
-local function OnUIErrorsFrameMessageAdded(_, message, _, _, _, _, messageType)
-    if (messageType == ERR_QUEST_OBJECTIVE_COMPLETE_S) then
-        local text = message
-        message:gsub("(.*) %(Complete%)", function(t)
-            text = t
-        end)
-
-        local translatedText = nil
-        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
-            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
-            if questID and questID > 0 then
-                local objective = GetTranslatedQuestObjective(questID, text)
-                if (objective ~= text) then
-                    translatedText = objective .. " (Виконано)"
-                    break
-                end
-            end
-        end
-
-        if (not translatedText) then return end
-
-        table.insert(UIInfoMessageChange[ERR_QUEST_OBJECTIVE_COMPLETE_S],
-            { text = message, translatedText = translatedText })
-    end
-
-    if (messageType == ERR_QUEST_ADD_ITEM_SII or messageType == ERR_QUEST_ADD_FOUND_SII) then
-        local text = message
-        local progress = nil
-        message:gsub("(.*): (%d+/%d+)", function(o, p)
-            text = o
-            progress = p
-        end)
-
-        local translatedText = nil
-        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
-            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
-            if questID and questID > 0 then
-                local objective = GetTranslatedQuestObjective(questID, text)
-                if (objective ~= text) then
-                    translatedText = objective
-                    if (progress) then translatedText = translatedText .. ": " .. progress end
-                    break
-                end
-            end
-        end
-
-        if (not translatedText) then return end
-
-        table.insert(UIInfoMessageChange[messageType], { text = message, translatedText = translatedText })
-    end
-
-    if (messageType == ERR_QUEST_ADD_KILL_SII) then
-        local text = message
-        local progress = nil
-        message:gsub("(.*) slain: (%d+/%d+)", function(o, p)
-            text = o .. " slain"
-            progress = p
-        end)
-
-        local translatedText = nil
-        for i = 1, C_QuestLog.GetNumQuestLogEntries() do
-            local questID = C_QuestLog.GetQuestIDForLogIndex(i);
-            if questID and questID > 0 then
-                local objective = GetTranslatedQuestObjective(questID, text)
-                if (objective ~= text) then
-                    translatedText = objective
-                    if (progress) then translatedText = translatedText .. ": " .. progress end
-                    break
-                end
-            end
-        end
-
-        if (not translatedText) then return end
-
-        table.insert(UIInfoMessageChange[messageType], { text = message, translatedText = translatedText })
-    end
-
-
-    if (messageType == ERR_QUEST_UNKNOWN_COMPLETE) then
-        table.insert(UIInfoMessageChange[ERR_QUEST_UNKNOWN_COMPLETE],
-            { text = message, translatedText = "Завдання виконано." })
-    end
-
-    if (messageType == ERR_QUEST_ADD_PLAYER_KILL_SII) then
-        local translatedText = message:gsub("Players slain: (%d+/%d+)", function(progress)
-            return "Вбито гравців: " .. progress
-        end)
-        table.insert(UIInfoMessageChange[ERR_QUEST_ADD_PLAYER_KILL_SII],
-            { text = message, translatedText = translatedText })
-    end
-end
-
-local function OnUIErrorsFrameUpdated()
-    for messageType, messages in pairs(UIInfoMessageChange) do
-        if (UIErrorsFrame:HasMessageByID(messageType)) then
-            local fontString = UIErrorsFrame:GetFontStringByID(messageType)
-            if (fontString) then
-                for i = 1, #messages, 1 do
-                    if (messages[i] and fontString:GetText() == messages[i].text) then
-                        fontString:SetText(messages[i].translatedText)
-                        table.remove(messages, i)
-                    end
-                end
-            end
-        end
-    end
-end
-
 local function IsQuestDungeonQuest_Internal(tagID, worldQuestType) -- dublicate local function from blizzard code!
     if worldQuestType ~= nil then
         return WORLD_QUEST_TYPE_DUNGEON_TYPES[worldQuestType];
@@ -946,137 +809,6 @@ local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is
         end
     end
     GameTooltip:Show();
-end
-
-local function OnMinimapMouseoverTooltipPostCall(tooltip, tooltipData)
-    local function processMinimapTooltip(tooltipLine)
-        local result = {}
-        local objectives = {}
-        local substrings = {}
-
-        for substring in tooltipLine:gmatch("[^\n]+") do
-            table.insert(substrings, substring)
-        end
-
-        for i = #substrings, 1, -1 do
-            local substring = substrings[i]
-            if (string.sub(substring, 1, 1) == '-') then
-                substring = string.sub(substring, 3)
-                if string.sub(substring, -2) == '|r' then
-                    substring = string.sub(substring, 1, -3)
-                end
-                table.insert(objectives, substring)
-            elseif (#objectives > 0) then
-                local color = nil
-                local title = string.gsub(substring,
-                    "(.-)%|[cC]([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])",
-                    function(t, c)
-                        color = c
-                        return t
-                    end)
-                table.insert(result,
-                    { type = 'QUEST', title = title, objectives = copyTable(objectives), obejctiveColor = color })
-                objectives = {}
-            else
-                local title = substring
-                local icon = nil
-                local color = nil
-                title = string.gsub(title, "(%|T.-%|t)", function(i)
-                    icon = i
-                    return ''
-                end)
-                title = string.gsub(title,
-                    "%|[cC]([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])(.-)%|[rR]",
-                    function(c, t)
-                        color = c
-                        return t
-                    end)
-                table.insert(result, { type = 'NPC_OR_OBJECT', title = title, icon = icon, color = color })
-            end
-        end
-        return result
-    end
-
-    if (tooltipData) then
-        if (#tooltipData.lines > 0) then
-            local text = tooltip.TextLeft1:GetText()
-            if (not text) then return end
-
-            local hash = ns.StringUtil.GetHash(text)
-            if (not MinimapTooltipCache[hash]) then
-                local tooltipRows = processMinimapTooltip(text)
-
-                local questTitleToQuestIdCache = nil
-                if (tooltipRows) then
-                    for i = 1, #tooltipRows, 1 do
-                        local data = tooltipRows[i]
-                        if (data.type == 'QUEST') then
-                            if (not questTitleToQuestIdCache) then
-                                questTitleToQuestIdCache = {}
-                                for j = 1, C_QuestLog.GetNumQuestLogEntries() do
-                                    local questID = C_QuestLog.GetQuestIDForLogIndex(j);
-                                    if (questID and questID > 0) then
-                                        local questTitle = C_QuestLog.GetTitleForQuestID(questID)
-                                        if (questTitle) then questTitleToQuestIdCache[questTitle] = questID end
-                                    end
-                                end
-                            end
-                            local questID = questTitleToQuestIdCache[data.title]
-                            if (questID) then
-                                local translatedTitle = GetTranslatedQuestTitle(questID)
-                                if (translatedTitle) then
-                                    data.title = translatedTitle
-                                end
-
-                                for j = #data.objectives, 1, -1 do
-                                    local objective = data.objectives[j]
-                                    local translatedObjective = GetTranslatedQuestObjective(questID, objective)
-                                    if (translatedObjective) then
-                                        data.objectives[j] = translatedObjective
-                                    end
-                                end
-                            end
-                        elseif (data.type == 'NPC_OR_OBJECT') then
-                            local translatedTitle = GetTranslatedUnitName(data.title)
-                            if (translatedTitle == data.title) then
-                                -- TODO: Object Name
-                            end
-                            data.title = translatedTitle
-                        end
-                    end
-
-                    local translatedTooltip = ''
-                    for i = #tooltipRows, 1, -1 do
-                        local data = tooltipRows[i]
-                        if (data.icon) then
-                            translatedTooltip = translatedTooltip .. data.icon
-                        end
-                        if (data.color) then
-                            translatedTooltip = translatedTooltip .. "|c" .. data.color .. data.title .. "|r"
-                        else
-                            translatedTooltip = translatedTooltip .. data.title
-                        end
-                        if (data.objectives) then
-                            if (data.obejctiveColor) then
-                                translatedTooltip = translatedTooltip .. "|c" .. data.obejctiveColor
-                            end
-                            for j = #data.objectives, 1, -1 do
-                                local objective = data.objectives[j]
-                                translatedTooltip = translatedTooltip .. "\n- " .. objective
-                            end
-                            translatedTooltip = translatedTooltip .. "|r"
-                        end
-                        translatedTooltip = translatedTooltip .. "\n"
-                    end
-
-                    MinimapTooltipCache[hash] = translatedTooltip
-                end
-            end
-
-            _G["GameTooltipTextLeft1"]:SetText(MinimapTooltipCache[hash])
-            GameTooltip:Show()
-        end
-    end
 end
 
 local function OnToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset, yOffset, menuList, button,
@@ -1216,15 +948,6 @@ function translator:Init()
     -- hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
 
     hooksecurefunc("StaticPopup_Show", OnStaticPopupShow)
-
-    -- Update yellow text when quest completed or objectives changed
-    hooksecurefunc(UIErrorsFrame, "AddMessage", OnUIErrorsFrameMessageAdded)
-    UIErrorsFrame:HookScript("OnUpdate", OnUIErrorsFrameUpdated)
-    hooksecurefunc(UIErrorsFrame, "SetScript", function(_, _, value)
-        if (not value) then UIErrorsFrame:HookScript("OnUpdate", OnUIErrorsFrameUpdated) end
-    end)
-
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.MinimapMouseover, OnMinimapMouseoverTooltipPostCall)
 
     WorldMapFrame:HookScript("OnShow", function()
         if (WorldMapFrame.pinPools.StorylineQuestPinTemplate and WorldMapFrame.pinPools.StorylineQuestPinTemplate.activeObjects) then

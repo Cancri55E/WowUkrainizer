@@ -555,7 +555,13 @@
     "HERO_TALENTS_LOCKED_2",
     "SpellSearchUtil",
     "PagedContentFrameBaseMixin",
-    "Game15Font_Shadow"
+    "Game15Font_Shadow",
+    "LE_GAME_ERR_QUEST_OBJECTIVE_COMPLETE_S",
+    "LE_GAME_ERR_QUEST_UNKNOWN_COMPLETE",
+    "LE_GAME_ERR_QUEST_ADD_KILL_SII",
+    "LE_GAME_ERR_QUEST_ADD_FOUND_SII",
+    "LE_GAME_ERR_QUEST_ADD_ITEM_SII",
+    "LE_GAME_ERR_QUEST_ADD_PLAYER_KILL_SII"
   ],
   "Lua.workspace.ignoreDir": [".vscode", "Libs"],
   "Lua.diagnostics.disable": ["missing-fields"],
