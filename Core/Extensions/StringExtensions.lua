@@ -189,7 +189,11 @@ end
 ---@param inputText string @ The text from which to extract the dynamic parts.
 ---@return ... @ The extracted parts from the input text, or nil.
 function internal.ExtractFromText(textMask, inputText)
-    local pattern = textMask:gsub("%%s", "(.+)"):gsub("%%d", "([%%d,]+)")
+    local pattern = textMask
+        :gsub("%(", "%%(")
+        :gsub("%)", "%%)")
+        :gsub("%%s", "(.+)")
+        :gsub("%%d", "([%%d,]+)")
     local results = { inputText:match(pattern) }
     if #results == 0 then
         return nil

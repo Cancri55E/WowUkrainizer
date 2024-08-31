@@ -31,40 +31,40 @@ local QuestMessages = {
     [LE_GAME_ERR_QUEST_FAILED_SPELL] = {},
     [LE_GAME_ERR_QUEST_FAILED_WRONG_RACE] = {},
     [LE_GAME_ERR_QUEST_HAS_IN_PROGRESS] = {},
-    [LE_GAME_ERR_QUEST_IGNORED] = {},
+    -- [LE_GAME_ERR_QUEST_IGNORED] = {}, -- TODO: Find
+    -- [LE_GAME_ERR_QUEST_UNIGNORED] = {},
     [LE_GAME_ERR_QUEST_LOG_FULL] = {},
     [LE_GAME_ERR_QUEST_MUST_CHOOSE] = {},
     [LE_GAME_ERR_QUEST_NEED_PREREQS] = {},
     [LE_GAME_ERR_QUEST_ONLY_ONE_TIMED] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_ALREADY_ACTIVE] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_ALREADY_JOINED] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_ALREADY_MEMBER] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_ALREADY_OWNER] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_BUSY] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_DISABLED] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_INVALID_AREA] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_IN_COMBAT] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_IN_PET_BATTLE] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_IN_RAID] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_JOIN_REJECTED] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_LEFT] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_LEGACY_LOOT_MODE] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_MEMBER_IN_COMBAT] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_NOT_ACTIVE] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_NOT_IN_PARTY] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_ALREADY_ACTIVE] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_ALREADY_JOINED] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_ALREADY_MEMBER] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_ALREADY_OWNER] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_BUSY] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_DISABLED] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_INVALID_AREA] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_IN_COMBAT] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_IN_PET_BATTLE] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_IN_RAID] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_JOIN_REJECTED] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_LEFT] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_LEGACY_LOOT_MODE] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_MEMBER_IN_COMBAT] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_NOT_ACTIVE] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_NOT_IN_PARTY] = {},
     [LE_GAME_ERR_QUEST_PUSH_NOT_IN_PARTY_S] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_NOT_MEMBER] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_NOT_OWNER] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_QUEST_NOT_COMPLETED] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_READY_CHECK_FAILED] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_RESTRICTED] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_RESTRICTED_CROSS_FACTION] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_RESYNC] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_STARTED] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_STOPPED] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_TIMEOUT] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_UNKNOWN] = {},
-    [LE_GAME_ERR_QUEST_UNIGNORED] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_NOT_MEMBER] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_NOT_OWNER] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_QUEST_NOT_COMPLETED] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_READY_CHECK_FAILED] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_RESTRICTED] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_RESTRICTED_CROSS_FACTION] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_RESYNC] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_STARTED] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_STOPPED] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_TIMEOUT] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_UNKNOWN] = {},
     [LE_GAME_ERR_QUEST_UNKNOWN_COMPLETE] = {},
 }
 
@@ -122,15 +122,15 @@ local QuestMessagesWithVariables = {
     [LE_GAME_ERR_QUEST_PUSH_RACE_TO_RECIPIENT_S] = {},
     [LE_GAME_ERR_QUEST_PUSH_SUCCESS_S] = {},
     [LE_GAME_ERR_QUEST_PUSH_TIMER_EXPIRED_S] = {},
-    [LE_GAME_ERR_QUEST_PUSH_TOO_FAR_S] = {},
+    -- [LE_GAME_ERR_QUEST_PUSH_TOO_FAR_S] = {},
     [LE_GAME_ERR_QUEST_PUSH_WRONG_COVENANT_S] = {},
     [LE_GAME_ERR_QUEST_PUSH_WRONG_COVENANT_TO_RECIPIENT_S] = {},
     [LE_GAME_ERR_QUEST_PUSH_WRONG_FACTION_S] = {},
     [LE_GAME_ERR_QUEST_PUSH_WRONG_FACTION_TO_RECIPIENT_S] = {},
     [LE_GAME_ERR_QUEST_REWARD_EXP_I] = {},
     [LE_GAME_ERR_QUEST_REWARD_MONEY_S] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_OWNER_REFUSED_S] = {},
-    [LE_GAME_ERR_QUEST_SESSION_RESULT_INVALID_OWNER_S] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_OWNER_REFUSED_S] = {},
+    -- [LE_GAME_ERR_QUEST_SESSION_RESULT_INVALID_OWNER_S] = {},
     [LE_GAME_ERR_QUEST_PUSH_NOT_GARRISON_OWNER_S] = {},
     [LE_GAME_ERR_QUEST_PUSH_RACE_S] = {},
 }
@@ -161,19 +161,15 @@ local function ProcessQuestMessageWithVariables(messageType, message)
     if (not QuestMessagesWithVariables[messageType]) then return end
 
     if (messageType == LE_GAME_ERR_QUEST_OBJECTIVE_COMPLETE_S) then
-        local text = message
-        message:gsub("(.*) %(Complete%)", function(t)
-            text = t
-        end)
+        local text = ExtractFromText(ERR_QUEST_OBJECTIVE_COMPLETE_S, message)
 
         local translatedText = nil
         for i = 1, C_QuestLog.GetNumQuestLogEntries() do
             local questID = C_QuestLog.GetQuestIDForLogIndex(i);
             if questID and questID > 0 then
                 local objective = GetTranslatedQuestObjective(questID, text)
-                if (objective ~= text) then
-                    translatedText = objective .. " (Виконано)"
-                    break
+                if (objective and objective ~= text) then
+                    translatedText = string.format(ERR_QUEST_OBJECTIVE_COMPLETE_S, objective)
                 end
             end
         end
@@ -182,22 +178,15 @@ local function ProcessQuestMessageWithVariables(messageType, message)
 
         table.insert(QuestMessagesWithVariables[messageType], { text = message, translatedText = translatedText })
     elseif (messageType == LE_GAME_ERR_QUEST_ADD_ITEM_SII or messageType == LE_GAME_ERR_QUEST_ADD_FOUND_SII) then
-        local text = message
-        local progress = nil
-        message:gsub("(.*): (%d+/%d+)", function(o, p)
-            text = o
-            progress = p
-        end)
+        local text, min, max = ExtractFromText(ERR_QUEST_ADD_ITEM_SII, message)
 
         local translatedText = nil
         for i = 1, C_QuestLog.GetNumQuestLogEntries() do
             local questID = C_QuestLog.GetQuestIDForLogIndex(i);
             if questID and questID > 0 then
                 local objective = GetTranslatedQuestObjective(questID, text)
-                if (objective ~= text) then
-                    translatedText = objective
-                    if (progress) then translatedText = translatedText .. ": " .. progress end
-                    break
+                if (objective and objective ~= text) then
+                    translatedText = string.format(ERR_QUEST_ADD_ITEM_SII, objective, min, max)
                 end
             end
         end
@@ -206,22 +195,16 @@ local function ProcessQuestMessageWithVariables(messageType, message)
 
         table.insert(QuestMessagesWithVariables[messageType], { text = message, translatedText = translatedText })
     elseif (messageType == LE_GAME_ERR_QUEST_ADD_KILL_SII) then
-        local text = message
-        local progress = nil
-        message:gsub("(.*) slain: (%d+/%d+)", function(o, p)
-            text = o .. " slain"
-            progress = p
-        end)
+        local creatureName, min, max = ExtractFromText(ERR_QUEST_ADD_KILL_SII, message)
+        local text = creatureName .. " slain"
 
         local translatedText = nil
         for i = 1, C_QuestLog.GetNumQuestLogEntries() do
             local questID = C_QuestLog.GetQuestIDForLogIndex(i);
             if questID and questID > 0 then
                 local objective = GetTranslatedQuestObjective(questID, text)
-                if (objective ~= text) then
-                    translatedText = objective
-                    if (progress) then translatedText = translatedText .. ": " .. progress end
-                    break
+                if (objective and objective ~= text) then
+                    translatedText = string.format("%s: %d/%d", objective, min, max)
                 end
             end
         end
@@ -230,9 +213,8 @@ local function ProcessQuestMessageWithVariables(messageType, message)
 
         table.insert(QuestMessagesWithVariables[messageType], { text = message, translatedText = translatedText })
     elseif (messageType == LE_GAME_ERR_QUEST_ADD_PLAYER_KILL_SII) then
-        local translatedText = message:gsub("Players slain: (%d+/%d+)", function(progress)
-            return "Вбито гравців: " .. progress
-        end)
+        local min, max = ExtractFromText(ERR_QUEST_ADD_PLAYER_KILL_SII, message)
+        local translatedText = string.format(GetTranslatedGlobalString(ERR_QUEST_ADD_PLAYER_KILL_SII), min, max)
         table.insert(QuestMessagesWithVariables[messageType], { text = message, translatedText = translatedText })
     end
 end
