@@ -15,6 +15,7 @@ local ReplaceBracketsToColor = ns.StringUtil.ReplaceBracketsToColor
 local GetHash = ns.StringUtil.GetHash
 local GetNameHash = ns.StringUtil.GetNameHash
 local Uft8Upper = ns.StringUtil.Uft8Upper
+local ExtractFromText = ns.StringUtil.ExtractFromText
 
 ---@class DbContext
 local dbContext = {}
@@ -247,24 +248,6 @@ do
     ---@class UIFrameRepository : BaseRepository
     local repository = setmetatable({}, { __index = baseRepository })
 
-    --- Get the translated or original (English) UI text based on the specified type.
-    --- @param type UIFrameType @ The type of UI frame.
-    --- @param original string @ The original (English) text.
-    --- @return string @ The translated or original UI frame translation.
-    function repository.GetTranslatedUIText(type, original)
-        if (type == "Spellbook") then
-            return repository:_getFormattedValue(ns._db.SpellbookFrameLines, original)
-        elseif (type == "ClassTalent") then
-            return repository:_getFormattedValue(ns._db.ClassTalentFrameLines, original)
-        elseif (type == "Main") then
-            return repository:_getFormattedValue(ns._db.MainFrameLines, original)
-        elseif (type == "Quest") then
-            return repository._getValue(ns._db.QuestFrameLines, original)
-        end
-
-        return original
-    end
-
     function repository.GetWhatsNewFrameInfo(version)
         return ns._db.SplashFrames.WhatsNew[version]
     end
@@ -427,6 +410,14 @@ do
 
         if (not objectives) then return original end
 
+        local waypointText = ExtractFromText(WAYPOINT_OBJECTIVE_FORMAT_OPTIONAL, original)
+        if (waypointText) then
+            local translatedWaypointText = repository.GetWaypointTranslation(waypointText)
+            if (translatedWaypointText ~= waypointText) then
+                return dbContext.GlobalStrings.GetTranslatedGlobalString(WAYPOINT_OBJECTIVE_FORMAT_OPTIONAL, true):format(translatedWaypointText)
+            end
+        end
+
         local progressText = nil
         local completeText = nil
         local optionalText = nil
@@ -483,11 +474,11 @@ do
         end
 
         if (optionalText) then
-            translatedObjectiveText = translatedObjectiveText .. " (Необов'язково)"
+            translatedObjectiveText = dbContext.GlobalStrings.GetTranslatedGlobalString(OPTIONAL_QUEST_OBJECTIVE_DESCRIPTION):format(translatedObjectiveText)
         end
 
         if (completeText) then
-            translatedObjectiveText = translatedObjectiveText .. " (Виконано)"
+            translatedObjectiveText = dbContext.GlobalStrings.GetTranslatedGlobalString(ERR_QUEST_OBJECTIVE_COMPLETE_S):format(translatedObjectiveText)
         end
 
         return repository._normalizeQuestString(translatedObjectiveText)
@@ -565,6 +556,13 @@ do
         end
 
         return translatedQuestData
+    end
+
+    --- Get the translated or original (English) NPC message text.
+    --- @param original string @ The original (English) NPC dialog text.
+    --- @return string @ The translated or original NPC dialog text.
+    function repository.GetWaypointTranslation(original)
+        return repository._getValue(ns._db.Waypoints, original)
     end
 
     dbContext.Quests = repository

@@ -8,6 +8,7 @@
 	<Script file="SubtitlesTranslator.lua"/>
 	<Script file="ZoneTextTranslator.lua"/>
 	<Script file="UIErrorsTranslator.lua"/>
+	<Script file="ObjectivesTranslator.lua"/>
 	<Script file="Tooltips\BaseTooltipTranslator.lua"/>
 	<Script file="Tooltips\UnitTooltipTranslator.lua"/>
 	<Script file="Tooltips\SpellTooltipTranslator.lua"/>
@@ -19,5 +20,7 @@
 	<Script file="Frames\PlayerSpellsFrame\ClassTalentsFrameTranslator.lua"/>
 	<Script file="Frames\PlayerSpellsFrame\ClassSpecFrameTranslator.lua"/>
 	<Script file="Frames\MapFrameTranslator.lua"/>
+	<Script file="Frames\MinimapFrameTranslator.lua"/>
 	<Script file="Frames\SplashFrameTranslator.lua"/>
+	<Script file="ThirdPartyAddons\ImmersionTranslator.lua"/>
 </Ui>

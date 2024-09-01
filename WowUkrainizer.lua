@@ -179,7 +179,19 @@ local function setGameFonts()
         { element = QuestFont_Super_Huge,             fontName = titleFontName,   scale = titleFontScale,   size = 24 },
         { element = QuestFont_Super_Huge_Outline,     fontName = titleFontName,   scale = titleFontScale,   size = 24 },
         { element = QuestFont_Enormous,               fontName = titleFontName,   scale = titleFontScale,   size = 30 },
-        { element = QuestFont_Shadow_Small,           fontName = titleFontName,   scale = titleFontScale,   size = 14 },
+        { element = QuestFont_Shadow_Small,           fontName = titleFontName,   scale = titleFontScale,   size = 14 }, --
+        -- objectives fonts
+        { element = ObjectiveTrackerFont12,           fontName = mainFontName,    scale = mainFontScale,    size = 12 },
+        { element = ObjectiveTrackerFont13,           fontName = mainFontName,    scale = mainFontScale,    size = 13 },
+        { element = ObjectiveTrackerFont14,           fontName = mainFontName,    scale = mainFontScale,    size = 14 },
+        { element = ObjectiveTrackerFont15,           fontName = mainFontName,    scale = mainFontScale,    size = 15 },
+        { element = ObjectiveTrackerFont16,           fontName = mainFontName,    scale = mainFontScale,    size = 16 },
+        { element = ObjectiveTrackerFont17,           fontName = mainFontName,    scale = mainFontScale,    size = 17 },
+        { element = ObjectiveTrackerFont18,           fontName = mainFontName,    scale = mainFontScale,    size = 18 },
+        { element = ObjectiveTrackerFont19,           fontName = mainFontName,    scale = mainFontScale,    size = 19 },
+        { element = ObjectiveTrackerFont20,           fontName = mainFontName,    scale = mainFontScale,    size = 20 },
+        { element = ObjectiveTrackerFont21,           fontName = mainFontName,    scale = mainFontScale,    size = 21 },
+        { element = ObjectiveTrackerFont22,           fontName = mainFontName,    scale = mainFontScale,    size = 22 },
     }
     for _, fontElement in ipairs(fontElements) do
         _setScaledFont(fontElement.element, fontElement.fontName, fontElement.size, fontElement.scale)
