@@ -42,7 +42,6 @@ end
 function baseRepository._getNameValue(dbTable, original)
     if (not original or original == "") then return original end
     local hash = GetNameHash(original)
-    print(hash, original)
     return dbTable[hash] or original
 end
 
