@@ -769,7 +769,8 @@
     "ObjectiveTrackerFont21",
     "ObjectiveTrackerFont22",
     "WAYPOINT_OBJECTIVE_FORMAT_OPTIONAL",
-    "OPTIONAL_QUEST_OBJECTIVE_DESCRIPTION"
+    "OPTIONAL_QUEST_OBJECTIVE_DESCRIPTION",
+    "QuestUtils_DecorateQuestText"
   ],
   "Lua.workspace.ignoreDir": [".vscode", "Libs"],
   "Lua.diagnostics.disable": ["missing-fields"],

@@ -42,7 +42,7 @@ local WorldMapChildFramesCache = {}
 ---@class QuestTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
-local function getQuestTitle(questID, isTrivial)
+local function getQuestTitleForQuestList(questID, isTrivial)
     local translatedTitle = GetTranslatedQuestTitle(questID)
     if (not translatedTitle) then return end
 
@@ -180,7 +180,7 @@ end
 
 local function OnQuestFrameGreetingPanelShow(_)
     local function _translateQuestButton(button, questID, isTrivial)
-        local translatedText = getQuestTitle(questID, isTrivial)
+        local translatedText = getQuestTitleForQuestList(questID, isTrivial)
         if (not translatedText) then return end
 
         button:SetText(translatedText)
@@ -233,7 +233,7 @@ local function OnGossipShow()
                 childFrame:SetText(GetTranslatedGossipOptionText(childFrame:GetText()))
                 childFrame:Resize();
             else
-                local translatedTitle = getQuestTitle(tonumber(data.info.questID), data.info.isTrivial)
+                local translatedTitle = getQuestTitleForQuestList(tonumber(data.info.questID), data.info.isTrivial)
                 if (translatedTitle) then
                     childFrame:SetText(translatedTitle)
                     childFrame:Resize();
@@ -511,7 +511,7 @@ local function DisplayQuestInfo(template, parentFrame)
             if (name == "QuestInfoTitleHeader") then
                 if (translateQuestText) then
                     if (questData and questData.Title) then
-                        QuestInfoTitleHeader:SetText(questData.Title)
+                        QuestInfoTitleHeader:SetText(QuestUtils_DecorateQuestText(questID, questData.Title, true))
                     end
                 end
             elseif (name == "QuestInfoObjectivesText") then
