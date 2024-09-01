@@ -13,4 +13,5 @@
 	<Script file="ZoneTexts.lua"/>
 	<Script file="GlobalStrings.lua"/>
 	<Script file="Items.lua"/>
+	<Script file="Waypoints.lua"/>
 </Ui>

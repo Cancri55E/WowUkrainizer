@@ -11,7 +11,7 @@ local GetTranslatedGossipText = ns.DbContext.Gossips.GetTranslatedGossipText
 local GetTranslatedGossipOptionText = ns.DbContext.Gossips.GetTranslatedGossipOptionText
 local GetTranslatedQuestTitle = ns.DbContext.Quests.GetTranslatedQuestTitle
 local GetTranslatedQuestData = ns.DbContext.Quests.GetTranslatedQuestData
-
+local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local CreateSwitchTranslationButton = ns.QuestFrameUtil.CreateSwitchTranslationButton
 local CreateMtIconTexture = ns.QuestFrameUtil.CreateMtIconTexture
 local CreateWowheadButton = ns.QuestFrameUtil.CreateWowheadButton
@@ -25,10 +25,6 @@ local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 function translator:IsEnabled()
     return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION)
-end
-
-local function GetQuestFrameTranslationOrDefault(default) -- TODO: Move to Global Strings
-    return ns.DbContext.Frames.GetTranslatedUIText("Quest", default)
 end
 
 local function GetTranslatedQuestTitleInternal(questID, isTrivial)
@@ -145,7 +141,7 @@ local function ImmersionFrame_TalkBox_Elements_Display(elements)
     do -- ShowSpecialObjectives
         local spellID, spellName, _ = GetCriteriaSpell()
         if (spellID and spellName) then
-            UpdateTextWithTranslation(elements.Content.SpecialObjectivesFrame.SpellObjectiveLearnLabel, GetQuestFrameTranslationOrDefault)
+            UpdateTextWithTranslation(elements.Content.SpecialObjectivesFrame.SpellObjectiveLearnLabel, GetTranslatedGlobalString)
             elements.Content.SpecialObjectivesFrame.SpellObjectiveFrame:SetText(GetTranslatedSpellName(spellName, false))
         end
     end
@@ -160,13 +156,13 @@ local function ImmersionFrame_TalkBox_Elements_Display(elements)
     end
 
     do --ShowRewards
-        UpdateTextWithTranslation(elements.Content.RewardsFrame.ItemChooseText, GetQuestFrameTranslationOrDefault)
-        UpdateTextWithTranslation(elements.Content.RewardsFrame.ItemReceiveText, GetQuestFrameTranslationOrDefault)
-        UpdateTextWithTranslation(elements.Content.RewardsFrame.HonorFrame.Name, GetQuestFrameTranslationOrDefault)
+        UpdateTextWithTranslation(elements.Content.RewardsFrame.ItemChooseText, GetTranslatedGlobalString)
+        UpdateTextWithTranslation(elements.Content.RewardsFrame.ItemReceiveText, GetTranslatedGlobalString)
+        UpdateTextWithTranslation(elements.Content.RewardsFrame.HonorFrame.Name, GetTranslatedGlobalString)
 
         for fontString in elements.Content.RewardsFrame.spellHeaderPool:EnumerateActive() do
             if (fontString:GetText() ~= nil) then
-                UpdateTextWithTranslation(fontString, GetQuestFrameTranslationOrDefault);
+                UpdateTextWithTranslation(fontString, GetTranslatedGlobalString);
             end
         end
         for fontString in elements.Content.RewardsFrame.spellRewardPool:EnumerateActive() do
@@ -272,11 +268,11 @@ function translator:Init()
         end)
 
     -- Consts
-    UpdateTextWithTranslation(ImmersionContentFrame.ObjectivesHeader, GetQuestFrameTranslationOrDefault)
-    UpdateTextWithTranslation(ImmersionContentFrame.RewardsFrame.Header, GetQuestFrameTranslationOrDefault)
-    UpdateTextWithTranslation(ImmersionContentFrame.RewardsFrame.XPFrame.ReceiveText, GetQuestFrameTranslationOrDefault)
-    UpdateTextWithTranslation(ImmersionFrame.TalkBox.Elements.Progress.MoneyText, GetQuestFrameTranslationOrDefault)
-    UpdateTextWithTranslation(ImmersionFrame.TalkBox.Elements.Progress.ReqText, GetQuestFrameTranslationOrDefault)
+    UpdateTextWithTranslation(ImmersionContentFrame.ObjectivesHeader, GetTranslatedGlobalString)
+    UpdateTextWithTranslation(ImmersionContentFrame.RewardsFrame.Header, GetTranslatedGlobalString)
+    UpdateTextWithTranslation(ImmersionContentFrame.RewardsFrame.XPFrame.ReceiveText, GetTranslatedGlobalString)
+    UpdateTextWithTranslation(ImmersionFrame.TalkBox.Elements.Progress.MoneyText, GetTranslatedGlobalString)
+    UpdateTextWithTranslation(ImmersionFrame.TalkBox.Elements.Progress.ReqText, GetTranslatedGlobalString)
 end
 
 ns.TranslationsManager:AddTranslator(translator)

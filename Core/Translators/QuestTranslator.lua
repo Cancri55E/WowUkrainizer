@@ -12,6 +12,7 @@ local GetTranslatedGossipOptionText = ns.DbContext.Gossips.GetTranslatedGossipOp
 local GetTranslatedQuestTitle = ns.DbContext.Quests.GetTranslatedQuestTitle
 local GetTranslatedQuestData = ns.DbContext.Quests.GetTranslatedQuestData
 local GetTranslatedQuestObjective = ns.DbContext.Quests.GetTranslatedQuestObjective
+local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 
 local CreateSwitchTranslationButton = ns.QuestFrameUtil.CreateSwitchTranslationButton
 local CreateMtIconTexture = ns.QuestFrameUtil.CreateMtIconTexture
@@ -52,14 +53,10 @@ local function getQuestTitle(questID, isTrivial)
     return translatedTitle
 end
 
-local function getQuestFrameTranslationOrDefault(default)
-    return ns.DbContext.Frames.GetTranslatedUIText("Quest", default)
-end
-
 local function translateUIFontString(fontString)
     if (not fontString.GetText or not fontString.SetText) then return end
     local text = fontString:GetText()
-    local translateText = getQuestFrameTranslationOrDefault(text)
+    local translateText = GetTranslatedGlobalString(text)
     if (text ~= translateText) then
         fontString:SetText(translateText)
     end
@@ -144,7 +141,7 @@ local function TranslteQuestObjective(objectiveFrame, questData, isQuestFrame)
     local translatedText = nil
     if (isComplete) then
         if (text == QUEST_WATCH_QUEST_READY) then
-            translatedText = getQuestFrameTranslationOrDefault(QUEST_WATCH_QUEST_READY)
+            translatedText = GetTranslatedGlobalString(QUEST_WATCH_QUEST_READY)
         else
             if (not isQuestFrame) then
                 local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questData.ID)
@@ -269,10 +266,6 @@ local function OnGossipShow()
     end
 end
 
-local function OnObjectiveTrackerQuestHeaderUpdated()
-    translateUIFontString(ObjectiveTrackerBlocksFrame.QuestHeader.Text)
-end
-
 local function OnQuestMapLogTitleButtonTooltipShow(button)
     local info = C_QuestLog.GetInfo(button.questLogIndex);
     assert(info and not info.isHeader);
@@ -298,11 +291,11 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
     if C_QuestLog.IsQuestReplayable(questID) then
         GameTooltip_AddInstructionLine(GameTooltip,
             QuestUtils_GetReplayQuestDecoration(questID) ..
-            getQuestFrameTranslationOrDefault(QUEST_SESSION_QUEST_TOOLTIP_IS_REPLAY), false);
+            GetTranslatedGlobalString(QUEST_SESSION_QUEST_TOOLTIP_IS_REPLAY), false);
     elseif C_QuestLog.IsQuestDisabledForSession(questID) then
         GameTooltip_AddColoredLine(GameTooltip,
             QuestUtils_GetDisabledQuestDecoration(questID) ..
-            getQuestFrameTranslationOrDefault(QUEST_SESSION_ON_HOLD_TOOLTIP_TITLE),
+            GetTranslatedGlobalString(QUEST_SESSION_ON_HOLD_TOOLTIP_TITLE),
             DISABLED_FONT_COLOR, false);
     end
 
@@ -337,15 +330,15 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
     GameTooltip_CheckAddQuestTimeToTooltip(GameTooltip, questID);
 
     if (info.frequency == Enum.QuestFrequency.Daily) then
-        QuestUtils_AddQuestTagLineToTooltip(GameTooltip, getQuestFrameTranslationOrDefault(DAILY), "DAILY", nil,
+        QuestUtils_AddQuestTagLineToTooltip(GameTooltip, GetTranslatedGlobalString(DAILY), "DAILY", nil,
             NORMAL_FONT_COLOR);
     elseif (info.frequency == Enum.QuestFrequency.Weekly) then
-        QuestUtils_AddQuestTagLineToTooltip(GameTooltip, getQuestFrameTranslationOrDefault(WEEKLY), "WEEKLY", nil,
+        QuestUtils_AddQuestTagLineToTooltip(GameTooltip, GetTranslatedGlobalString(WEEKLY), "WEEKLY", nil,
             NORMAL_FONT_COLOR);
     end
 
     if C_QuestLog.IsFailed(info.questID) then
-        QuestUtils_AddQuestTagLineToTooltip(GameTooltip, getQuestFrameTranslationOrDefault(FAILED), "FAILED", nil,
+        QuestUtils_AddQuestTagLineToTooltip(GameTooltip, GetTranslatedGlobalString(FAILED), "FAILED", nil,
             RED_FONT_COLOR);
     end
 
@@ -356,7 +349,7 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
     if isComplete then
         local completionText = GetQuestLogCompletionText(button.questLogIndex)
         if (not completionText) then
-            completionText = getQuestFrameTranslationOrDefault(QUEST_WATCH_QUEST_READY)
+            completionText = GetTranslatedGlobalString(QUEST_WATCH_QUEST_READY)
         elseif (completionText and questData.CompletionText) then
             completionText = questData.CompletionText
         elseif (not questData.ContainsObjectives and questData.ObjectivesText) then
@@ -400,12 +393,12 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
         end
     end
 
-    GameTooltip:AddLine(getQuestFrameTranslationOrDefault(CLICK_QUEST_DETAILS),
+    GameTooltip:AddLine(GetTranslatedGlobalString(CLICK_QUEST_DETAILS),
         GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b);
 
     if QuestUtils_GetNumPartyMembersOnQuest(questID) > 0 then
         GameTooltip:AddLine(" ");
-        GameTooltip:AddLine(getQuestFrameTranslationOrDefault(PARTY_QUEST_STATUS_ON));
+        GameTooltip:AddLine(GetTranslatedGlobalString(PARTY_QUEST_STATUS_ON));
 
         local omitTitle = true;
         local ignoreActivePlayer = true;
@@ -475,35 +468,6 @@ local function OnQuestLogQuestsUpdate()
     --     i = i + 1
     -- end
     -- DevTool:AddData("!done!", "---")
-end
-
-local function UpdateTrackerModule(module)
-    local objectiveTrackerBlockTemplate = module.usedBlocks["ObjectiveTrackerBlockTemplate"]
-    if (not objectiveTrackerBlockTemplate) then return end
-
-    for questID, questObjectiveBlock in pairs(objectiveTrackerBlockTemplate) do
-        local block = module:GetBlock(questID);
-
-        questID = tonumber(questID)
-        local blockHeight = 0;
-        local questData = questID and GetTranslatedQuestData(questID)
-        if (questData and questData.Title) then
-            questObjectiveBlock.HeaderText:SetText(questData.Title)
-            blockHeight = questObjectiveBlock.HeaderText:GetHeight()
-        end
-
-        local objectivesHeights = TranslteQuestObjectives(questObjectiveBlock.lines, questData, false)
-
-        for _, line in pairs(questObjectiveBlock.lines) do
-            line:SetHeight(line.Text:GetHeight())
-        end
-
-        blockHeight = blockHeight + objectivesHeights + (block.module.lineSpacing * #questObjectiveBlock.lines)
-
-        if (block:GetHeight() < blockHeight) then
-            block:SetHeight(blockHeight)
-        end
-    end
 end
 
 local function UpdateQuestDetailsButtons()
@@ -852,11 +816,11 @@ local function OnStorylineQuestPinMouseEnter(frame)
         if (translatedTitle) then
             GameTooltip:SetText(translatedTitle)
         end
-        GameTooltip:AddLine(getQuestFrameTranslationOrDefault(AVAILABLE_QUEST), 1, 1, 1, true);
+        GameTooltip:AddLine(GetTranslatedGlobalString(AVAILABLE_QUEST), 1, 1, 1, true);
         if (questLineInfo.floorLocation == Enum.QuestLineFloorLocation.Below) then
-            GameTooltip:AddLine(getQuestFrameTranslationOrDefault(QUESTLINE_LOCATED_BELOW), 0.5, 0.5, 0.5, true);
+            GameTooltip:AddLine(GetTranslatedGlobalString(QUESTLINE_LOCATED_BELOW), 0.5, 0.5, 0.5, true);
         elseif (questLineInfo.floorLocation == Enum.QuestLineFloorLocation.Above) then
-            GameTooltip:AddLine(getQuestFrameTranslationOrDefault(QUESTLINE_LOCATED_ABOVE), 0.5, 0.5, 0.5, true);
+            GameTooltip:AddLine(GetTranslatedGlobalString(QUESTLINE_LOCATED_ABOVE), 0.5, 0.5, 0.5, true);
         end
         GameTooltip:Show();
     end
@@ -895,38 +859,26 @@ function translator:Init()
     translateUIFontString(QuestProgressRequiredItemsText)
     translateUIFontString(CurrentQuestsText)
     translateUIFontString(AvailableQuestsText)
-    -- Objectives Frame
-    -- TODO: Fix for 11.0
-    --translateUIFontString(ObjectiveTrackerFrame.HeaderMenu.Title)
-    -- translateUIFontString(ObjectiveTrackerBlocksFrame.AchievementHeader.Text)
-    -- translateUIFontString(ObjectiveTrackerBlocksFrame.AdventureHeader.Text)
-    -- translateUIFontString(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text)
-    -- translateUIFontString(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text)
-    -- translateUIFontString(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text)
-    -- translateUIFontString(ObjectiveTrackerBlocksFrame.ScenarioHeader.Text)
     -- Quest popup
     translateUIFontString(QuestLogPopupDetailFrame.ShowMapButton.Text)
     translateButton(QuestLogPopupDetailFrame.AbandonButton)
     translateButton(QuestLogPopupDetailFrame.ShareButton)
     -- Quest map
     translateUIFontString(MapQuestInfoRewardsFrame.TitleFrame.Name)
-    -- TODO: Fix for 11.0
-    -- for _, region in ipairs({ QuestMapFrame.DetailsFrame.RewardsFrame:GetRegions() }) do
-    --     if region:GetObjectType() == "FontString" then
-    --         translateUIFontString(region)
-    --     end
-    -- end
+    for _, region in ipairs({ QuestMapFrame.DetailsFrame.RewardsFrameContainer.RewardsFrame:GetRegions() }) do
+        if region:GetObjectType() == "FontString" then
+            translateUIFontString(region)
+        end
+    end
     translateButton(QuestMapFrame.DetailsFrame.AbandonButton, 90, 22)
     translateButton(QuestMapFrame.DetailsFrame.ShareButton, 90, 22)
-    -- TODO: Fix for 11.0
-    -- translateButton(QuestMapFrame.DetailsFrame.BackButton, nil, 24)
+    translateButton(QuestMapFrame.DetailsFrame.BackFrame.BackButton, nil, 24)
     translateUIFontString(QuestScrollFrame.CampaignTooltip.CompleteRewardText)
 
     eventHandler:Register(function() _addQuestInfoToCache(GetProgressText()) end, "QUEST_PROGRESS")
     eventHandler:Register(function() _addQuestInfoToCache(nil, GetRewardText()) end, "QUEST_COMPLETE")
 
     eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
-    eventHandler:Register(OnObjectiveTrackerQuestHeaderUpdated, "QUEST_SESSION_JOINED", "QUEST_SESSION_LEFT")
 
     hooksecurefunc("ToggleDropDownMenu", OnToggleDropDownMenu)
 
@@ -941,11 +893,6 @@ function translator:Init()
 
     QuestFrameProgressPanel:HookScript("OnShow", OnQuestFrameProgressPanelShow)
     hooksecurefunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
-
-    -- TODO: Fix for 11.0
-    -- ObjectiveTrackerBlocksFrame.QuestHeader:HookScript("OnShow", OnObjectiveTrackerQuestHeaderUpdated)
-    -- hooksecurefunc(QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
-    -- hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "Update", UpdateTrackerModule)
 
     hooksecurefunc("StaticPopup_Show", OnStaticPopupShow)
 

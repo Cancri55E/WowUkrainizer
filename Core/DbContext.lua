@@ -247,24 +247,6 @@ do
     ---@class UIFrameRepository : BaseRepository
     local repository = setmetatable({}, { __index = baseRepository })
 
-    --- Get the translated or original (English) UI text based on the specified type.
-    --- @param type UIFrameType @ The type of UI frame.
-    --- @param original string @ The original (English) text.
-    --- @return string @ The translated or original UI frame translation.
-    function repository.GetTranslatedUIText(type, original)
-        if (type == "Spellbook") then
-            return repository:_getFormattedValue(ns._db.SpellbookFrameLines, original)
-        elseif (type == "ClassTalent") then
-            return repository:_getFormattedValue(ns._db.ClassTalentFrameLines, original)
-        elseif (type == "Main") then
-            return repository:_getFormattedValue(ns._db.MainFrameLines, original)
-        elseif (type == "Quest") then
-            return repository._getValue(ns._db.QuestFrameLines, original)
-        end
-
-        return original
-    end
-
     function repository.GetWhatsNewFrameInfo(version)
         return ns._db.SplashFrames.WhatsNew[version]
     end
@@ -565,6 +547,13 @@ do
         end
 
         return translatedQuestData
+    end
+
+    --- Get the translated or original (English) NPC message text.
+    --- @param original string @ The original (English) NPC dialog text.
+    --- @return string @ The translated or original NPC dialog text.
+    function repository.GetWaypointTranslation(original)
+        return repository._getValue(ns._db.Waypoints, original)
     end
 
     dbContext.Quests = repository
