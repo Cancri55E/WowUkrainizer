@@ -83,7 +83,7 @@ local function ObjectiveTracker_UpdateSingle(objectiveTracker, quest)
         elseif (key == "Waypoint") then
             local waypointText = ExtractFromText(WAYPOINT_OBJECTIVE_FORMAT_OPTIONAL, text)
             if (waypointText) then
-                value.Text:SetText(GetTranslatedGlobalString(WAYPOINT_OBJECTIVE_FORMAT_OPTIONAL:format(GetWaypointTranslation(waypointText))))
+                value.Text:SetText(GetTranslatedGlobalString(WAYPOINT_OBJECTIVE_FORMAT_OPTIONAL, true):format(GetWaypointTranslation(waypointText)))
             else
                 value.Text:SetText(GetWaypointTranslation(waypointText))
             end

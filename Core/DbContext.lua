@@ -15,6 +15,7 @@ local ReplaceBracketsToColor = ns.StringUtil.ReplaceBracketsToColor
 local GetHash = ns.StringUtil.GetHash
 local GetNameHash = ns.StringUtil.GetNameHash
 local Uft8Upper = ns.StringUtil.Uft8Upper
+local ExtractFromText = ns.StringUtil.ExtractFromText
 
 ---@class DbContext
 local dbContext = {}
@@ -41,6 +42,7 @@ end
 function baseRepository._getNameValue(dbTable, original)
     if (not original or original == "") then return original end
     local hash = GetNameHash(original)
+    print(hash, original)
     return dbTable[hash] or original
 end
 
@@ -409,6 +411,14 @@ do
 
         if (not objectives) then return original end
 
+        local waypointText = ExtractFromText(WAYPOINT_OBJECTIVE_FORMAT_OPTIONAL, original)
+        if (waypointText) then
+            local translatedWaypointText = repository.GetWaypointTranslation(waypointText)
+            if (translatedWaypointText ~= waypointText) then
+                return dbContext.GlobalStrings.GetTranslatedGlobalString(WAYPOINT_OBJECTIVE_FORMAT_OPTIONAL, true):format(translatedWaypointText)
+            end
+        end
+
         local progressText = nil
         local completeText = nil
         local optionalText = nil
@@ -465,11 +475,11 @@ do
         end
 
         if (optionalText) then
-            translatedObjectiveText = translatedObjectiveText .. " (Необов'язково)"
+            translatedObjectiveText = dbContext.GlobalStrings.GetTranslatedGlobalString(OPTIONAL_QUEST_OBJECTIVE_DESCRIPTION):format(translatedObjectiveText)
         end
 
         if (completeText) then
-            translatedObjectiveText = translatedObjectiveText .. " (Виконано)"
+            translatedObjectiveText = dbContext.GlobalStrings.GetTranslatedGlobalString(ERR_QUEST_OBJECTIVE_COMPLETE_S):format(translatedObjectiveText)
         end
 
         return repository._normalizeQuestString(translatedObjectiveText)
