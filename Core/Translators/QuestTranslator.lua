@@ -5,7 +5,6 @@ local _G = _G
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
-local TryCallAPIFn = ns.CommonUtil.TryCallAPIFn
 local GetTranslatedUnitName = ns.DbContext.Units.GetTranslatedUnitName
 local GetTranslatedGossipText = ns.DbContext.Gossips.GetTranslatedGossipText
 local GetTranslatedGossipOptionText = ns.DbContext.Gossips.GetTranslatedGossipOptionText
@@ -502,56 +501,47 @@ local function DisplayQuestInfo(template, parentFrame)
 
     showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMtData)
 
-    local elementsTable = template.elements;
-    for i = 1, #elementsTable, 3 do
-        local shownFrame, _ = elementsTable[i](parentFrame);
-        local translateQuestText = ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
-        if (shownFrame) then
-            local _, name = TryCallAPIFn("GetName", shownFrame)
-            if (name == "QuestInfoTitleHeader") then
-                if (translateQuestText) then
-                    if (questData and questData.Title) then
-                        QuestInfoTitleHeader:SetText(QuestUtils_DecorateQuestText(questID, questData.Title, true))
-                    end
-                end
-            elseif (name == "QuestInfoObjectivesText") then
-                if (translateQuestText) then
-                    if (questData and questData.ObjectivesText) then
-                        QuestInfoObjectivesText:SetText(questData.ObjectivesText)
-                    end
-                end
-            elseif (name == "QuestInfoObjectivesFrame") then
-                if (translateQuestText) then
-                    TranslteQuestObjectives(QuestInfoObjectivesFrame.Objectives, questData, true)
-                end
-            elseif (name == "QuestInfoDescriptionHeader") then
-                -- ignore
-            elseif (name == "QuestInfoDescriptionText") then
-                if (translateQuestText) then
-                    if (questData and questData.Description) then
-                        QuestInfoDescriptionText:SetText(questData.Description)
-                    end
-                end
-            elseif (name == "QuestInfoSpacerFrame") then
-                -- ignore
-            elseif (name == "QuestInfoRewardsFrame") then
-                if (translateQuestText) then
-                    if (questData and questData.RewardText) then
-                        QuestInfoRewardText:SetText(questData.RewardText)
-                    end
-                end
-                translateUIFontString(QuestInfoRewardsFrame.ItemChooseText)
-                translateUIFontString(QuestInfoRewardsFrame.ItemReceiveText)
-                translateUIFontString(QuestInfoRewardsFrame.QuestSessionBonusReward);
-            elseif (name == "MapQuestInfoRewardsFrame") then
-                -- ignore
-                translateUIFontString(QuestInfoFrame.rewardsFrame.ItemChooseText)
-                translateUIFontString(QuestInfoFrame.rewardsFrame.ItemReceiveText)
-                translateUIFontString(QuestInfoFrame.rewardsFrame.PlayerTitleText)
-                translateUIFontString(QuestInfoFrame.rewardsFrame.QuestSessionBonusReward)
-                translateUIFontString(QuestInfoFrame.rewardsFrame.WarModeBonusFrame)
-            end
+    local translateQuestText = ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
+    if (not translateQuestText) then return end
+
+    if (QuestInfoTitleHeader:IsVisible()) then
+        if (questData and questData.Title) then
+            QuestInfoTitleHeader:SetText(QuestUtils_DecorateQuestText(questID, questData.Title, true))
         end
+    end
+
+    if (QuestInfoObjectivesText:IsVisible()) then
+        if (questData and questData.ObjectivesText) then
+            QuestInfoObjectivesText:SetText(questData.ObjectivesText)
+        end
+    end
+
+    if (QuestInfoObjectivesFrame:IsVisible()) then
+        TranslteQuestObjectives(QuestInfoObjectivesFrame.Objectives, questData, true)
+    end
+
+    if (QuestInfoDescriptionText:IsVisible()) then
+        if (questData and questData.Description) then
+            QuestInfoDescriptionText:SetText(questData.Description)
+        end
+    end
+
+    if (QuestInfoRewardsFrame:IsVisible()) then
+        if (questData and questData.RewardText) then
+            QuestInfoRewardText:SetText(questData.RewardText)
+        end
+        translateUIFontString(QuestInfoRewardsFrame.ItemChooseText)
+        translateUIFontString(QuestInfoRewardsFrame.ItemReceiveText)
+        translateUIFontString(QuestInfoRewardsFrame.QuestSessionBonusReward);
+    end
+
+    if (QuestInfoFrame.rewardsFrame:IsVisible()) then
+        -- ignore
+        translateUIFontString(QuestInfoFrame.rewardsFrame.ItemChooseText)
+        translateUIFontString(QuestInfoFrame.rewardsFrame.ItemReceiveText)
+        translateUIFontString(QuestInfoFrame.rewardsFrame.PlayerTitleText)
+        translateUIFontString(QuestInfoFrame.rewardsFrame.QuestSessionBonusReward)
+        translateUIFontString(QuestInfoFrame.rewardsFrame.WarModeBonusFrame)
     end
 end
 
