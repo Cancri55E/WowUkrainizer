@@ -4,7 +4,6 @@ local ns = select(2, ...);
 local ExtractNumericValues = ns.StringUtil.ExtractNumericValues
 local InsertNumericValues = ns.StringUtil.InsertNumericValues
 local DeclensionWord = ns.StringUtil.DeclensionWord
-local Uft8Upper = ns.StringUtil.Uft8Upper
 
 --- Utility class providing string normalization functions for addon.
 --- @class StringNormalizer
