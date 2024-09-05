@@ -88,7 +88,6 @@
 ---@field Roles table<integer, string>
 ---@field SpecializationNotes table<integer, string>
 ---@field DialogTexts table<integer, string>
----@field CinematicSubtitles table<integer, string>
 ---@field AdditionalSpellTips table<integer, string>
 ---@field GossipTitles table<integer, string>
 ---@field GossipOptions table<integer, string>
