@@ -377,7 +377,7 @@ do
     --- @param original string @ The original (English) cinematic subtitle.
     --- @return string @ The translated or original cinematic subtitle.
     function repository.GetTranslatedCinematicSubtitle(original)
-        return repository:_getPersonalizedValue(ns._db.CinematicSubtitles, original)
+        return repository:_getPersonalizedValue(ns._db.DialogTexts, original)
     end
 
     dbContext.NpcDialogs = repository
