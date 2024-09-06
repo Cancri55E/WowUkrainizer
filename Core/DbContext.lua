@@ -14,6 +14,7 @@ local ReplaceBracketsToColor = ns.StringUtil.ReplaceBracketsToColor
 
 local GetHash = ns.StringUtil.GetHash
 local GetNameHash = ns.StringUtil.GetNameHash
+local GetPersonalizedStringHash = ns.StringUtil.GetPersonalizedStringHash
 local ExtractFromText = ns.StringUtil.ExtractFromText
 
 ---@class DbContext
@@ -72,18 +73,6 @@ function baseRepository:_getFormattedNameValue(dbTable, original)
 
     local translatedText = self._getNameValue(dbTable, text)
     return ReconstructStringWithNumerics(translatedText, numValues)
-end
-
---- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain personalized values (player name, class, etc.).
----@param dbTable table<integer, string> @ The database table for translations.
----@param original string @ The original (English) text.
----@return string? @ The translated or original value.
----@protected
-function baseRepository:_getPersonalizedValue(dbTable, original)
-    if (not original) then return original end
-    local text = EncodeWithBlizzardPlaceholders(original)
-    local translatedText = self._getNameValue(dbTable, text)
-    return DecodeBlizzardPlaceholders(translatedText)
 end
 
 -- Units
@@ -298,6 +287,23 @@ end
 do
     ---@class NpcDialogRepository : BaseRepository
     local repository = setmetatable({}, { __index = baseRepository })
+
+    --- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain personalized values (player name, class, etc.).
+    ---@param dbTable table<integer, string> @ The database table for translations.
+    ---@param original string @ The original (English) text.
+    ---@return string? @ The translated or original value.
+    ---@protected
+    function repository:_getPersonalizedValue(dbTable, original)
+        if (not original) then return original end
+        local texts = EncodeWithBlizzardPlaceholders(original)
+        for i = 1, #texts, 1 do
+            local translatedText = dbTable[GetPersonalizedStringHash(texts[i])]
+            if (translatedText) then
+                return DecodeBlizzardPlaceholders(translatedText)
+            end
+        end
+        return original
+    end
 
     --- Get the translated or original (English) NPC message text.
     --- @param original string @ The original (English) NPC dialog text.
