@@ -221,3 +221,15 @@ function internal.Uft8Upper(str)
         return cyrillic_lower_to_upper[c] or string.upper(c)
     end))
 end
+
+function internal.ReplaceWholeWordNocase(originalText, searchPhrase, replacement, ignoreCase)
+    local pattern = ""
+    if (ignoreCase) then
+        for i = 1, #searchPhrase do
+            local c = searchPhrase:sub(i, i)
+            pattern = pattern .. string.format("[%s%s]", c:lower(), c:upper())
+        end
+    end
+    pattern = "%f[%w_%-]" .. pattern .. "%f[^%w_%-]"
+    return originalText:gsub(pattern, replacement)
+end

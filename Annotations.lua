@@ -85,6 +85,7 @@
 ---@field Specializations table<integer, string>
 ---@field Classes table<integer, string[]>
 ---@field Races table<integer, string[]>
+---@field ShortRaces table<string, string>
 ---@field Attributes table<integer, string>
 ---@field Roles table<integer, string>
 ---@field SpecializationNotes table<integer, string>
