@@ -5,6 +5,7 @@ local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local GetTranslatedZoneText = ns.DbContext.ZoneTexts.GetTranslatedZoneText
 local GetTranslatedQuestData = ns.DbContext.Quests.GetTranslatedQuestData
+local GetTranslatedQuestTitle = ns.DbContext.Quests.GetTranslatedQuestTitle
 local GetTranslatedQuestObjective = ns.DbContext.Quests.GetTranslatedQuestObjective
 local GetWaypointTranslation = ns.DbContext.Quests.GetWaypointTranslation
 local ExtractFromText = ns.StringUtil.ExtractFromText
@@ -41,6 +42,27 @@ end
 
 local function BonusObjectiveTracker_LayoutContents(objectiveTracker)
     UpdateTextWithTranslation(objectiveTracker.Header.Text, GetTranslatedGlobalString)
+end
+
+local function ObjectiveTracker_AddAutoQuestObjectives(objectiveTracker)
+    local autoQuestPopUpsBlock = objectiveTracker.usedBlocks["AutoQuestPopUpBlockTemplate"]
+    if not autoQuestPopUpsBlock then return end
+
+    for i = 1, GetNumAutoQuestPopUps() do
+        local questID, popUpType = GetAutoQuestPopUp(i);
+        if objectiveTracker:ShouldDisplayAutoQuest(questID) then
+            local questTranslatedTitle = questID and GetTranslatedQuestTitle(questID)
+            if questTranslatedTitle then
+                local block = autoQuestPopUpsBlock[questID .. popUpType];
+                if (block) then
+                    UpdateTextWithTranslation(block.Contents.TopText, GetTranslatedGlobalString)
+                    UpdateTextWithTranslation(block.Contents.BottomText, GetTranslatedGlobalString)
+                    block.Contents.QuestName:SetText(questTranslatedTitle)
+                    block.Contents:SetWidth(262)
+                end
+            end
+        end
+    end
 end
 
 local function ObjectiveTracker_UpdateSingle(objectiveTracker, quest)
@@ -130,11 +152,13 @@ function translator:Init()
     hooksecurefunc(ScenarioObjectiveTracker, "LayoutContents", ScenarioObjectiveTracker_LayoutContents)
     hooksecurefunc(BonusObjectiveTracker, "LayoutContents", BonusObjectiveTracker_LayoutContents)
 
-    hooksecurefunc(QuestObjectiveTracker, "UpdateSingle", ObjectiveTracker_UpdateSingle)
-    hooksecurefunc(CampaignQuestObjectiveTracker, "UpdateSingle", ObjectiveTracker_UpdateSingle)
-
     hooksecurefunc(QuestObjectiveTracker, "UpdateHeight", ObjectiveTracker_UpdateHeight)
+    hooksecurefunc(QuestObjectiveTracker, "AddAutoQuestObjectives", ObjectiveTracker_AddAutoQuestObjectives)
+    hooksecurefunc(QuestObjectiveTracker, "UpdateSingle", ObjectiveTracker_UpdateSingle)
+
     hooksecurefunc(CampaignQuestObjectiveTracker, "UpdateHeight", ObjectiveTracker_UpdateHeight)
+    hooksecurefunc(CampaignQuestObjectiveTracker, "AddAutoQuestObjectives", ObjectiveTracker_AddAutoQuestObjectives)
+    hooksecurefunc(CampaignQuestObjectiveTracker, "UpdateSingle", ObjectiveTracker_UpdateSingle)
 
     -- Use hooksecurefunc since UpdateTextWithTranslation in this case call taint code!
     hooksecurefunc(ObjectiveTrackerFrame, "Init", ObjectiveTrackerFrame_Init)

@@ -55,6 +55,27 @@ function internal.GetNameHash(str)
     return CalculateHash(str)
 end
 
+--- Get a hash value for a Personalized string (string where contains Blizzard placeholder base on player data, for example class, name, race or short race).
+---@param str string @The input string.
+---@return number @The hash value.
+function internal.GetPersonalizedStringHash(str)
+    if (str == nil or type(str) ~= "string" or str == "") then
+        return -1
+    end
+
+    str = internal.Trim(str) -- Trim the input string
+
+    str = str:gsub("%s+", "_")
+        :gsub("[\n\r’`]", "")
+        :gsub("%$[nN]", "<name>")
+        :gsub("%$[pP]", "<name>")
+        :gsub("%$[rR]", "<race>")
+        :gsub("%$[rR][sS]", "<short-race>")
+        :gsub("%$[cC]", "<class>")
+
+    return CalculateHash(str)
+end
+
 --- Check if a string ends with a specified suffix.
 ---@param str string @The input string.
 ---@param suffix string @The suffix to check.
@@ -220,4 +241,22 @@ function internal.Uft8Upper(str)
     return (str:gsub(utf8_char_pattern, function(c)
         return cyrillic_lower_to_upper[c] or string.upper(c)
     end))
+end
+
+function internal.ReplaceWholeWordNocase(originalText, searchPhrase, replacement, ignoreCase)
+    local pattern = ""
+    if (ignoreCase) then
+        for i = 1, #searchPhrase do
+            local c = searchPhrase:sub(i, i)
+            if (c == '$' or c == '-') then
+                pattern = pattern .. "%" .. c
+            else
+                pattern = pattern .. string.format("[%s%s]", c:lower(), c:upper())
+            end
+        end
+    else
+        pattern = searchPhrase:gsub("%$", "%%$"):gsub("%-", "%%-")
+    end
+    pattern = "%f[%w_%-]" .. pattern .. "%f[^%w_%-]"
+    return originalText:gsub(pattern, replacement)
 end

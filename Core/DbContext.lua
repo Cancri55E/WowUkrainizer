@@ -6,16 +6,15 @@ if (ns.DbContext) then return end
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
 local ReconstructStringWithNumerics = ns.StringNormalizer.ReconstructStringWithNumerics
 
-local NormalizePersonalizedString = ns.StringNormalizer.NormalizePersonalizedString
-local ReconstructPersonalizedString = ns.StringNormalizer.ReconstructPersonalizedString
-
 local RemoveBrackets = ns.StringUtil.RemoveBrackets
 local ReplaceBracketsToColor = ns.StringUtil.ReplaceBracketsToColor
 
 local GetHash = ns.StringUtil.GetHash
 local GetNameHash = ns.StringUtil.GetNameHash
-local Uft8Upper = ns.StringUtil.Uft8Upper
+local GetPersonalizedStringHash = ns.StringUtil.GetPersonalizedStringHash
 local ExtractFromText = ns.StringUtil.ExtractFromText
+local Uft8Upper = ns.StringUtil.Uft8Upper
+local ReplaceWholeWordNocase = ns.StringUtil.ReplaceWholeWordNocase
 
 ---@class DbContext
 local dbContext = {}
@@ -24,7 +23,7 @@ local dbContext = {}
 local baseRepository = {}
 
 --- Protected method to get the translated or the original (English) text if not translated.
----@param dbTable table<integer, string> @ The database table for translations.
+---@param dbTable table<integer, any> @ The database table for translations.
 ---@param original string @ The original (English) text.
 ---@return string @ The translated or original value.
 ---@protected
@@ -75,16 +74,133 @@ function baseRepository:_getFormattedNameValue(dbTable, original)
     return ReconstructStringWithNumerics(translatedText, numValues)
 end
 
---- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain personalized values (player name, class, etc.).
----@param dbTable table<integer, string> @ The database table for translations.
----@param original string @ The original (English) text.
----@return string @ The translated or original value.
----@protected
-function baseRepository:_getPersonalizedValue(dbTable, original)
-    if (not original) then return original end
-    local text = NormalizePersonalizedString(original)
-    local translatedText = self._getNameValue(dbTable, text)
-    return ReconstructPersonalizedString(translatedText)
+--- TODO
+--- @param text string The input text.
+--- @return string[] @TODO
+function baseRepository.EncodeWithBlizzardPlaceholders(text)
+    local function generateReplacementCombinations(originalText, replacements)
+        local results = {}
+        local resultsSet = {}
+
+        local function addUniqueResult(newText)
+            if not resultsSet[newText] then
+                resultsSet[newText] = true
+                table.insert(results, newText)
+            end
+        end
+
+        local fullReplacementText = originalText
+        for _, replacement in ipairs(replacements) do
+            fullReplacementText = ReplaceWholeWordNocase(fullReplacementText, replacement.word, replacement.placeholder, replacement.ignoreCase)
+        end
+
+        if fullReplacementText == originalText then
+            return { originalText }
+        end
+
+        addUniqueResult(fullReplacementText)
+
+        for i, replacement in ipairs(replacements) do
+            local replacedText = ReplaceWholeWordNocase(originalText, replacement.word, replacement.placeholder, replacement.ignoreCase)
+
+            if replacedText ~= originalText then
+                addUniqueResult(replacedText)
+
+                local subReplacements = {}
+                for j = i + 1, #replacements do
+                    table.insert(subReplacements, replacements[j])
+                end
+
+                local subResults = generateReplacementCombinations(replacedText, subReplacements)
+                for _, subResult in ipairs(subResults) do
+                    addUniqueResult(subResult)
+                end
+            end
+        end
+
+        addUniqueResult(originalText)
+        return results
+    end
+
+    local replacements = {
+        { word = ns.PlayerInfo.Name,                                   placeholder = "$n",  ignoreCase = false },
+        { word = ns.PlayerInfo.Race,                                   placeholder = "$r",  ignoreCase = true },
+        { word = ns.DbContext.Player.GetShortRace(ns.PlayerInfo.Race), placeholder = "$rs", ignoreCase = true },
+        { word = ns.PlayerInfo.Class,                                  placeholder = "$c",  ignoreCase = true }
+    }
+
+    return generateReplacementCombinations(text, replacements)
+end
+
+--- TODO
+--- @param text string The input text.
+--- @return string? @TODO
+function baseRepository.DecodeBlizzardPlaceholders(text)
+    local function getCaseLetterIndex(caseLetter)
+        if caseLetter and caseLetter ~= "" then
+            if (caseLetter == 'н' or caseLetter == 'Н') then
+                return 1
+            elseif (caseLetter == 'р' or caseLetter == 'Р') then
+                return 2
+            elseif (caseLetter == 'д' or caseLetter == 'Д') then
+                return 3
+            elseif (caseLetter == 'з' or caseLetter == 'З') then
+                return 4
+            elseif (caseLetter == 'о' or caseLetter == 'О') then
+                return 5
+            elseif (caseLetter == 'м' or caseLetter == 'М') then
+                return 6
+            elseif (caseLetter == 'к' or caseLetter == 'К') then
+                return 7
+            end
+        end
+    end
+
+    if text == nil or text == "" then return text end
+
+    local playerData = ns.PlayerInfo
+
+    text = string.gsub(text, "%$[nN]", function(_)
+        return playerData.Name
+    end)
+
+    text = string.gsub(text, "%$[pP]", function(_)
+        return playerData.Name
+    end)
+
+    text = string.gsub(text, "(%$[rR][sS]):?([^\128-\191]?[\128-\191]?)", function(marker, caseLetter)
+        local case = getCaseLetterIndex(caseLetter)
+        local translatedStr = ns.DbContext.Player.GetTranslatedShortRace(playerData.Race, case or 1, playerData.Gender)
+        if (marker == "$RS") then translatedStr = Uft8Upper(translatedStr) end
+        if (not case) then translatedStr = translatedStr .. caseLetter end
+        return translatedStr
+    end)
+
+    text = string.gsub(text, "(%$[rR]):?([^\128-\191]?[\128-\191]?)", function(marker, caseLetter)
+        local case = getCaseLetterIndex(caseLetter)
+        local translatedStr = ns.DbContext.Player.GetTranslatedRace(playerData.Race, case or 1, playerData.Gender)
+        if (marker == "$R") then translatedStr = Uft8Upper(translatedStr) end
+        if (not case) then translatedStr = translatedStr .. caseLetter end
+        return translatedStr
+    end)
+
+    text = string.gsub(text, "(%$[cC]):?([^\128-\191]?[\128-\191]?)", function(marker, caseLetter)
+        local case = getCaseLetterIndex(caseLetter)
+        local translatedStr = ns.DbContext.Player.GetTranslatedClass(playerData.Class, case or 1, playerData.Gender)
+        if (marker == "$C") then translatedStr = Uft8Upper(translatedStr) end
+        if (not case) then translatedStr = translatedStr .. caseLetter end
+        return translatedStr
+    end)
+
+    text = string.gsub(text, "{sex|(.-)|(.-)}", function(male, female)
+        if (playerData.Gender == 3) then
+            return female
+        else
+            return male
+        end
+    end)
+
+    return text
 end
 
 -- Units
@@ -148,7 +264,7 @@ do
     --- @param case number @ The case value.
     --- @param gender number? @ The gender value.
     --- @return number @ The calculated index.
-    local function calculateClassTranslationIndex(case, gender)
+    local function calculateTranslationIndex(case, gender)
         if (not case or not gender) then return 1 end
         return case * 2 - (3 - gender)
     end
@@ -162,7 +278,7 @@ do
         local class = repository._getValue(ns._db.Classes, original)
         if (not class) then return original end
 
-        return class[calculateClassTranslationIndex(case, gender)] or original
+        return class[calculateTranslationIndex(case, gender)] or original
     end
 
     --- Get the translated specialization or the original (English) text if not translated.
@@ -191,6 +307,31 @@ do
     --- @return string @ The translated attribute or the original (English) text.
     function repository.GetTranslatedAttribute(original)
         return repository._getValue(ns._db.Attributes, original)
+    end
+
+    --- Get the translated race or the original (English) text if not translated.
+    --- @param original string @ The original (English) text.
+    --- @return string @ The translated race or the original (English) text.
+    function repository.GetTranslatedRace(original, case, gender)
+        local translatedRace = repository._getValue(ns._db.Races, original)
+        if (not translatedRace) then return original end
+
+        return translatedRace[calculateTranslationIndex(case, gender)] or original
+    end
+
+    --- Get the translated race or the original (English) text if not translated.
+    --- @param raceName string @ The english fullname race.
+    --- @return string @ The translated short race or the original (English) text.
+    function repository.GetTranslatedShortRace(raceName, case, gender)
+        local shortRace = repository.GetShortRace(raceName)
+        local translatedShortRace = repository._getValue(ns._db.Races, shortRace)
+        if (not translatedShortRace) then return shortRace end
+
+        return translatedShortRace[calculateTranslationIndex(case, gender)] or shortRace
+    end
+
+    function repository.GetShortRace(raceName)
+        return ns._db.ShortRaces[raceName]
     end
 
     dbContext.Player = repository
@@ -275,16 +416,33 @@ do
     ---@class NpcDialogRepository : BaseRepository
     local repository = setmetatable({}, { __index = baseRepository })
 
+    --- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain personalized values (player name, class, etc.).
+    ---@param dbTable table<integer, string> @ The database table for translations.
+    ---@param original string @ The original (English) text.
+    ---@return string? @ The translated or original value.
+    ---@protected
+    function repository:_getPersonalizedValue(dbTable, original)
+        if (not original) then return original end
+        local texts = repository.EncodeWithBlizzardPlaceholders(original)
+        for i = 1, #texts, 1 do
+            local translatedText = dbTable[GetPersonalizedStringHash(texts[i])]
+            if (translatedText) then
+                return repository.DecodeBlizzardPlaceholders(translatedText)
+            end
+        end
+        return original
+    end
+
     --- Get the translated or original (English) NPC message text.
     --- @param original string @ The original (English) NPC dialog text.
-    --- @return string @ The translated or original NPC dialog text.
+    --- @return string? @ The translated or original NPC dialog text.
     function repository.GetTranslatedNpcMessage(original)
         return repository:_getPersonalizedValue(ns._db.DialogTexts, original)
     end
 
     --- Get the translated or original (English) cinematic subtitle for NPCs.
     --- @param original string @ The original (English) cinematic subtitle.
-    --- @return string @ The translated or original cinematic subtitle.
+    --- @return string? @ The translated or original cinematic subtitle.
     function repository.GetTranslatedCinematicSubtitle(original)
         return repository:_getPersonalizedValue(ns._db.DialogTexts, original)
     end
@@ -335,71 +493,10 @@ do
     ---@class QuestRepository : BaseRepository
     local repository = setmetatable({}, { __index = baseRepository })
 
-    ---@private
-    function repository._normalizeQuestString(text)
-        if text == nil or text == "" then return text end
-
-        local playerData = ns.PlayerInfo
-
-        text = string.gsub(text, "%$[nN]", function(_)
-            return playerData.Name
-        end)
-
-        text = string.gsub(text, "%$[pP]", function(_)
-            return playerData.Name
-        end)
-
-        text = string.gsub(text, "%$[rR]", function(marker) -- TODO: case like class
-            if (marker == "$R") then return Uft8Upper(playerData.Race) end
-            return playerData.Race
-        end)
-
-        text = string.gsub(text, "(%$[cC]):([^\128-\191][\128-\191])", function(marker, caseLetter)
-            local case = 1
-            if (caseLetter == 'н' or caseLetter == 'Н') then
-                case = 1
-            elseif (caseLetter == 'р' or caseLetter == 'Р') then
-                case = 2
-            elseif (caseLetter == 'д' or caseLetter == 'Д') then
-                case = 3
-            elseif (caseLetter == 'з' or caseLetter == 'З') then
-                case = 4
-            elseif (caseLetter == 'о' or caseLetter == 'О') then
-                case = 5
-            elseif (caseLetter == 'м' or caseLetter == 'М') then
-                case = 6
-            elseif (caseLetter == 'к' or caseLetter == 'К') then
-                case = 7
-            end
-
-            local classStr = dbContext.Player.GetTranslatedClass(playerData.Class, case, playerData.Gender)
-
-            if (marker == "$C") then return Uft8Upper(classStr) end
-            return classStr
-        end)
-
-        text = string.gsub(text, "%$[cC]", function(marker)
-            local classStr = dbContext.Player.GetTranslatedClass(playerData.Class, 1, playerData.Gender)
-
-            if (marker == "$C") then return Uft8Upper(classStr) end
-            return classStr
-        end)
-
-        text = string.gsub(text, "{sex|(.-)|(.-)}", function(male, female)
-            if (playerData.Gender == 3) then
-                return female
-            else
-                return male
-            end
-        end)
-
-        return text
-    end
-
     --- Retrieves the quest objective text based on the quest ID.
     ---@param questId number The ID of the quest.
     ---@param original string The original (English) value.
-    ---@return string @The translated and normalized quest objective text.
+    ---@return string? @The translated and normalized quest objective text.
     function repository.GetTranslatedQuestObjective(questId, original)
         if (not original) then return original end
 
@@ -481,7 +578,7 @@ do
             translatedObjectiveText = dbContext.GlobalStrings.GetTranslatedGlobalString(ERR_QUEST_OBJECTIVE_COMPLETE_S):format(translatedObjectiveText)
         end
 
-        return repository._normalizeQuestString(translatedObjectiveText)
+        return repository.DecodeBlizzardPlaceholders(translatedObjectiveText)
     end
 
     --- Retrieves the quest title based on the quest ID.
@@ -538,8 +635,8 @@ do
         local translatedQuestData = {
             ID = questId,
             Title = getTranslatedValue(QuestTranslationIndex.TITLE),
-            Description = getTranslatedValue(QuestTranslationIndex.DESCRIPTION, repository._normalizeQuestString),
-            ObjectivesText = getTranslatedValue(QuestTranslationIndex.OBJECTIVES_TEXT, repository._normalizeQuestString),
+            Description = getTranslatedValue(QuestTranslationIndex.DESCRIPTION, repository.DecodeBlizzardPlaceholders),
+            ObjectivesText = getTranslatedValue(QuestTranslationIndex.OBJECTIVES_TEXT, repository.DecodeBlizzardPlaceholders),
             ContainsObjectives = ns._db.QuestObjectives[questId] ~= nil or ns._db.MTQuestObjectives[questId] ~= nil,
             CompletionText = getTranslatedValue(QuestTranslationIndex.LOG_COMPLETION_TEXT),
             TargetName = getTranslatedValue(QuestTranslationIndex.TARGET_NAME),
@@ -547,8 +644,8 @@ do
             TargetCompletedName = getTranslatedValue(QuestTranslationIndex.COMPLETED_TARGET_NAME),
             TargetCompletedDescription = getTranslatedValue(QuestTranslationIndex.COMPLETED_TARGET_DESCRIPTION),
             AreaDescription = getTranslatedValue(QuestTranslationIndex.AREA_DESCRIPTION),
-            RewardText = getTranslatedValue(QuestTranslationIndex.REWARD_TEXT, repository._normalizeQuestString),
-            ProgressText = getTranslatedValue(QuestTranslationIndex.COMPLETED_TEXT, repository._normalizeQuestString),
+            RewardText = getTranslatedValue(QuestTranslationIndex.REWARD_TEXT, repository.DecodeBlizzardPlaceholders),
+            ProgressText = getTranslatedValue(QuestTranslationIndex.COMPLETED_TEXT, repository.DecodeBlizzardPlaceholders),
         }
 
         if (isMtDataUsed) then

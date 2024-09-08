@@ -770,7 +770,18 @@
     "ObjectiveTrackerFont22",
     "WAYPOINT_OBJECTIVE_FORMAT_OPTIONAL",
     "OPTIONAL_QUEST_OBJECTIVE_DESCRIPTION",
-    "QuestUtils_DecorateQuestText"
+    "QuestUtils_DecorateQuestText",
+    "HeroTalentsSelectionDialog",
+    "EventRegistry",
+    "Game11Font",
+    "Game12Font",
+    "Game13Font",
+    "Game13FontShadow",
+    "Game15Font",
+    "Game18Font",
+    "Game20Font",
+    "Game24Font",
+    "Game27Font"
   ],
   "Lua.workspace.ignoreDir": [".vscode", "Libs"],
   "Lua.diagnostics.disable": ["missing-fields"],
@@ -794,6 +805,6 @@
     "utf8": "disable"
   },
   "Lua.workspace.library": [
-    "~\\.vscode\\extensions\\ketho.wow-api-0.17.5\\Annotations"
+    "~\\.vscode\\extensions\\ketho.wow-api-0.17.6\\Annotations"
   ]
 }
