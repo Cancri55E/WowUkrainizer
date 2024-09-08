@@ -6,11 +6,14 @@ local _G = _G
 local Uft8Upper = ns.StringUtil.Uft8Upper
 local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
 local GetTranslatedSpecialization = ns.DbContext.Player.GetTranslatedSpecialization
+local GetTranslatedSpecializationNote = ns.DbContext.Player.GetTranslatedSpecializationNote
 local GetTranslatedClass = ns.DbContext.Player.GetTranslatedClass
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
+
+local heroSpecFrameTranslated = {}
 
 ---@class ClassTalentFrameTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
@@ -47,7 +50,10 @@ local function HookTalentFrameFunctions(talentsFrame)
     -- Updates and translates the hero spec required text
     local function HeroTalentsContainer_UpdateHeroSpecButton()
         local container = talentsFrame.HeroTalentsContainer
-        container.LockedLabel2:SetText(GetTranslatedGlobalString(HERO_TALENTS_LOCKED_2):format(container.heroSpecsRequiredLevel));
+        container.LockedLabel2:SetText(GetTranslatedGlobalString(HERO_TALENTS_LOCKED_2):format(container.heroSpecsRequiredLevel))
+        if (container.activeSubTreeInfo) then
+            container.HeroSpecLabel:SetText(Uft8Upper(GetTranslatedSpecialization(container.activeSubTreeInfo.name)))
+        end
     end
 
     -- Translates PvP talent names in the talent list
@@ -57,14 +63,39 @@ local function HookTalentFrameFunctions(talentsFrame)
         end);
     end
 
+    local function HeroTalentsSelectionDialog_ShowDialog(dialog)
+        for subTreeID, specFrame in pairs(dialog.specFramesBySubTreeID) do
+            UpdateTextWithTranslation(specFrame.SpecName, function(specName)
+                local tranlatedSpecName = GetTranslatedSpecialization(specName)
+                return Uft8Upper(tranlatedSpecName)
+            end)
+
+            UpdateTextWithTranslation(specFrame.Description, GetTranslatedSpecializationNote)
+
+            if (not heroSpecFrameTranslated[subTreeID]) then
+                UpdateTextWithTranslation(specFrame.ActivatedText, GetTranslatedGlobalString)
+                UpdateTextWithTranslation(specFrame.ActivateButton.Text, GetTranslatedGlobalString)
+                UpdateTextWithTranslation(specFrame.ApplyChangesButton.Text, GetTranslatedGlobalString)
+                UpdateTextWithTranslation(specFrame.CurrencyFrame.LabelText, GetTranslatedGlobalString)
+
+                heroSpecFrameTranslated[subTreeID] = true
+            end
+        end
+    end
+
+    hooksecurefunc(HeroTalentsSelectionDialog, "ShowDialog", HeroTalentsSelectionDialog_ShowDialog)
     hooksecurefunc(TalentFrameGateMixin, "OnEnter", TranslateTooltips)
     hooksecurefunc(talentsFrame, "RefreshCurrencyDisplay", TalentsFrame_RefreshCurrencyDisplay)
     hooksecurefunc(talentsFrame.HeroTalentsContainer, "UpdateHeroSpecButton", HeroTalentsContainer_UpdateHeroSpecButton)
     talentsFrame.PvPTalentList:HookScript("OnUpdate", PvPTalentList_OnUpdate)
+
+    -- TODO: talentsFrame.HeroTalentsContainer.CollapseButton OnEnter Tooltip
 end
 
 -- Translates static text elements in the talent frame
 local function TranslateStaticElements(talentsFrame)
+    UpdateTextWithTranslation(talentsFrame.HeroTalentsContainer.ChooseSpecLabel1, GetTranslatedGlobalString)
+    UpdateTextWithTranslation(talentsFrame.HeroTalentsContainer.ChooseSpecLabel2, GetTranslatedGlobalString)
     UpdateTextWithTranslation(talentsFrame.HeroTalentsContainer.LockedLabel1, GetTranslatedGlobalString)
     UpdateTextWithTranslation(talentsFrame.ApplyButton.Text, GetTranslatedGlobalString)
     UpdateTextWithTranslation(talentsFrame.InspectCopyButton.Text, GetTranslatedGlobalString)
