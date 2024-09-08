@@ -65,13 +65,13 @@ function internal.GetPersonalizedStringHash(str)
 
     str = internal.Trim(str) -- Trim the input string
 
-    str = str:gsub("%s+", "_"):gsub("[\n\r’`]", "")
-
-    str = internal.ReplaceWholeWordNocase(str, "$n", "<name>", true)
-    str = internal.ReplaceWholeWordNocase(str, "$p", "<name>", true)
-    str = internal.ReplaceWholeWordNocase(str, "$r", "<race>", true)
-    str = internal.ReplaceWholeWordNocase(str, "$rs", "<short-race>", true)
-    str = internal.ReplaceWholeWordNocase(str, "$c", "<class>", true)
+    str = str:gsub("%s+", "_")
+        :gsub("[\n\r’`]", "")
+        :gsub("%$[nN]", "<name>")
+        :gsub("%$[pP]", "<name>")
+        :gsub("%$[rR]", "<race>")
+        :gsub("%$[rR][sS]", "<short-race>")
+        :gsub("%$[cC]", "<class>")
 
     return CalculateHash(str)
 end
