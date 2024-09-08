@@ -186,7 +186,7 @@ function internal.DecodeBlizzardPlaceholders(text)
         return translatedStr
     end)
 
-    text = string.gsub(text, "%$[rsRS]:?([^\128-\191]?[\128-\191]?)", function(marker, caseLetter)
+    text = string.gsub(text, "%$[rR][sS]:?([^\128-\191]?[\128-\191]?)", function(marker, caseLetter)
         local translatedStr = GetTranslatedShortRace(playerData.Race, getCaseLetterIndex(caseLetter), playerData.Gender)
         if (marker == "$RS") then return Uft8Upper(translatedStr) end
         return translatedStr
