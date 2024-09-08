@@ -51,7 +51,9 @@ local function HookTalentFrameFunctions(talentsFrame)
     local function HeroTalentsContainer_UpdateHeroSpecButton()
         local container = talentsFrame.HeroTalentsContainer
         container.LockedLabel2:SetText(GetTranslatedGlobalString(HERO_TALENTS_LOCKED_2):format(container.heroSpecsRequiredLevel))
-        container.HeroSpecLabel:SetText(Uft8Upper(GetTranslatedSpecialization(container.activeSubTreeInfo.name)))
+        if (container.activeSubTreeInfo) then
+            container.HeroSpecLabel:SetText(Uft8Upper(GetTranslatedSpecialization(container.activeSubTreeInfo.name)))
+        end
     end
 
     -- Translates PvP talent names in the talent list
