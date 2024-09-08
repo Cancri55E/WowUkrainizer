@@ -311,10 +311,13 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     if (tooltipInfo[TOOLTIP_CATEGORY_PROFESSION_CRAFTING_QUALITY]) then
         local professionCraftingQuality = tooltipInfo[TOOLTIP_CATEGORY_PROFESSION_CRAFTING_QUALITY]
-        table.insert(translatedTooltipLines, {
-            index = getTooltipIndex(professionCraftingQuality.index),
-            value = GetTranslatedGlobalString(PROFESSIONS_CRAFTING_QUALITY):format(professionCraftingQuality.value)
-        })
+        -- may be present in the data but not have an index because it is not displayed in the tooltip (for example, for reagents of new professions (> 10.0) in the profession window)
+        if (professionCraftingQuality.index) then
+            table.insert(translatedTooltipLines, {
+                index = getTooltipIndex(professionCraftingQuality.index),
+                value = GetTranslatedGlobalString(PROFESSIONS_CRAFTING_QUALITY):format(professionCraftingQuality.value)
+            })
+        end
     end
 
     if (tooltipInfo[TOOLTIP_CATEGORY_RESTRICTED_LEVEL]) then

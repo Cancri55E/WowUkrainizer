@@ -704,6 +704,8 @@ end
 
 local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is QuestPinMixin:OnMouseEnter()
     local questID = button.questID;
+    if (not questID) then return end
+
     local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID);
     local translatedTitle = GetTranslatedQuestTitle(questID)
     if (not translatedTitle) then
@@ -902,7 +904,13 @@ function translator:Init()
                 if (frameType == "Button" and frame.questID) then
                     if (not WorldMapChildFramesCache[frame]) then
                         frame:HookScript("OnEnter", OnWorldMapPinButtonTooltipUpdated)
-                        hooksecurefunc(frame, "UpdateTooltip", OnWorldMapPinButtonTooltipUpdated)
+
+                        -- Addons like World Quest Tracker, for example, create their own buttons on the world map, but do not have the UpdateTooltip function
+                        local success, result = pcall(function() return type(frame.UpdateTooltip) end) -- TODO: [Tech Debt] Create function safehooksecurefunc
+                        if (success and result == "function") then
+                            hooksecurefunc(frame, "UpdateTooltip", OnWorldMapPinButtonTooltipUpdated)
+                        end
+
                         WorldMapChildFramesCache[frame] = true
                     end
                 elseif (frameType == "QuestPOIFrame") then
