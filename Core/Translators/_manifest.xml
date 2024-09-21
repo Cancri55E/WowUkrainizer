@@ -15,6 +15,7 @@
 	<Script file="Tooltips\ItemTooltipTranslator.lua"/>
 	<Script file="Tooltips\MoneyTranslator.lua"/>
 	<Script file="Frames\MainFrameTranslator.lua"/>
+	<Script file="Frames\CharacterFrame\PaperDollFrameTranslator.lua"/>
 	<Script file="Frames\PlayerSpellsFrame\PlayerSpellsFrameTranslator.lua"/>
 	<Script file="Frames\PlayerSpellsFrame\SpellbookFrameTranslator.lua"/>
 	<Script file="Frames\PlayerSpellsFrame\ClassTalentsFrameTranslator.lua"/>
