@@ -1,6 +1,7 @@
 --- @class WowUkrainizerInternals
 local ns = select(2, ...);
 
+local GetTranslatedAttribute = ns.DbContext.Player.GetTranslatedAttribute
 local GetTranslatedSpecialization = ns.DbContext.Player.GetTranslatedSpecialization
 local GetTranslatedClass = ns.DbContext.Player.GetTranslatedClass
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
@@ -15,43 +16,6 @@ function translator:IsEnabled()
 end
 
 local updatedEquipmentManagerPaneButtons = {}
-
--- local function UpdateItemSlotTooltip(obj)
---     local gameTooltipOwner = GameTooltip:GetOwner()
---     if (gameTooltipOwner and gameTooltipOwner ~= obj) then return end
-
---     -- TODO: Item slot is empty
-
---     local firstLine = _G["GameTooltipTextLeft1"]
---     if (firstLine) then
---         SetText(firstLine, GetTranslatedGlobalString(firstLine:GetText()))
---     end
-
---     GameTooltip:Show()
--- end
-
--- local function UpdateTooltip(obj)
---     local gameTooltipOwner = GameTooltip:GetOwner()
---     if (gameTooltipOwner and gameTooltipOwner ~= obj) then return end
-
---     local firstLine = _G["GameTooltipTextLeft1"]
---     if (firstLine) then
---         SetText(firstLine, GetTranslatedGlobalString(firstLine:GetText()))
---     end
-
---     local secondLine = _G["GameTooltipTextLeft2"]
---     local secondLineText = secondLine and secondLine:GetText()
---     if (secondLineText) then
---         local level = ExtractFromText(FEATURE_BECOMES_AVAILABLE_AT_LEVEL, secondLineText)
---         if (level) then
---             SetText(secondLine, GetTranslatedGlobalString(FEATURE_BECOMES_AVAILABLE_AT_LEVEL):format(level))
---         else
---             SetText(secondLine, GetTranslatedGlobalString(secondLine:GetText()))
---         end
---     end
-
---     GameTooltip:Show()
--- end
 
 local function OnUpdateTooltip(tooltip, expectedOwner)
     local currentTooltipOwner = tooltip:GetOwner()
@@ -145,6 +109,43 @@ local function PaperDollFrame_SetLevel_Hook()
     end
 end
 
+local function PaperDollFrame_SetLabelAndText_Hook(statFrame, label)
+    if (statFrame.Label) then
+        UpdateTextWithTranslation(statFrame.Label, function() return format(STAT_FORMAT, GetTranslatedAttribute(label)) end)
+    end
+end
+
+local function PaperDollStatTooltip_Hook(statFrame)
+    if (not statFrame.tooltip) then return end
+
+    local currentTooltipOwner = GameTooltip:GetOwner()
+    if (currentTooltipOwner and currentTooltipOwner ~= statFrame) then return end
+
+    if (statFrame.Label) then
+        local translatedTooltip = _G["GameTooltipTextLeft1"]:GetText():gsub(HIGHLIGHT_FONT_COLOR_CODE .. "([A-Za-z%s]+)(.+)",
+            function(_, other)
+                local result = HIGHLIGHT_FONT_COLOR_CODE .. string.sub(statFrame.Label:GetText(), 1, -2)
+                if (other) then
+                    result = result .. " " .. other
+                end
+                return result .. FONT_COLOR_CODE_CLOSE
+            end)
+        SetText(_G["GameTooltipTextLeft1"], translatedTooltip)
+    else
+        SetText(_G["GameTooltipTextLeft1"], GetTranslatedGlobalString(_G["GameTooltipTextLeft1"]:GetText()))
+    end
+
+    if (statFrame.tooltip2) then
+        SetText(_G["GameTooltipTextLeft2"], GetTranslatedGlobalString(_G["GameTooltipTextLeft2"]:GetText()))
+    end
+
+    if (statFrame.tooltip3) then
+        SetText(_G["GameTooltipTextLeft3"], GetTranslatedGlobalString(_G["GameTooltipTextLeft2"]:GetText()))
+    end
+
+    GameTooltip:Show()
+end
+
 function translator:Init()
     for _, tabButton in ipairs(CharacterFrame.Tabs) do
         UpdateTextWithTranslation(tabButton.Text, GetTranslatedGlobalString)
@@ -170,6 +171,9 @@ function translator:Init()
     end
 
     hooksecurefunc("PaperDollFrame_SetLevel", PaperDollFrame_SetLevel_Hook)
+
+    hooksecurefunc("PaperDollFrame_SetLabelAndText", PaperDollFrame_SetLabelAndText_Hook)
+    hooksecurefunc("PaperDollStatTooltip", PaperDollStatTooltip_Hook)
 
     hooksecurefunc("EquipmentFlyout_DisplaySpecialButton", function() OnUpdateGameTooltip(EquipmentFlyoutFrame.buttonFrame) end)
 
