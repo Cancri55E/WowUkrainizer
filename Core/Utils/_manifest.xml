@@ -2,5 +2,6 @@
 ..\FrameXML\UI.xsd">
 	<Script file="ZoneFrameUtil.lua"/>
 	<Script file="QuestFrameUtil.lua"/>
+	<Script file="TooltipUtil.lua"/>
 	<Script file="SelectedIconFrameTranslationUtil.lua"/>
 </Ui>

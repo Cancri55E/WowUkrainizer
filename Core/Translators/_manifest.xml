@@ -17,6 +17,7 @@
 	<Script file="Frames\MainFrameTranslator.lua"/>
 	<Script file="Frames\MacroFrameTranslator.lua"/>
 	<Script file="Frames\CharacterFrame\PaperDollFrameTranslator.lua"/>
+	<Script file="Frames\CharacterFrame\EquipmentManagerPaneTranslator.lua"/>
 	<Script file="Frames\PlayerSpellsFrame\PlayerSpellsFrameTranslator.lua"/>
 	<Script file="Frames\PlayerSpellsFrame\SpellbookFrameTranslator.lua"/>
 	<Script file="Frames\PlayerSpellsFrame\ClassTalentsFrameTranslator.lua"/>
@@ -25,4 +26,5 @@
 	<Script file="Frames\MinimapFrameTranslator.lua"/>
 	<Script file="Frames\SplashFrameTranslator.lua"/>
 	<Script file="ThirdPartyAddons\ImmersionTranslator.lua"/>
+	<Script file="ThirdPartyAddons\DejaCharacterStatsTranslator.lua"/>
 </Ui>
