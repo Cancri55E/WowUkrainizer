@@ -2,15 +2,14 @@
 https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
 	<Script file="ChangelogsFrame.lua"/>
     
-	<Font name="WowUkrainizerFramePrimaryTextFont1" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="14"/>
-	<Font name="WowUkrainizerFrameSecondaryTitleFont1" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="16"/>
-	<Font name="WowUkrainizerSecondaryTextFont1" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="14">
+	<Font name="ChangelogEntryButton_TextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="14"/>
+	<Font name="ChangelogEntryButton_TitleFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="16"/>
+	<Font name="ChangelogEntryButton_SecondaryTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="14">
         <Color r="0.604" g="0.592" b="0.725"/>
     </Font>
-	<Font name="WowUkrainizerSmallTextFont1" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="13"/>
+	<Font name="ChangelogEntryButton_TypeTextFont" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="13"/>
 
 	<Frame name="WowUkrainizerChangelogEntryButtonTemplate" mixin="WowUkrainizerChangelogEntryMixin" virtual="true">
-		<!-- <Size x="700" y="200"/> -->
 		<Layers>
             <Layer>
                 <Texture parentKey="CheckMark" file="Interface\AddOns\WowUkrainizer\assets\images\round.png">
@@ -30,28 +29,28 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 				</Texture>
             </Layer>
 			<Layer level="OVERLAY">
-                <FontString parentKey="Title" inherits="WowUkrainizerFrameSecondaryTitleFont1">
+                <FontString parentKey="Title" inherits="ChangelogEntryButton_TitleFont">
                     <Anchors>
                         <Anchor point="TOP" y="-6"/>
                         <Anchor point="LEFT" x="32"/>
                     </Anchors>
 				</FontString>
-                <FontString parentKey="Date" inherits="WowUkrainizerSecondaryTextFont1">
+                <FontString parentKey="Date" inherits="ChangelogEntryButton_SecondaryTextFont">
                     <Anchors>
                         <Anchor point="TOPLEFT" x="0" y="-6" relativeKey="$parent.Title" relativePoint="BOTTOMLEFT"/>
                     </Anchors>
 				</FontString>
-                <FontString parentKey="Type" inherits="WowUkrainizerSmallTextFont1">
+                <FontString parentKey="Type" inherits="ChangelogEntryButton_TypeTextFont">
                     <Anchors>
                         <Anchor point="TOPLEFT" x="4" y="-14" relativeKey="$parent.Date" relativePoint="BOTTOMLEFT"/>
                     </Anchors>
 				</FontString>
-                <FontString parentKey="Author" inherits="WowUkrainizerSecondaryTextFont1">
+                <FontString parentKey="Author" inherits="ChangelogEntryButton_SecondaryTextFont">
                     <Anchors>
                         <Anchor point="TOPLEFT" x="10" y="0" relativeKey="$parent.Type" relativePoint="TOPRIGHT"/>
                     </Anchors>
 				</FontString>
-                <FontString parentKey="Text" inherits="WowUkrainizerFramePrimaryTextFont1" justifyH="LEFT" wordwrap="true">
+                <FontString parentKey="Text" inherits="ChangelogEntryButton_TextFont" justifyH="LEFT" wordwrap="true">
                     <Anchors>
 						<Anchor point="TOPLEFT" x="-4" y="-12" relativeKey="$parent.Type" relativePoint="BOTTOMLEFT"/>
                     </Anchors>
