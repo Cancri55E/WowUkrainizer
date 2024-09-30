@@ -13,7 +13,7 @@ end
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
 function translator:IsEnabled()
-    return true -- TODO: Add settings
+    return ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_CHARACTER_FRAME_OPTION)
 end
 
 local updatedEquipmentManagerPaneButtons = {}

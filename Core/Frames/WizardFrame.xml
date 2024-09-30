@@ -167,25 +167,33 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_CLASS_TALENTS_FRAME_OPTION"/>
 				</Attributes>
 			</CheckButton>
-			<CheckButton parentKey="TranslateSpellbookFrame" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="2">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateClassTalentsFrame" relativePoint="TOPRIGHT" x="250" y="0"/>
-				</Anchors>
-				<Attributes>
-					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION"/>
-				</Attributes>
-			</CheckButton>
 			<CheckButton parentKey="TranslateMapAndQuestLogFrame" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="9">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateClassTalentsFrame" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateClassTalentsFrame" relativePoint="TOPRIGHT" x="280" y="0"/>
 				</Anchors>
 				<Attributes>
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_MAP_AND_QUEST_LOG_FRAME_OPTION"/>
 				</Attributes>
 			</CheckButton>
+			<CheckButton parentKey="TranslateSpellbookFrame" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateClassTalentsFrame" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_SPELLBOOK_FRAME_OPTION"/>
+				</Attributes>
+			</CheckButton>
+			<CheckButton parentKey="TranslateCharacterFrame" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="10">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateSpellbookFrame" relativePoint="TOPRIGHT" x="280" y="0"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_CHARACTER_FRAME_OPTION"/>
+				</Attributes>
+			</CheckButton>
 			<CheckButton parentKey="TranslateNameplatesAndUnitFrames" parentArray="UISettingElements" inherits="WowUkrainizerCheckButtonTemplate" id="3">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateMapAndQuestLogFrame" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.TranslateSpellbookFrame" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
 				</Anchors>
 				<Attributes>
 					<Attribute name="optionName" type="string" value="WOW_UKRAINIZER_TRANSLATE_NAMEPLATES_AND_UNIT_FRAMES_OPTION"/>

@@ -832,7 +832,16 @@
     "MacroFrameEnterMacroText",
     "MacroFrameText",
     "MacroFrameCharLimitText",
-    "CONFIRM_DELETE_MACRO"
+    "CONFIRM_DELETE_MACRO",
+    "ScrollUtil",
+    "CreateScrollBoxListLinearView",
+    "LootJournalItemSetsMixin",
+    "LootJournalItemSetButtonMixin",
+    "CreateDataProvider",
+    "ScrollBoxConstants",
+    "AnchorUtil",
+    "CreateAnchor",
+    "GridLayoutMixin"
   ],
   "Lua.workspace.ignoreDir": [".vscode", "Libs"],
   "Lua.diagnostics.disable": ["missing-fields"],

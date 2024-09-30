@@ -2,14 +2,15 @@
 https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI_shared.xsd">
 	<Script file="ChangelogsFrame.lua"/>
     
-	<Button name="WowUkrainizerChangelogEntryTemplate" virtual="true">
-        <Size y="80"/>
+	<Font name="WowUkrainizerFramePrimaryTextFont1" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="14"/>
+	<Font name="WowUkrainizerFrameSecondaryTitleFont1" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Bold.ttf" virtual="true" height="16"/>
+	<Font name="WowUkrainizerSecondaryTextFont1" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="14">
+        <Color r="0.604" g="0.592" b="0.725"/>
+    </Font>
+	<Font name="WowUkrainizerSmallTextFont1" justifyH="LEFT" font="Interface\AddOns\WowUkrainizer\assets\Arsenal_Regular.ttf" virtual="true" height="13"/>
 
-        <Anchors>
-			<Anchor point="RIGHT"/>
-			<Anchor point="LEFT"/>
-		</Anchors>
-
+	<Frame name="WowUkrainizerChangelogEntryButtonTemplate" mixin="WowUkrainizerChangelogEntryMixin" virtual="true">
+		<!-- <Size x="700" y="200"/> -->
 		<Layers>
             <Layer>
                 <Texture parentKey="CheckMark" file="Interface\AddOns\WowUkrainizer\assets\images\round.png">
@@ -23,107 +24,57 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 					<Size x="2"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="14" y="-24"/>
-						<Anchor point="BOTTOM" y="0"/>
+						<Anchor point="BOTTOM"/>
 					</Anchors>
 					<Color r="0.216" g="0.208" b="0.31" a="1"/>
 				</Texture>
             </Layer>
 			<Layer level="OVERLAY">
-                <FontString parentKey="Title" inherits="WowUkrainizerFrameSecondaryTitleFont">
+                <FontString parentKey="Title" inherits="WowUkrainizerFrameSecondaryTitleFont1">
                     <Anchors>
                         <Anchor point="TOP" y="-6"/>
                         <Anchor point="LEFT" x="32"/>
                     </Anchors>
 				</FontString>
-                <FontString parentKey="Date" inherits="WowUkrainizerSecondaryTextFont">
+                <FontString parentKey="Date" inherits="WowUkrainizerSecondaryTextFont1">
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="0" y="-3" relativeKey="$parent.Title" relativePoint="BOTTOMLEFT"/>
+                        <Anchor point="TOPLEFT" x="0" y="-6" relativeKey="$parent.Title" relativePoint="BOTTOMLEFT"/>
                     </Anchors>
 				</FontString>
-                <FontString parentKey="Type" inherits="WowUkrainizerSmallTextFont">
+                <FontString parentKey="Type" inherits="WowUkrainizerSmallTextFont1">
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="4" y="-12" relativeKey="$parent.Date" relativePoint="BOTTOMLEFT"/>
+                        <Anchor point="TOPLEFT" x="4" y="-14" relativeKey="$parent.Date" relativePoint="BOTTOMLEFT"/>
                     </Anchors>
 				</FontString>
-                <FontString parentKey="Author" inherits="WowUkrainizerSecondaryTextFont">
+                <FontString parentKey="Author" inherits="WowUkrainizerSecondaryTextFont1">
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="8" y="0" relativeKey="$parent.Type" relativePoint="TOPRIGHT"/>
+                        <Anchor point="TOPLEFT" x="10" y="0" relativeKey="$parent.Type" relativePoint="TOPRIGHT"/>
                     </Anchors>
 				</FontString>
-                <FontString parentKey="Text" inherits="WowUkrainizerFramePrimaryTextFont" justifyH="LEFT" wordwrap="true">
+                <FontString parentKey="Text" inherits="WowUkrainizerFramePrimaryTextFont1" justifyH="LEFT" wordwrap="true">
                     <Anchors>
-                        <Anchor point="BOTTOMLEFT" x="32" y="8" relativeKey="$parent" relativePoint="BOTTOMLEFT"/>
-                        <Anchor point="RIGHT" x="-10" relativeKey="$parent" relativePoint="RIGHT"/>
+						<Anchor point="TOPLEFT" x="-4" y="-12" relativeKey="$parent.Type" relativePoint="BOTTOMLEFT"/>
                     </Anchors>
 				</FontString>
 			</Layer>
             <Layer level="BACKGROUND">
                 <Texture parentKey="TypeBackground">
-                    <Size y="10" x="10"/>
+                    <Size y="12" x="12"/>
                     <Anchors>
-                        <Anchor point="TOPLEFT" relativeKey="$parent.Type" relativePoint="TOPLEFT" x="-4" y="4"/>
-                        <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Type" relativePoint="BOTTOMRIGHT" x="4" y="-4"/>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.Type" relativePoint="TOPLEFT" x="-6" y="6"/>
+                        <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Type" relativePoint="BOTTOMRIGHT" x="6" y="-6"/>
                     </Anchors>
                     <Color r="0.902" g="0.035" b="0.369" a="1"/>
                 </Texture>
             </Layer>
-
 		</Layers>
+	</Frame>
 
-	</Button>
-
-	<Slider name="TransparentMinimalHybridScrollBarTemplate" parentKey="scrollBar" virtual="true">
-		<Size x="22" y="0"/>
-		<Frames>
-			<Button name="$parentScrollUpButton" inherits="UIPanelScrollUpButtonTemplate">
-				<Anchors>
-					<Anchor point="TOP" x="0" y="15"/>
-				</Anchors>
-				<Scripts>
-					<OnLoad function="HybridScrollFrameScrollUp_OnLoad"/>
-					<OnClick function="HybridScrollFrameScrollButton_OnClick"/>
-				</Scripts>
-			</Button>
-			<Button name="$parentScrollDownButton" inherits="UIPanelScrollDownButtonTemplate">
-				<Anchors>
-					<Anchor point="BOTTOM" x="0" y="-15"/>
-				</Anchors>
-				<Scripts>
-					<OnLoad function="HybridScrollFrameScrollDown_OnLoad"/>
-					<OnClick function="HybridScrollFrameScrollButton_OnClick"/>
-				</Scripts>
-			</Button>
-		</Frames>
-		<Scripts>
-			<OnValueChanged function="HybridScrollFrame_OnValueChanged"/>
-		</Scripts>
-		<ThumbTexture name="$parentThumbTexture" inherits="HybridScrollBarButton" file="Interface\Buttons\UI-ScrollBar-Knob" parentKey="thumbTexture">
-			<Size x="18" y="24"/>
-			<TexCoords left="0.20" right="0.80" top="0.125" bottom="0.875"/>
-		</ThumbTexture>
-	</Slider>
-
-	<ScrollFrame name="WowUkrainizerScrollFrameTemplate" inherits="HybridScrollFrameTemplate" virtual="true">
+	<Frame name="WowUkrainizerChangelogsFrame" mixin="WowUkrainizerChangelogsFrameMixin" hidden="true" movable="false" toplevel="true" resizable="true" virtual="true" enableMouse="true" parent="UIParent">
+		<Size x="800" y="600"/>
 		<Anchors>
-			<Anchor point="RIGHT" x="-27"/>
-			<Anchor point="LEFT" x="5"/>
+			<Anchor point="CENTER"/>
 		</Anchors>
-		<Scripts>
-			<OnLoad>
-				self.scrollChild:SetPoint("BOTTOM", self, "BOTTOM", 0, -100)
-			</OnLoad>
-		</Scripts>
-		<Frames>
-			<Slider name="$parentScrollBar" inherits="TransparentMinimalHybridScrollBarTemplate">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" y="-18"/>
-					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" y="18"/>
-				</Anchors>
-			</Slider>
-		</Frames>
-	</ScrollFrame>   
-
-	<Frame name="WowUkrainizerBaseFrameTemplate" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
 				<FontString parentKey="CalculatedTextHook" inherits="WowUkrainizerFramePrimaryTextFont" justifyH="LEFT" wordwrap="true" hidden="true" text="calc str">
@@ -140,15 +91,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 					<Color r="0.118" g="0.114" b="0.169" a="1"/>
 				</Texture>
 			</Layer>
-		</Layers>
-	</Frame>
-
-	<Frame name="WowUkrainizerChangelogsFrame" inherits="WowUkrainizerBaseFrameTemplate" mixin="WowUkrainizerChangelogsFrameMixin" hidden="true" movable="false" toplevel="true" resizable="true" virtual="true" enableMouse="true" parent="UIParent">
-		<Size x="535" y="500"/>
-		<Anchors>
-			<Anchor point="CENTER"/>
-		</Anchors>
-		<Layers>
 			<Layer level="ARTWORK">
 				<FontString parentKey="Title" inherits="WowUkrainizerFrameTitleFont" wordwrap="false" text="WowUkrainizer - Що нового?">
 					<Anchors>
@@ -165,12 +107,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 				</Texture>
 			</Layer>
 		</Layers>
-		<Scripts>
-			<OnLoad method="OnLoad"/>
-			<OnShow method="OnShow"/>
-		</Scripts>
 		<Frames>
-
 			<Button name="$parentCloseWndButton">
 				<Size x="16" y="16"/>
 				<Anchors>
@@ -186,14 +123,27 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/FrameXML/UI
 				<DisabledTexture file="Interface\AddOns\WowUkrainizer\assets\images\close-disabled.png"/>
 				<HighlightTexture file="Interface\AddOns\WowUkrainizer\assets\images\close-up.png" alphaMode="ADD"/>
 			</Button>
-
-            <ScrollFrame name="$parentScrollFrame" inherits="WowUkrainizerScrollFrameTemplate" parentKey="scrollFrame">
+			<ScrollFrame parentKey="ScrollFrame" inherits="ScrollFrameTemplate">
+				<Size x="764" y="550"/>
+                <KeyValues>
+					<KeyValue key="scrollBarX" value="-20" type="number"/>
+					<KeyValue key="scrollBarTopY" value="2" type="number"/>
+					<KeyValue key="scrollBarBottomY" value="-4" type="number"/>
+				</KeyValues>
 				<Anchors>
-					<Anchor point="TOP" y="-48"/>
-					<Anchor point="BOTTOM" y="18"/>
+					<Anchor point="TOPLEFT" y="-48"/>
+					<Anchor point="BOTTOMRIGHT" y="18"/>
 				</Anchors>
+                <ScrollChild>
+					<Frame parentKey="ScrollChild">
+						<Size x="764" y="550"/>
+					</Frame>
+				</ScrollChild>
 			</ScrollFrame>
-
 		</Frames>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+			<OnShow method="OnShow"/>
+		</Scripts>
 	</Frame>
 </Ui>
