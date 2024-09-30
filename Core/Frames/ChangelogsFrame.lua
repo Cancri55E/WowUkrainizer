@@ -9,73 +9,62 @@ local colors = {
     legendary = { 0.922, 0.502, 0, 1.0 },
 }
 
-local localFrame = CreateFrame("Frame", nil, UIParent)
-localFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+WowUkrainizerChangelogEntryMixin = {}
+
+function WowUkrainizerChangelogEntryMixin:InitilizeButton(elementData, index)
+    local function SetTextToFit(fontString, text, maxWidth, multiline)
+        fontString:SetHeight(200);
+        fontString:SetText(text);
+
+        fontString:SetWidth(maxWidth);
+        if not multiline then
+            fontString:SetWidth(fontString:GetStringWidth());
+        end
+
+        fontString:SetHeight(fontString:GetStringHeight());
+    end
+
+    if (elementData.title ~= nil) then
+        self.Title:SetText("Версія " .. elementData.version .. " - " .. elementData.title)
+    else
+        self.Title:SetText("Версія " .. elementData.version)
+    end
+    self.Date:SetText(elementData.date)
+    self.CheckMark:SetVertexColor(unpack(colors[elementData.color]));
+    self.TypeBackground:SetColorTexture(unpack(colors[elementData.color]));
+    self.Type:SetText(elementData.type)
+    self.Author:SetText("Автор: " .. elementData.author)
+
+    SetTextToFit(self.Text, elementData.description, self:GetParent():GetWidth() - 32, true)
+
+    self:SetWidth(self:GetParent():GetWidth());
+    self:SetHeight(math.floor(self.Text:GetHeight() + 80));
+    self:Show();
+end
 
 WowUkrainizerChangelogsFrameMixin = {}
 
+function WowUkrainizerChangelogsFrameMixin:SetupChangelogs()
+    local parent = self.ScrollFrame.ScrollChild
+
+    local buttons = {};
+    for index, data in ipairs(ns._db.Changelogs) do
+        local button = CreateFrame("Frame", "WowUkrainizerChangeLogEntry" .. index, parent, "WowUkrainizerChangelogEntryButtonTemplate", index);
+        button:InitilizeButton(data, index);
+
+        table.insert(buttons, button);
+
+        if (index == 1) then
+            button:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -4)
+        else
+            button:SetPoint("TOPLEFT", buttons[index - 1], "BOTTOMLEFT", 0, -8)
+        end
+    end
+end
+
 function WowUkrainizerChangelogsFrameMixin:OnLoad()
-    self.items = ns._db.Changelogs
-
-    self:SetUserPlaced(true)
-    self:SetResizeBounds(535, 400, 535, UIParent:GetHeight())
-
-    self.scrollFrame.update = function() self:RefreshLayout(); end
-
-    HybridScrollFrame_SetDoNotHideScrollBar(self.scrollFrame, true);
-end
-
-function WowUkrainizerChangelogsFrameMixin:OnShow()
-    HybridScrollFrame_CreateButtons(self.scrollFrame, "WowUkrainizerChangelogEntryTemplate");
-    self:RefreshLayout();
-end
-
-function WowUkrainizerChangelogsFrameMixin:RefreshLayout()
-    ---@param changelog ChangelogEntry
-    local function _updateButton(button, itemIndex, changelog)
-        button:SetID(itemIndex);
-
-        if (changelog.title ~= nil) then
-            button.Title:SetText("Версія " .. changelog.version .. " - " .. changelog.title)
-        else
-            button.Title:SetText("Версія " .. changelog.version)
-        end
-        button.Date:SetText(changelog.date)
-        button.CheckMark:SetVertexColor(unpack(colors[changelog.color]));
-        button.TypeBackground:SetColorTexture(unpack(colors[changelog.color]));
-        button.Type:SetText(changelog.type)
-        button.Author:SetText("Автор: " .. changelog.author)
-        button.Text:SetText(changelog.description)
-
-        button:SetWidth(self.scrollFrame.scrollChild:GetWidth());
-        button:SetHeight(math.floor(button.Text:GetHeight() + 80));
-    end
-
-    local offset = HybridScrollFrame_GetOffset(self.scrollFrame)
-    local totalChanglogsCount = #self.items
-
-    local totalHeight = 0
-    for itemIndex = 1, totalChanglogsCount do
-        self.CalculatedTextHook:SetText(self.items[itemIndex].description)
-        totalHeight = totalHeight + math.floor(self.CalculatedTextHook:GetHeight() + 80)
-    end
-
-    local shownHeight = 0
-    local scrollFrameHeight = self.scrollFrame:GetHeight()
-    local counter = 1
-    for buttonIndex, button in pairs(self.scrollFrame.buttons) do
-        local indexPlusOffset = buttonIndex + offset;
-        if indexPlusOffset <= totalChanglogsCount and shownHeight < scrollFrameHeight then
-            _updateButton(button, offset + counter, self.items[offset + counter])
-            shownHeight = shownHeight + button:GetHeight()
-            counter = counter + 1
-            button:Show();
-        else
-            button:Hide();
-        end
-    end
-
-    HybridScrollFrame_Update(self.scrollFrame, totalHeight, shownHeight);
+    self:SetupChangelogs();
+    self.ScrollFrame:UpdateScrollChildRect();
 end
 
 function WowUkrainizerChangelogsFrameMixin:ToggleUI()

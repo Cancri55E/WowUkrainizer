@@ -135,6 +135,15 @@ local QuestMessagesWithVariables = {
     [LE_GAME_ERR_QUEST_PUSH_RACE_S] = {},
 }
 
+local EquipmentMessages = {
+    [LE_GAME_ERR_EQUIPMENT_MANAGER_BAGS_FULL] = {},
+}
+
+local EquipmentMessagesWithVariables = {
+    [LE_GAME_ERR_EQUIPMENT_MANAGER_COMBAT_SWAP_S] = {},
+    [LE_GAME_ERR_EQUIPMENT_MANAGER_MISSING_ITEM_S] = {},
+}
+
 local function ProcessZoneMessage(messageType, message)
     if (not ZoneMessages[messageType]) then return end
 
@@ -219,6 +228,24 @@ local function ProcessQuestMessageWithVariables(messageType, message)
     end
 end
 
+local function ProcessEquipmentMessage(messageType, message)
+    if (not EquipmentMessages[messageType]) then return end
+    table.insert(EquipmentMessages[messageType], { text = message, translatedText = GetTranslatedGlobalString(message) })
+end
+
+local function ProcessEquipmentMessageWithVariables(messageType, message)
+    if (not EquipmentMessagesWithVariables[messageType]) then return end
+    if (messageType == LE_GAME_ERR_EQUIPMENT_MANAGER_COMBAT_SWAP_S) then
+        local quipmentSetName = ExtractFromText(ERR_EQUIPMENT_MANAGER_COMBAT_SWAP_S, message)
+        local translatedText = string.format(GetTranslatedGlobalString(ERR_EQUIPMENT_MANAGER_COMBAT_SWAP_S), quipmentSetName)
+        table.insert(EquipmentMessagesWithVariables[messageType], { text = message, translatedText = translatedText })
+    elseif (messageType == LE_GAME_ERR_EQUIPMENT_MANAGER_MISSING_ITEM_S) then
+        local quipmentSetName = ExtractFromText(ERR_EQUIPMENT_MANAGER_MISSING_ITEM_S, message)
+        local translatedText = string.format(GetTranslatedGlobalString(ERR_EQUIPMENT_MANAGER_MISSING_ITEM_S), quipmentSetName)
+        table.insert(EquipmentMessagesWithVariables[messageType], { text = message, translatedText = translatedText })
+    end
+end
+
 local function ApplyTranslation(messageCache)
     for messageType, messages in pairs(messageCache) do
         if (UIErrorsFrame:HasMessageByID(messageType)) then
@@ -243,6 +270,11 @@ local function UIErrorsFrame_AddMessage(_, message, _, _, _, _, messageType)
     if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_AND_OBJECTIVES_FRAME_OPTION)) then
         ProcessQuestMessage(messageType, message)
         ProcessQuestMessageWithVariables(messageType, message)
+    end
+
+    if (true) then -- TODO: Add Settings check
+        ProcessEquipmentMessage(messageType, message)
+        ProcessEquipmentMessageWithVariables(messageType, message)
     end
 end
 

@@ -9,6 +9,7 @@
 	<Script file="StringNormalizer.lua"/>
 	<Script file="DbContext.lua"/>
 	<Include file="Utils\_manifest.xml"/>
+	<Include file="Subscribers\_manifest.xml"/>
 	<Include file="Translators\_manifest.xml"/>
 	<Include file="Frames\_manifest.xml"/>
 </Ui>

@@ -236,6 +236,7 @@ do
         [7] = "Перекладати завдання",
         [8] = "Не використовувати машинний переклад при перекладі завдань",
         [9] = "Перекладати вікно \"Карта та журнал завдань\"",
+        [10] = "Перекладати вікно \"Персонаж\"",
     }
 
     WowUkrainizerModuleSettingsPageMixin.UIFontStringTexts = {
@@ -452,54 +453,35 @@ do
 Продовжуйте грати українською, дивитися українських контент-мейкерів та підтримувати нашу спільну мету. Разом до перемоги!]]
 
     local WOW_UKRAINIZER_FINISH_PAGE_TRANSLATORS_TEXT =
+        "Kasatushi, " ..
         "KuprumLight, " ..
-        "Roman Yanyshyn, " ..
-        "Glafira, " ..
-        "kasatushi, " ..
         "Olena Gorbenko, " ..
+        "Roman Yanyshyn, " ..
+        "Nimfiel_Melethril, " ..
+        "Glafira, " ..
         "Kabandis, " ..
-        "Lutera1234, " ..
-        "FinniV, " ..
-        "Kiborg Kozak, " ..
+        "Artem Variukhno, " ..
+        "Gladiator_B, " ..
+        "NichnaVoitelka, " ..
+        "SunnyCat, " ..
+        "Bokshchanin, " ..
         "Viktor Krech, " ..
         "Mark Tsemma, " ..
         "Алексей Коваль, " ..
-        "SinRoot, " ..
         "Serhii Feelenko, " ..
+        "SinRoot, " ..
         "Semerkhet, " ..
-        "Mykyta Barmin, " ..
         "Валерій Бондаренко, " ..
-        "Shannar de Kassal, " ..
+        "Mykyta Barmin, " ..
         "Dourmain-Kazzak, " ..
+        "Shannar de Kassal, " ..
         "Володар смерті, " ..
-        "Dmytro Boryshpolets, " ..
-        "NichnaVoitelka, " ..
-        "Unbrkbl Opt1mist, " ..
-        "Elanka, " ..
+        "Dmitrii Boryshpolets, " ..
         "Vadym Ivaniuk, " ..
         "Shelby333, " ..
-        "Nazar Kulchytskyi, " ..
         "Rolik33, " ..
-        "Belinardo, " ..
-        "Сергей Райдер, " ..
-        "Artem Panchenko, " ..
-        "RomenSkyJR, " ..
-        "Дмитро Горєнков, " ..
-        "Asturiel, " ..
-        "Женя Браславська, " ..
-        "Лігво Друїда, " ..
-        "losthost, " ..
-        "Bokshchanin, " ..
-        "lanpae, " ..
-        "Volodymyr Taras, " ..
-        "Олексій Сьомін, " ..
-        "Ксенія Никонова, " ..
-        "Primarch, " ..
-        "Mykyta Vlasov, " ..
-        "Natalie Dexter, " ..
-        "Дима Сердюк, " ..
-        "Maxym Palamarchuk, " ..
-        "Archenok "
+        "Nazar Kulchytskyi, " ..
+        "та інші."
 
     WowUkrainizerFinishPageMixin = CreateFromMixins(WowUkrainizerBasePageMixin);
 
@@ -544,11 +526,10 @@ do
 
         self.ContributorsHeader:SetWidth(preferredWidth - 40)
         self.LinksHeader:SetWidth(preferredWidth - 40)
-
         self.Translators.Info:SetWidth(preferredWidth - 130)
+
         self.Developments:ClearAllPoints();
-        self.Developments:SetPoint("TOPLEFT", self.Translators, "BOTTOMLEFT", 0,
-            (self.Translators.Info:GetHeight() - 14) * -1);
+        self.Developments:SetPoint("TOPLEFT", self.Translators, "BOTTOMLEFT", 0, self.Translators.Info:GetHeight() * -1);
     end
 end
 
