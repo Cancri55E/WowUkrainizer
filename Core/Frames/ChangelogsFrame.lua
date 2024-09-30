@@ -62,10 +62,6 @@ function WowUkrainizerChangelogsFrameMixin:SetupChangelogs()
     end
 end
 
-function WowUkrainizerChangelogsFrameMixin:OnShow()
-    DevTool:AddData(self.ScrollFrame.ScrollChild)
-end
-
 function WowUkrainizerChangelogsFrameMixin:OnLoad()
     self:SetupChangelogs();
     self.ScrollFrame:UpdateScrollChildRect();
