@@ -8,7 +8,7 @@ ns.FACTION_HORDE = "Орда"
 ns.LEVEL_TRANSLATION = "Рівень"
 ns.LEADER_TRANSLATION = "Ватажок"
 
-ns.SPELL_PASSIVE_TRANSLATION = "Пасивний"
+ns.SPELL_PASSIVE_TRANSLATION = "Пасивно"
 ns.SPELL_RANK_TRANSLATION = "Pівень"
 ns.SPELL_NEXT_RANK_TRANSLATION = "Наступний рівень:"
 

@@ -68,8 +68,9 @@ local function PaperDollStatTooltip_Hook(statFrame)
     local currentTooltipOwner = GameTooltip:GetOwner()
     if (currentTooltipOwner and currentTooltipOwner ~= statFrame) then return end
 
+    local translatedLabel = ""
     if (statFrame.Label) then
-        local translatedTooltip = _G["GameTooltipTextLeft1"]:GetText():gsub(HIGHLIGHT_FONT_COLOR_CODE .. "([A-Za-z%s]+)(.+)",
+        translatedLabel = _G["GameTooltipTextLeft1"]:GetText():gsub(HIGHLIGHT_FONT_COLOR_CODE .. "([A-Za-z%s]+)(.+)",
             function(_, other)
                 local result = HIGHLIGHT_FONT_COLOR_CODE .. string.sub(statFrame.Label:GetText(), 1, -2)
                 if (other) then
@@ -77,10 +78,14 @@ local function PaperDollStatTooltip_Hook(statFrame)
                 end
                 return result .. FONT_COLOR_CODE_CLOSE
             end)
-        SetText(_G["GameTooltipTextLeft1"], translatedTooltip)
     else
-        SetText(_G["GameTooltipTextLeft1"], GetTranslatedGlobalString(_G["GameTooltipTextLeft1"]:GetText()))
+        translatedLabel = _G["GameTooltipTextLeft1"]:GetText():gsub(HIGHLIGHT_FONT_COLOR_CODE .. "(.+)" .. FONT_COLOR_CODE_CLOSE,
+            function(tooltipText)
+                local translatedTooltipText = GetTranslatedGlobalString(tooltipText)
+                return HIGHLIGHT_FONT_COLOR_CODE .. translatedTooltipText .. FONT_COLOR_CODE_CLOSE
+            end)
     end
+    SetText(_G["GameTooltipTextLeft1"], translatedLabel)
 
     if (statFrame.tooltip2) then
         SetText(_G["GameTooltipTextLeft2"], GetTranslatedGlobalString(_G["GameTooltipTextLeft2"]:GetText()))
