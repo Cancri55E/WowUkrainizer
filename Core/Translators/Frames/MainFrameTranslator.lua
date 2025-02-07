@@ -59,7 +59,7 @@ end
 function translator:Init()
     UpdateTextWithTranslation(GameMenuFrame.Header.Text, GetTranslatedGlobalString)
 
-    hooksecurefunc(GameMenuFrame, "InitButtons", function(frame)
+    hooksecurefunc(GameMenuFrame, "Layout", function(frame)
         for buttonFrame in frame.buttonPool:EnumerateActive() do
             UpdateTextWithTranslation(buttonFrame, GetTranslatedGlobalString)
         end
