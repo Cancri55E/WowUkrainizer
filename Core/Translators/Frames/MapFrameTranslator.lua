@@ -121,9 +121,16 @@ end
 
 local function SetupAndTranslateNavBar()
     if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_ZONE_TEXTS_OPTION)) then
-        WorldMapFrame.NavBar.homeButton.text:SetFontObject(SystemFont_Shadow_Med1)
+        WorldMapFrame.NavBar.homeButton.text:SetFontObject(GameFontNormal)
         UpdateTextWithTranslation(WorldMapFrame.NavBar.homeButton.text, GetTranslatedGlobalString)
 
+        -- We need to update font for the buttons in navList separately because they are created and added to 
+        -- the pool in OnLoad method which is called before our addon laod.
+        for _, button in ipairs(WorldMapFrame.NavBar.navList) do
+            button.text:SetFontObject(GameFontNormal)
+        end
+
+        WorldMapFrame_NavBar_Refresh(WorldMapFrame.NavBar)
         hooksecurefunc(WorldMapFrame.NavBar, "Refresh", WorldMapFrame_NavBar_Refresh)
     end
 end

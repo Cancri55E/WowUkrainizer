@@ -67,6 +67,10 @@ function WowUkrainizerChangelogsFrameMixin:OnLoad()
     self.ScrollFrame:UpdateScrollChildRect();
 end
 
+function WowUkrainizerChangelogsFrameMixin:OnShow()
+    self:SetSize(800, 600)
+end
+
 function WowUkrainizerChangelogsFrameMixin:ToggleUI()
     if not self:IsVisible() then
         self:Show()

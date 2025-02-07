@@ -497,7 +497,7 @@ do
         self.Author:SetInfo("Розробник:", "Cancri", contributorTitleWidth)
         self.Proofreaders:SetInfo("Редактор:", "KuprumLight, kasatushi, Nimfiel", contributorTitleWidth)
         self.Translators:SetInfo("Перекладачі:", WOW_UKRAINIZER_FINISH_PAGE_TRANSLATORS_TEXT, contributorTitleWidth)
-        self.Developments:SetInfo("Виправлення:", "Лігво Друїда (molaf)", contributorTitleWidth)
+        self.Developments:SetInfo("Виправлення:", "Лігво Друїда (molaf), Mykhailo <xEdelweiss> Sverdlykivskyi", contributorTitleWidth)
 
         self.LinksHeader.Header:SetText("Ресурси та посилання")
         self.UkrainianWoWCommunity:SetValue("Ukrainian WoW Community", "https://bit.ly/ua_wow", linkTitleWidth)
