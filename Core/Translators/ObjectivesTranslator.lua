@@ -75,16 +75,17 @@ local function ObjectiveTracker_UpdateSingle(objectiveTracker, quest)
     local block = objectiveTracker.usedBlocks[template][questID];
     if (not block) then return end
 
+    local blockHeightDelta = 0;
+
     local questTranslatedData = questID and GetTranslatedQuestData(questID)
     if (questTranslatedData and questTranslatedData.Title) then
+        local originalHeight = block.HeaderText:GetHeight()
         block.HeaderText:SetText(questTranslatedData.Title)
+        blockHeightDelta = blockHeightDelta + (block.HeaderText:GetHeight() - originalHeight)
     end
 
-    local blockHeight = block.HeaderText:GetHeight();
-
-    local lineSpacing = block.parentModule.lineSpacing;
-
     for key, value in pairs(block.usedLines) do
+        local originalTextHeight = value.Text:GetHeight();
         local text = value.Text:GetText()
         if (key == "Failed") then
             value.Text:SetText(GetTranslatedGlobalString(FAILED))
@@ -117,13 +118,12 @@ local function ObjectiveTracker_UpdateSingle(objectiveTracker, quest)
             value.Text:SetText(GetTranslatedQuestObjective(questID, text))
         end
 
-        local height = value.Text:GetHeight();
-        value:SetHeight(height);
-
-        blockHeight = blockHeight + height + lineSpacing
+        local textHeightDelta = value.Text:GetHeight() - originalTextHeight
+        value:SetHeight(value:GetHeight() + textHeightDelta)
+        blockHeightDelta = blockHeightDelta + textHeightDelta
     end
 
-    block:SetHeight(blockHeight);
+    block:SetHeight(block:GetHeight() + blockHeightDelta)
 end
 
 local function ObjectiveTracker_UpdateHeight(objectiveTracker)
