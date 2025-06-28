@@ -34,14 +34,30 @@ function baseRepository._getValue(dbTable, original)
 end
 
 --- Protected method to get the translated or the original (English) name if not translated.
----@param dbTable table<integer, string> @ The database table for translations.
+---@param dbTable table<integer, string|table<string[]>> @ The database table for translations.
 ---@param original string @ The original (English) name.
 ---@return string @ The translated or original value.
 ---@protected
 function baseRepository._getNameValue(dbTable, original)
     if (not original or original == "") then return original end
     local hash = GetNameHash(original)
-    return dbTable[hash] or original
+
+    local translations = dbTable[hash]
+    if not translations then return original end
+
+    -- If there's only one entry and no chaining, return it immediately
+    if type(translations) == "string" then
+        return translations
+    end
+
+    -- Handle chaining: Find the exact match
+    for _, entry in ipairs(translations) do
+        if entry[1] == original then
+            return entry[2] -- Return translated value
+        end
+    end
+
+    return original -- Return original if no match is found
 end
 
 --- Protected method to get the translated or the original (English) text if not translated. This method should be used if the text may contain numeric values and use 'Default' hash algorithm.
@@ -213,9 +229,8 @@ do
     --- @param gender number? @ The gender value.
     --- @return string @ The translated unit name or the original (English) text.
     function repository.GetTranslatedUnitName(original, gender)
-        --return repository._getValue(ns._db.UnitNames, original)
         if (not original) then return original end
-        local translatedUnitName = repository._getValue(ns._db.UnitNames, original):gsub("{sex|(.-)|(.-)}",
+        local translatedUnitName = repository._getNameValue(ns._db.UnitNames, original):gsub("{sex|(.-)|(.-)}",
             function(male, female) if (gender == 3) then return female else return male end end)
         return translatedUnitName
     end
@@ -226,7 +241,7 @@ do
     --- @return string @ The translated unit subname or the original (English) text.
     function repository.GetTranslatedUnitSubname(original, gender)
         if (not original) then return original end
-        local translatedUnitSubname = repository._getValue(ns._db.UnitSubnames, original):gsub("{sex|(.-)|(.-)}",
+        local translatedUnitSubname = repository._getNameValue(ns._db.UnitSubnames, original):gsub("{sex|(.-)|(.-)}",
             function(male, female) if (gender == 3) then return female else return male end end)
         return translatedUnitSubname
     end
