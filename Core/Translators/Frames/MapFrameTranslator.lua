@@ -30,7 +30,6 @@ end
 
 local function TranslateMapLegend()
     UpdateTextWithTranslation(QuestMapFrame.MapLegend.TitleText, GetTranslatedGlobalString)
-    UpdateTextWithTranslation(QuestMapFrame.MapLegend.BackButton.Text, GetTranslatedGlobalString)
     for _, categoryFrame in pairs({ QuestMapFrame.MapLegend.ScrollFrame.ScrollChild:GetChildren() }) do
         for _, layoutTable in pairs({ categoryFrame:GetLayoutChildren() }) do
             for _, legendItemFrame in ipairs(layoutTable) do
