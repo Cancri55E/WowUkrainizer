@@ -440,7 +440,7 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
             local slot
             if (equipSlot.slot == INVTYPE_CLOAK) then
-                slot = 'Спина' -- HOOK: Fix after GlobalString refactoring
+                slot = 'Спина' -- HOOK: Override the ambiguous `BACK` string for the equipment slot context.
             else
                 slot = GetTranslatedGlobalString(equipSlot.slot)
             end
