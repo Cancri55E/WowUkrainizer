@@ -48,7 +48,7 @@ jobs:
       - name: Run DevTools project
         id: run_update_translation_cmd
         run: |
-          dotnet run --project ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --mode "generate-lua" --connectionString "${{ secrets.MAIN_DB_CONNECTION_STRING }} --folder "${{ github.workspace }}/Database" --gameClientConnectionString "${{ secrets.MONGODB_CONNECTION_STRING }}" 2>log.txt
+          dotnet run --project ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --mode "generate-lua" --connectionString "${{ secrets.MAIN_DB_CONNECTION_STRING }}" --folder "${{ github.workspace }}/Database" --gameClientConnectionString "${{ secrets.MONGODB_CONNECTION_STRING }}" 2>log.txt
 
       - name: Display update translation log
         run: |
