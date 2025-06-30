@@ -65,6 +65,12 @@ function translator:Init()
         end
     end);
 
+    hooksecurefunc(MenuVariants, "CreateCheckbox", function(text, frame)
+        if (frame and frame.fontString) then
+            frame.fontString:SetTextToFit(GetTranslatedGlobalString(text));
+        end
+    end)
+
     for i = 1, #MicroButtons do
         _G[MicroButtons[i]]:HookScript("OnEnter", microButtonTooltipHook);
     end

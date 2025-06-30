@@ -401,7 +401,7 @@ function translator:ParseTooltip(tooltip, tooltipData)
     local tooltipOwner = tooltip:GetOwner()
 
     -- HOOK: No Rank 1/2+ info in multirang talent tooltip. In this case client send another callback.
-    if (tooltipOwner.nodeInfo) then
+    if (tooltipOwner and tooltipOwner.nodeInfo) then
         local currentRank = tooltipOwner.nodeInfo.currentRank
         local maxRanks = tooltipOwner.nodeInfo.maxRanks
 
