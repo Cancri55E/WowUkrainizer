@@ -7,11 +7,23 @@ local GetTranslatedClass = ns.DbContext.Player.GetTranslatedClass
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 local SetText = ns.FontStringUtil.SetText
+
 local OnUpdateTooltip = function(tooltip, expectedOwner)
     ns.TooltipUtil:OnUpdateTooltip(tooltip, expectedOwner, GetTranslatedGlobalString, true)
 end
+
 local OnUpdateGameTooltip = function(expectedOwner)
     ns.TooltipUtil:OnUpdateGameTooltip(expectedOwner, GetTranslatedGlobalString, true)
+end
+
+local OnUpdateEquipmentSlotTooltip = function(expectedOwner)
+    ns.TooltipUtil:OnUpdateGameTooltip(expectedOwner, function (text)
+        if (text == "Back") then
+            return 'Спина' -- HOOK: Override the ambiguous `BACK` string for the equipment slot context.
+        else
+            return GetTranslatedGlobalString(text)
+        end
+    end, true)
 end
 
 ---@class PaperDollFrameTranslator : BaseTranslator
@@ -108,8 +120,8 @@ function translator:Init()
     UpdateTextWithTranslation(CharacterStatsPane.EnhancementsCategory.Title, GetTranslatedGlobalString)
 
     for _, equipmentSlotButton in ipairs(PaperDollItemsFrame.EquipmentSlots) do
-        equipmentSlotButton:HookScript("OnEnter", OnUpdateGameTooltip)
-        hooksecurefunc(equipmentSlotButton, "UpdateTooltip", OnUpdateGameTooltip)
+        equipmentSlotButton:HookScript("OnEnter", OnUpdateEquipmentSlotTooltip)
+        hooksecurefunc(equipmentSlotButton, "UpdateTooltip", OnUpdateEquipmentSlotTooltip)
     end
 
     for _, equipmentSlotButton in ipairs(PaperDollItemsFrame.WeaponSlots) do
