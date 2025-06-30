@@ -10,6 +10,10 @@ local areaLabelDataProviderHooked
 ---@class MapFrameTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
 
+local OnUpdateGameTooltip = function(expectedOwner)
+    ns.TooltipUtil:OnUpdateGameTooltip(expectedOwner, GetTranslatedGlobalString, true)
+end
+
 --- Extract and separate level text from a given string.
 --- @param text string @The input string containing the zone name and level text.
 --- @return string modifiedText @The text with the level text removed.
@@ -112,10 +116,13 @@ local function WorldMapFrame_NavBar_Refresh(navBar)
     end
 end
 
-local function SetupBorderFrameHook()
+local function SetupMapFrameHooks()
     hooksecurefunc(WorldMapFrame.BorderFrame, "SetTitle", function(borderFrame)
         UpdateTextWithTranslation(borderFrame:GetTitleText(), GetTranslatedGlobalString)
     end)
+    for _, button in ipairs(QuestMapFrame.TabButtons) do
+        button:HookScript("OnEnter", OnUpdateGameTooltip)
+    end
 end
 
 local function SetupAndTranslateNavBar()
@@ -139,7 +146,7 @@ function translator:IsEnabled()
 end
 
 function translator:Init()
-    SetupBorderFrameHook()
+    SetupMapFrameHooks()
     SetupAndTranslateNavBar()
     TranslateMapLegend();
 end

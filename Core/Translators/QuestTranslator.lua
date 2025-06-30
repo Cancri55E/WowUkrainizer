@@ -275,16 +275,18 @@ local function OnQuestMapLogTitleButtonTooltipShow(button)
 
     QuestMapFrame:GetParent():SetHighlightedQuestID(questID);
 
-    GameTooltip:ClearAllPoints();
-    GameTooltip:SetPoint("TOPLEFT", button, "TOPRIGHT", 34, 0);
-    GameTooltip:SetOwner(button, "ANCHOR_PRESERVE");
-    GameTooltip:SetText(questData.Title);
-    local tooltipWidth = 20 + max(231, GameTooltipTextLeft1:GetStringWidth());
-    if (tooltipWidth > UIParent:GetRight() - QuestMapFrame:GetParent():GetRight()) then
+    if (questData.Title) then
         GameTooltip:ClearAllPoints();
-        GameTooltip:SetPoint("TOPRIGHT", button, "TOPLEFT", -5, 0);
+        GameTooltip:SetPoint("TOPLEFT", button, "TOPRIGHT", 34, 0);
         GameTooltip:SetOwner(button, "ANCHOR_PRESERVE");
         GameTooltip:SetText(questData.Title);
+        local tooltipWidth = 20 + max(231, GameTooltipTextLeft1:GetStringWidth());
+        if (tooltipWidth > UIParent:GetRight() - QuestMapFrame:GetParent():GetRight()) then
+            GameTooltip:ClearAllPoints();
+            GameTooltip:SetPoint("TOPRIGHT", button, "TOPLEFT", -5, 0);
+            GameTooltip:SetOwner(button, "ANCHOR_PRESERVE");
+            GameTooltip:SetText(questData.Title);
+        end
     end
 
     if C_QuestLog.IsQuestReplayable(questID) then
