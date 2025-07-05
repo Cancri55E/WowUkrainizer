@@ -4,4 +4,5 @@
 	<Script file="QuestFrameUtil.lua"/>
 	<Script file="TooltipUtil.lua"/>
 	<Script file="SelectedIconFrameTranslationUtil.lua"/>
+	<Script file="SpellTooltipUtil.lua"/>
 </Ui>
