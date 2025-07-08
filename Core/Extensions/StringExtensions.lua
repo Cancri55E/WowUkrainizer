@@ -260,3 +260,20 @@ function internal.ReplaceWholeWordNocase(originalText, searchPhrase, replacement
     pattern = "%f[%w_%-]" .. pattern .. "%f[^%w_%-]"
     return originalText:gsub(pattern, replacement)
 end
+
+function internal.EscapePattern(str)
+    if internal.NullOrEmpty(str) then return "" end
+    return (str:gsub("([%(%)%.%+%-%*%?%[%^%$%%])", "%%%1"))
+end
+
+function internal.CreatePatternFromFormatString(formatString, replacements)
+    -- Start by escaping the entire string to handle all literal magic characters.
+    local pattern = internal.EscapePattern(formatString)
+    -- Now, iterate through the special format placeholders and replace them with their pattern equivalents.
+    for formatSpecifier, patternCapture in pairs(replacements) do
+        -- We need to find the escaped version of the format specifier. e.g., find "%%d" to replace with "(%d+)"
+        local escapedSpecifier = internal.EscapePattern(formatSpecifier)
+        pattern = pattern:gsub(escapedSpecifier, patternCapture)
+    end
+    return pattern
+end

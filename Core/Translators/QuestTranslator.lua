@@ -14,7 +14,6 @@ local GetTranslatedQuestObjective = ns.DbContext.Quests.GetTranslatedQuestObject
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 
 local CreateSwitchTranslationButton = ns.QuestFrameUtil.CreateSwitchTranslationButton
-local CreateMtIconTexture = ns.QuestFrameUtil.CreateMtIconTexture
 local CreateWowheadButton = ns.QuestFrameUtil.CreateWowheadButton
 
 local FACTION_ALLIANCE = ns.FACTION_ALLIANCE
@@ -29,17 +28,20 @@ local ACTIVE_TEMPLATE;
 local ACTIVE_PARENT_FRAME;
 
 local questFrameSwitchTranslationButton
-local questFrameMTIcon
 local questPopupFrameSwitchTranslationButton
-local questPopupFrameMTIcon
 local questMapDetailsFrameSwitchTranslationButton
-local questMapDetailsFrameMTIcon
 
 local WorldMapStorylineQuestPinsCache = {}
 local WorldMapChildFramesCache = {}
 
+local translatedWithAILinkType = "TranslatedWithAI"
+
 ---@class QuestTranslator : BaseTranslator
 local translator = setmetatable({}, { __index = ns.BaseTranslator })
+
+local OnUpdateGameTooltip = function(expectedOwner)
+    ns.TooltipUtil:OnUpdateGameTooltip(expectedOwner, GetTranslatedGlobalString, true)
+end
 
 local function getQuestTitleForQuestList(questID, isTrivial)
     local translatedTitle = GetTranslatedQuestTitle(questID)
@@ -83,27 +85,15 @@ local function getQuestID()
     end
 end
 
-local function showCommandButtonsForQuest(needToShow, isMTData)
+local function showCommandButtonsForQuest(needToShow)
     if (needToShow) then
         questFrameSwitchTranslationButton:Show()
         questPopupFrameSwitchTranslationButton:Show()
         questMapDetailsFrameSwitchTranslationButton:Show()
-        if (isMTData) then
-            questFrameMTIcon:Show()
-            questPopupFrameMTIcon:Show()
-            questMapDetailsFrameMTIcon:Show()
-        else
-            questFrameMTIcon:Hide()
-            questPopupFrameMTIcon:Hide()
-            questMapDetailsFrameMTIcon:Hide()
-        end
     else
         questFrameSwitchTranslationButton:Hide()
-        questFrameMTIcon:Hide()
         questPopupFrameSwitchTranslationButton:Hide()
-        questPopupFrameMTIcon:Hide()
         questMapDetailsFrameSwitchTranslationButton:Hide()
-        questMapDetailsFrameMTIcon:Hide()
     end
 end
 
@@ -501,14 +491,18 @@ local function DisplayQuestInfo(template, parentFrame)
 
     local questData = GetTranslatedQuestData(questID)
 
-    showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMtData)
+    showCommandButtonsForQuest(questData ~= nil)
 
     local translateQuestText = ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)
     if (not translateQuestText) then return end
 
     if (QuestInfoTitleHeader:IsVisible()) then
         if (questData and questData.Title) then
-            QuestInfoTitleHeader:SetText(QuestUtils_DecorateQuestText(questID, questData.Title, true))
+            local link = ""
+            if (questData.IsMtData) then
+                link = ("|H%s:%d|h%s|h"):format(translatedWithAILinkType, 0, [[|TInterface\AddOns\WowUkrainizer\assets\images\robot.png:14|t]]) .. ""
+            end
+            QuestInfoTitleHeader:SetText(link .. " " .. QuestUtils_DecorateQuestText(questID, questData.Title, true))
         end
     end
 
@@ -569,7 +563,7 @@ local function OnQuestFrameProgressPanelShow(_)
 
     local questData = GetTranslatedQuestData(questID)
 
-    showCommandButtonsForQuest(questData ~= nil, questData and questData.IsMtData)
+    showCommandButtonsForQuest(questData ~= nil)
 
     if (ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TRANSLATE_QUEST_TEXT_OPTION)) then
         if (questData and questData.Title) then
@@ -615,25 +609,20 @@ local function InitializeCommandButtons()
             QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
                 QuestInfoFrame.mapView)
         end
-    end, -64, -32)
-    questFrameMTIcon = CreateMtIconTexture(QuestFrame, -34, -32)
-    CreateWowheadButton(QuestFrame, -6, -32, { getQuestID = function() return GetQuestID() end })
+    end, -160, -32)
+    CreateWowheadButton(QuestFrame, -250, -32, { getQuestID = function() return GetQuestID() end })
 
     questPopupFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestLogPopupDetailFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
     end, -188, -30)
-    questPopupFrameMTIcon = CreateMtIconTexture(QuestLogPopupDetailFrame, -162, -30)
-    CreateWowheadButton(QuestLogPopupDetailFrame, -4, -30,
-        { getQuestID = function() return C_QuestLog.GetSelectedQuest() end })
+    CreateWowheadButton(QuestLogPopupDetailFrame, -4, -30, { getQuestID = function() return C_QuestLog.GetSelectedQuest() end })
 
     questMapDetailsFrameSwitchTranslationButton = CreateSwitchTranslationButton(QuestMapDetailsScrollFrame, function()
         QuestInfo_Display(ACTIVE_TEMPLATE, ACTIVE_PARENT_FRAME, QuestInfoFrame.acceptButton, QuestInfoFrame.material,
             QuestInfoFrame.mapView)
-    end, -60, 32)
-    questMapDetailsFrameMTIcon = CreateMtIconTexture(QuestMapDetailsScrollFrame, -32, 32)
-    CreateWowheadButton(QuestMapDetailsScrollFrame, -4, 32,
-        { getQuestID = function() return C_QuestLog.GetSelectedQuest() end })
+    end, -104, 32)
+    CreateWowheadButton(QuestMapDetailsScrollFrame, -194, 32, { getQuestID = function() return C_QuestLog.GetSelectedQuest() end })
 end
 
 local function IsQuestDungeonQuest_Internal(tagID, worldQuestType) -- dublicate local function from blizzard code!
@@ -868,6 +857,10 @@ function translator:Init()
     translateButton(QuestMapFrame.DetailsFrame.ShareButton, 90, 22)
     translateButton(QuestMapFrame.DetailsFrame.BackFrame.BackButton, nil, 24)
     translateUIFontString(QuestScrollFrame.CampaignTooltip.CompleteRewardText)
+    translateUIFontString(QuestFrame.AccountCompletedNotice.Text)
+    translateUIFontString(QuestMapFrame.DetailsFrame.BackFrame.AccountCompletedNotice.Text)
+    QuestFrame.AccountCompletedNotice:HookScript("OnEnter", OnUpdateGameTooltip)
+    QuestMapFrame.DetailsFrame.BackFrame.AccountCompletedNotice:HookScript("OnEnter", OnUpdateGameTooltip)
 
     eventHandler:Register(function() _addQuestInfoToCache(GetProgressText()) end, "QUEST_PROGRESS")
     eventHandler:Register(function() _addQuestInfoToCache(nil, GetRewardText()) end, "QUEST_COMPLETE")
@@ -887,8 +880,24 @@ function translator:Init()
 
     QuestFrameProgressPanel:HookScript("OnShow", OnQuestFrameProgressPanelShow)
     hooksecurefunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
-
     hooksecurefunc("StaticPopup_Show", OnStaticPopupShow)
+
+    hooksecurefunc("QuestInfo_OnHyperlinkEnter", function (owner, link) -- TODO: Other QuestInfo_OnHyperlinkEnter translations in next release
+        local linkType = LinkUtil.SplitLinkData(link);
+        if linkType == translatedWithAILinkType then
+            GameTooltip:SetOwner(owner, "ANCHOR_CURSOR_RIGHT");
+            GameTooltip:ClearLines();
+            GameTooltip:SetText("Перекладено за допомогою ШІ.", 1, 1, 1)
+            GameTooltip:AddLine(
+                "Ви завжди можете вимкнути переклади зроблені |nза допомогою ШІ в налаштуваннях додатку.",
+                RAID_CLASS_COLORS.MAGE.r,
+                RAID_CLASS_COLORS.MAGE.g,
+                RAID_CLASS_COLORS.MAGE.b)
+            GameTooltip:Show();
+        else
+            OnUpdateGameTooltip(owner)
+        end
+    end)
 
     WorldMapFrame:HookScript("OnShow", function()
         if (WorldMapFrame.pinPools.StorylineQuestPinTemplate and WorldMapFrame.pinPools.StorylineQuestPinTemplate.activeObjects) then
