@@ -271,8 +271,9 @@ function translator:Init()
     UpdateTextWithTranslation(ImmersionContentFrame.ObjectivesHeader, GetTranslatedGlobalString)
     UpdateTextWithTranslation(ImmersionContentFrame.RewardsFrame.Header, GetTranslatedGlobalString)
     UpdateTextWithTranslation(ImmersionContentFrame.RewardsFrame.XPFrame.ReceiveText, GetTranslatedGlobalString)
+    UpdateTextWithTranslation(ImmersionContentFrame.QuestInfoAccountCompletedNotice, GetTranslatedGlobalString)
     UpdateTextWithTranslation(ImmersionFrame.TalkBox.Elements.Progress.MoneyText, GetTranslatedGlobalString)
-    UpdateTextWithTranslation(ImmersionFrame.TalkBox.Elements.Progress.ReqText, GetTranslatedGlobalString)
+    UpdateTextWithTranslation(ImmersionFrame.TalkBox.Elements.Progress.ReqText, GetTranslatedGlobalString)    
 end
 
 ns.TranslationsManager:AddTranslator(translator)
