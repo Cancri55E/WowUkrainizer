@@ -11,8 +11,12 @@ manual-changelog:
 
 ignore:
   - .releaserc
+  - .env
+  - .secrets
+  - .actrc
   - .vscode
   - .git
+  - run_act.bat
   - screenshots
   - cvars.dump
   - package.json
