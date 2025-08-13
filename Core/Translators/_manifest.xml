@@ -28,4 +28,5 @@
 	<Script file="Frames\SplashFrameTranslator.lua"/>
 	<Script file="ThirdPartyAddons\ImmersionTranslator.lua"/>
 	<Script file="ThirdPartyAddons\DejaCharacterStatsTranslator.lua"/>
+	<Script file="ThirdPartyAddons\DialogueUITranslator.lua"/>
 </Ui>
