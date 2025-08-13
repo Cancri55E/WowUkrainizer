@@ -1,0 +1,4 @@
+--use-new-action-cache
+--secret-file .secrets
+--action-offline-mode
+--container-options --privileged -v d:/_Projects/WoW/WowUkrainizer/.release:/mnt/host-release
