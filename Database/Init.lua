@@ -30,6 +30,26 @@ ns._db = {}
 
 ns._db.Changelogs = {
     {
+        version = "1.15.12",
+        date = "2 вересня 2025",
+        color = "red",
+        type = "Виправлення",
+        author = "Cancri",
+        title = nil,
+        description =
+        [[Оновлено toc для версії 11.2.0]]
+    },
+    {
+        version = "1.15.10",
+        date = "13 серпня 2025",
+        color = "red",
+        type = "Виправлення",
+        author = "xEdelweiss",
+        title = nil,
+        description =
+        [[Виправлено відображення перекладів заклинань у макросах із використанням #showtooltip]]
+    },
+    {
         version = "1.15.9",
         date = "08 липня 2025",
         color = "red",
