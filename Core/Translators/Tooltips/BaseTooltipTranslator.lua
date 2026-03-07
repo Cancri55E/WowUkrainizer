@@ -11,7 +11,7 @@ local translator = setmetatable({
 ns.BaseTooltipTranslator = translator
 
 function translator:Init()
-    TooltipDataProcessor.AddTooltipPostCall(self.tooltipDataType, function(tooltip, tooltipData)
+    ns.CommonUtil.SafeAddTooltipPostCall(self.tooltipDataType, function(tooltip, tooltipData)
         self:TooltipCallback(tooltip, tooltipData)
     end)
 end
@@ -40,6 +40,8 @@ end
 ---@protected
 function translator:TooltipCallback(tooltip, tooltipData)
     self.fontStringIndexLookup = {}
+
+    if not tooltip or not tooltipData then return end
 
     local tooltipInfo = self:ParseTooltip(tooltip, tooltipData)
     if (not tooltipInfo) then return end

@@ -13,7 +13,10 @@ ns.TranslationsManager = manager
 function manager:Init()
     for _, translator in ipairs(self._translators) do
         if (translator:IsEnabled()) then
-            translator:Init()
+            local ok, err = pcall(function() translator:Init() end)
+            if (not ok and DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.AddMessage) then
+                DEFAULT_CHAT_FRAME:AddMessage("|cffff5555WowUkrainizer: translator init failed:|r " .. tostring(err))
+            end
         end
     end
 end
