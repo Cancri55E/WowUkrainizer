@@ -88,3 +88,69 @@ function internal.TryCallAPIFn(fnName, value)
     -- MAIN PART:
     return pcall(fn, value)
 end
+
+
+--- Safely hook a global function or frame method when it exists.
+---@return boolean hooked
+function internal.SafeHookSecureFunc(target, methodOrHook, hook)
+    if type(target) == "string" then
+        if type(_G[target]) ~= "function" or type(methodOrHook) ~= "function" then
+            return false
+        end
+        local ok = pcall(hooksecurefunc, target, methodOrHook)
+        return ok
+    end
+
+    if type(target) ~= "table" then
+        return false
+    end
+
+    if type(methodOrHook) == "string" then
+        if type(target[methodOrHook]) ~= "function" or type(hook) ~= "function" then
+            return false
+        end
+        local ok = pcall(hooksecurefunc, target, methodOrHook, hook)
+        return ok
+    end
+
+    if type(methodOrHook) ~= "function" then
+        return false
+    end
+
+    local ok = pcall(hooksecurefunc, target, methodOrHook)
+    return ok
+end
+
+--- Safely HookScript only when the frame and script handler are available.
+---@return boolean hooked
+function internal.SafeHookScript(frame, scriptName, handler)
+    if type(frame) ~= "table" or type(scriptName) ~= "string" or type(handler) ~= "function" then
+        return false
+    end
+
+    if type(frame.HookScript) ~= "function" or type(frame.HasScript) ~= "function" then
+        return false
+    end
+
+    local okHasScript, hasScript = pcall(frame.HasScript, frame, scriptName)
+    if not okHasScript or not hasScript then
+        return false
+    end
+
+    local ok = pcall(frame.HookScript, frame, scriptName, handler)
+    return ok
+end
+
+--- Safely register a tooltip post call only when the API exists.
+---@return boolean hooked
+function internal.SafeAddTooltipPostCall(tooltipDataType, handler)
+    if not TooltipDataProcessor or type(TooltipDataProcessor.AddTooltipPostCall) ~= "function" then
+        return false
+    end
+    if tooltipDataType == nil or type(handler) ~= "function" then
+        return false
+    end
+
+    local ok = pcall(TooltipDataProcessor.AddTooltipPostCall, tooltipDataType, handler)
+    return ok
+end

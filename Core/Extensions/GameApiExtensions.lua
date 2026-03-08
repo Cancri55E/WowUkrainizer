@@ -9,7 +9,10 @@ ns.GameApiUtil = internal
 --- Get the player position
 ---@return number,number,number @The map id, x and y position
 function internal.GetPlayerMapPosition()
-    local uiMapID = C_Map.GetBestMapForUnit("player") or WorldMapFrame:GetMapID()
+    local uiMapID = C_Map.GetBestMapForUnit("player")
+    if (not uiMapID and WorldMapFrame and type(WorldMapFrame.GetMapID) == "function") then
+        uiMapID = WorldMapFrame:GetMapID()
+    end
     local location = nil;
     if uiMapID then
         location = C_Map.GetPlayerMapPosition(uiMapID, "player");

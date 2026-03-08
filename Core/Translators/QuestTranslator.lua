@@ -867,22 +867,22 @@ function translator:Init()
 
     eventHandler:Register(OnGossipShow, "GOSSIP_SHOW", "GOSSIP_CLOSED")
 
-    hooksecurefunc("ToggleDropDownMenu", OnToggleDropDownMenu)
+    ns.CommonUtil.SafeHookSecureFunc("ToggleDropDownMenu", OnToggleDropDownMenu)
 
-    hooksecurefunc("QuestInfo_Display", DisplayQuestInfo)
-    hooksecurefunc("QuestFrame_ShowQuestPortrait", ShowQuestPortrait)
-    hooksecurefunc("QuestMapFrame_UpdateQuestDetailsButtons", UpdateQuestDetailsButtons)
-    hooksecurefunc("QuestLogQuests_Update", OnQuestLogQuestsUpdate)
-    hooksecurefunc("QuestMapLogTitleButton_OnEnter", OnQuestMapLogTitleButtonTooltipShow)
-    hooksecurefunc("QuestMapLog_GetCampaignTooltip", GetCampaignTooltipFromQuestMapLog)
+    ns.CommonUtil.SafeHookSecureFunc("QuestInfo_Display", DisplayQuestInfo)
+    ns.CommonUtil.SafeHookSecureFunc("QuestFrame_ShowQuestPortrait", ShowQuestPortrait)
+    ns.CommonUtil.SafeHookSecureFunc("QuestMapFrame_UpdateQuestDetailsButtons", UpdateQuestDetailsButtons)
+    ns.CommonUtil.SafeHookSecureFunc("QuestLogQuests_Update", OnQuestLogQuestsUpdate)
+    ns.CommonUtil.SafeHookSecureFunc("QuestMapLogTitleButton_OnEnter", OnQuestMapLogTitleButtonTooltipShow)
+    ns.CommonUtil.SafeHookSecureFunc("QuestMapLog_GetCampaignTooltip", GetCampaignTooltipFromQuestMapLog)
 
-    QuestFrameGreetingPanel:HookScript("OnShow", OnQuestFrameGreetingPanelShow)
+    ns.CommonUtil.SafeHookScript(QuestFrameGreetingPanel, "OnShow", OnQuestFrameGreetingPanelShow)
 
-    QuestFrameProgressPanel:HookScript("OnShow", OnQuestFrameProgressPanelShow)
-    hooksecurefunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
-    hooksecurefunc("StaticPopup_Show", OnStaticPopupShow)
+    ns.CommonUtil.SafeHookScript(QuestFrameProgressPanel, "OnShow", OnQuestFrameProgressPanelShow)
+    ns.CommonUtil.SafeHookSecureFunc("QuestFrameProgressPanel_OnShow", OnQuestFrameProgressPanelShow)
+    ns.CommonUtil.SafeHookSecureFunc("StaticPopup_Show", OnStaticPopupShow)
 
-    hooksecurefunc("QuestInfo_OnHyperlinkEnter", function (owner, link) -- TODO: Other QuestInfo_OnHyperlinkEnter translations in next release
+    ns.CommonUtil.SafeHookSecureFunc("QuestInfo_OnHyperlinkEnter", function (owner, link) -- TODO: Other QuestInfo_OnHyperlinkEnter translations in next release
         local linkType = LinkUtil.SplitLinkData(link);
         if linkType == translatedWithAILinkType then
             GameTooltip:SetOwner(owner, "ANCHOR_CURSOR_RIGHT");
@@ -899,7 +899,9 @@ function translator:Init()
         end
     end)
 
-    WorldMapFrame:HookScript("OnShow", function()
+    ns.CommonUtil.SafeHookScript(WorldMapFrame, "OnShow", function()
+        if (not WorldMapFrame or not WorldMapFrame.pinPools) then return end
+
         if (WorldMapFrame.pinPools.StorylineQuestPinTemplate and WorldMapFrame.pinPools.StorylineQuestPinTemplate.activeObjects) then
             for pin, _ in pairs(WorldMapFrame.pinPools.StorylineQuestPinTemplate.activeObjects) do
                 if (not WorldMapStorylineQuestPinsCache[pin]) then
@@ -909,7 +911,10 @@ function translator:Init()
             end
         end
 
-        for _, frame in pairs({ WorldMapFrame.ScrollContainer.Child:GetChildren() }) do
+        local child = WorldMapFrame.ScrollContainer and WorldMapFrame.ScrollContainer.Child
+        if (not child or type(child.GetChildren) ~= "function") then return end
+
+        for _, frame in pairs({ child:GetChildren() }) do
             if (frame) then
                 local frameType = frame:GetObjectType()
                 if (frameType == "Button" and frame.questID) then
@@ -919,14 +924,14 @@ function translator:Init()
                         -- Addons like World Quest Tracker, for example, create their own buttons on the world map, but do not have the UpdateTooltip function
                         local success, result = pcall(function() return type(frame.UpdateTooltip) end) -- TODO: [Tech Debt] Create function safehooksecurefunc
                         if (success and result == "function") then
-                            hooksecurefunc(frame, "UpdateTooltip", OnWorldMapPinButtonTooltipUpdated)
+                            ns.CommonUtil.SafeHookSecureFunc(frame, "UpdateTooltip", OnWorldMapPinButtonTooltipUpdated)
                         end
 
                         WorldMapChildFramesCache[frame] = true
                     end
                 elseif (frameType == "QuestPOIFrame") then
                     if (not WorldMapChildFramesCache[frame]) then
-                        hooksecurefunc(frame, "UpdateTooltip", OnWorldMapQuestPOIFrameTooltipUpdated)
+                        ns.CommonUtil.SafeHookSecureFunc(frame, "UpdateTooltip", OnWorldMapQuestPOIFrameTooltipUpdated)
                         WorldMapChildFramesCache[frame] = true
                     end
                 end

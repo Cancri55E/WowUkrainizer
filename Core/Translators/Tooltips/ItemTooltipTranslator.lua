@@ -171,6 +171,8 @@ local compareItemPatterns = {
 }
 
 function translator:ParseTooltip(tooltip, tooltipData)
+    if not tooltip or not tooltipData or type(tooltipData.lines) ~= "table" then return end
+
     local function parseUndefinedLineTypeText(text, index, isRightText)
         for _, patternInfo in ipairs(patterns) do
             local matches = { string.match(text, patternInfo.pattern) }
@@ -203,6 +205,7 @@ function translator:ParseTooltip(tooltip, tooltipData)
 
     self._postCallLineCount = tonumber(tooltip:NumLines())
     local tooltipName = tooltip:GetName()
+    if (not tooltipName) then return end
 
     for i = 1, tooltip:NumLines() do
         self:AddFontStringToIndexLookup(i * 2 - 1, _G[tooltipName .. "TextLeft" .. i])
@@ -498,6 +501,7 @@ end
 function translator:Init()
     local function translateComparisonLines(tooltip, startLine)
         local tooltipName = tooltip:GetName()
+    if (not tooltipName) then return end
         for i = startLine, tooltip:NumLines() do
             local lineLeft = _G[tooltipName .. "TextLeft" .. i]
             if lineLeft and lineLeft:GetText() then
