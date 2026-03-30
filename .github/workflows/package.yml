@@ -117,11 +117,23 @@ jobs:
           CF_API_KEY: ${{ inputs.publish_to_curseforge == 'true' && secrets.CF_API_KEY || '' }}
           GITHUB_OAUTH: ${{ inputs.create_github_release == 'true' && secrets.GITHUB_TOKEN || '' }}
 
+      - name: Find addon zip
+        if: inputs.publish_to_curseforge != 'true'
+        id: find_zip
+        run: |
+          ZIP=$(find .release -name "*.zip" -type f | head -n 1)
+          if [ -z "$ZIP" ]; then
+            echo "::error::No zip file found in .release/"
+            exit 1
+          fi
+          echo "zip_path=$ZIP" >> "$GITHUB_OUTPUT"
+          echo "Found: $ZIP"
+
       - name: Upload addon zip as artifact
         if: inputs.publish_to_curseforge != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: WowUkrainizer-${{ steps.version.outputs.full_version }}
-          path: ${{ github.workspace }}/.release/WowUkrainizer-${{ steps.version.outputs.full_version }}*.zip
+          path: ${{ steps.find_zip.outputs.zip_path }}
           if-no-files-found: error
           retention-days: 30
