@@ -8,6 +8,11 @@ on:
         required: false
         default: "false"
         type: string
+      publish_to_curseforge:
+        description: "Publish to CurseForge (false = build only, attach as artifact)"
+        required: false
+        default: "true"
+        type: string
 
 jobs:
   package:
@@ -19,9 +24,6 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      # Checkout uses the ref from dispatch:
-      #   - release.yml dispatches with tag ref → exact tagged commit
-      #   - Data repo dispatches with "master" ref → latest stable code
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -52,14 +54,12 @@ jobs:
       - name: Compute full version
         id: version
         run: |
-          # Determine base version from the latest tag
           LATEST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n 1)
           if [ -z "$LATEST_TAG" ]; then
             echo "::error::No version tags found"
             exit 1
           fi
 
-          # Handle both formats: v1.15.14 and v1.16.0.563
           TAG_NO_V="${LATEST_TAG#v}"
           DOT_COUNT=$(echo "$TAG_NO_V" | tr -cd '.' | wc -c)
           if [ "$DOT_COUNT" -eq 3 ]; then
@@ -80,6 +80,8 @@ jobs:
           echo "Base version:        $BASE"
           echo "Translation build:   $TRANSLATION_BUILD"
           echo "Full version:        $FULL_VERSION"
+          echo "Publish CurseForge:  ${{ inputs.publish_to_curseforge }}"
+          echo "GitHub release:      ${{ inputs.create_github_release }}"
           echo "====================================="
 
       - name: Restore and build DevTools
@@ -106,10 +108,28 @@ jobs:
             echo "  Updated: $f"
           done
 
+      - name: Build packager arguments
+        id: packager_args
+        run: |
+          ARGS='-n "{package-name}-${{ steps.version.outputs.full_version }}{nolib}{classic}:${{ steps.version.outputs.full_version }}{classic}{nolib}"'
+          if [ "${{ inputs.publish_to_curseforge }}" != "true" ]; then
+            ARGS="$ARGS -d"
+            echo "Dry run mode: archive will be created but not uploaded"
+          fi
+          echo "args=$ARGS" >> "$GITHUB_OUTPUT"
+
       - name: Deploy AddOn
         uses: BigWigsMods/packager@v2.4.3
         with:
-          args: -n "{package-name}-${{ steps.version.outputs.full_version }}{nolib}{classic}:${{ steps.version.outputs.full_version }}{classic}{nolib}"
+          args: ${{ steps.packager_args.outputs.args }}
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ inputs.create_github_release == 'true' && secrets.GITHUB_TOKEN || '' }}
+
+      - name: Upload addon zip as artifact
+        if: inputs.publish_to_curseforge != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: WowUkrainizer-${{ steps.version.outputs.full_version }}
+          path: .release/*.zip
+          retention-days: 1
