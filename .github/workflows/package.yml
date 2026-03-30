@@ -108,22 +108,13 @@ jobs:
             echo "  Updated: $f"
           done
 
-      - name: Build packager arguments
-        id: packager_args
-        run: |
-          ARGS='-n "{package-name}-${{ steps.version.outputs.full_version }}{nolib}{classic}:${{ steps.version.outputs.full_version }}{classic}{nolib}"'
-          if [ "${{ inputs.publish_to_curseforge }}" != "true" ]; then
-            ARGS="$ARGS -d"
-            echo "Dry run mode: archive will be created but not uploaded"
-          fi
-          echo "args=$ARGS" >> "$GITHUB_OUTPUT"
-
       - name: Deploy AddOn
         uses: BigWigsMods/packager@v2.4.3
         with:
-          args: ${{ steps.packager_args.outputs.args }}
+          args: -n "{package-name}-${{ steps.version.outputs.full_version }}{nolib}{classic}:${{ steps.version.outputs.full_version }}{classic}{nolib}"
         env:
-          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          # Control uploads via env vars: empty key = skip upload
+          CF_API_KEY: ${{ inputs.publish_to_curseforge == 'true' && secrets.CF_API_KEY || '' }}
           GITHUB_OAUTH: ${{ inputs.create_github_release == 'true' && secrets.GITHUB_TOKEN || '' }}
 
       - name: Upload addon zip as artifact
@@ -131,5 +122,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WowUkrainizer-${{ steps.version.outputs.full_version }}
-          path: .release/*.zip
-          retention-days: 1
+          path: ${{ github.workspace }}/.release/WowUkrainizer-${{ steps.version.outputs.full_version }}*.zip
+          if-no-files-found: error
+          retention-days: 30
