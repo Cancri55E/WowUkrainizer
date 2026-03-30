@@ -1,0 +1,60 @@
+name: Sync Database
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: Generate and Commit Database
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4.3.1
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Checkout DevTools
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          repository: Cancri55E/WowUkrainizer-DevTools
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          path: DevTools
+
+      - name: Checkout RawData
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          repository: Cancri55E/WowUkrainizer-Data
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          path: RawData
+
+      - name: Restore and build DevTools
+        run: |
+          dotnet restore DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj
+          dotnet build DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --no-restore
+
+      - name: Generate Database files
+        run: |
+          dotnet run --project DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj \
+            --configuration Release \
+            --mode "generate-lua" \
+            --connectionString "${{ secrets.MAIN_DB_CONNECTION_STRING }}" \
+            --folder "${{ github.workspace }}/Database" \
+            --gameClientConnectionString "${{ secrets.MONGODB_CONNECTION_STRING }}" 2>log.txt
+          cat log.txt
+
+      - name: Commit Database changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore: sync Database with latest translations"
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          add: "Database/"

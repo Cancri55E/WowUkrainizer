@@ -2,6 +2,12 @@ name: Build and Deploy Package
 
 on:
   workflow_dispatch:
+    inputs:
+      create_github_release:
+        description: "Upload addon zip to GitHub release"
+        required: false
+        default: "false"
+        type: string
 
 jobs:
   package:
@@ -13,6 +19,9 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
+      # Checkout uses the ref from dispatch:
+      #   - release.yml dispatches with tag ref → exact tagged commit
+      #   - Data repo dispatches with "master" ref → latest stable code
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -38,32 +47,69 @@ jobs:
           repository: Cancri55E/WowUkrainizer-Data
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           path: RawData
+          fetch-depth: 0
 
-      - name: Restore DevTools NuGet packages
-        run: dotnet restore ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj
+      - name: Compute full version
+        id: version
+        run: |
+          # Determine base version from the latest tag
+          LATEST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n 1)
+          if [ -z "$LATEST_TAG" ]; then
+            echo "::error::No version tags found"
+            exit 1
+          fi
 
-      - name: Build DevTools project
-        run: dotnet build ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --no-restore
+          # Handle both formats: v1.15.14 and v1.16.0.563
+          TAG_NO_V="${LATEST_TAG#v}"
+          DOT_COUNT=$(echo "$TAG_NO_V" | tr -cd '.' | wc -c)
+          if [ "$DOT_COUNT" -eq 3 ]; then
+            BASE=$(echo "$TAG_NO_V" | sed 's/\.[0-9]*$//')
+          else
+            BASE="$TAG_NO_V"
+          fi
+
+          TRANSLATION_BUILD=$(git -C RawData rev-list --count HEAD)
+          FULL_VERSION="v${BASE}.${TRANSLATION_BUILD}"
+
+          echo "base_version=$BASE" >> "$GITHUB_OUTPUT"
+          echo "translation_build=$TRANSLATION_BUILD" >> "$GITHUB_OUTPUT"
+          echo "full_version=$FULL_VERSION" >> "$GITHUB_OUTPUT"
+          echo "====================================="
+          echo "Dispatch ref:        ${{ github.ref }}"
+          echo "Latest tag:          $LATEST_TAG"
+          echo "Base version:        $BASE"
+          echo "Translation build:   $TRANSLATION_BUILD"
+          echo "Full version:        $FULL_VERSION"
+          echo "====================================="
+
+      - name: Restore and build DevTools
+        run: |
+          dotnet restore DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj
+          dotnet build DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --no-restore
 
       - name: Run DevTools project
-        id: run_update_translation_cmd
         run: |
-          dotnet run --project ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --mode "generate-lua" --connectionString "${{ secrets.MAIN_DB_CONNECTION_STRING }}" --folder "${{ github.workspace }}/Database" --gameClientConnectionString "${{ secrets.MONGODB_CONNECTION_STRING }}" 2>log.txt
-
-      - name: Display update translation log
-        run: |
+          dotnet run --project DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj \
+            --configuration Release \
+            --mode "generate-lua" \
+            --connectionString "${{ secrets.MAIN_DB_CONNECTION_STRING }}" \
+            --folder "${{ github.workspace }}/Database" \
+            --gameClientConnectionString "${{ secrets.MONGODB_CONNECTION_STRING }}" 2>log.txt
           cat log.txt
 
-      - name: Generate CHANGELOG.md
-        uses: orhun/git-cliff-action@v4.5.1
-        with:
-          config: cliff.toml
-          args: --verbose
-        env:
-          OUTPUT: CHANGELOG.md
-          
+      - name: Substitute version in TOC files
+        run: |
+          FULL_VERSION="${{ steps.version.outputs.full_version }}"
+          echo "Setting version to $FULL_VERSION in TOC files"
+          find . -name "*.toc" -not -path "./DevTools/*" -not -path "./RawData/*" | while read f; do
+            sed -i "s/@project-version@/$FULL_VERSION/g" "$f"
+            echo "  Updated: $f"
+          done
+
       - name: Deploy AddOn
         uses: BigWigsMods/packager@v2.4.3
+        with:
+          args: -n "{package-name}-${{ steps.version.outputs.full_version }}{nolib}{classic}:${{ steps.version.outputs.full_version }}{classic}{nolib}"
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
-          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OAUTH: ${{ inputs.create_github_release == 'true' && secrets.GITHUB_TOKEN || '' }}

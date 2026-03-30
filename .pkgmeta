@@ -22,6 +22,5 @@ ignore:
   - package.json
   - package-lock.json
   - release.sh
-  - cliff.toml
   - DevTools
   - RawData
