@@ -4,6 +4,7 @@ Changelog
 * **[Next]:**
 
   * refactor: Support multi-section changelog entries per version
+  * chore: Overhaul addon packaging pipeline
 
 * **v1.15.13 (2026-02-15):**
 
