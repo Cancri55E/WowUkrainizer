@@ -63,15 +63,19 @@
 ---@field Title string The translated title of the item.
 ---@field Description string The translated description of the item.
 
---- Changelog entry containing details of each change.
----@class (exact) ChangelogEntry
----@field version string -- The version the change was made in
----@field date string -- The date the change was made
+--- A single categorized section within a changelog entry.
+---@class (exact) ChangelogSection
 ---@field color ChangelogEntryColor -- Color code for UI display
 ---@field type string -- The type of change
 ---@field author string -- The author who made the change
----@field title string? -- The title summarizing the change
 ---@field description string -- Full description of the change
+
+--- Changelog entry containing details of changes for a specific version.
+---@class (exact) ChangelogEntry
+---@field version string -- The version the change was made in
+---@field date string -- The date the change was made
+---@field title string? -- The title summarizing the change
+---@field sections ChangelogSection[] -- One or more categorized change sections
 
 ---@class (exact) WowUkrainizerDatabase
 ---@field Changelogs ChangelogEntry[] Array of changelog entries, newest first

@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+* **[Next]:**
+
+  * refactor: Support multi-section changelog entries per version
+
 * **v1.15.13 (2026-02-15):**
 
   * fix: Update TOC interface version for 12.0.0/12.0.1
