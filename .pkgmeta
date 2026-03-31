@@ -16,6 +16,7 @@ ignore:
   - .actrc
   - .vscode
   - .git
+  - .github
   - run_act.bat
   - screenshots
   - cvars.dump
@@ -24,3 +25,4 @@ ignore:
   - release.sh
   - DevTools
   - RawData
+  - docs
