@@ -39,6 +39,8 @@ end
 
 ---@protected
 function translator:TooltipCallback(tooltip, tooltipData)
+    if issecrettable(tooltipData) then return end
+
     self.fontStringIndexLookup = {}
 
     local tooltipInfo = self:ParseTooltip(tooltip, tooltipData)

@@ -120,6 +120,8 @@ local function parseUnitTooltipLines(tooltipLines)
 end
 
 function translator:ParseTooltip(tooltip, tooltipData)
+    if issecretvalue(tooltipData.guid) then return end
+
     local unitKind = strsplit("-", tooltipData.guid)
     if (unitKind == "Creature" or unitKind == "Vehicle") then
         for i = 1, tooltip:NumLines() do

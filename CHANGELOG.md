@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+* **[Next]:**
+
+  * fix: Use secret value guards for tooltip taint protection
+
 * **v1.15.13 (2026-02-15):**
 
   * fix: Update TOC interface version for 12.0.0/12.0.1
