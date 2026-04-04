@@ -1,8 +1,6 @@
 --- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local _G = _G
-
 local LEADER_TRANSLATION = ns.LEADER_TRANSLATION
 local LEVEL_TRANSLATION = ns.LEVEL_TRANSLATION
 local PET_LEVEL_TRANSLATION = ns.PET_LEVEL_TRANSLATION
@@ -124,8 +122,9 @@ function translator:ParseTooltip(tooltip, tooltipData)
 
     local unitKind = strsplit("-", tooltipData.guid)
     if (unitKind == "Creature" or unitKind == "Vehicle") then
+        local TLA = ns.TooltipLineAccessor
         for i = 1, tooltip:NumLines() do
-            self:AddFontStringToIndexLookup(i, _G["GameTooltipTextLeft" .. i])
+            self:AddFontStringToIndexLookup(i, TLA.GetLeftFontString(tooltip, i))
         end
         return parseUnitTooltipLines(tooltipData.lines)
     end

@@ -6,6 +6,7 @@ Changelog
   * fix: Use secret value guards for tooltip taint protection
   * refactor: Support multi-section changelog entries per version
   * chore: Overhaul addon packaging pipeline
+  * refactor: Unify tooltip text access via TooltipLineAccessor
 
 * **v1.15.13 (2026-02-15):**
 

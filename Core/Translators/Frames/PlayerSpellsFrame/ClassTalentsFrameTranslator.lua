@@ -1,8 +1,6 @@
 --- @class WowUkrainizerInternals
 local ns = select(2, ...);
 
-local _G = _G
-
 local Uft8Upper = ns.StringUtil.Uft8Upper
 local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
 local GetTranslatedSpecialization = ns.DbContext.Player.GetTranslatedSpecialization
@@ -22,12 +20,7 @@ local translator = setmetatable({}, { __index = ns.BaseTranslator })
 local function TranslateTooltips(owner)
     if (GameTooltip:GetOwner() ~= owner) then return end
 
-    for i = 1, GameTooltip:NumLines() do
-        local lineLeft = _G["GameTooltipTextLeft" .. i]
-        if (lineLeft) then
-            UpdateTextWithTranslation(lineLeft, GetTranslatedGlobalString)
-        end
-    end
+    ns.TooltipLineAccessor.TranslateLines(GameTooltip, GetTranslatedGlobalString, nil, nil, false, true)
     GameTooltip:Show()
 end
 

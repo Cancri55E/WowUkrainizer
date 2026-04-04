@@ -1,7 +1,6 @@
 --- @class WowUkrainizerInternals
 local ns = select(2, ...);
 
-local _G = _G
 local NullOrEmpty = ns.StringUtil.NullOrEmpty
 local CreatePatternFromFormatString = ns.StringUtil.CreatePatternFromFormatString
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
@@ -202,11 +201,11 @@ function translator:ParseTooltip(tooltip, tooltipData)
     end
 
     self._postCallLineCount = tonumber(tooltip:NumLines())
-    local tooltipName = tooltip:GetName()
+    local TLA = ns.TooltipLineAccessor
 
     for i = 1, tooltip:NumLines() do
-        self:AddFontStringToIndexLookup(i * 2 - 1, _G[tooltipName .. "TextLeft" .. i])
-        self:AddFontStringToIndexLookup(i * 2, _G[tooltipName .. "TextRight" .. i])
+        self:AddFontStringToIndexLookup(i * 2 - 1, TLA.GetLeftFontString(tooltip, i))
+        self:AddFontStringToIndexLookup(i * 2, TLA.GetRightFontString(tooltip, i))
     end
 
     local tooltipLines = tooltipData.lines
@@ -496,13 +495,15 @@ function translator:IsEnabled()
 end
 
 function translator:Init()
+    local TLA = ns.TooltipLineAccessor
+
     local function translateComparisonLines(tooltip, startLine)
-        local tooltipName = tooltip:GetName()
         for i = startLine, tooltip:NumLines() do
-            local lineLeft = _G[tooltipName .. "TextLeft" .. i]
-            if lineLeft and lineLeft:GetText() then
+            local lineLeft = TLA.GetLeftFontString(tooltip, i)
+            local text = TLA.GetLeftText(tooltip, i)
+            if text then
                 for _, patternInfo in ipairs(compareItemPatterns) do
-                    local matches = { string.match(lineLeft:GetText(), patternInfo.pattern) }
+                    local matches = { string.match(text, patternInfo.pattern) }
                     if #matches > 0 then
                         patternInfo.func(matches, lineLeft)
                         return
@@ -525,9 +526,11 @@ function translator:Init()
         local secondaryTooltip = tooltip.shoppingTooltips[2];
 
         if (primaryTooltip:IsShown() and secondaryTooltip:IsShown()) then
-            UpdateTextWithTranslation(_G[secondaryTooltip:GetName() .. "TextLeft1"], GetTranslatedGlobalString)
+            local secondaryLeftFS = TLA.GetLeftFontString(secondaryTooltip, 1)
+            if secondaryLeftFS then UpdateTextWithTranslation(secondaryLeftFS, GetTranslatedGlobalString) end
         end
-        UpdateTextWithTranslation(_G[primaryTooltip:GetName() .. "TextLeft1"], GetTranslatedGlobalString)
+        local primaryLeftFS = TLA.GetLeftFontString(primaryTooltip, 1)
+        if primaryLeftFS then UpdateTextWithTranslation(primaryLeftFS, GetTranslatedGlobalString) end
 
         local comparisonStartLine = self._postCallLineCount + 2
 

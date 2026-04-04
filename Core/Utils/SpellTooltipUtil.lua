@@ -375,22 +375,25 @@ local function addUntranslatedSpellInfoToCache(spellID, translatedTooltipLines)
 end
 
 function internal:ParseTooltip(translator, tooltip, tooltipData)
-    local linePrefix = "GameTooltip";
-    if (tooltip == _G["ElvUI_SpellBookTooltip"]) then linePrefix = 'ElvUI_SpellBookTooltip' end
+    local TLA = ns.TooltipLineAccessor
 
     local tooltipTexts = {}
     for i = 1, tooltip:NumLines() do
-        local lineLeft = _G[linePrefix .. "TextLeft" .. i]
+        local lineLeft = TLA.GetLeftFontString(tooltip, i)
         if (lineLeft) then
             local lli = #tooltipTexts + 1;
-            tooltipTexts[lli] = lineLeft:GetText() or ''
+            local text, isSecret = TLA.GetLeftText(tooltip, i)
+            if isSecret then return end
+            tooltipTexts[lli] = text or ''
             translator:AddFontStringToIndexLookup(lli, lineLeft)
         end
 
-        local lineRight = _G[linePrefix .. "TextRight" .. i]
+        local lineRight = TLA.GetRightFontString(tooltip, i)
         if (lineRight) then
             local lri = #tooltipTexts + 1;
-            tooltipTexts[lri] = lineRight:GetText() or ''
+            local text, isSecret = TLA.GetRightText(tooltip, i)
+            if isSecret then return end
+            tooltipTexts[lri] = text or ''
             translator:AddFontStringToIndexLookup(lri, lineRight)
         end
     end

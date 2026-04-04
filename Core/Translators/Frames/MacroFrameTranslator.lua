@@ -3,7 +3,6 @@ local ns = select(2, ...);
 
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
-local SetText = ns.FontStringUtil.SetText
 
 local eventHandler = ns.EventHandlerFactory.CreateEventHandler()
 
@@ -35,7 +34,7 @@ function translator:Init()
                 if ( tabFrame:GetFontString():IsTruncated() ) then
                     local currentTooltipOwner = GameTooltip:GetOwner()
                     if (currentTooltipOwner and currentTooltipOwner ~= tabFrame) then return end
-                    SetText(_G["GameTooltipTextLeft1"], GetTranslatedGlobalString(CHARACTER_SPECIFIC_MACROS):format(ns.PlayerInfo.Name))
+                    ns.TooltipLineAccessor.SetLeftText(GameTooltip, 1, GetTranslatedGlobalString(CHARACTER_SPECIFIC_MACROS):format(ns.PlayerInfo.Name))
                     GameTooltip:Show()
                 end
             end)

@@ -82,7 +82,8 @@ local function OnMinimapMouseoverTooltipPostCall(tooltip, tooltipData)
 
     if (tooltipData) then
         if (#tooltipData.lines > 0) then
-            local text = tooltip.TextLeft1:GetText()
+            local TLA = ns.TooltipLineAccessor
+            local text = TLA.GetLeftText(tooltip, 1)
             if (not text) then return end
 
             local hash = ns.StringUtil.GetHash(text)
@@ -156,7 +157,7 @@ local function OnMinimapMouseoverTooltipPostCall(tooltip, tooltipData)
                 end
             end
 
-            _G["GameTooltipTextLeft1"]:SetText(MinimapTooltipCache[hash])
+            TLA.SetLeftText(GameTooltip, 1, MinimapTooltipCache[hash])
             GameTooltip:Show()
         end
     end
@@ -167,31 +168,32 @@ local function OnMinimapUpdate()
 end
 
 local function OnMinimapSetTooltip(pvpType, factionName, worldMap)
+    local TLA = ns.TooltipLineAccessor
     local translatedPvpText = GetTranslatedPvpText(pvpType, factionName)
     local zoneName = GetZoneText();
     local subzoneName = GetSubZoneText();
 
     local i = 1
-    _G["GameTooltipTextLeft" .. i]:SetText(GetTranslatedZoneText(_G["GameTooltipTextLeft" .. i]:GetText()))
+    local text = TLA.GetLeftText(GameTooltip, i)
+    if text then TLA.SetLeftText(GameTooltip, i, GetTranslatedZoneText(text)) end
 
     if (subzoneName ~= zoneName) then
         i = i + 1
-        if (_G["GameTooltipTextLeft" .. i]) then
-            _G["GameTooltipTextLeft" .. i]:SetText(GetTranslatedZoneText(_G["GameTooltipTextLeft" .. i]:GetText()))
-        end
+        text = TLA.GetLeftText(GameTooltip, i)
+        if text then TLA.SetLeftText(GameTooltip, i, GetTranslatedZoneText(text)) end
     end
 
     if (translatedPvpText) then
         i = i + 1
-        if (_G["GameTooltipTextLeft" .. i]) then
-            _G["GameTooltipTextLeft" .. i]:SetText(translatedPvpText)
+        if TLA.GetLeftFontString(GameTooltip, i) then
+            TLA.SetLeftText(GameTooltip, i, translatedPvpText)
         end
     end
 
     if (worldMap) then
         i = i + 1
-        if (_G["GameTooltipTextLeft" .. i]) then
-            _G["GameTooltipTextLeft" .. i]:SetText(MicroButtonTooltipText(GetTranslatedGlobalString(WORLDMAP_BUTTON), "TOGGLEWORLDMAP"))
+        if TLA.GetLeftFontString(GameTooltip, i) then
+            TLA.SetLeftText(GameTooltip, i, MicroButtonTooltipText(GetTranslatedGlobalString(WORLDMAP_BUTTON), "TOGGLEWORLDMAP"))
         end
     end
 end

@@ -1,7 +1,6 @@
 --- @type string, WowUkrainizerInternals
 local _, ns = ...;
 
-local _G = _G
 local spellTooltipUtil = ns.SpellTooltipUtil
 
 local GetTranslatedSpellName = ns.DbContext.Spells.GetTranslatedSpellName
@@ -25,23 +24,13 @@ function translator:IsEnabled()
 end
 
 function translator:Init()
+    local TLA = ns.TooltipLineAccessor
+
     ns.BaseTooltipTranslator.Init(self)
 
     hooksecurefunc(_G["TalentDisplayMixin"], "SetTooltipInternal", function(...)
         if (not self._postCallLineCount) then return end
-        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
-            local lineLeft = _G["GameTooltipTextLeft" .. i]
-            if (lineLeft) then
-                local leftTranslatedTips = GetTranslatedGlobalString(lineLeft:GetText())
-                lineLeft:SetText(leftTranslatedTips)
-            end
-
-            local lineRight = _G["GameTooltipTextRight" .. i]
-            if (lineRight) then
-                local rightTranslatedTips = GetTranslatedGlobalString(lineRight:GetText())
-                lineRight:SetText(rightTranslatedTips)
-            end
-        end
+        TLA.TranslateLines(GameTooltip, GetTranslatedGlobalString, self._postCallLineCount + 1)
         GameTooltip:Show();
     end)
 
@@ -60,16 +49,15 @@ function translator:Init()
 
         if (not self._postCallLineCount) then return end
         for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
-            local lineLeft = _G["GameTooltipTextLeft" .. i]
-            if (lineLeft) then
-                local text = lineLeft:GetText() or ''
+            local text = TLA.GetLeftText(GameTooltip, i)
+            if text then
                 local requiresText, talentName = extractRequirementTalentName(text)
                 if (talentName ~= nil) then
                     local translatedRequiresText = GetTranslatedSpellAttribute(requiresText)
                     translatedRequiresText = translatedRequiresText:format(GetTranslatedSpellName(talentName, false))
-                    lineLeft:SetText(translatedRequiresText)
+                    TLA.SetLeftText(GameTooltip, i, translatedRequiresText)
                 else
-                    lineLeft:SetText(GetTranslatedGlobalString(text))
+                    TLA.SetLeftText(GameTooltip, i, GetTranslatedGlobalString(text))
                 end
             end
         end

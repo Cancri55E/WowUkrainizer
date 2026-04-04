@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="StringExtensions.lua"/>
 	<Script file="FontStringExtensions.lua"/>
+	<Script file="TooltipLineAccessor.lua"/>
 	<Script file="CommonExtensions.lua"/>
 	<Script file="GameApiExtensions.lua"/>
 </Ui>

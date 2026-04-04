@@ -673,7 +673,8 @@ local function OnWorldMapQuestPOIFrameTooltipUpdated(questPOIFrame) -- original 
 
     local translatedTitle, objectives = GetTranslatedTooltip(questPOIFrame, questID, questLogIndex,
         numPOITooltips)
-    _G["GameTooltipTextLeft1"]:SetText(translatedTitle)
+    local TLA = ns.TooltipLineAccessor
+    TLA.SetLeftText(GameTooltip, 1, translatedTitle)
     local objectiveOffset = 1
     local info = C_QuestLog.GetQuestTagInfo(questID);
     if (info and IsQuestDungeonQuest_Internal(info.tagID, info.worldQuestType)) then
@@ -682,12 +683,9 @@ local function OnWorldMapQuestPOIFrameTooltipUpdated(questPOIFrame) -- original 
         -- QuestUtils_AddQuestTypeToTooltip(GameTooltip, questID, NORMAL_FONT_COLOR);
     end
     for i = objectiveOffset + 1, GameTooltip:NumLines() do
-        local lineLeft = _G["GameTooltipTextLeft" .. i]
-        if (lineLeft) then
-            local objective = objectives[i - 1]
-            if (objective) then
-                lineLeft:SetText(objective)
-            end
+        local objective = objectives[i - 1]
+        if (objective) then
+            TLA.SetLeftText(GameTooltip, i, objective)
         end
     end
     GameTooltip:Show()
@@ -697,6 +695,7 @@ local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is
     local questID = button.questID;
     if (not questID) then return end
 
+    local TLA = ns.TooltipLineAccessor
     local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID);
     local translatedTitle = GetTranslatedQuestTitle(questID)
     if (not translatedTitle) then
@@ -704,7 +703,7 @@ local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is
     else
         translatedTitle = NORMAL_FONT_COLOR_CODE .. translatedTitle
     end
-    _G["GameTooltipTextLeft1"]:SetText(translatedTitle)
+    TLA.SetLeftText(GameTooltip, 1, translatedTitle)
     local objectiveOffset = 1
     local info = C_QuestLog.GetQuestTagInfo(questID);
     if (info and IsQuestDungeonQuest_Internal(info.tagID, info.worldQuestType)) then
@@ -730,12 +729,9 @@ local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is
             for i = 1, numItemDropTooltips do
                 local text, _, finished = GetQuestLogItemDrop(i, questLogIndex);
                 if (text and not finished) then
-                    local lineLeft = _G["GameTooltipTextLeft" .. objectiveOffset + i]
-                    if (lineLeft) then
-                        local translatedObjective = GetTranslatedQuestObjective(questID, text)
-                        if (translatedObjective) then
-                            lineLeft:SetText(QUEST_DASH .. translatedObjective)
-                        end
+                    local translatedObjective = GetTranslatedQuestObjective(questID, text)
+                    if (translatedObjective) then
+                        TLA.SetLeftText(GameTooltip, objectiveOffset + i, QUEST_DASH .. translatedObjective)
                     end
                 end
             end
@@ -744,12 +740,9 @@ local function OnWorldMapPinButtonTooltipUpdated(button) -- original function is
             for i = 1, numObjectives do
                 local text, _, finished = GetQuestLogLeaderBoard(i, questLogIndex);
                 if (text and not finished) then
-                    local lineLeft = _G["GameTooltipTextLeft" .. objectiveOffset + i]
-                    if (lineLeft) then
-                        local translatedObjective = GetTranslatedQuestObjective(questID, text)
-                        if (translatedObjective) then
-                            lineLeft:SetText(QUEST_DASH .. translatedObjective)
-                        end
+                    local translatedObjective = GetTranslatedQuestObjective(questID, text)
+                    if (translatedObjective) then
+                        TLA.SetLeftText(GameTooltip, objectiveOffset + i, QUEST_DASH .. translatedObjective)
                     end
                 end
             end
