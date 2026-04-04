@@ -12,33 +12,58 @@ local colors = {
 WowUkrainizerChangelogEntryMixin = {}
 
 function WowUkrainizerChangelogEntryMixin:InitilizeButton(elementData, index)
-    local function SetTextToFit(fontString, text, maxWidth, multiline)
+    local function SetTextToFit(fontString, text, maxWidth)
         fontString:SetHeight(200);
         fontString:SetText(text);
-
         fontString:SetWidth(maxWidth);
-        if not multiline then
-            fontString:SetWidth(fontString:GetStringWidth());
-        end
-
         fontString:SetHeight(fontString:GetStringHeight());
     end
 
+    local versionText = "Версія " .. elementData.version .. " |cff9A97B9(" .. elementData.date .. ")|r"
     if (elementData.title ~= nil) then
-        self.Title:SetText("Версія " .. elementData.version .. " - " .. elementData.title)
-    else
-        self.Title:SetText("Версія " .. elementData.version)
+        versionText = versionText .. " - " .. elementData.title
     end
-    self.Date:SetText(elementData.date)
-    self.CheckMark:SetVertexColor(unpack(colors[elementData.color]));
-    self.TypeBackground:SetColorTexture(unpack(colors[elementData.color]));
-    self.Type:SetText(elementData.type)
-    self.Author:SetText("Автор: " .. elementData.author)
+    self.Title:SetText(versionText)
+    self.CheckMark:SetVertexColor(unpack(colors[elementData.sections[1].color]));
 
-    SetTextToFit(self.Text, elementData.description, self:GetParent():GetWidth() - 32, true)
+    local contentWidth = self:GetParent():GetWidth() - 32
+    local previousAnchor = self.Title
+    local sectionsHeight = 0
 
+    for i, section in ipairs(elementData.sections) do
+        local typeText = self:CreateFontString(nil, "OVERLAY", "ChangelogEntryButton_TypeTextFont")
+        local sectionTopOffset = (i == 1) and -18 or -24
+        typeText:SetPoint("TOPLEFT", previousAnchor, "BOTTOMLEFT", 4, sectionTopOffset)
+        typeText:SetText(section.type)
+
+        local typeBg = self:CreateTexture(nil, "BACKGROUND")
+        typeBg:SetColorTexture(unpack(colors[section.color]))
+        typeBg:SetPoint("TOPLEFT", typeText, "TOPLEFT", -6, 6)
+        typeBg:SetPoint("BOTTOMRIGHT", typeText, "BOTTOMRIGHT", 6, -6)
+
+        local typeLine = self:CreateTexture(nil, "BACKGROUND")
+        typeLine:SetHeight(2)
+        typeLine:SetColorTexture(unpack(colors[section.color]))
+        typeLine:SetPoint("LEFT", typeBg, "BOTTOMRIGHT", 0, 1)
+        typeLine:SetPoint("RIGHT", self, "RIGHT", -16, 0)
+
+        local authorText = self:CreateFontString(nil, "OVERLAY", "ChangelogEntryButton_SecondaryBoldTextFont")
+        authorText:SetPoint("TOPLEFT", typeText, "TOPRIGHT", 10, 0)
+        authorText:SetText("Автор: " .. section.author)
+
+        local descText = self:CreateFontString(nil, "OVERLAY", "ChangelogEntryButton_TextFont")
+        descText:SetJustifyH("LEFT")
+        descText:SetWordWrap(true)
+        descText:SetPoint("TOPLEFT", typeText, "BOTTOMLEFT", -4, -12)
+        SetTextToFit(descText, section.description, contentWidth)
+
+        sectionsHeight = sectionsHeight + math.abs(sectionTopOffset) + typeText:GetHeight() + 12 + descText:GetHeight()
+        previousAnchor = descText
+    end
+
+    local headerHeight = 6 + self.Title:GetHeight()
     self:SetWidth(self:GetParent():GetWidth());
-    self:SetHeight(math.floor(self.Text:GetHeight() + 80));
+    self:SetHeight(math.floor(headerHeight + sectionsHeight + 10));
     self:Show();
 end
 

@@ -4,6 +4,8 @@ Changelog
 * **[Next]:**
 
   * fix: Use secret value guards for tooltip taint protection
+  * refactor: Support multi-section changelog entries per version
+  * chore: Overhaul addon packaging pipeline
 
 * **v1.15.13 (2026-02-15):**
 
