@@ -9,7 +9,7 @@ local translator = setmetatable({
 }, { __index = ns.BaseTooltipTranslator })
 
 function translator:ParseTooltip(tooltip, tooltipData)
-    return spellTooltipUtil:ParseTooltip(self, tooltip, tooltipData)
+    return spellTooltipUtil:ParseTooltip(tooltip, tooltipData)
 end
 
 function translator:TranslateTooltipInfo(tooltipInfo)

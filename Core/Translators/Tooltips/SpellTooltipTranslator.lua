@@ -12,7 +12,7 @@ local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Spell }
 
 function translator:ParseTooltip(tooltip, tooltipData)
     self._postCallLineCount = tonumber(tooltip:NumLines())
-    return spellTooltipUtil:ParseTooltip(self, tooltip, tooltipData)
+    return spellTooltipUtil:ParseTooltip(tooltip, tooltipData)
 end
 
 function translator:TranslateTooltipInfo(tooltipInfo)

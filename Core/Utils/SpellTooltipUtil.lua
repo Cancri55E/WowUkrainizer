@@ -374,10 +374,11 @@ local function addUntranslatedSpellInfoToCache(spellID, translatedTooltipLines)
     end
 end
 
-function internal:ParseTooltip(translator, tooltip, tooltipData)
+function internal:ParseTooltip(tooltip, tooltipData)
     local TLA = ns.TooltipLineAccessor
 
     local tooltipTexts = {}
+    local indexToLine = {}
     for i = 1, tooltip:NumLines() do
         local lineLeft = TLA.GetLeftFontString(tooltip, i)
         if (lineLeft) then
@@ -385,7 +386,7 @@ function internal:ParseTooltip(translator, tooltip, tooltipData)
             local text, isSecret = TLA.GetLeftText(tooltip, i)
             if isSecret then return end
             tooltipTexts[lli] = text or ''
-            translator:AddFontStringToIndexLookup(lli, lineLeft)
+            indexToLine[lli] = { line = i }
         end
 
         local lineRight = TLA.GetRightFontString(tooltip, i)
@@ -394,7 +395,7 @@ function internal:ParseTooltip(translator, tooltip, tooltipData)
             local text, isSecret = TLA.GetRightText(tooltip, i)
             if isSecret then return end
             tooltipTexts[lri] = text or ''
-            translator:AddFontStringToIndexLookup(lri, lineRight)
+            indexToLine[lri] = { line = i, right = true }
         end
     end
 
@@ -417,6 +418,7 @@ function internal:ParseTooltip(translator, tooltip, tooltipData)
     if (not tooltipInfo) then return end
 
     tooltipInfo.SpellId = tonumber(tooltipData.id)
+    tooltipInfo._indexToLine = indexToLine
 
     return tooltipInfo
 end
@@ -479,6 +481,18 @@ function internal:TranslateTooltipInfo(tooltipInfo)
     end
 
     addUntranslatedSpellInfoToCache(tooltipInfo.SpellId, translatedTooltipLines)
+
+    local indexToLine = tooltipInfo._indexToLine
+    if indexToLine then
+        for _, entry in ipairs(translatedTooltipLines) do
+            local mapping = indexToLine[entry.index]
+            if mapping then
+                entry.line = mapping.line
+                entry.right = mapping.right or nil
+                entry.index = nil
+            end
+        end
+    end
 
     return translatedTooltipLines
 end

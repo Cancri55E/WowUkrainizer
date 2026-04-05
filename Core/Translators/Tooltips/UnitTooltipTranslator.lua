@@ -122,10 +122,6 @@ function translator:ParseTooltip(tooltip, tooltipData)
 
     local unitKind = strsplit("-", tooltipData.guid)
     if (unitKind == "Creature" or unitKind == "Vehicle") then
-        local TLA = ns.TooltipLineAccessor
-        for i = 1, tooltip:NumLines() do
-            self:AddFontStringToIndexLookup(i, TLA.GetLeftFontString(tooltip, i))
-        end
         return parseUnitTooltipLines(tooltipData.lines)
     end
 end
@@ -150,20 +146,20 @@ function translator:TranslateTooltipInfo(tooltipInfo)
     local translatedTooltipLines = {}
 
     table.insert(translatedTooltipLines, {
-        index = 1,
+        line = 1,
         value = GetTranslatedUnitName(tooltipInfo.name, UnitSex("mouseover"))
     })
 
     if (tooltipInfo.levelInfo) then
         table.insert(translatedTooltipLines, {
-            index = tooltipInfo.levelInfo.index,
+            line = tooltipInfo.levelInfo.index,
             value = getLevelInfoString(tooltipInfo.levelInfo)
         })
     end
 
     if (tooltipInfo.subnameInfo) then
         table.insert(translatedTooltipLines, {
-            index = tooltipInfo.subnameInfo.index,
+            line = tooltipInfo.subnameInfo.index,
             value = GetTranslatedUnitSubname(tooltipInfo.subnameInfo.value, UnitSex("mouseover"))
         })
     end
@@ -175,14 +171,14 @@ function translator:TranslateTooltipInfo(tooltipInfo)
             translatedValue = GetTranslatedUnitFraction(value)
         end
         table.insert(translatedTooltipLines, {
-            index = tooltipInfo.unitTypeOrFactionInfo.index,
+            line = tooltipInfo.unitTypeOrFactionInfo.index,
             value = translatedValue
         })
     end
 
     if (tooltipInfo.capturableLineIndex) then
         table.insert(translatedTooltipLines, {
-            index = tooltipInfo.capturableLineIndex,
+            line = tooltipInfo.capturableLineIndex,
             value = PET_CAPTURABLE_TRANSLATION
         })
     end
@@ -190,14 +186,14 @@ function translator:TranslateTooltipInfo(tooltipInfo)
     if (tooltipInfo.collectedInfo) then
         local _, numValues = ExtractNumericValues(tooltipInfo.collectedInfo.value)
         table.insert(translatedTooltipLines, {
-            index = tooltipInfo.collectedInfo.index,
+            line = tooltipInfo.collectedInfo.index,
             value = InsertNumericValues(PET_COLLECTED_TRANSLATION, numValues)
         })
     end
 
     if (tooltipInfo.leaderLineIndex) then
         table.insert(translatedTooltipLines, {
-            index = tooltipInfo.leaderLineIndex,
+            line = tooltipInfo.leaderLineIndex,
             value = LEADER_TRANSLATION
         })
     end
@@ -207,15 +203,15 @@ function translator:TranslateTooltipInfo(tooltipInfo)
             local translatedTitle = GetTranslatedQuestTitle(questID)
             if (translatedTitle) then
                 table.insert(translatedTooltipLines, {
-                    index = questInfo.index,
+                    line = questInfo.index,
                     value = translatedTitle
                 })
             end
-            for index, objective in pairs(questInfo.objectives) do
+            for lineIndex, objective in pairs(questInfo.objectives) do
                 local translatedObjective = GetTranslatedQuestObjective(questID, objective)
                 if (translatedObjective) then
                     table.insert(translatedTooltipLines, {
-                        index = index,
+                        line = lineIndex,
                         value = translatedObjective
                     })
                 end
