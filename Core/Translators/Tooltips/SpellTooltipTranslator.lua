@@ -10,8 +10,19 @@ local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobal
 ---@class SpellTooltipTranslator : BaseTooltipTranslator
 local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Spell }, { __index = ns.BaseTooltipTranslator })
 
+local function extractRequirementTalentName(str)
+    local prefix = "Requires "
+    local suffix = " talent"
+    local start = str:find("^" .. prefix)
+    local _end = str:find(suffix .. "$")
+    if start and _end then
+        local extracted = str:sub(#prefix + 1, _end - 1)
+        return prefix .. "%s" .. suffix, extracted
+    end
+    return str
+end
+
 function translator:ParseTooltip(tooltip, tooltipData)
-    self._postCallLineCount = tonumber(tooltip:NumLines())
     return spellTooltipUtil:ParseTooltip(tooltip, tooltipData)
 end
 
@@ -35,33 +46,16 @@ function translator:Init()
     end)
 
     EventRegistry:RegisterCallback("PvPTalentButton.TooltipHook", function(...)
-        local function extractRequirementTalentName(str)
-            local prefix = "Requires "
-            local suffix = " talent"
-            local start = str:find("^" .. prefix)
-            local _end = str:find(suffix .. "$")
-            if start and _end then
-                local extracted = str:sub(#prefix + 1, _end - 1)
-                return prefix .. "%s" .. suffix, extracted
-            end
-            return str
-        end
-
         if (not self._postCallLineCount) then return end
-        for i = self._postCallLineCount + 1, GameTooltip:NumLines() do
-            local text = TLA.GetLeftText(GameTooltip, i)
-            if text then
-                local requiresText, talentName = extractRequirementTalentName(text)
-                if (talentName ~= nil) then
-                    local translatedRequiresText = GetTranslatedSpellAttribute(requiresText)
-                    translatedRequiresText = translatedRequiresText:format(GetTranslatedSpellName(talentName, false))
-                    TLA.SetLeftText(GameTooltip, i, translatedRequiresText)
-                else
-                    TLA.SetLeftText(GameTooltip, i, GetTranslatedGlobalString(text))
-                end
+        TLA.TranslateLines(GameTooltip, function(text)
+            local requiresText, talentName = extractRequirementTalentName(text)
+            if talentName then
+                local translated = GetTranslatedSpellAttribute(requiresText)
+                return translated:format(GetTranslatedSpellName(talentName, false))
             end
-        end
-        GameTooltip:Show();
+            return GetTranslatedGlobalString(text)
+        end, self._postCallLineCount + 1)
+        GameTooltip:Show()
     end, translator)
 end
 

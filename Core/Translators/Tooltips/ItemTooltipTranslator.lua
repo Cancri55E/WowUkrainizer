@@ -3,7 +3,6 @@ local ns = select(2, ...);
 
 local NullOrEmpty = ns.StringUtil.NullOrEmpty
 local CreatePatternFromFormatString = ns.StringUtil.CreatePatternFromFormatString
-local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
 local GetItemTranslation = ns.DbContext.Items.GetItemTranslation
 local GetTranslatedItemAttribute = ns.DbContext.Items.GetTranslatedItemAttribute
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
@@ -127,11 +126,11 @@ local patterns = {
 local compareItemPatterns = {
     {
         pattern = "^|c(%%x%%x%%x%%x%%x%%x%%x%%x)([-+][%d,.]*)%s*|r%s*(.*)$",
-        func = function(data, tooltipLine)
+        func = function(data)
             if (data[3] == STAT_STURDINESS) then
-                tooltipLine:SetText("|c" .. data[1] .. data[2] .. "|r " .. GetTranslatedGlobalString(STAT_STURDINESS))
+                return "|c" .. data[1] .. data[2] .. "|r " .. GetTranslatedGlobalString(STAT_STURDINESS)
             else
-                tooltipLine:SetText("|c" .. data[1] .. data[2] .. "|r " .. GetTranslatedItemAttribute(data[3]))
+                return "|c" .. data[1] .. data[2] .. "|r " .. GetTranslatedItemAttribute(data[3])
             end
         end
     },
@@ -139,32 +138,32 @@ local compareItemPatterns = {
         pattern = "^" .. CreatePatternFromFormatString(ITEM_DELTA_DUAL_WIELD_COMPARISON_MAINHAND_DESCRIPTION, {
             ["|c%%s%%s|r"] = "|c(%%x%%x%%x%%x%%x%%x%%x%%x)(.*)|r"
         }) .. "$",
-        func = function(data, tooltipLine)
-            tooltipLine:SetText(GetTranslatedGlobalString(ITEM_DELTA_DUAL_WIELD_COMPARISON_MAINHAND_DESCRIPTION):format(data[1], data[2]))
+        func = function(data)
+            return GetTranslatedGlobalString(ITEM_DELTA_DUAL_WIELD_COMPARISON_MAINHAND_DESCRIPTION):format(data[1], data[2])
         end
     },
     {
         pattern = "^" .. CreatePatternFromFormatString(ITEM_DELTA_DUAL_WIELD_COMPARISON_OFFHAND_DESCRIPTION, {
             ["|c%%s%%s|r"] = "|c(%%x%%x%%x%%x%%x%%x%%x%%x)(.*)|r"
         }) .. "$",
-        func = function(data, tooltipLine)
-            tooltipLine:SetText(GetTranslatedGlobalString(ITEM_DELTA_DUAL_WIELD_COMPARISON_OFFHAND_DESCRIPTION):format(data[1], data[2]))
+        func = function(data)
+            return GetTranslatedGlobalString(ITEM_DELTA_DUAL_WIELD_COMPARISON_OFFHAND_DESCRIPTION):format(data[1], data[2])
         end
     },
     {
         pattern = "^" .. CreatePatternFromFormatString(ITEM_COMPARISON_SWAP_ITEM_MAINHAND_DESCRIPTION, {
             ["%%s"] = "(.*)"
         }) .. "$",
-        func = function(data, tooltipLine)
-            tooltipLine:SetText(GetTranslatedGlobalString(ITEM_COMPARISON_SWAP_ITEM_MAINHAND_DESCRIPTION):format(data[1]))
+        func = function(data)
+            return GetTranslatedGlobalString(ITEM_COMPARISON_SWAP_ITEM_MAINHAND_DESCRIPTION):format(data[1])
         end
     },
     {
         pattern = "^" .. CreatePatternFromFormatString(ITEM_COMPARISON_SWAP_ITEM_OFFHAND_DESCRIPTION, {
             ["%%s"] = "(.*)"
         }) .. "$",
-        func = function(data, tooltipLine)
-            tooltipLine:SetText(GetTranslatedGlobalString(ITEM_COMPARISON_SWAP_ITEM_OFFHAND_DESCRIPTION):format(data[1]))
+        func = function(data)
+            return GetTranslatedGlobalString(ITEM_COMPARISON_SWAP_ITEM_OFFHAND_DESCRIPTION):format(data[1])
         end
     },
 }
@@ -199,8 +198,6 @@ function translator:ParseTooltip(tooltip, tooltipData)
             table.insert(result[CATEGORY.UNCLASSIFIED], { value = text, index = index, right = isRightText })
         end
     end
-
-    self._postCallLineCount = tonumber(tooltip:NumLines())
 
     local tooltipLines = tooltipData.lines
 
@@ -488,17 +485,16 @@ function translator:Init()
 
     local function translateComparisonLines(tooltip, startLine)
         for i = startLine, tooltip:NumLines() do
-            local lineLeft = TLA.GetLeftFontString(tooltip, i)
             local text = TLA.GetLeftText(tooltip, i)
             if text then
                 for _, patternInfo in ipairs(compareItemPatterns) do
                     local matches = { string.match(text, patternInfo.pattern) }
                     if #matches > 0 then
-                        patternInfo.func(matches, lineLeft)
+                        TLA.SetLeftText(tooltip, i, patternInfo.func(matches))
                         return
                     end
                 end
-                UpdateTextWithTranslation(lineLeft, GetTranslatedGlobalString)
+                TLA.SetLeftText(tooltip, i, GetTranslatedGlobalString(text))
             end
         end
     end
@@ -515,11 +511,11 @@ function translator:Init()
         local secondaryTooltip = tooltip.shoppingTooltips[2];
 
         if (primaryTooltip:IsShown() and secondaryTooltip:IsShown()) then
-            local secondaryLeftFS = TLA.GetLeftFontString(secondaryTooltip, 1)
-            if secondaryLeftFS then UpdateTextWithTranslation(secondaryLeftFS, GetTranslatedGlobalString) end
+            local text = TLA.GetLeftText(secondaryTooltip, 1)
+            if text then TLA.SetLeftText(secondaryTooltip, 1, GetTranslatedGlobalString(text)) end
         end
-        local primaryLeftFS = TLA.GetLeftFontString(primaryTooltip, 1)
-        if primaryLeftFS then UpdateTextWithTranslation(primaryLeftFS, GetTranslatedGlobalString) end
+        local text = TLA.GetLeftText(primaryTooltip, 1)
+        if text then TLA.SetLeftText(primaryTooltip, 1, GetTranslatedGlobalString(text)) end
 
         local comparisonStartLine = self._postCallLineCount + 2
 

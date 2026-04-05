@@ -28,6 +28,8 @@ end
 function translator:TooltipCallback(tooltip, tooltipData)
     if issecrettable(tooltipData) then return end
 
+    self._postCallLineCount = tooltip:NumLines()
+
     local tooltipInfo = self:ParseTooltip(tooltip, tooltipData)
     if (not tooltipInfo) then return end
 

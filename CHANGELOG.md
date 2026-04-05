@@ -8,6 +8,7 @@ Changelog
   * chore: Overhaul addon packaging pipeline
   * refactor: Unify tooltip text access via TooltipLineAccessor
   * refactor: Standardize FontString index scheme across tooltip translators
+  * refactor: Centralize post-call line count and eliminate hook duplication
 
 * **v1.15.13 (2026-02-15):**
 
