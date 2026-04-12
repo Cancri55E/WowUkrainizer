@@ -53,12 +53,18 @@ local function buildSpellLikeInput(tooltipData)
     local indexToLine = {}
 
     for i, line in ipairs(tooltipData.lines) do
+        local leftText = line.leftText
+        local rightText = line.rightText
+
+        if leftText ~= nil and issecretvalue(leftText) then return nil, nil end
+        if rightText ~= nil and issecretvalue(rightText) then return nil, nil end
+
         local lli = #tooltipTexts + 1
-        tooltipTexts[lli] = line.leftText or ""
+        tooltipTexts[lli] = leftText or ""
         indexToLine[lli] = { line = i }
 
         local lri = #tooltipTexts + 1
-        tooltipTexts[lri] = line.rightText or ""
+        tooltipTexts[lri] = rightText or ""
         indexToLine[lri] = { line = i, right = true }
     end
 
