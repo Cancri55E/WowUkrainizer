@@ -25,6 +25,107 @@ local maxChargesPattern = "Max %d+ Charges"
 local nextRankText = "Next Rank:"
 local ptrHelpText = "|c0042b1fePress F6 to submit an issue for this Spell"
 
+--- Detect the tooltip family based on the tooltip owner.
+--- TalentFrame tooltips are identified by definitionID. All other spell-like
+--- tooltips (regular spells, macros, PvP talents) fall into the spell-like family.
+---@param tooltipOwner table|nil
+---@return "talent"|"spell-like"
+local function detectTooltipFamily(tooltipOwner)
+    if tooltipOwner and tooltipOwner.definitionID then
+        return "talent"
+    end
+    return "spell-like"
+end
+
+--- Build the flat text array and index-to-line map for a spell-like tooltip.
+--- Reads from tooltipData.lines (API data). Always emits one left and one right
+--- entry per line to preserve the positional structure that parseSpellTooltip
+--- expects (Name at index 1, Form at index 2).
+---@param tooltipData table
+---@return table|nil tooltipTexts
+---@return table|nil indexToLine
+local function buildSpellLikeInput(tooltipData)
+    if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
+        return nil, nil
+    end
+
+    local tooltipTexts = {}
+    local indexToLine = {}
+
+    for i, line in ipairs(tooltipData.lines) do
+        local lli = #tooltipTexts + 1
+        tooltipTexts[lli] = line.leftText or ""
+        indexToLine[lli] = { line = i }
+
+        local lri = #tooltipTexts + 1
+        tooltipTexts[lri] = line.rightText or ""
+        indexToLine[lri] = { line = i, right = true }
+    end
+
+    return tooltipTexts, indexToLine
+end
+
+--- Build the flat text array and index-to-line map for a talent tooltip.
+--- Reads from visible FontStrings (layout source). At PostCall time this
+--- contains the same API-provided lines as tooltipData.lines; wrapper lines
+--- added by TalentDisplayMixin:SetTooltipInternal are not present yet.
+---@param tooltip GameTooltip
+---@param TLA TooltipLineAccessor
+---@return table|nil tooltipTexts
+---@return table|nil indexToLine
+local function buildTalentInput(tooltip, TLA)
+    if tooltip:NumLines() == 0 then return nil, nil end
+
+    local tooltipTexts = {}
+    local indexToLine = {}
+
+    for i = 1, tooltip:NumLines() do
+        local lineLeft = TLA.GetLeftFontString(tooltip, i)
+        if lineLeft then
+            local lli = #tooltipTexts + 1
+            local text, isSecret = TLA.GetLeftText(tooltip, i)
+            if isSecret then return nil, nil end
+            tooltipTexts[lli] = text or ""
+            indexToLine[lli] = { line = i }
+        end
+
+        local lineRight = TLA.GetRightFontString(tooltip, i)
+        if lineRight then
+            local lri = #tooltipTexts + 1
+            local text, isSecret = TLA.GetRightText(tooltip, i)
+            if isSecret then return nil, nil end
+            tooltipTexts[lri] = text or ""
+            indexToLine[lri] = { line = i, right = true }
+        end
+    end
+
+    if #tooltipTexts == 0 then return nil, nil end
+    return tooltipTexts, indexToLine
+end
+
+--- Validate that a talent tooltip layout is complete enough to translate.
+--- Uses nodeInfo rank state and visible layout to detect incomplete first
+--- callbacks where the full rank content has not yet arrived.
+---@param tooltipOwner table|nil
+---@param tooltipTexts table
+---@return boolean complete True if the layout is ready for translation
+local function isTalentLayoutComplete(tooltipOwner, tooltipTexts)
+    if not tooltipOwner or not tooltipOwner.nodeInfo then return true end
+
+    local currentRank = tooltipOwner.nodeInfo.currentRank
+    local maxRanks = tooltipOwner.nodeInfo.maxRanks
+
+    if currentRank == 0 then return true end
+
+    local containsNextRank = ns.CommonUtil.FindKeyByValue(tooltipTexts, nextRankText)
+    if containsNextRank then return true end
+
+    if currentRank < maxRanks then return false end
+    if currentRank == maxRanks and tooltipOwner:IsRefundInvalid() then return false end
+
+    return true
+end
+
 ---@class SpellTooltipTranslator : BaseTooltipTranslator
 local translator = setmetatable({
     tooltipDataTypes = { Enum.TooltipDataType.Spell, Enum.TooltipDataType.Macro }
@@ -151,7 +252,7 @@ local function parseSpellTooltip(tooltipTexts)
     if (spellContainer) then
         for i = contentIndex, #tooltipTexts do
             local text = tooltipTexts[i]
-            if (text ~= nil or text ~= "") then
+            if (text ~= nil and text ~= "") then
                 local resourceTypes = processResourceStrings(text)
                 if (resourceTypes) then
                     spellContainer.ResourceType = { i }
@@ -388,46 +489,22 @@ end
 
 function translator:ParseTooltip(tooltip, tooltipData)
     local TLA = ns.TooltipLineAccessor
-
-    local tooltipTexts = {}
-    local indexToLine = {}
-    for i = 1, tooltip:NumLines() do
-        local lineLeft = TLA.GetLeftFontString(tooltip, i)
-        if (lineLeft) then
-            local lli = #tooltipTexts + 1;
-            local text, isSecret = TLA.GetLeftText(tooltip, i)
-            if isSecret then return end
-            tooltipTexts[lli] = text or ''
-            indexToLine[lli] = { line = i }
-        end
-
-        local lineRight = TLA.GetRightFontString(tooltip, i)
-        if (lineRight) then
-            local lri = #tooltipTexts + 1;
-            local text, isSecret = TLA.GetRightText(tooltip, i)
-            if isSecret then return end
-            tooltipTexts[lri] = text or ''
-            indexToLine[lri] = { line = i, right = true }
-        end
-    end
-
     local tooltipOwner = tooltip:GetOwner()
+    local family = detectTooltipFamily(tooltipOwner)
 
-    -- HOOK: No Rank 1/2+ info in multirang talent tooltip. In this case client send another callback.
-    if (tooltipOwner and tooltipOwner.nodeInfo) then
-        local currentRank = tooltipOwner.nodeInfo.currentRank
-        local maxRanks = tooltipOwner.nodeInfo.maxRanks
+    local tooltipTexts, indexToLine
 
-        local containsNextRank = ns.CommonUtil.FindKeyByValue(tooltipTexts, nextRankText)
-        if (currentRank ~= 0 and not containsNextRank) then
-            if ((currentRank < maxRanks) or (currentRank == maxRanks and tooltipOwner:IsRefundInvalid())) then
-                return
-            end
-        end
+    if family == "talent" then
+        tooltipTexts, indexToLine = buildTalentInput(tooltip, TLA)
+        if not tooltipTexts then return end
+        if not isTalentLayoutComplete(tooltipOwner, tooltipTexts) then return end
+    else
+        tooltipTexts, indexToLine = buildSpellLikeInput(tooltipData)
+        if not tooltipTexts then return end
     end
 
     local tooltipInfo = parseSpellTooltip(tooltipTexts)
-    if (not tooltipInfo) then return end
+    if not tooltipInfo then return end
 
     tooltipInfo.SpellId = tonumber(tooltipData.id)
     tooltipInfo._indexToLine = indexToLine
