@@ -51,39 +51,45 @@ local function buildSpellLikeInput(tooltipData)
 
     local tooltipTexts = {}
     local indexToLine = {}
-    local visibleLine = 0
+    local tooltipLineNum = 0
 
     for _, line in ipairs(tooltipData.lines) do
         local leftText = line.leftText
         local rightText = line.rightText
 
-        if leftText ~= nil and issecretvalue(leftText) then return nil, nil end
-        if rightText ~= nil and issecretvalue(rightText) then return nil, nil end
+        -- Check each side for secret values independently. A secret side is treated
+        -- as absent: an empty placeholder is emitted to preserve the flat-array
+        -- positional structure, but no indexToLine entry is created so no translation
+        -- is produced for that slot. Processing continues for the other side.
+        local leftIsSecret  = leftText  ~= nil and issecretvalue(leftText)
+        local rightIsSecret = rightText ~= nil and issecretvalue(rightText)
 
-        local leftVal = leftText or ""
-        local rightVal = rightText or ""
+        local leftVal  = leftIsSecret  and "" or (leftText  or "")
+        local rightVal = rightIsSecret and "" or (rightText or "")
 
-        -- Empty spacer rows (both sides empty or nil) exist in tooltipData.lines
-        -- but are never rendered as visible tooltip lines. Only lines with at least
-        -- one non-empty side advance the visible line counter.
-        local hasContent = leftVal ~= "" or rightVal ~= ""
-        if hasContent then
-            visibleLine = visibleLine + 1
+        -- API data may contain empty spacer rows that GameTooltip does not
+        -- render. These do not correspond to a visible tooltip line, so they
+        -- must not advance the line counter (which must stay in sync with
+        -- the 1-based line indices that GameTooltip:NumLines() would report).
+        local isRendered = leftVal ~= "" or rightVal ~= "" or leftIsSecret or rightIsSecret
+        if isRendered then
+            tooltipLineNum = tooltipLineNum + 1
         end
 
         local lli = #tooltipTexts + 1
         tooltipTexts[lli] = leftVal
-        if hasContent then
-            indexToLine[lli] = { line = visibleLine }
+        if isRendered and not leftIsSecret then
+            indexToLine[lli] = { line = tooltipLineNum }
         end
 
         local lri = #tooltipTexts + 1
         tooltipTexts[lri] = rightVal
-        if hasContent then
-            indexToLine[lri] = { line = visibleLine, right = true }
+        if isRendered and not rightIsSecret then
+            indexToLine[lri] = { line = tooltipLineNum, right = true }
         end
     end
-
+    
+    if #tooltipTexts == 0 then return nil, nil end
     return tooltipTexts, indexToLine
 end
 
@@ -106,18 +112,20 @@ local function buildTalentInput(tooltip, TLA)
         if lineLeft then
             local lli = #tooltipTexts + 1
             local text, isSecret = TLA.GetLeftText(tooltip, i)
-            if isSecret then return nil, nil end
             tooltipTexts[lli] = text or ""
-            indexToLine[lli] = { line = i }
+            if not isSecret then
+                indexToLine[lli] = { line = i }
+            end
         end
 
         local lineRight = TLA.GetRightFontString(tooltip, i)
         if lineRight then
             local lri = #tooltipTexts + 1
             local text, isSecret = TLA.GetRightText(tooltip, i)
-            if isSecret then return nil, nil end
             tooltipTexts[lri] = text or ""
-            indexToLine[lri] = { line = i, right = true }
+            if not isSecret then
+                indexToLine[lri] = { line = i, right = true }
+            end
         end
     end
 
