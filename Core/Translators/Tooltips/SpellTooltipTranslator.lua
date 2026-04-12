@@ -37,109 +37,80 @@ local function detectTooltipFamily(tooltipOwner)
     return "spell-like"
 end
 
---- Build the flat text array and index-to-line map for a spell-like tooltip.
---- Reads from tooltipData.lines (API data). Always emits one left and one right
---- entry per line to preserve the positional structure that parseSpellTooltip
---- expects (Name at index 1, Form at index 2).
+--- Build an ordered fragment array for a spell-like tooltip from tooltipData.lines.
+--- Each fragment carries the display line number and side. Secret values and empty
+--- lines are dropped — no placeholder fragments are emitted.
 ---@param tooltipData table
----@return table|nil tooltipTexts
----@return table|nil indexToLine
+---@return table|nil fragments Array of { value, line, right } entries
 local function buildSpellLikeInput(tooltipData)
     if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
-        return nil, nil
+        return nil
     end
 
-    local tooltipTexts = {}
-    local indexToLine = {}
+    local fragments = {}
     local tooltipLineNum = 0
 
     for _, line in ipairs(tooltipData.lines) do
         local leftText = line.leftText
         local rightText = line.rightText
 
-        -- Check each side for secret values independently. A secret side is treated
-        -- as absent: an empty placeholder is emitted to preserve the flat-array
-        -- positional structure, but no indexToLine entry is created so no translation
-        -- is produced for that slot. Processing continues for the other side.
         local leftIsSecret  = leftText  ~= nil and issecretvalue(leftText)
         local rightIsSecret = rightText ~= nil and issecretvalue(rightText)
 
         local leftVal  = leftIsSecret  and "" or (leftText  or "")
         local rightVal = rightIsSecret and "" or (rightText or "")
 
-        -- API data may contain empty spacer rows that GameTooltip does not
-        -- render. These do not correspond to a visible tooltip line, so they
-        -- must not advance the line counter (which must stay in sync with
-        -- the 1-based line indices that GameTooltip:NumLines() would report).
+        -- Only advance the line counter for lines that GameTooltip renders.
+        -- Empty spacer rows in tooltipData.lines do not produce a visible line.
         local isRendered = leftVal ~= "" or rightVal ~= "" or leftIsSecret or rightIsSecret
         if isRendered then
             tooltipLineNum = tooltipLineNum + 1
         end
 
-        local lli = #tooltipTexts + 1
-        tooltipTexts[lli] = leftVal
-        if isRendered and not leftIsSecret then
-            indexToLine[lli] = { line = tooltipLineNum }
+        if not leftIsSecret and leftVal ~= "" then
+            table.insert(fragments, { value = leftVal, line = tooltipLineNum, right = false })
         end
 
-        local lri = #tooltipTexts + 1
-        tooltipTexts[lri] = rightVal
-        if isRendered and not rightIsSecret then
-            indexToLine[lri] = { line = tooltipLineNum, right = true }
+        if not rightIsSecret and rightVal ~= "" then
+            table.insert(fragments, { value = rightVal, line = tooltipLineNum, right = true })
         end
     end
-    
-    if #tooltipTexts == 0 then return nil, nil end
-    return tooltipTexts, indexToLine
+
+    return #fragments > 0 and fragments or nil
 end
 
---- Build the flat text array and index-to-line map for a talent tooltip.
---- Reads from visible FontStrings (layout source). At PostCall time this
---- contains the same API-provided lines as tooltipData.lines; wrapper lines
---- added by TalentDisplayMixin:SetTooltipInternal are not present yet.
+--- Build an ordered fragment array for a talent tooltip from visible FontStrings.
+--- Secret values and empty FontStrings are dropped.
 ---@param tooltip GameTooltip
 ---@param TLA TooltipLineAccessor
----@return table|nil tooltipTexts
----@return table|nil indexToLine
+---@return table|nil fragments Array of { value, line, right } entries
 local function buildTalentInput(tooltip, TLA)
-    if tooltip:NumLines() == 0 then return nil, nil end
+    if tooltip:NumLines() == 0 then return nil end
 
-    local tooltipTexts = {}
-    local indexToLine = {}
+    local fragments = {}
 
     for i = 1, tooltip:NumLines() do
-        local lineLeft = TLA.GetLeftFontString(tooltip, i)
-        if lineLeft then
-            local lli = #tooltipTexts + 1
-            local text, isSecret = TLA.GetLeftText(tooltip, i)
-            tooltipTexts[lli] = text or ""
-            if not isSecret then
-                indexToLine[lli] = { line = i }
-            end
+        local leftText, leftIsSecret = TLA.GetLeftText(tooltip, i)
+        if leftText and leftText ~= "" and not leftIsSecret then
+            table.insert(fragments, { value = leftText, line = i, right = false })
         end
 
-        local lineRight = TLA.GetRightFontString(tooltip, i)
-        if lineRight then
-            local lri = #tooltipTexts + 1
-            local text, isSecret = TLA.GetRightText(tooltip, i)
-            tooltipTexts[lri] = text or ""
-            if not isSecret then
-                indexToLine[lri] = { line = i, right = true }
-            end
+        local rightText, rightIsSecret = TLA.GetRightText(tooltip, i)
+        if rightText and rightText ~= "" and not rightIsSecret then
+            table.insert(fragments, { value = rightText, line = i, right = true })
         end
     end
 
-    if #tooltipTexts == 0 then return nil, nil end
-    return tooltipTexts, indexToLine
+    return #fragments > 0 and fragments or nil
 end
 
 --- Validate that a talent tooltip layout is complete enough to translate.
---- Uses nodeInfo rank state and visible layout to detect incomplete first
+--- Uses nodeInfo rank state and the fragment array to detect incomplete first
 --- callbacks where the full rank content has not yet arrived.
 ---@param tooltipOwner table|nil
----@param tooltipTexts table
+---@param fragments table
 ---@return boolean complete True if the layout is ready for translation
-local function isTalentLayoutComplete(tooltipOwner, tooltipTexts)
+local function isTalentLayoutComplete(tooltipOwner, fragments)
     if not tooltipOwner or not tooltipOwner.nodeInfo then return true end
 
     local currentRank = tooltipOwner.nodeInfo.currentRank
@@ -147,7 +118,13 @@ local function isTalentLayoutComplete(tooltipOwner, tooltipTexts)
 
     if currentRank == 0 then return true end
 
-    local containsNextRank = ns.CommonUtil.FindKeyByValue(tooltipTexts, nextRankText)
+    local containsNextRank = false
+    for _, frag in ipairs(fragments) do
+        if frag.value == nextRankText then
+            containsNextRank = true
+            break
+        end
+    end
     if containsNextRank then return true end
 
     if currentRank < maxRanks then return false end
@@ -239,7 +216,13 @@ local function processResourceStrings(str)
     return next(resultTable) ~= nil and resultTable or nil
 end
 
-local function parseSpellTooltip(tooltipTexts)
+--- Parse a fragment array into a structured spell tooltip model.
+--- Every field in the result carries direct { value, line, right } coordinates.
+--- fragments[1] is the spell Name (left of line 1).
+--- Form is the right-side fragment on the SpellName line when present.
+---@param fragments table Array of { value, line, right } entries from an adapter
+---@return table|nil spellTooltip Parsed tooltip model, or nil on early-return
+local function parseSpellTooltip(fragments)
     local function isEvokerSpellColor(str)
         return str == "Red" or str == "Green" or str == "Blue" or str == "Black" or str == "Bronze"
     end
@@ -251,24 +234,35 @@ local function parseSpellTooltip(tooltipTexts)
             or str == "Talents cannot be changed in combat."
     end
 
+    if not fragments or #fragments == 0 then return nil end
+
+    local nameFragment = fragments[1]
     local spellTooltip = {
-        Name = tooltipTexts[1],
-        Form = tooltipTexts[2] or "",
+        Name = { value = nameFragment.value, line = nameFragment.line, right = nameFragment.right },
     }
 
-    local contentIndex = 3
+    -- Form is the right-side fragment on the SpellName line, if present.
+    local contentStart = 2
+    if fragments[2] and fragments[2].line == nameFragment.line and fragments[2].right then
+        local f = fragments[2]
+        spellTooltip.Form = { value = f.value, line = f.line, right = f.right }
+        contentStart = 3
+    end
 
-    if (tooltipTexts[3]) then
-        local minRank, maxRank = tooltipTexts[3]:match(talentRankPattern)
-        if (minRank and maxRank) then
-            local talent = { MinRank = tonumber(minRank), MaxRank = tonumber(maxRank), CurrentRank = {} }
-
-            talent.NextRankIndex = -1
-            talent.NextRank = {}
-
-            spellTooltip.Talent = talent
-
-            contentIndex = contentIndex + 2
+    -- Detect talent rank at the first content fragment.
+    local rankFrag = fragments[contentStart]
+    if rankFrag then
+        local minRank, maxRank = rankFrag.value:match(talentRankPattern)
+        if minRank and maxRank then
+            spellTooltip.Talent = {
+                Rank = { value = rankFrag.value, line = rankFrag.line, right = rankFrag.right },
+                MinRank = tonumber(minRank),
+                MaxRank = tonumber(maxRank),
+                CurrentRank = {},
+                NextRankHeader = nil,
+                NextRank = {}
+            }
+            contentStart = contentStart + 1
         else
             spellTooltip.Spell = {}
         end
@@ -280,15 +274,17 @@ local function parseSpellTooltip(tooltipTexts)
         or nil
 
     if (spellContainer) then
-        for i = contentIndex, #tooltipTexts do
-            local text = tooltipTexts[i]
+        for i = contentStart, #fragments do
+            local frag = fragments[i]
+            local text = frag.value
             if (text ~= nil and text ~= "") then
                 local resourceTypes = processResourceStrings(text)
                 if (resourceTypes) then
-                    spellContainer.ResourceType = { i }
-                    for x, resourceType in ipairs(resourceTypes) do
-                        table.insert(spellContainer.ResourceType, x + 1, resourceType)
-                    end
+                    spellContainer.ResourceType = {
+                        line = frag.line,
+                        right = frag.right,
+                        values = resourceTypes
+                    }
                 end
 
                 if not resourceTypes then
@@ -296,39 +292,39 @@ local function parseSpellTooltip(tooltipTexts)
                     local replaces = text:match(talentReplacesPattern)
                     if (replaces or replacedBy) then
                         if (replaces) then
-                            spellContainer.Replaces = { i, replaces:trim() }
+                            spellContainer.Replaces = { value = replaces:trim(), line = frag.line, right = frag.right }
                         else
-                            spellContainer.ReplacedBy = { i, replacedBy:trim() }
+                            spellContainer.ReplacedBy = { value = replacedBy:trim(), line = frag.line, right = frag.right }
                         end
                     elseif (text == nextRankText) then
-                        spellTooltip.Talent.NextRankIndex = i
+                        spellTooltip.Talent.NextRankHeader = { value = text, line = frag.line, right = frag.right }
                         spellContainer = spellTooltip.Talent.NextRank
                     elseif isAdditionalSpellTips(text) then
                         if (not spellContainer.AdditionalSpellTips) then spellContainer.AdditionalSpellTips = {} end
-                        table.insert(spellContainer.AdditionalSpellTips, { i, text })
+                        table.insert(spellContainer.AdditionalSpellTips, { value = text, line = frag.line, right = frag.right })
                     elseif (isEvokerSpellColor(text)) then
-                        spellContainer.EvokerSpellColor = { i, text }
+                        spellContainer.EvokerSpellColor = { value = text, line = frag.line, right = frag.right }
                     elseif (string.match(text, maxChargesPattern)) then
-                        spellContainer.MaxCharges = { i, text }
+                        spellContainer.MaxCharges = { value = text, line = frag.line, right = frag.right }
                     elseif text == "Melee Range" or text == "Unlimited range" or EndsWith(text, "yd range") then
-                        spellContainer.Range = { i, text }
+                        spellContainer.Range = { value = text, line = frag.line, right = frag.right }
                     elseif text == "Instant" or text == "Channeled" or EndsWith(text, "sec cast") or EndsWith(text, "sec empower") then
-                        spellContainer.CastTime = { i, text }
+                        spellContainer.CastTime = { value = text, line = frag.line, right = frag.right }
                     elseif StartsWith(text, "Requires") then
-                        spellContainer.Requires = { i, text }
+                        spellContainer.Requires = { value = text, line = frag.line, right = frag.right }
                     elseif EndsWith(text, "cooldown") or EndsWith(text, "recharge") or StartsWith(text, "Recharging: ") then
-                        spellContainer.Cooldown = { i, text }
+                        spellContainer.Cooldown = { value = text, line = frag.line, right = frag.right }
                     elseif StartsWith(text, "Cooldown remaining:") then
-                        spellContainer.CooldownRemaining = { i, text }
+                        spellContainer.CooldownRemaining = { value = text, line = frag.line, right = frag.right }
                     elseif text == "Passive" then
-                        spellContainer.Passive = i
+                        spellContainer.Passive = { line = frag.line, right = frag.right }
                     elseif text == "Upgrade" then
-                        spellContainer.Upgrade = i
+                        spellContainer.Upgrade = { line = frag.line, right = frag.right }
                     elseif text == ptrHelpText then
                         -- ignore
-                    elseif i % 2 == 1 then
+                    elseif not frag.right then
                         if not spellContainer.Descriptions then spellContainer.Descriptions = {} end
-                        table.insert(spellContainer.Descriptions, { index = i, value = text })
+                        table.insert(spellContainer.Descriptions, { value = text, line = frag.line, right = frag.right })
                     end
                 end
             end
@@ -348,90 +344,103 @@ local function translateTooltipSpellInfo(spellContainer, highlightSpellName)
     local translatedTooltipLines = {}
 
     if (spellContainer.ResourceType) then
-        for i = 2, #spellContainer.ResourceType do
-            spellContainer.ResourceType[i] = GetTranslatedSpellAttribute(spellContainer.ResourceType[i])
+        local translatedValues = {}
+        for _, resourceValue in ipairs(spellContainer.ResourceType.values) do
+            table.insert(translatedValues, GetTranslatedSpellAttribute(resourceValue))
         end
         table.insert(translatedTooltipLines, {
-            index = spellContainer.ResourceType[1],
-            value = table.concat(spellContainer.ResourceType, "\n", 2)
+            line = spellContainer.ResourceType.line,
+            right = spellContainer.ResourceType.right,
+            value = table.concat(translatedValues, "\n")
         })
     end
 
     if (spellContainer.Range) then
         table.insert(translatedTooltipLines, {
-            index = spellContainer.Range[1],
-            value = GetTranslatedSpellAttribute(spellContainer.Range[2])
+            line = spellContainer.Range.line,
+            right = spellContainer.Range.right,
+            value = GetTranslatedSpellAttribute(spellContainer.Range.value)
         })
     end
 
     if (spellContainer.Requires) then
         table.insert(translatedTooltipLines, {
-            index = spellContainer.Requires[1],
-            value = GetTranslatedSpellAttribute(spellContainer.Requires[2])
+            line = spellContainer.Requires.line,
+            right = spellContainer.Requires.right,
+            value = GetTranslatedSpellAttribute(spellContainer.Requires.value)
         })
     end
 
     if (spellContainer.ReplacedBy) then
-        local spellName = GetTranslatedSpellName(spellContainer.ReplacedBy[2], false)
+        local spellName = GetTranslatedSpellName(spellContainer.ReplacedBy.value, false)
         table.insert(translatedTooltipLines, {
-            index = spellContainer.ReplacedBy[1],
+            line = spellContainer.ReplacedBy.line,
+            right = spellContainer.ReplacedBy.right,
             value = TALENT_REPLACED_BY_TRANSLATION .. " " .. spellName
         })
     end
 
     if (spellContainer.Replaces) then
-        local spellName = GetTranslatedSpellName(spellContainer.Replaces[2], false)
+        local spellName = GetTranslatedSpellName(spellContainer.Replaces.value, false)
         table.insert(translatedTooltipLines, {
-            index = spellContainer.Replaces[1],
+            line = spellContainer.Replaces.line,
+            right = spellContainer.Replaces.right,
             value = TALENT_REPLACES_TRANSLATION .. " " .. spellName
         })
     end
 
     if (spellContainer.CastTime) then
         table.insert(translatedTooltipLines, {
-            index = spellContainer.CastTime[1],
-            value = GetTranslatedSpellAttribute(spellContainer.CastTime[2])
+            line = spellContainer.CastTime.line,
+            right = spellContainer.CastTime.right,
+            value = GetTranslatedSpellAttribute(spellContainer.CastTime.value)
         })
     end
 
     if (spellContainer.Cooldown) then
         table.insert(translatedTooltipLines, {
-            index = spellContainer.Cooldown[1],
-            value = GetTranslatedSpellAttribute(spellContainer.Cooldown[2])
+            line = spellContainer.Cooldown.line,
+            right = spellContainer.Cooldown.right,
+            value = GetTranslatedSpellAttribute(spellContainer.Cooldown.value)
         })
     end
 
     if (spellContainer.CooldownRemaining) then
         table.insert(translatedTooltipLines, {
-            index = spellContainer.CooldownRemaining[1],
-            value = GetTranslatedSpellAttribute(spellContainer.CooldownRemaining[2])
+            line = spellContainer.CooldownRemaining.line,
+            right = spellContainer.CooldownRemaining.right,
+            value = GetTranslatedSpellAttribute(spellContainer.CooldownRemaining.value)
         })
     end
 
     if (spellContainer.MaxCharges) then
         table.insert(translatedTooltipLines, {
-            index = spellContainer.MaxCharges[1],
-            value = GetTranslatedSpellAttribute(spellContainer.MaxCharges[2])
+            line = spellContainer.MaxCharges.line,
+            right = spellContainer.MaxCharges.right,
+            value = GetTranslatedSpellAttribute(spellContainer.MaxCharges.value)
         })
     end
 
     if (spellContainer.EvokerSpellColor) then
         table.insert(translatedTooltipLines, {
-            index = spellContainer.EvokerSpellColor[1],
-            value = GetTranslatedSpellAttribute(spellContainer.EvokerSpellColor[2])
+            line = spellContainer.EvokerSpellColor.line,
+            right = spellContainer.EvokerSpellColor.right,
+            value = GetTranslatedSpellAttribute(spellContainer.EvokerSpellColor.value)
         })
     end
 
     if (spellContainer.Passive) then
         table.insert(translatedTooltipLines, {
-            index = spellContainer.Passive,
+            line = spellContainer.Passive.line,
+            right = spellContainer.Passive.right,
             value = SPELL_PASSIVE_TRANSLATION
         })
     end
 
     if (spellContainer.Upgrade) then
         table.insert(translatedTooltipLines, {
-            index = spellContainer.Upgrade,
+            line = spellContainer.Upgrade.line,
+            right = spellContainer.Upgrade.right,
             value = TALENT_UPGRADE_TRANSLATION
         })
     end
@@ -439,8 +448,9 @@ local function translateTooltipSpellInfo(spellContainer, highlightSpellName)
     if (spellContainer.AdditionalSpellTips) then
         for _, spellTip in ipairs(spellContainer.AdditionalSpellTips) do
             table.insert(translatedTooltipLines, {
-                index = spellTip[1],
-                value = GetTranslatedGlobalString(spellTip[2])
+                line = spellTip.line,
+                right = spellTip.right,
+                value = GetTranslatedGlobalString(spellTip.value)
             })
         end
     end
@@ -450,7 +460,8 @@ local function translateTooltipSpellInfo(spellContainer, highlightSpellName)
             local value = description.value:trim()
             if (value ~= "") then
                 table.insert(translatedTooltipLines, {
-                    index = description.index,
+                    line = description.line,
+                    right = description.right,
                     value = GetTranslatedSpellDescription(value, highlightSpellName),
                     originalValue = value,
                     tag = "Description"
@@ -522,22 +533,21 @@ function translator:ParseTooltip(tooltip, tooltipData)
     local tooltipOwner = tooltip:GetOwner()
     local family = detectTooltipFamily(tooltipOwner)
 
-    local tooltipTexts, indexToLine
+    local fragments
 
     if family == "talent" then
-        tooltipTexts, indexToLine = buildTalentInput(tooltip, TLA)
-        if not tooltipTexts then return end
-        if not isTalentLayoutComplete(tooltipOwner, tooltipTexts) then return end
+        fragments = buildTalentInput(tooltip, TLA)
+        if not fragments then return end
+        if not isTalentLayoutComplete(tooltipOwner, fragments) then return end
     else
-        tooltipTexts, indexToLine = buildSpellLikeInput(tooltipData)
-        if not tooltipTexts then return end
+        fragments = buildSpellLikeInput(tooltipData)
+        if not fragments then return end
     end
 
-    local tooltipInfo = parseSpellTooltip(tooltipTexts)
+    local tooltipInfo = parseSpellTooltip(fragments)
     if not tooltipInfo then return end
 
     tooltipInfo.SpellId = tonumber(tooltipData.id)
-    tooltipInfo._indexToLine = indexToLine
 
     return tooltipInfo
 end
@@ -554,26 +564,29 @@ function translator:TranslateTooltipInfo(tooltipInfo)
 
     local spellNameLang = ns.SettingsProvider.GetOption(WOW_UKRAINIZER_TOOLTIP_SPELL_LANG_IN_NAME_OPTION)
     if (spellNameLang ~= "en") then
-        local spellName = tooltipInfo.Name
-        local translatedValue = GetTranslatedSpellName(tooltipInfo.Name, true)
+        local nameValue = tooltipInfo.Name.value
+        local translatedValue = GetTranslatedSpellName(nameValue, true)
 
-        if (spellName ~= translatedValue) then
-            spellName = spellNameLang == "ua" and translatedValue or "|cFF47D5FF" .. spellName .. "|r\n" .. translatedValue
+        local spellName = nameValue
+        if (nameValue ~= translatedValue) then
+            spellName = spellNameLang == "ua" and translatedValue or "|cFF47D5FF" .. nameValue .. "|r\n" .. translatedValue
         end
 
         table.insert(translatedTooltipLines, {
-            index = 1,
+            line = tooltipInfo.Name.line,
+            right = tooltipInfo.Name.right,
             value = spellName,
-            originalValue = tooltipInfo.Name,
+            originalValue = nameValue,
             tag = "Name"
         })
     end
 
     if (ns.SettingsProvider.IsNeedTranslateSpellDescriptionInTooltip()) then
-        if (tooltipInfo.Form and tooltipInfo.Form ~= "") then
+        if (tooltipInfo.Form) then
             table.insert(translatedTooltipLines, {
-                index = 2,
-                value = GetTranslatedSpellAttribute(tooltipInfo.Form)
+                line = tooltipInfo.Form.line,
+                right = tooltipInfo.Form.right,
+                value = GetTranslatedSpellAttribute(tooltipInfo.Form.value)
             })
         end
 
@@ -583,15 +596,17 @@ function translator:TranslateTooltipInfo(tooltipInfo)
             addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Spell, highlightSpellName))
         elseif (tooltipInfo.Talent) then
             table.insert(translatedTooltipLines, {
-                index = 3,
+                line = tooltipInfo.Talent.Rank.line,
+                right = tooltipInfo.Talent.Rank.right,
                 value = SPELL_RANK_TRANSLATION .. " " .. tooltipInfo.Talent.MinRank .. "/" .. tooltipInfo.Talent.MaxRank
             })
             addRange(translatedTooltipLines,
                 translateTooltipSpellInfo(tooltipInfo.Talent.CurrentRank, highlightSpellName))
 
-            if (tooltipInfo.Talent.NextRankIndex ~= -1) then
+            if (tooltipInfo.Talent.NextRankHeader) then
                 table.insert(translatedTooltipLines, {
-                    index = tooltipInfo.Talent.NextRankIndex,
+                    line = tooltipInfo.Talent.NextRankHeader.line,
+                    right = tooltipInfo.Talent.NextRankHeader.right,
                     value = SPELL_NEXT_RANK_TRANSLATION
                 })
                 addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Talent.NextRank, highlightSpellName))
@@ -600,18 +615,6 @@ function translator:TranslateTooltipInfo(tooltipInfo)
     end
 
     addUntranslatedSpellInfoToCache(tooltipInfo.SpellId, translatedTooltipLines)
-
-    local indexToLine = tooltipInfo._indexToLine
-    if indexToLine then
-        for _, entry in ipairs(translatedTooltipLines) do
-            local mapping = indexToLine[entry.index]
-            if mapping then
-                entry.line = mapping.line
-                entry.right = mapping.right or nil
-                entry.index = nil
-            end
-        end
-    end
 
     return translatedTooltipLines
 end
