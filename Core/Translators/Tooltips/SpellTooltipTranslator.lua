@@ -51,21 +51,37 @@ local function buildSpellLikeInput(tooltipData)
 
     local tooltipTexts = {}
     local indexToLine = {}
+    local visibleLine = 0
 
-    for i, line in ipairs(tooltipData.lines) do
+    for _, line in ipairs(tooltipData.lines) do
         local leftText = line.leftText
         local rightText = line.rightText
 
         if leftText ~= nil and issecretvalue(leftText) then return nil, nil end
         if rightText ~= nil and issecretvalue(rightText) then return nil, nil end
 
+        local leftVal = leftText or ""
+        local rightVal = rightText or ""
+
+        -- Empty spacer rows (both sides empty or nil) exist in tooltipData.lines
+        -- but are never rendered as visible tooltip lines. Only lines with at least
+        -- one non-empty side advance the visible line counter.
+        local hasContent = leftVal ~= "" or rightVal ~= ""
+        if hasContent then
+            visibleLine = visibleLine + 1
+        end
+
         local lli = #tooltipTexts + 1
-        tooltipTexts[lli] = leftText or ""
-        indexToLine[lli] = { line = i }
+        tooltipTexts[lli] = leftVal
+        if hasContent then
+            indexToLine[lli] = { line = visibleLine }
+        end
 
         local lri = #tooltipTexts + 1
-        tooltipTexts[lri] = rightText or ""
-        indexToLine[lri] = { line = i, right = true }
+        tooltipTexts[lri] = rightVal
+        if hasContent then
+            indexToLine[lri] = { line = visibleLine, right = true }
+        end
     end
 
     return tooltipTexts, indexToLine
