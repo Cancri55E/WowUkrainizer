@@ -18,12 +18,42 @@ local GetTranslatedSpellDescription = ns.DbContext.Spells.GetTranslatedSpellDesc
 local GetTranslatedSpellAttribute = ns.DbContext.Spells.GetTranslatedSpellAttribute
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 
-local talentRankPattern = "Rank (%d+)/(%d+)"
 local talentReplacedByPattern = "^Replaced by%s+(.+)"
 local talentReplacesPattern = "^Replaces%s+(.+)"
 local maxChargesPattern = "Max %d+ Charges"
-local nextRankText = "Next Rank:"
 local ptrHelpText = "|c0042b1fePress F6 to submit an issue for this Spell"
+
+--- Convert a WoW format string to an anchored Lua match pattern.
+--- %s placeholders become captures: lazy (.-) for all but the last, greedy (.+) for the last.
+--- Literal characters that are Lua pattern specials are escaped.
+local function buildMatchPattern(fmt)
+    local parts = {}
+    local pos = 1
+    local total = select(2, fmt:gsub("%%s", ""))
+    local seen = 0
+    while pos <= #fmt do
+        local s, e = fmt:find("%%s", pos)
+        if not s then
+            table.insert(parts, (fmt:sub(pos):gsub("([%(%)%.%%%+%-%*%?%[%^%$])", "%%%1")))
+            break
+        end
+        if s > pos then
+            table.insert(parts, (fmt:sub(pos, s - 1):gsub("([%(%)%.%%%+%-%*%?%[%^%$])", "%%%1")))
+        end
+        seen = seen + 1
+        table.insert(parts, seen < total and "(.-)" or "(.+)")
+        pos = e + 1
+    end
+    return "^" .. table.concat(parts) .. "$"
+end
+
+-- Rank line patterns derived from Blizzard format constants.
+-- TALENT_BUTTON_TOOLTIP_RANK_FORMAT        = "Rank %s/%s"  (current/max, may contain color codes)
+-- TALENT_BUTTON_TOOLTIP_RANK_NO_MAX_FORMAT = "Rank %s"     (HideMaxRank flag is set)
+local talentRankWithMaxPattern = buildMatchPattern(TALENT_BUTTON_TOOLTIP_RANK_FORMAT)
+local talentRankNoMaxPattern = TALENT_BUTTON_TOOLTIP_RANK_NO_MAX_FORMAT
+    and buildMatchPattern(TALENT_BUTTON_TOOLTIP_RANK_NO_MAX_FORMAT)
+    or nil
 
 --- Detect the tooltip family based on the tooltip owner.
 --- TalentFrame tooltips are identified by definitionID. All other spell-like
@@ -120,7 +150,7 @@ local function isTalentLayoutComplete(tooltipOwner, fragments)
 
     local containsNextRank = false
     for _, frag in ipairs(fragments) do
-        if frag.value == nextRankText then
+        if frag.value == TALENT_BUTTON_TOOLTIP_NEXT_RANK then
             containsNextRank = true
             break
         end
@@ -220,9 +250,11 @@ end
 --- Every field in the result carries direct { value, line, right } coordinates.
 --- fragments[1] is the spell Name (left of line 1).
 --- Form is the right-side fragment on the SpellName line when present.
+--- family is already resolved by the caller; no re-detection is done here.
 ---@param fragments table Array of { value, line, right } entries from an adapter
+---@param family "talent"|"spell-like" Family resolved by detectTooltipFamily
 ---@return table|nil spellTooltip Parsed tooltip model, or nil on early-return
-local function parseSpellTooltip(fragments)
+local function parseSpellTooltip(fragments, family)
     local function isEvokerSpellColor(str)
         return str == "Red" or str == "Green" or str == "Blue" or str == "Black" or str == "Bronze"
     end
@@ -249,23 +281,48 @@ local function parseSpellTooltip(fragments)
         contentStart = 3
     end
 
-    -- Detect talent rank at the first content fragment.
-    local rankFrag = fragments[contentStart]
-    if rankFrag then
-        local minRank, maxRank = rankFrag.value:match(talentRankPattern)
-        if minRank and maxRank then
-            spellTooltip.Talent = {
-                Rank = { value = rankFrag.value, line = rankFrag.line, right = rankFrag.right },
-                MinRank = tonumber(minRank),
-                MaxRank = tonumber(maxRank),
-                CurrentRank = {},
-                NextRankHeader = nil,
-                NextRank = {}
-            }
-            contentStart = contentStart + 1
-        else
+    -- Use the caller-resolved family to set up the container.
+    -- For talent tooltips, expect a rank fragment at contentStart.
+    -- For spell-like tooltips, go directly to the Spell container.
+    if family == "talent" then
+        local rankFrag = fragments[contentStart]
+        if rankFrag then
+            local minRank, maxRank = rankFrag.value:match(talentRankWithMaxPattern)
+            if minRank then
+                -- Normal case: "Rank %s/%s" — current and max both present.
+                -- minRank/maxRank are kept as raw strings; they may contain color codes
+                -- inserted by Blizzard (e.g. "|cffffffff1|r") and are only used for
+                -- string concatenation in the translation output.
+                spellTooltip.Talent = {
+                    Rank = { value = rankFrag.value, line = rankFrag.line, right = rankFrag.right },
+                    MinRank = minRank,
+                    MaxRank = maxRank,
+                    CurrentRank = {},
+                    NextRankHeader = nil,
+                    NextRank = {}
+                }
+                contentStart = contentStart + 1
+            elseif talentRankNoMaxPattern then
+                -- HideMaxRank case: "Rank %s" — only current rank shown.
+                local rank = rankFrag.value:match(talentRankNoMaxPattern)
+                if rank then
+                    spellTooltip.Talent = {
+                        Rank = { value = rankFrag.value, line = rankFrag.line, right = rankFrag.right },
+                        MinRank = rank,
+                        MaxRank = nil,
+                        CurrentRank = {},
+                        NextRankHeader = nil,
+                        NextRank = {}
+                    }
+                    contentStart = contentStart + 1
+                end
+            end
+        end
+        if not spellTooltip.Talent then
             spellTooltip.Spell = {}
         end
+    else
+        spellTooltip.Spell = {}
     end
 
     local spellContainer =
@@ -296,7 +353,7 @@ local function parseSpellTooltip(fragments)
                         else
                             spellContainer.ReplacedBy = { value = replacedBy:trim(), line = frag.line, right = frag.right }
                         end
-                    elseif (text == nextRankText) then
+                    elseif (text == TALENT_BUTTON_TOOLTIP_NEXT_RANK) then
                         spellTooltip.Talent.NextRankHeader = { value = text, line = frag.line, right = frag.right }
                         spellContainer = spellTooltip.Talent.NextRank
                     elseif isAdditionalSpellTips(text) then
@@ -544,7 +601,7 @@ function translator:ParseTooltip(tooltip, tooltipData)
         if not fragments then return end
     end
 
-    local tooltipInfo = parseSpellTooltip(fragments)
+    local tooltipInfo = parseSpellTooltip(fragments, family)
     if not tooltipInfo then return end
 
     tooltipInfo.SpellId = tonumber(tooltipData.id)
@@ -595,10 +652,13 @@ function translator:TranslateTooltipInfo(tooltipInfo)
         if (tooltipInfo.Spell) then
             addRange(translatedTooltipLines, translateTooltipSpellInfo(tooltipInfo.Spell, highlightSpellName))
         elseif (tooltipInfo.Talent) then
+            local rankStr = tooltipInfo.Talent.MaxRank
+                and (tooltipInfo.Talent.MinRank .. "/" .. tooltipInfo.Talent.MaxRank)
+                or tooltipInfo.Talent.MinRank
             table.insert(translatedTooltipLines, {
                 line = tooltipInfo.Talent.Rank.line,
                 right = tooltipInfo.Talent.Rank.right,
-                value = SPELL_RANK_TRANSLATION .. " " .. tooltipInfo.Talent.MinRank .. "/" .. tooltipInfo.Talent.MaxRank
+                value = SPELL_RANK_TRANSLATION .. " " .. rankStr
             })
             addRange(translatedTooltipLines,
                 translateTooltipSpellInfo(tooltipInfo.Talent.CurrentRank, highlightSpellName))
