@@ -14,10 +14,21 @@ local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobal
 
 local ptrHelpText = "|c0042b1fePress F6 to submit an issue for this Spell"
 
---- Convert a WoW format string to an anchored Lua match pattern.
---- %s placeholders become captures: lazy (.-) for all but the last, greedy (.+) for the last.
---- %d placeholders become (%d+) captures (integer numbers).
---- Literal characters that are Lua pattern specials are escaped.
+-- Matches any Lua pattern magic character: ( ) . % + - * ? [ ] ^ $
+local LUA_MAGIC_CHAR_PATTERN = "([%(%)%.%%%+%-%*%?%[%]%^%$])"
+
+--- Convert a WoW format string into an anchored Lua match pattern with one
+--- capture per placeholder.
+---
+--- Rules:
+---  * `%s` → `(.-)` for all but the last `%s`, `(.+)` for the last.
+---  * `%d` → `(%d+)`.
+---  * Lua pattern magic chars in literal text are escaped.
+---
+--- Example: `"Max %d Charges"` → `"^Max (%d+) Charges$"`.
+---
+---@param fmt string  Blizzard format string with `%s` / `%d` placeholders.
+---@return string pattern  Anchored Lua match pattern.
 local function buildMatchPattern(fmt)
     local parts = {}
     local pos = 1
@@ -36,11 +47,11 @@ local function buildMatchPattern(fmt)
         end
 
         if not placeholderStart then
-            table.insert(parts, (fmt:sub(pos):gsub("([%(%)%.%%%+%-%*%?%[%^%$])", "%%%1")))
+            table.insert(parts, (fmt:sub(pos):gsub(LUA_MAGIC_CHAR_PATTERN, "%%%1")))
             break
         end
         if placeholderStart > pos then
-            table.insert(parts, (fmt:sub(pos, placeholderStart - 1):gsub("([%(%)%.%%%+%-%*%?%[%^%$])", "%%%1")))
+            table.insert(parts, (fmt:sub(pos, placeholderStart - 1):gsub(LUA_MAGIC_CHAR_PATTERN, "%%%1")))
         end
         if isString then
             seenS = seenS + 1
@@ -190,7 +201,7 @@ local function classifyFragment(text, isRight, lineType)
     end
 
     if StartsWith(text, "Cooldown remaining:") then return "CooldownRemaining" end
-    if string.match(text, maxChargesPattern) then return "MaxCharges" end
+    if text:match(maxChargesPattern) then return "MaxCharges" end
     if isEvokerSpellColor(text) then return "EvokerSpellColor" end
     if isAdditionalSpellTips(text) then return "AdditionalSpellTip" end
 
@@ -451,7 +462,7 @@ local function parseTalentSpendTooltip(fragments)
                 CurrentRank = {}, NextRankHeader = nil, NextRank = {},
             }
             contentStart = contentStart + 1
-        elseif talentRankNoMaxPattern then
+        else
             local rank = rankFrag.value:match(talentRankNoMaxPattern)
             if rank then
                 talent = {
@@ -601,12 +612,12 @@ local function extractRequirementTalentName(str)
     local prefix = "Requires "
     local suffix = " talent"
     local start = str:find("^" .. prefix)
-    local _end = str:find(suffix .. "$")
-    if start and _end then
-        local extracted = str:sub(#prefix + 1, _end - 1)
+    local endPos = str:find(suffix .. "$")
+    if start and endPos then
+        local extracted = str:sub(#prefix + 1, endPos - 1)
         return prefix .. "%s" .. suffix, extracted
     end
-    return str
+    return nil, nil
 end
 
 --- Translate all fields of a SpellBlock using the appropriate repositories.
