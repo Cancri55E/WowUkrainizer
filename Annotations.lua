@@ -109,3 +109,16 @@
 ---@field Items table<integer, string[]>
 ---@field Waypoints table<integer, string>
 -- TODO: @field Voiceover
+
+-- Addon-local frame (declared in Core/Frames/).
+---@type Frame
+SubtitlesFrame = nil
+
+-- Immersion (3rd-party addon) globals. Shape is intentionally loose — Immersion's
+-- API surface is not stable across versions. Declared here only so hooks compile.
+---@type Frame?
+ImmersionFrame = nil
+---@type table?
+ImmersionAPI = nil
+---@type Frame?
+ImmersionContentFrame = nil
