@@ -4,6 +4,7 @@ local _, ns = ...;
 local EndsWith = ns.StringUtil.EndsWith
 local StartsWith = ns.StringUtil.StartsWith
 local StringsAreEqual = ns.StringUtil.StringsAreEqual
+local BuildMatchPattern = ns.StringUtil.BuildMatchPattern
 local NormalizeStringAndExtractNumerics = ns.StringNormalizer.NormalizeStringAndExtractNumerics
 
 
@@ -14,141 +15,110 @@ local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobal
 
 local F6_ISSUE_HELP_TEXT = "|c0042b1fePress F6 to submit an issue for this Spell"
 
--- Matches any Lua pattern magic character: ( ) . % + - * ? [ ] ^ $
-local LUA_MAGIC_CHAR_PATTERN = "([%(%)%.%%%+%-%*%?%[%]%^%$])"
-
---- Convert a WoW format string into an anchored Lua match pattern with one
---- capture per placeholder.
----
---- Rules:
----  * `%s` → `(.-)` for all but the last `%s`, `(.+)` for the last.
----  * `%d` → `(%d+)`.
----  * Lua pattern magic chars in literal text are escaped.
----
---- Example: `"Max %d Charges"` → `"^Max (%d+) Charges$"`.
----
----@param fmt string  Blizzard format string with `%s` / `%d` placeholders.
----@return string pattern  Anchored Lua match pattern.
-local function buildMatchPattern(fmt)
-    local parts = {}
-    local pos = 1
-    local totalStringPlaceholders = select(2, fmt:gsub("%%s", ""))
-    local seenStringPlaceholders = 0
-    while pos <= #fmt do
-        local stringStart, stringEnd = fmt:find("%%s", pos)
-        local numberStart, numberEnd = fmt:find("%%d", pos)
-
-        -- Pick the nearest placeholder
-        local placeholderStart, placeholderEnd, isString
-        if stringStart and (not numberStart or stringStart <= numberStart) then
-            placeholderStart, placeholderEnd, isString = stringStart, stringEnd, true
-        elseif numberStart then
-            placeholderStart, placeholderEnd, isString = numberStart, numberEnd, false
-        end
-
-        if not placeholderStart then
-            table.insert(parts, (fmt:sub(pos):gsub(LUA_MAGIC_CHAR_PATTERN, "%%%1")))
-            break
-        end
-        if placeholderStart > pos then
-            table.insert(parts, (fmt:sub(pos, placeholderStart - 1):gsub(LUA_MAGIC_CHAR_PATTERN, "%%%1")))
-        end
-        if isString then
-            seenStringPlaceholders = seenStringPlaceholders + 1
-            table.insert(parts, seenStringPlaceholders < totalStringPlaceholders and "(.-)" or "(.+)")
-        else
-            table.insert(parts, "(%d+)")
-        end
-        pos = placeholderEnd + 1
-    end
-    return "^" .. table.concat(parts) .. "$"
-end
-
--- Patterns derived from Blizzard format constants via buildMatchPattern.
-local TALENT_RANK_WITH_MAX_PATTERN = buildMatchPattern(TALENT_BUTTON_TOOLTIP_RANK_FORMAT)
-local TALENT_RANK_NO_MAX_PATTERN = buildMatchPattern(TALENT_BUTTON_TOOLTIP_RANK_NO_MAX_FORMAT)
-local TALENT_REPLACED_BY_PATTERN = buildMatchPattern(TALENT_BUTTON_TOOLTIP_REPLACED_BY_FORMAT)
-local TALENT_REPLACES_PATTERN = buildMatchPattern(REPLACES_SPELL)
-local MAX_CHARGES_PATTERN = buildMatchPattern(SPELL_MAX_CHARGES)
-local CAPSTONE_TITLE_PATTERN = buildMatchPattern(TALENT_BUTTON_TOOLTIP_CAPSTONE_TRACK_TITLE_FORMAT)
-local CAPSTONE_TIER_HEADER_PATTERN = buildMatchPattern(TOOLTIP_TALENT_RANK_CAPSTONE)
+local TALENT_RANK_WITH_MAX_PATTERN = BuildMatchPattern(TALENT_BUTTON_TOOLTIP_RANK_FORMAT)
+local TALENT_RANK_NO_MAX_PATTERN = BuildMatchPattern(TALENT_BUTTON_TOOLTIP_RANK_NO_MAX_FORMAT)
+local TALENT_REPLACED_BY_PATTERN = BuildMatchPattern(TALENT_BUTTON_TOOLTIP_REPLACED_BY_FORMAT)
+local TALENT_REPLACES_PATTERN = BuildMatchPattern(REPLACES_SPELL)
+local MAX_CHARGES_PATTERN = BuildMatchPattern(SPELL_MAX_CHARGES)
+local CAPSTONE_TITLE_PATTERN = BuildMatchPattern(TALENT_BUTTON_TOOLTIP_CAPSTONE_TRACK_TITLE_FORMAT)
+local CAPSTONE_TIER_HEADER_PATTERN = BuildMatchPattern(TOOLTIP_TALENT_RANK_CAPSTONE)
 local CAPSTONE_NEXT_PREVIEW_TEXT = TALENT_BUTTON_TOOLTIP_CAPSTONE_RANK_NEXT_STAGE_PREVIEW_TITLE
 
--- ---------------------------------------------------------------------------
--- Fragment classification
--- ---------------------------------------------------------------------------
+-- Classification literals used by classifyFragment and friends. Grouped here
+-- so the tooltip grammar is visible at a glance rather than scattered inline.
+local CLASSIFIER = {
+    PASSIVE = "Passive",
+    UPGRADE = "Upgrade",
+    MELEE_RANGE = "Melee Range",
+    UNLIMITED_RANGE = "Unlimited range",
+    RANGE_SUFFIX = "yd range",
+    INSTANT = "Instant",
+    CHANNELED = "Channeled",
+    SEC_CAST_SUFFIX = "sec cast",
+    SEC_EMPOWER_SUFFIX = "sec empower",
+    REQUIRES_PREFIX = "Requires",
+    COOLDOWN_SUFFIX = "cooldown",
+    RECHARGE_SUFFIX = "recharge",
+    RECHARGING_PREFIX = "Recharging: ",
+    COOLDOWN_REMAINING_PREFIX = "Cooldown remaining:",
+    UNLOCKED_AT_LEVEL_PREFIX = "Unlocked at level ",
+    EVOKER_COLORS = { Red = true, Green = true, Blue = true, Black = true, Bronze = true },
+    ADDITIONAL_TIPS = {
+        ["Left click to select this talent."] = true,
+        ["Click to learn"] = true,
+        ["Talents cannot be changed in combat."] = true,
+    },
+}
+
+-- SpellBlock fields whose translation is a plain GetTranslatedSpellAttribute
+-- lookup on field.value. Non-simple fields (ResourceType, ReplacedBy, Replaces,
+-- Passive, Upgrade, AdditionalSpellTips, Descriptions) stay inline in
+-- translateTooltipSpellInfo — each has its own shape.
+local SIMPLE_ATTRIBUTE_FIELDS = {
+    "Range", "Requires", "CastTime", "Cooldown",
+    "CooldownRemaining", "MaxCharges", "EvokerSpellColor",
+}
+
+local SPELL_RESOURCES = {
+    "Arcane Charges",
+    "Astral Power",
+    "Chi",
+    "Combo Points",
+    "Energy",
+    "Essence",
+    "Focus",
+    "Fury",
+    "Holy Power",
+    "Insanity",
+    "Maelstrom",
+    "Mana",
+    "Pain",
+    "Rage",
+    "Rune",
+    "Runes",
+    "Health",
+    "Runic Power",
+    "Soul Shards",
+    "Soul Shard",
+}
 
 local function isEvokerColor(str)
-    return str == "Red" or str == "Green" or str == "Blue" or str == "Black" or str == "Bronze"
+    return CLASSIFIER.EVOKER_COLORS[str] == true
 end
 
 local function isAdditionalSpellTip(str)
-    return str == "Left click to select this talent."
-        or StartsWith(str, "Unlocked at level ")
-        or str == "Click to learn"
-        or str == "Talents cannot be changed in combat."
+    return CLASSIFIER.ADDITIONAL_TIPS[str] == true
+        or StartsWith(str, CLASSIFIER.UNLOCKED_AT_LEVEL_PREFIX)
+end
+
+local function isResourceString(value)
+    for _, resource in ipairs(SPELL_RESOURCES) do
+        if value:match("^%d+[.,]?%d* to %d+[.,]?%d* " .. resource .. "$")
+            or value:match("^%d+[.,]?%d* " .. resource .. "$")
+            or value:match("^%d+[.,]?%d* " .. resource .. ", plus %d+[.,]?%d* per sec$")
+            or value:match("^%d+[.,]?%d* " .. resource .. " per sec$") then
+            return true
+        end
+    end
+    return false
+end
+
+local function splitResourceString(value)
+    local resourceStrings = {}
+    for resourceString in value:gmatch("([^\n]+)") do
+        table.insert(resourceStrings, resourceString)
+    end
+    return resourceStrings
 end
 
 local function extractResourceLines(str)
-    local function isResourceString(value)
-        local spellResources = {
-            "Arcane Charges",
-            "Astral Power",
-            "Chi",
-            "Combo Points",
-            "Energy",
-            "Essence",
-            "Focus",
-            "Fury",
-            "Holy Power",
-            "Insanity",
-            "Maelstrom",
-            "Mana",
-            "Pain",
-            "Rage",
-            "Rune",
-            "Runes",
-            "Health",
-            "Runic Power",
-            "Soul Shards",
-            "Soul Shard"
-        }
-
-        for _, resource in ipairs(spellResources) do
-            if value:match("^%d+[.,]?%d* to %d+[.,]?%d* " .. resource .. "$")
-                or value:match("^%d+[.,]?%d* " .. resource .. "$")
-                or value:match("^%d+[.,]?%d* " .. resource .. ", plus %d+[.,]?%d* per sec$")
-                or value:match("^%d+[.,]?%d* " .. resource .. " per sec$") then
-                return true
-            end
-        end
-
-        return false
-    end
-
-    local function splitResourceString(value)
-        local resourceStrings = {}
-        for resourceString in value:gmatch("([^\n]+)") do
-            table.insert(resourceStrings, resourceString)
-        end
-        return resourceStrings
-    end
-
     local resultTable = {}
-    local resourceStrings = splitResourceString(str)
+    local seen = {}
 
-    for _, resourceString in ipairs(resourceStrings) do
-        if isResourceString(resourceString) then
-            local isInTable = false
-            for _, element in ipairs(resultTable) do
-                if element == resourceString then
-                    isInTable = true
-                    break
-                end
-            end
-            if not isInTable then
-                table.insert(resultTable, resourceString)
-            end
+    for _, resourceString in ipairs(splitResourceString(str)) do
+        if isResourceString(resourceString) and not seen[resourceString] then
+            seen[resourceString] = true
+            table.insert(resultTable, resourceString)
         end
     end
 
@@ -181,26 +151,28 @@ local function classifyFragment(text, isRight, lineType)
     local replaces = text:match(TALENT_REPLACES_PATTERN)
     if replaces then return "Replaces", { name = replaces:trim() } end
 
-    if text == "Passive" then return "Passive" end
-    if text == "Upgrade" then return "Upgrade" end
+    if text == CLASSIFIER.PASSIVE then return "Passive" end
+    if text == CLASSIFIER.UPGRADE then return "Upgrade" end
 
-    if text == "Melee Range" or text == "Unlimited range" or EndsWith(text, "yd range") then
+    if text == CLASSIFIER.MELEE_RANGE or text == CLASSIFIER.UNLIMITED_RANGE
+        or EndsWith(text, CLASSIFIER.RANGE_SUFFIX) then
         return "Range"
     end
 
-    if text == "Instant" or text == "Channeled"
-        or EndsWith(text, "sec cast") or EndsWith(text, "sec empower") then
+    if text == CLASSIFIER.INSTANT or text == CLASSIFIER.CHANNELED
+        or EndsWith(text, CLASSIFIER.SEC_CAST_SUFFIX)
+        or EndsWith(text, CLASSIFIER.SEC_EMPOWER_SUFFIX) then
         return "CastTime"
     end
 
-    if StartsWith(text, "Requires") then return "Requires" end
+    if StartsWith(text, CLASSIFIER.REQUIRES_PREFIX) then return "Requires" end
 
-    if EndsWith(text, "cooldown") or EndsWith(text, "recharge")
-        or StartsWith(text, "Recharging: ") then
+    if EndsWith(text, CLASSIFIER.COOLDOWN_SUFFIX) or EndsWith(text, CLASSIFIER.RECHARGE_SUFFIX)
+        or StartsWith(text, CLASSIFIER.RECHARGING_PREFIX) then
         return "Cooldown"
     end
 
-    if StartsWith(text, "Cooldown remaining:") then return "CooldownRemaining" end
+    if StartsWith(text, CLASSIFIER.COOLDOWN_REMAINING_PREFIX) then return "CooldownRemaining" end
     if text:match(MAX_CHARGES_PATTERN) then return "MaxCharges" end
     if isEvokerColor(text) then return "EvokerSpellColor" end
     if isAdditionalSpellTip(text) then return "AdditionalSpellTip" end
@@ -209,10 +181,6 @@ local function classifyFragment(text, isRight, lineType)
 
     return nil
 end
-
--- ---------------------------------------------------------------------------
--- SpellBlock builder — the reusable atomic unit
--- ---------------------------------------------------------------------------
 
 --- Build a SpellBlock from a contiguous range of classified fragments.
 ---@param fragments table Array of { value, line, right }
@@ -268,14 +236,10 @@ local function buildSpellBlock(fragments, startIdx, stopFn)
     return block, i
 end
 
--- ---------------------------------------------------------------------------
--- Input adapters (unchanged from before)
--- ---------------------------------------------------------------------------
-
 --- Build an ordered fragment array for a spell-like tooltip from tooltipData.lines.
 ---@param tooltipData table
 ---@return table|nil fragments Array of { value, line, right } entries
-local function buildSpellLikeFragments(tooltipData)
+local function buildSpellFragments(tooltipData)
     if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
         return nil
     end
@@ -333,10 +297,6 @@ local function buildTalentFragments(tooltip, TLA)
 
     return #fragments > 0 and fragments or nil
 end
-
--- ---------------------------------------------------------------------------
--- Family detection
--- ---------------------------------------------------------------------------
 
 --- Detect the tooltip family based on the tooltip owner.
 ---@param tooltipOwner table|nil
@@ -397,10 +357,6 @@ local function isTalentLayoutComplete(tooltipOwner, fragments, family)
     return true
 end
 
--- ---------------------------------------------------------------------------
--- Shared header extraction
--- ---------------------------------------------------------------------------
-
 --- Extract Name and optional Form from the beginning of a fragment array.
 ---@param fragments table
 ---@return table header { Name, Form? }
@@ -421,13 +377,9 @@ local function extractHeader(fragments)
     return header, contentStart
 end
 
--- ---------------------------------------------------------------------------
--- Family-specific parsers
--- ---------------------------------------------------------------------------
-
 ---@param fragments table
 ---@return table|nil tooltipInfo
-local function parseSpellLikeTooltip(fragments)
+local function parseSpellTooltip(fragments)
     if not fragments or #fragments == 0 then return nil end
 
     local header, contentStart = extractHeader(fragments)
@@ -450,11 +402,15 @@ local function parseTalentSpendTooltip(fragments)
     local header, contentStart = extractHeader(fragments)
     local tooltipInfo = { Name = header.Name, Form = header.Form }
 
-    -- Try to match a rank line at contentStart
+    -- Try to match a rank line at contentStart. MaxRank is nil when the
+    -- NO_MAX pattern matched.
     local talent = nil
     local rankFrag = fragments[contentStart]
     if rankFrag then
         local minRank, maxRank = rankFrag.value:match(TALENT_RANK_WITH_MAX_PATTERN)
+        if not minRank then
+            minRank = rankFrag.value:match(TALENT_RANK_NO_MAX_PATTERN)
+        end
         if minRank then
             talent = {
                 Rank = { value = rankFrag.value, line = rankFrag.line, right = rankFrag.right },
@@ -462,16 +418,6 @@ local function parseTalentSpendTooltip(fragments)
                 CurrentRank = {}, NextRankHeader = nil, NextRank = {},
             }
             contentStart = contentStart + 1
-        else
-            local rank = rankFrag.value:match(TALENT_RANK_NO_MAX_PATTERN)
-            if rank then
-                talent = {
-                    Rank = { value = rankFrag.value, line = rankFrag.line, right = rankFrag.right },
-                    MinRank = rank, MaxRank = nil,
-                    CurrentRank = {}, NextRankHeader = nil, NextRank = {},
-                }
-                contentStart = contentStart + 1
-            end
         end
     end
 
@@ -534,7 +480,7 @@ local function parseTalentCapstoneTooltip(fragments)
 
     -- Check for "Passive" right after title (before first tier header)
     local contentStart = 2
-    if fragments[contentStart] and fragments[contentStart].value == "Passive" then
+    if fragments[contentStart] and fragments[contentStart].value == CLASSIFIER.PASSIVE then
         tooltipInfo.Capstone.Passive = {
             line = fragments[contentStart].line,
             right = fragments[contentStart].right,
@@ -542,53 +488,38 @@ local function parseTalentCapstoneTooltip(fragments)
         contentStart = contentStart + 1
     end
 
-    -- Collect tier boundary indices
-    local tierStarts = {}
-    for idx = contentStart, #fragments do
-        if isCapstoneTierHeader(fragments[idx].value) then
-            table.insert(tierStarts, idx)
+    -- Walk fragments once, closing the previous tier when a new header or a
+    -- "Next:" marker appears. buildSpellBlock returns (block, nextIdx) so the
+    -- loop advances without a second pass.
+    local currentTier = nil
+    local idx = contentStart
+    while idx <= #fragments do
+        local frag = fragments[idx]
+        if isCapstoneTierHeader(frag.value) then
+            currentTier = {
+                Header = { value = frag.value, line = frag.line, right = frag.right },
+                TierNumber = tonumber(frag.value:match(CAPSTONE_TIER_HEADER_PATTERN)),
+                CurrentBlock = {},
+                NextHeader = nil,
+                NextBlock = nil,
+            }
+            table.insert(tooltipInfo.Capstone.Tiers, currentTier)
+            currentTier.CurrentBlock, idx = buildSpellBlock(fragments, idx + 1, function(f)
+                return f.value == CAPSTONE_NEXT_PREVIEW_TEXT or isCapstoneTierHeader(f.value)
+            end)
+        elseif currentTier and frag.value == CAPSTONE_NEXT_PREVIEW_TEXT then
+            currentTier.NextHeader = { value = frag.value, line = frag.line, right = frag.right }
+            currentTier.NextBlock, idx = buildSpellBlock(fragments, idx + 1, function(f)
+                return isCapstoneTierHeader(f.value)
+            end)
+        else
+            idx = idx + 1
         end
     end
 
-    -- Parse each tier: header → current block → optional "Next:" → next block
-    for t = 1, #tierStarts do
-        local tierIdx = tierStarts[t]
-        local tierEndIdx = tierStarts[t + 1] or (#fragments + 1)
-
-        local tierHeader = fragments[tierIdx]
-        local tier = {
-            Header = { value = tierHeader.value, line = tierHeader.line, right = tierHeader.right },
-            TierNumber = tonumber(tierHeader.value:match(CAPSTONE_TIER_HEADER_PATTERN)),
-            CurrentBlock = {},
-            NextHeader = nil,
-            NextBlock = nil,
-        }
-
-        -- Build current block, stopping at "Next:" or next tier
-        local blockStart = tierIdx + 1
-        tier.CurrentBlock = buildSpellBlock(fragments, blockStart, function(frag, idx)
-            return idx >= tierEndIdx or frag.value == CAPSTONE_NEXT_PREVIEW_TEXT
-        end)
-
-        -- Check for "Next:" within this tier
-        for idx = blockStart, tierEndIdx - 1 do
-            if fragments[idx].value == CAPSTONE_NEXT_PREVIEW_TEXT then
-                tier.NextHeader = {
-                    value = fragments[idx].value,
-                    line = fragments[idx].line,
-                    right = fragments[idx].right,
-                }
-                tier.NextBlock = buildSpellBlock(fragments, idx + 1, function(_, blockIdx)
-                    return blockIdx >= tierEndIdx
-                end)
-                break
-            end
-        end
-
-        table.insert(tooltipInfo.Capstone.Tiers, tier)
-    end
-
-    -- If no tiers were found, fall back to spell-like shape
+    -- Fallback: no tier headers found. `tooltipInfo.Name.value` is the
+    -- stripped title (without "(X/Y)") from CAPSTONE_TITLE_PATTERN, which is
+    -- the correct display name for spell-like rendering.
     if #tooltipInfo.Capstone.Tiers == 0 then
         tooltipInfo.Capstone = nil
         local block = buildSpellBlock(fragments, contentStart, nil)
@@ -598,10 +529,6 @@ local function parseTalentCapstoneTooltip(fragments)
 
     return tooltipInfo
 end
-
--- ---------------------------------------------------------------------------
--- Translation
--- ---------------------------------------------------------------------------
 
 ---@class SpellTooltipTranslator : BaseTooltipTranslator
 local translator = setmetatable({
@@ -638,20 +565,15 @@ local function translateTooltipSpellInfo(spellBlock, highlightSpellName)
         })
     end
 
-    if spellBlock.Range then
-        table.insert(translatedTooltipLines, {
-            line = spellBlock.Range.line,
-            right = spellBlock.Range.right,
-            value = GetTranslatedSpellAttribute(spellBlock.Range.value)
-        })
-    end
-
-    if spellBlock.Requires then
-        table.insert(translatedTooltipLines, {
-            line = spellBlock.Requires.line,
-            right = spellBlock.Requires.right,
-            value = GetTranslatedSpellAttribute(spellBlock.Requires.value)
-        })
+    for _, key in ipairs(SIMPLE_ATTRIBUTE_FIELDS) do
+        local field = spellBlock[key]
+        if field then
+            table.insert(translatedTooltipLines, {
+                line = field.line,
+                right = field.right,
+                value = GetTranslatedSpellAttribute(field.value),
+            })
+        end
     end
 
     if spellBlock.ReplacedBy then
@@ -671,46 +593,6 @@ local function translateTooltipSpellInfo(spellBlock, highlightSpellName)
             line = spellBlock.Replaces.line,
             right = spellBlock.Replaces.right,
             value = translatedFormat:format(spellName)
-        })
-    end
-
-    if spellBlock.CastTime then
-        table.insert(translatedTooltipLines, {
-            line = spellBlock.CastTime.line,
-            right = spellBlock.CastTime.right,
-            value = GetTranslatedSpellAttribute(spellBlock.CastTime.value)
-        })
-    end
-
-    if spellBlock.Cooldown then
-        table.insert(translatedTooltipLines, {
-            line = spellBlock.Cooldown.line,
-            right = spellBlock.Cooldown.right,
-            value = GetTranslatedSpellAttribute(spellBlock.Cooldown.value)
-        })
-    end
-
-    if spellBlock.CooldownRemaining then
-        table.insert(translatedTooltipLines, {
-            line = spellBlock.CooldownRemaining.line,
-            right = spellBlock.CooldownRemaining.right,
-            value = GetTranslatedSpellAttribute(spellBlock.CooldownRemaining.value)
-        })
-    end
-
-    if spellBlock.MaxCharges then
-        table.insert(translatedTooltipLines, {
-            line = spellBlock.MaxCharges.line,
-            right = spellBlock.MaxCharges.right,
-            value = GetTranslatedSpellAttribute(spellBlock.MaxCharges.value)
-        })
-    end
-
-    if spellBlock.EvokerSpellColor then
-        table.insert(translatedTooltipLines, {
-            line = spellBlock.EvokerSpellColor.line,
-            right = spellBlock.EvokerSpellColor.right,
-            value = GetTranslatedSpellAttribute(spellBlock.EvokerSpellColor.value)
         })
     end
 
@@ -819,10 +701,6 @@ local function addUntranslatedSpellInfoToCache(spellId, translatedTooltipLines)
     end
 end
 
--- ---------------------------------------------------------------------------
--- Translator interface
--- ---------------------------------------------------------------------------
-
 function translator:ParseTooltip(tooltip, tooltipData)
     local TLA = ns.TooltipLineAccessor
     local tooltipOwner = tooltip:GetOwner()
@@ -831,7 +709,7 @@ function translator:ParseTooltip(tooltip, tooltipData)
     local fragments
 
     if family == "spell-like" then
-        fragments = buildSpellLikeFragments(tooltipData)
+        fragments = buildSpellFragments(tooltipData)
         if not fragments then return end
     else
         fragments = buildTalentFragments(tooltip, TLA)
@@ -841,7 +719,7 @@ function translator:ParseTooltip(tooltip, tooltipData)
 
     local tooltipInfo
     if family == "spell-like" then
-        tooltipInfo = parseSpellLikeTooltip(fragments)
+        tooltipInfo = parseSpellTooltip(fragments)
     elseif family == "talent-capstone" then
         tooltipInfo = parseTalentCapstoneTooltip(fragments)
     else
