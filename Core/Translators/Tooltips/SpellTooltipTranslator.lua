@@ -82,15 +82,21 @@ local SPELL_RESOURCES = {
     "Soul Shard",
 }
 
+---@param str string
+---@return boolean
 local function isEvokerColor(str)
     return CLASSIFIER.EVOKER_COLORS[str] == true
 end
 
+---@param str string
+---@return boolean
 local function isAdditionalSpellTip(str)
     return CLASSIFIER.ADDITIONAL_TIPS[str] == true
         or StartsWith(str, CLASSIFIER.UNLOCKED_AT_LEVEL_PREFIX)
 end
 
+---@param value string
+---@return boolean
 local function isResourceString(value)
     for _, resource in ipairs(SPELL_RESOURCES) do
         if value:match("^%d+[.,]?%d* to %d+[.,]?%d* " .. resource .. "$")
@@ -103,6 +109,8 @@ local function isResourceString(value)
     return false
 end
 
+---@param value string
+---@return string[]
 local function splitResourceString(value)
     local resourceStrings = {}
     for resourceString in value:gmatch("([^\n]+)") do
@@ -111,6 +119,9 @@ local function splitResourceString(value)
     return resourceStrings
 end
 
+--- Extract unique resource-cost lines from a multi-line fragment.
+---@param str string
+---@return string[]|nil
 local function extractResourceLines(str)
     local resultTable = {}
     local seen = {}
@@ -183,11 +194,11 @@ local function classifyFragment(text, isRight, lineType)
 end
 
 --- Build a SpellBlock from a contiguous range of classified fragments.
----@param fragments table Array of { value, line, right }
----@param startIdx number First fragment index to consume (inclusive)
----@param stopFn fun(frag: table, idx: number): boolean|nil Predicate; true to stop BEFORE this fragment
----@return table spellBlock
----@return number nextIdx First unconsumed fragment index
+---@param fragments TooltipFragment[]
+---@param startIdx integer First fragment index to consume (inclusive)
+---@param stopFn (fun(frag: TooltipFragment, idx: integer): boolean?)? Predicate; true to stop BEFORE this fragment
+---@return SpellBlock spellBlock
+---@return integer nextIdx First unconsumed fragment index
 local function buildSpellBlock(fragments, startIdx, stopFn)
     local block = {}
     local i = startIdx
@@ -238,7 +249,7 @@ end
 
 --- Build an ordered fragment array for a spell-like tooltip from tooltipData.lines.
 ---@param tooltipData table
----@return table|nil fragments Array of { value, line, right } entries
+---@return TooltipFragment[]|nil
 local function buildSpellFragments(tooltipData)
     if not tooltipData or not tooltipData.lines or #tooltipData.lines == 0 then
         return nil
@@ -277,7 +288,7 @@ end
 --- Build an ordered fragment array for a talent tooltip from visible FontStrings.
 ---@param tooltip GameTooltip
 ---@param TLA TooltipLineAccessor
----@return table|nil fragments Array of { value, line, right } entries
+---@return TooltipFragment[]|nil
 local function buildTalentFragments(tooltip, TLA)
     if tooltip:NumLines() == 0 then return nil end
 
@@ -317,13 +328,15 @@ local function detectTooltipFamily(tooltipOwner)
 end
 
 --- Check if a fragment is a capstone tier header ("Rank N").
+---@param text string
+---@return boolean
 local function isCapstoneTierHeader(text)
     return text:match(CAPSTONE_TIER_HEADER_PATTERN) ~= nil
 end
 
 --- Validate that a talent tooltip layout is complete enough to translate.
 ---@param tooltipOwner table|nil
----@param fragments table
+---@param fragments TooltipFragment[]
 ---@param family "talent-spend"|"talent-capstone"
 ---@return boolean complete
 local function isTalentLayoutComplete(tooltipOwner, fragments, family)
@@ -358,9 +371,9 @@ local function isTalentLayoutComplete(tooltipOwner, fragments, family)
 end
 
 --- Extract Name and optional Form from the beginning of a fragment array.
----@param fragments table
----@return table header { Name, Form? }
----@return number contentStart Index of first content fragment
+---@param fragments TooltipFragment[]
+---@return { Name: TooltipLineValue, Form: TooltipLineValue? } header
+---@return integer contentStart Index of first content fragment
 local function extractHeader(fragments)
     local nameFragment = fragments[1]
     local header = {
@@ -377,8 +390,8 @@ local function extractHeader(fragments)
     return header, contentStart
 end
 
----@param fragments table
----@return table|nil tooltipInfo
+---@param fragments TooltipFragment[]
+---@return SpellTooltipInfo|nil
 local function parseSpellTooltip(fragments)
     if not fragments or #fragments == 0 then return nil end
 
@@ -394,8 +407,8 @@ local function parseSpellTooltip(fragments)
     return tooltipInfo
 end
 
----@param fragments table
----@return table|nil tooltipInfo
+---@param fragments TooltipFragment[]
+---@return SpellTooltipInfo|nil
 local function parseTalentSpendTooltip(fragments)
     if not fragments or #fragments == 0 then return nil end
 
@@ -453,8 +466,8 @@ local function parseTalentSpendTooltip(fragments)
     return tooltipInfo
 end
 
----@param fragments table
----@return table|nil tooltipInfo
+---@param fragments TooltipFragment[]
+---@return SpellTooltipInfo|nil
 local function parseTalentCapstoneTooltip(fragments)
     if not fragments or #fragments == 0 then return nil end
 
@@ -535,6 +548,9 @@ local translator = setmetatable({
     tooltipDataTypes = { Enum.TooltipDataType.Spell, Enum.TooltipDataType.Macro }
 }, { __index = ns.BaseTooltipTranslator })
 
+---@param str string
+---@return string? format    Translation key format with "%s" for the talent name, or nil on miss
+---@return string? talentName Extracted talent name, or nil on miss
 local function parseRequiresTalentLine(str)
     local prefix = "Requires "
     local suffix = " talent"
@@ -548,6 +564,9 @@ local function parseRequiresTalentLine(str)
 end
 
 --- Translate all fields of a SpellBlock using the appropriate repositories.
+---@param spellBlock SpellBlock?
+---@param highlightSpellName boolean
+---@return table[]? translatedTooltipLines Array of { line, right, value, ... } entries
 local function translateTooltipSpellInfo(spellBlock, highlightSpellName)
     if not spellBlock then return end
 
@@ -640,6 +659,8 @@ local function translateTooltipSpellInfo(spellBlock, highlightSpellName)
     return translatedTooltipLines
 end
 
+---@param spellId integer?
+---@param translatedTooltipLines table[]
 local function addUntranslatedSpellInfoToCache(spellId, translatedTooltipLines)
     local function findUntranslatedDescriptions(tooltipLines)
         local results = {}
