@@ -20,7 +20,7 @@ local ExtractNumericValues = ns.StringUtil.ExtractNumericValues
 local InsertNumericValues = ns.StringUtil.InsertNumericValues
 
 ---@class UnitTooltipTranslator : BaseTooltipTranslator
-local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Unit }, { __index = ns.BaseTooltipTranslator })
+local translator = setmetatable({ tooltipDataTypes = { Enum.TooltipDataType.Unit } }, { __index = ns.BaseTooltipTranslator })
 
 local function parseUnitTooltipLines(tooltipLines)
     local function parseSubnameInfo(tooltipLine)

@@ -9,7 +9,7 @@ local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobal
 local GetTranslatedClass = ns.DbContext.Player.GetTranslatedClass
 
 ---@class ItemTooltipTranslator : BaseTooltipTranslator
-local translator = setmetatable({ tooltipDataType = Enum.TooltipDataType.Item }, { __index = ns.BaseTooltipTranslator })
+local translator = setmetatable({ tooltipDataTypes = { Enum.TooltipDataType.Item } }, { __index = ns.BaseTooltipTranslator })
 
 local CATEGORY = {
     ATTRIBUTES = "Attributes",
