@@ -6,7 +6,6 @@ local GetTranslatedSpecialization = ns.DbContext.Player.GetTranslatedSpecializat
 local GetTranslatedClass = ns.DbContext.Player.GetTranslatedClass
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
-local SetText = ns.FontStringUtil.SetText
 
 local OnUpdateTooltip = function(tooltip, expectedOwner)
     ns.TooltipUtil:OnUpdateTooltip(tooltip, expectedOwner, GetTranslatedGlobalString, true)
@@ -80,9 +79,13 @@ local function PaperDollStatTooltip_Hook(statFrame)
     local currentTooltipOwner = GameTooltip:GetOwner()
     if (currentTooltipOwner and currentTooltipOwner ~= statFrame) then return end
 
+    local TLA = ns.TooltipLineAccessor
+    local line1Text = TLA.GetLeftText(GameTooltip, 1)
+    if not line1Text then return end
+
     local translatedLabel = ""
     if (statFrame.Label) then
-        translatedLabel = _G["GameTooltipTextLeft1"]:GetText():gsub(HIGHLIGHT_FONT_COLOR_CODE .. "([A-Za-z%s]+)(.+)",
+        translatedLabel = line1Text:gsub(HIGHLIGHT_FONT_COLOR_CODE .. "([A-Za-z%s]+)(.+)",
             function(_, other)
                 local result = HIGHLIGHT_FONT_COLOR_CODE .. string.sub(statFrame.Label:GetText(), 1, -2)
                 if (other) then
@@ -91,20 +94,22 @@ local function PaperDollStatTooltip_Hook(statFrame)
                 return result .. FONT_COLOR_CODE_CLOSE
             end)
     else
-        translatedLabel = _G["GameTooltipTextLeft1"]:GetText():gsub(HIGHLIGHT_FONT_COLOR_CODE .. "(.+)" .. FONT_COLOR_CODE_CLOSE,
+        translatedLabel = line1Text:gsub(HIGHLIGHT_FONT_COLOR_CODE .. "(.+)" .. FONT_COLOR_CODE_CLOSE,
             function(tooltipText)
                 local translatedTooltipText = GetTranslatedGlobalString(tooltipText)
                 return HIGHLIGHT_FONT_COLOR_CODE .. translatedTooltipText .. FONT_COLOR_CODE_CLOSE
             end)
     end
-    SetText(_G["GameTooltipTextLeft1"], translatedLabel)
+    TLA.SetLeftText(GameTooltip, 1, translatedLabel)
 
     if (statFrame.tooltip2) then
-        SetText(_G["GameTooltipTextLeft2"], GetTranslatedGlobalString(_G["GameTooltipTextLeft2"]:GetText()))
+        local text2 = TLA.GetLeftText(GameTooltip, 2)
+        if text2 then TLA.SetLeftText(GameTooltip, 2, GetTranslatedGlobalString(text2)) end
     end
 
     if (statFrame.tooltip3) then
-        SetText(_G["GameTooltipTextLeft3"], GetTranslatedGlobalString(_G["GameTooltipTextLeft2"]:GetText()))
+        local text2 = TLA.GetLeftText(GameTooltip, 2)
+        if text2 then TLA.SetLeftText(GameTooltip, 3, GetTranslatedGlobalString(text2)) end
     end
 
     GameTooltip:Show()

@@ -26,3 +26,4 @@ ignore:
   - DevTools
   - RawData
   - docs
+  - types
