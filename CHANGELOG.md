@@ -3,6 +3,7 @@ Changelog
 
 * **[Next]:**
 
+  * fix: Restore movie close dialog button paths
   * fix: Use secret value guards for tooltip taint protection
   * refactor: Support multi-section changelog entries per version
   * chore: Overhaul addon packaging pipeline
