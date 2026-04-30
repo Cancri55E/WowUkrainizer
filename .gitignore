@@ -46,3 +46,8 @@ node_modules
 .release
 .env
 .secrets
+
+# CI: sibling repos checked out into the worktree by release/package workflows
+/DevTools/
+/RawData/
+log.txt

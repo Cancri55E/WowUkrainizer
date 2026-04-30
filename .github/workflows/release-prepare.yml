@@ -123,7 +123,7 @@ jobs:
       - name: Commit and push release branch
         run: |
           BRANCH="release/v${{ inputs.version }}"
-          git add -A
+          git add CHANGELOG.md Database/
           git commit -m "chore: prepare release v${{ inputs.version }}"
           git push -u origin "$BRANCH"
 
