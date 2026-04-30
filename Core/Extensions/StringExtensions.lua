@@ -266,6 +266,47 @@ function internal.EscapePattern(str)
     return (str:gsub("([%(%)%.%+%-%*%?%[%^%$%%])", "%%%1"))
 end
 
+-- Matches any Lua pattern magic character: ( ) . % + - * ? [ ] ^ $
+local LUA_MAGIC_CHAR_PATTERN = "([%(%)%.%%%+%-%*%?%[%]%^%$])"
+
+--- Convert a WoW format string into an anchored Lua match pattern with one capture per placeholder. %s becomes (.-) for all but the last %s which becomes (.+); %d becomes (%d+); literal magic chars are escaped. Example: "Max %d Charges" becomes "^Max (%d+) Charges$".
+---@param fmt string @Blizzard format string with %s / %d placeholders.
+---@return string @Anchored Lua match pattern.
+function internal.BuildMatchPattern(fmt)
+    local parts = {}
+    local pos = 1
+    local totalStringPlaceholders = select(2, fmt:gsub("%%s", ""))
+    local seenStringPlaceholders = 0
+    while pos <= #fmt do
+        local stringStart, stringEnd = fmt:find("%%s", pos)
+        local numberStart, numberEnd = fmt:find("%%d", pos)
+
+        -- Pick the nearest placeholder
+        local placeholderStart, placeholderEnd, isString
+        if stringStart and (not numberStart or stringStart <= numberStart) then
+            placeholderStart, placeholderEnd, isString = stringStart, stringEnd, true
+        elseif numberStart then
+            placeholderStart, placeholderEnd, isString = numberStart, numberEnd, false
+        end
+
+        if not placeholderStart then
+            table.insert(parts, (fmt:sub(pos):gsub(LUA_MAGIC_CHAR_PATTERN, "%%%1")))
+            break
+        end
+        if placeholderStart > pos then
+            table.insert(parts, (fmt:sub(pos, placeholderStart - 1):gsub(LUA_MAGIC_CHAR_PATTERN, "%%%1")))
+        end
+        if isString then
+            seenStringPlaceholders = seenStringPlaceholders + 1
+            table.insert(parts, seenStringPlaceholders < totalStringPlaceholders and "(.-)" or "(.+)")
+        else
+            table.insert(parts, "(%d+)")
+        end
+        pos = placeholderEnd + 1
+    end
+    return "^" .. table.concat(parts) .. "$"
+end
+
 function internal.CreatePatternFromFormatString(formatString, replacements)
     -- Start by escaping the entire string to handle all literal magic characters.
     local pattern = internal.EscapePattern(formatString)

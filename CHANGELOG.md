@@ -3,8 +3,14 @@ Changelog
 
 * **[Next]:**
 
+  * fix: Restore movie close dialog button paths
+  * fix: Use secret value guards for tooltip taint protection
   * refactor: Support multi-section changelog entries per version
   * chore: Overhaul addon packaging pipeline
+  * refactor: Unify tooltip text access via TooltipLineAccessor
+  * refactor: Standardize FontString index scheme across tooltip translators
+  * refactor: Centralize post-call line count and eliminate hook duplication
+  * refactor: Consolidate spell tooltip parsing into translator
 
 * **v1.15.13 (2026-02-15):**
 

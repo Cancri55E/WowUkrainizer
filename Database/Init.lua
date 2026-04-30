@@ -8,13 +8,6 @@ ns.FACTION_HORDE = "Орда"
 ns.LEVEL_TRANSLATION = "Рівень"
 ns.LEADER_TRANSLATION = "Ватажок"
 
-ns.SPELL_PASSIVE_TRANSLATION = "Пасивно"
-ns.SPELL_RANK_TRANSLATION = "Pівень"
-ns.SPELL_NEXT_RANK_TRANSLATION = "Наступний рівень:"
-
-ns.TALENT_REPLACES_TRANSLATION = "Замінює"
-ns.TALENT_REPLACED_BY_TRANSLATION = "Замінено на"
-ns.TALENT_UPGRADE_TRANSLATION = "Оновлення"
 
 ns.PET_LEVEL_TRANSLATION = "Супутник {1} рівня"
 ns.PET_CAPTURABLE_TRANSLATION = "Mожна приручити"
@@ -34,8 +27,20 @@ ns._db.Changelogs = {
         date = "",
         title = nil,
         sections = {
-            { color = "blue", type = "Покращення", author = "Cancri", description = [[Оновлено вікно «WowUkrainizer - Що нового?»: різні типи змін (виправлення, оновлення перекладу тощо) тепер відображаються в одному записі версії як окремі секції з кольоровими мітками та авторами.]] },
-        }
+            {
+                color = "red",
+                type = "Виправлення",
+                author = "Cancri",
+                description = [[- Аддон більше не звертається до сенситивних ігрових даних. Цього вимагають нові обмеження WoW 12.0. Завдяки цьому в груповому контенті (рейди, підземелля, поля бою тощо) зникли падіння FPS, помилки при наведенні курсора на персонажів та об'єкти, а також збої інтерфейсу під час бою.
+- Виправлено помилку завантаження аддона через нове вікно пропуску сінематиків.]]
+            },
+            {
+                color = "blue",
+                type = "Покращення",
+                author = "Cancri",
+                description = [[- Оновлено вікно «WowUkrainizer - Що нового?»: зміни тепер згруповані за категоріями з кольоровими мітками.]]
+            }
+        },
     },
     {
         version = "1.15.13",

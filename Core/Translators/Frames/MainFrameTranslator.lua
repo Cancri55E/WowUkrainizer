@@ -35,18 +35,18 @@ local function microButtonTooltipHook(button)
     local owner = GameTooltip:GetOwner()
     if (owner and owner ~= button) then return end
 
-    local tooltipTitle = _G["GameTooltipTextLeft1"]
-    if (tooltipTitle) then
+    local TLA = ns.TooltipLineAccessor
+    local text = TLA.GetLeftText(GameTooltip, 1)
+    if text then
         local bindingKeyText
-        local text = tooltipTitle:GetText() or ''
         text = text:gsub("(.-) " .. NORMAL_FONT_COLOR_CODE .. "%((.-)%)" .. FONT_COLOR_CODE_CLOSE, function(t, b)
             bindingKeyText = NORMAL_FONT_COLOR_CODE .. ' (' .. b .. ')' .. FONT_COLOR_CODE_CLOSE
             return t
         end)
         if (not bindingKeyText) then
-            tooltipTitle:SetText(GetTranslatedGlobalString(text))
+            TLA.SetLeftText(GameTooltip, 1, GetTranslatedGlobalString(text))
         else
-            tooltipTitle:SetText(GetTranslatedGlobalString(text) .. bindingKeyText)
+            TLA.SetLeftText(GameTooltip, 1, GetTranslatedGlobalString(text) .. bindingKeyText)
         end
     end
     GameTooltip:Show()

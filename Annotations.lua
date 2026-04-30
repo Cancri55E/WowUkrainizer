@@ -42,6 +42,7 @@
 ---@field SettingsProvider SettingsProvider? @Instance of the SettingsProvider. To create instance call CreateSettingsProvider
 ---@field UntranslatedDataStorage UntranslatedDataStorage? @Singleton instance of the UntranslatedDataStorage. To create instance call CreateUntranslatedDataStorage
 ---@field IngameDataCacher IngameDataCacher? @Singleton instance of the IngameDataCacher. To create instance call CreateIngameDataCacher
+---@field TooltipLineAccessor TooltipLineAccessor @Unified accessor for reading/writing tooltip line FontStrings.
 
 ---@class (exact) TranslatedQuestData
 ---@field ID number The unique identifier of the quest.
@@ -109,3 +110,89 @@
 ---@field Items table<integer, string[]>
 ---@field Waypoints table<integer, string>
 -- TODO: @field Voiceover
+
+-- ---------------------------------------------------------------------------
+-- Spell tooltip parser shapes (Core/Translators/Tooltips/SpellTooltipTranslator.lua)
+-- ---------------------------------------------------------------------------
+
+---@class (exact) TooltipFragment
+---@field value string
+---@field line integer           @1-based tooltip line index (visible lines only)
+---@field right boolean          @true = right text, false = left text
+---@field type integer?          @Enum.TooltipDataLineType (spell-like tooltips only)
+
+-- Shared sub-shape used by most SpellBlock fields.
+---@class (exact) TooltipLineValue
+---@field value string
+---@field line integer
+---@field right boolean
+
+-- Same as TooltipLineValue but without value (Passive / Upgrade markers).
+---@class (exact) TooltipLineMarker
+---@field line integer
+---@field right boolean
+
+---@class (exact) ResourceLineValue : TooltipLineMarker
+---@field values string[]        @Unique resource-cost lines extracted from the fragment
+
+---@class (exact) SpellBlock
+---@field ResourceType ResourceLineValue?
+---@field Range TooltipLineValue?
+---@field Requires TooltipLineValue?
+---@field CastTime TooltipLineValue?
+---@field Cooldown TooltipLineValue?
+---@field CooldownRemaining TooltipLineValue?
+---@field MaxCharges TooltipLineValue?
+---@field EvokerSpellColor TooltipLineValue?
+---@field ReplacedBy TooltipLineValue?
+---@field Replaces TooltipLineValue?
+---@field Passive TooltipLineMarker?
+---@field Upgrade TooltipLineMarker?
+---@field AdditionalSpellTips TooltipLineValue[]?
+---@field Descriptions TooltipLineValue[]?
+
+---@class (exact) TalentBlock
+---@field Rank TooltipLineValue
+---@field MinRank string
+---@field MaxRank string?        @nil when the NO_MAX rank pattern matched
+---@field CurrentRank SpellBlock
+---@field NextRankHeader TooltipLineValue?
+---@field NextRank SpellBlock?
+
+---@class (exact) CapstoneTier
+---@field Header TooltipLineValue
+---@field TierNumber integer
+---@field CurrentBlock SpellBlock
+---@field NextHeader TooltipLineValue?
+---@field NextBlock SpellBlock?
+
+---@class (exact) CapstoneBlock
+---@field RawTitle string
+---@field TitleLine integer
+---@field CurrentRank string?
+---@field TotalMaxRanks string?
+---@field Tiers CapstoneTier[]
+---@field Passive TooltipLineMarker?
+
+-- Produced by parseSpellTooltip / parseTalentSpendTooltip / parseTalentCapstoneTooltip.
+-- Exactly one of Spell / Talent / Capstone is set.
+---@class (exact) SpellTooltipInfo
+---@field Name TooltipLineValue
+---@field Form TooltipLineValue?
+---@field SpellId integer?
+---@field Spell SpellBlock?
+---@field Talent TalentBlock?
+---@field Capstone CapstoneBlock?
+
+-- Addon-local frame (declared in Core/Frames/).
+---@type Frame
+SubtitlesFrame = nil
+
+-- Immersion (3rd-party addon) globals. Shape is intentionally loose — Immersion's
+-- API surface is not stable across versions. Declared here only so hooks compile.
+---@type Frame?
+ImmersionFrame = nil
+---@type table?
+ImmersionAPI = nil
+---@type Frame?
+ImmersionContentFrame = nil

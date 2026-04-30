@@ -4,7 +4,6 @@ local ns = select(2, ...);
 local GetTranslatedSpecialization = ns.DbContext.Player.GetTranslatedSpecialization
 local GetTranslatedGlobalString = ns.DbContext.GlobalStrings.GetTranslatedGlobalString
 local UpdateTextWithTranslation = ns.FontStringUtil.UpdateTextWithTranslation
-local SetText = ns.FontStringUtil.SetText
 local OnUpdateGameTooltip = function(expectedOwner)
     ns.TooltipUtil:OnUpdateGameTooltip(expectedOwner, GetTranslatedGlobalString, true)
 end
@@ -33,25 +32,27 @@ local function PaperDollFrame_EquipmentManagerPane_OnUpdate_Hook(pane)
 end
 
 local function GearSetButton_OnEnter_Hook()
-    local tooltipName = GameTooltip:GetName()
+    local TLA = ns.TooltipLineAccessor
 
-    local itemsCountText = _G[tooltipName .. "TextRight1"]
-    SetText(itemsCountText, GetTranslatedGlobalString(itemsCountText:GetText()))
+    local rightText = TLA.GetRightText(GameTooltip, 1)
+    if rightText then TLA.SetRightText(GameTooltip, 1, GetTranslatedGlobalString(rightText)) end
 
     for i = 2, GameTooltip:NumLines() do
-        local tooltipLine = _G[tooltipName .. "TextLeft" .. i]
-        if (CreateColor(tooltipLine:GetTextColor()):IsEqualTo(RED_FONT_COLOR)) then
-            local tooltipText = tooltipLine:GetText()
-            local translatedText = string.gsub(tooltipText, "(.-)%s*(%d*)%s*missing", function(slot, slotIndex)
-                if (slotIndex ~= "") then
-                    return GetTranslatedGlobalString("%s %d missing"):format(GetTranslatedGlobalString(slot), slotIndex)
-                else
-                    return GetTranslatedGlobalString("%s missing"):format(GetTranslatedGlobalString(slot))
-                end
-            end)
-            SetText(tooltipLine, translatedText)
-        else
-            SetText(tooltipLine, GetTranslatedGlobalString(tooltipLine:GetText()))
+        local leftFS = TLA.GetLeftFontString(GameTooltip, i)
+        local leftText = TLA.GetLeftText(GameTooltip, i)
+        if leftFS and leftText then
+            if (CreateColor(leftFS:GetTextColor()):IsEqualTo(RED_FONT_COLOR)) then
+                local translatedText = string.gsub(leftText, "(.-)%s*(%d*)%s*missing", function(slot, slotIndex)
+                    if (slotIndex ~= "") then
+                        return GetTranslatedGlobalString("%s %d missing"):format(GetTranslatedGlobalString(slot), slotIndex)
+                    else
+                        return GetTranslatedGlobalString("%s missing"):format(GetTranslatedGlobalString(slot))
+                    end
+                end)
+                TLA.SetLeftText(GameTooltip, i, translatedText)
+            else
+                TLA.SetLeftText(GameTooltip, i, GetTranslatedGlobalString(leftText))
+            end
         end
     end
 
