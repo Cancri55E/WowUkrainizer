@@ -158,7 +158,7 @@ Quests repository checks `ns._db.Quests` first; if not found and MT is enabled v
 
 Stateless utility modules attached to the `ns` namespace.
 
-### StringUtil (`StringExtensions.lua`, 279 lines)
+### StringUtil (`StringExtensions.lua`)
 
 The most-used utility. Key functions:
 - **Hashing**: `GetHash()`, `GetNameHash()`, `GetPersonalizedStringHash()` (see triple-hash above)
@@ -167,6 +167,7 @@ The most-used utility. Key functions:
 - **Cyrillic**: `Uft8Upper()` — Ukrainian-aware uppercase (`ї→Ї`, `і→І`, `є→Є`, `ґ→Ґ`)
 - **Grammar**: `DeclensionWord(number, singular, plural, genitivePlural)` — Ukrainian plural forms
 - **Search**: `ReplaceWholeWordNocase()` — case-insensitive word boundary replacement
+- **Pattern building**: `BuildMatchPattern(fmt)` — convert a Blizzard format string into an anchored Lua match pattern (see [notes/buildMatchPattern.md](notes/buildMatchPattern.md))
 
 ### FontStringUtil (`FontStringExtensions.lua`)
 
@@ -182,6 +183,19 @@ The most-used utility. Key functions:
 ### GameApiUtil (`GameApiExtensions.lua`)
 
 - `GetPlayerMapPosition()` — wrapped WoW map position API
+
+### TooltipLineAccessor (`TooltipLineAccessor.lua`)
+
+Unified accessor for reading and writing tooltip line FontStrings. Works with any
+named tooltip frame (`GameTooltip`, `ElvUI_SpellBookTooltip`, `ShoppingTooltip1`, …)
+that exposes the `<Name>TextLeft<i>` / `<Name>TextRight<i>` global naming convention.
+
+- `GetLeftFontString(tooltip, lineNum)` / `GetRightFontString(...)` — resolve the underlying FontString.
+- `GetLeftText(tooltip, lineNum)` / `GetRightText(...)` — read text safely; returns `(nil, true)` for secret values (12.0 combat restriction) so callers can skip them without tainting.
+- `SetLeftText(tooltip, lineNum, value)` / `SetRightText(...)` — write text while preserving the existing color.
+- `TranslateLines(tooltip, translateFunc, startLine?, endLine?, ignoreLeft?, ignoreRight?)` — iterate every line and apply a translation function. Secret lines are skipped per-line, so `translateFunc` is never called with a tainted value.
+
+`TooltipUtil.OnUpdateTooltip` and the per-line tooltip translators delegate to this module rather than poking `_G[...]` directly.
 
 ---
 
@@ -355,13 +369,14 @@ end)
 
 Domain-specific helpers used by translators.
 
-| File | Lines | Purpose |
-|------|-------|---------|
-| `SpellTooltipUtil.lua` | 481 | Complex spell tooltip parsing: name, rank, resources, cast time, cooldown, range, passive/upgrade flags, talent chains. Used by `SpellTooltipTranslator`. |
-| `QuestFrameUtil.lua` | 69 | Creates MT icon, translation toggle button, and Wowhead link button for quest frames. |
-| `TooltipUtil.lua` | 34 | `OnUpdateTooltip()` — batch-update tooltip left/right text while preserving colors. |
-| `ZoneFrameUtil.lua` | 35 | `GetTranslatedPvpText()` — translates zone control text (sanctuary, contested, etc.) with faction genitive. |
-| `SelectedIconFrameTranslationUtil.lua` | 43 | Hooks icon selector frames and integrates with `DropdownDescriptionSubscriber`. |
+| File | Purpose |
+|------|---------|
+| `QuestFrameUtil.lua` | Creates MT icon, translation toggle button, and Wowhead link button for quest frames. |
+| `TooltipUtil.lua` | `OnUpdateTooltip()` / `OnUpdateGameTooltip()` — owner-guarded wrappers that delegate per-line iteration to `TooltipLineAccessor.TranslateLines`. |
+| `ZoneFrameUtil.lua` | `GetTranslatedPvpText()` — translates zone control text (sanctuary, contested, etc.) with faction genitive. |
+| `SelectedIconFrameTranslationUtil.lua` | Hooks icon selector frames and integrates with `DropdownDescriptionSubscriber`. |
+
+Spell tooltip parsing (formerly `SpellTooltipUtil.lua`) now lives directly inside `Core/Translators/Tooltips/SpellTooltipTranslator.lua` — name, rank, resources, cast time, cooldown, range, passive/upgrade flags, and talent chain handling are all driven from the translator using `BuildMatchPattern` against Blizzard format constants.
 
 ---
 

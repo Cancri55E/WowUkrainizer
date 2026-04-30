@@ -2,15 +2,19 @@
 local ns = select(2, ...);
 
 --- Unified accessor for reading and writing tooltip line FontStrings.
---- Works with any named tooltip frame (GameTooltip, ElvUI_SpellBookTooltip, ShoppingTooltip1, etc.).
+--- Works with any named tooltip frame (GameTooltip, ElvUI_SpellBookTooltip,
+--- ShoppingTooltip1, etc.) — anything where `tooltip:GetName()` returns a
+--- non-nil string and child FontStrings follow the `<Name>TextLeft<i>` /
+--- `<Name>TextRight<i>` global naming convention.
 ---@class TooltipLineAccessor
 local accessor = {}
 ns.TooltipLineAccessor = accessor
 
 --- Get the left FontString widget for a given tooltip line number.
 ---@param tooltip GameTooltip
----@param lineNum number 1-based line number
----@return FontString|nil
+---@param lineNum integer 1-based line number
+---@return FontString? fontString nil if the tooltip has no name
+---@nodiscard
 function accessor.GetLeftFontString(tooltip, lineNum)
     local name = tooltip:GetName()
     if not name then return nil end
@@ -19,8 +23,9 @@ end
 
 --- Get the right FontString widget for a given tooltip line number.
 ---@param tooltip GameTooltip
----@param lineNum number 1-based line number
----@return FontString|nil
+---@param lineNum integer 1-based line number
+---@return FontString? fontString nil if the tooltip has no name
+---@nodiscard
 function accessor.GetRightFontString(tooltip, lineNum)
     local name = tooltip:GetName()
     if not name then return nil end
@@ -29,9 +34,10 @@ end
 
 --- Safely read text from a tooltip line's left FontString.
 ---@param tooltip GameTooltip
----@param lineNum number
----@return string|nil text The text, or nil if not available or secret
----@return boolean isSecret True if text exists but is a secret value (12.0 combat restriction)
+---@param lineNum integer 1-based line number
+---@return string? text The text, or nil if the line is missing, empty, or holds a secret value
+---@return boolean isSecret True when the line exists but is a secret value (12.0 combat restriction)
+---@nodiscard
 function accessor.GetLeftText(tooltip, lineNum)
     local fs = accessor.GetLeftFontString(tooltip, lineNum)
     if not fs then return nil, false end
@@ -43,9 +49,10 @@ end
 
 --- Safely read text from a tooltip line's right FontString.
 ---@param tooltip GameTooltip
----@param lineNum number
----@return string|nil text The text, or nil if not available or secret
----@return boolean isSecret True if text exists but is a secret value (12.0 combat restriction)
+---@param lineNum integer 1-based line number
+---@return string? text The text, or nil if the line is missing, empty, or holds a secret value
+---@return boolean isSecret True when the line exists but is a secret value (12.0 combat restriction)
+---@nodiscard
 function accessor.GetRightText(tooltip, lineNum)
     local fs = accessor.GetRightFontString(tooltip, lineNum)
     if not fs then return nil, false end
@@ -57,7 +64,7 @@ end
 
 --- Set text on a tooltip line's left FontString, preserving text color.
 ---@param tooltip GameTooltip
----@param lineNum number
+---@param lineNum integer 1-based line number
 ---@param value string
 function accessor.SetLeftText(tooltip, lineNum, value)
     local fs = accessor.GetLeftFontString(tooltip, lineNum)
@@ -69,7 +76,7 @@ end
 
 --- Set text on a tooltip line's right FontString, preserving text color.
 ---@param tooltip GameTooltip
----@param lineNum number
+---@param lineNum integer 1-based line number
 ---@param value string
 function accessor.SetRightText(tooltip, lineNum, value)
     local fs = accessor.GetRightFontString(tooltip, lineNum)
@@ -80,15 +87,15 @@ function accessor.SetRightText(tooltip, lineNum, value)
 end
 
 --- Safely iterate and translate all lines of a tooltip using a translation function.
---- Secret lines are skipped per-line — translateFunc is never called with a secret value,
---- so it is safe to perform hash lookups, comparisons, and other operations inside it.
---- Replaces the core loop of TooltipUtil:OnUpdateTooltip.
+--- Secret lines are skipped per-line — `translateFunc` is never called with a secret
+--- value, so it is safe to perform hash lookups, comparisons, and other operations
+--- inside it.
 ---@param tooltip GameTooltip
 ---@param translateFunc fun(text: string): string
----@param startLine number|nil Starting line (default 1)
----@param endLine number|nil Ending line (default tooltip:NumLines())
----@param ignoreLeft boolean|nil Skip left text lines
----@param ignoreRight boolean|nil Skip right text lines
+---@param startLine? integer Starting line (default 1)
+---@param endLine? integer Ending line (default `tooltip:NumLines()`)
+---@param ignoreLeft? boolean Skip left-text lines
+---@param ignoreRight? boolean Skip right-text lines
 function accessor.TranslateLines(tooltip, translateFunc, startLine, endLine, ignoreLeft, ignoreRight)
     local start = startLine or 1
     local stop = endLine or tooltip:NumLines()

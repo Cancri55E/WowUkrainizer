@@ -42,6 +42,7 @@
 ---@field SettingsProvider SettingsProvider? @Instance of the SettingsProvider. To create instance call CreateSettingsProvider
 ---@field UntranslatedDataStorage UntranslatedDataStorage? @Singleton instance of the UntranslatedDataStorage. To create instance call CreateUntranslatedDataStorage
 ---@field IngameDataCacher IngameDataCacher? @Singleton instance of the IngameDataCacher. To create instance call CreateIngameDataCacher
+---@field TooltipLineAccessor TooltipLineAccessor @Unified accessor for reading/writing tooltip line FontStrings.
 
 ---@class (exact) TranslatedQuestData
 ---@field ID number The unique identifier of the quest.

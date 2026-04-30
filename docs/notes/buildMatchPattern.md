@@ -1,6 +1,7 @@
-# `buildMatchPattern(fmt)` — deep dive
+# `BuildMatchPattern(fmt)` — deep dive
 
-**File:** `Core/Translators/Tooltips/SpellTooltipTranslator.lua`
+**File:** `Core/Extensions/StringExtensions.lua` (exposed as `ns.StringUtil.BuildMatchPattern`)
+**Callers:** `Core/Translators/Tooltips/SpellTooltipTranslator.lua` (7 call sites — listed below).
 **Purpose:** Convert a Blizzard format string (e.g. `"Max %d Charges"`) into an anchored Lua match pattern (`"^Max (%d+) Charges$"`) with one capture per placeholder.
 
 ---
@@ -9,9 +10,9 @@
 
 Blizzard exposes localized format constants like `"Rank %s/%s"` or `"%s (%d/%d)"`. The spell tooltip translator needs to **recognize** those shapes in parsed tooltip lines and **extract** the runtime values (rank numbers, talent names). A hand-written pattern per constant would bit-rot across WoW patches — this helper derives the pattern mechanically from the constant itself.
 
-## Real Blizzard inputs in this file
+## Real Blizzard inputs
 
-All 7 callers feed real GlobalStrings:
+All 7 callers (`SpellTooltipTranslator.lua`) feed real GlobalStrings:
 
 | Constant | Value |
 | --- | --- |
