@@ -23,8 +23,8 @@ ns._db = {}
 
 ns._db.Changelogs = {
     {
-        version = "Next",
-        date = "",
+        version = "1.16.0",
+        date = "30 квітня 2026",
         title = nil,
         sections = {
             {
