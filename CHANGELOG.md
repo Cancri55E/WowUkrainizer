@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-* **[Next]:**
+* **v1.16.0 (2026-04-30):**
 
   * fix: Restore movie close dialog button paths
   * fix: Use secret value guards for tooltip taint protection
