@@ -13,6 +13,11 @@ on:
         required: false
         default: "true"
         type: string
+      version_override:
+        description: "Base version X.Y.Z to use when dispatched against a branch (no tag yet). Ignored when ref is a v* tag."
+        required: false
+        default: ""
+        type: string
 
 jobs:
   package:
@@ -54,18 +59,40 @@ jobs:
       - name: Compute full version
         id: version
         run: |
-          LATEST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n 1)
-          if [ -z "$LATEST_TAG" ]; then
-            echo "::error::No version tags found"
-            exit 1
-          fi
+          REF_NAME="${GITHUB_REF_NAME}"
+          REF_TYPE="${GITHUB_REF_TYPE}"
+          OVERRIDE="${{ inputs.version_override }}"
 
-          TAG_NO_V="${LATEST_TAG#v}"
-          DOT_COUNT=$(echo "$TAG_NO_V" | tr -cd '.' | wc -c)
-          if [ "$DOT_COUNT" -eq 3 ]; then
-            BASE=$(echo "$TAG_NO_V" | sed 's/\.[0-9]*$//')
+          if [ "$REF_TYPE" = "tag" ] && echo "$REF_NAME" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+'; then
+            TAG_NO_V="${REF_NAME#v}"
+            DOT_COUNT=$(echo "$TAG_NO_V" | tr -cd '.' | wc -c)
+            if [ "$DOT_COUNT" -eq 3 ]; then
+              BASE=$(echo "$TAG_NO_V" | sed 's/\.[0-9]*$//')
+            else
+              BASE="$TAG_NO_V"
+            fi
+            SOURCE="ref tag $REF_NAME"
+          elif [ -n "$OVERRIDE" ]; then
+            if ! echo "$OVERRIDE" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "::error::version_override must be X.Y.Z, got: $OVERRIDE"
+              exit 1
+            fi
+            BASE="$OVERRIDE"
+            SOURCE="version_override input"
           else
-            BASE="$TAG_NO_V"
+            LATEST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n 1)
+            if [ -z "$LATEST_TAG" ]; then
+              echo "::error::No version tags found and no version_override provided"
+              exit 1
+            fi
+            TAG_NO_V="${LATEST_TAG#v}"
+            DOT_COUNT=$(echo "$TAG_NO_V" | tr -cd '.' | wc -c)
+            if [ "$DOT_COUNT" -eq 3 ]; then
+              BASE=$(echo "$TAG_NO_V" | sed 's/\.[0-9]*$//')
+            else
+              BASE="$TAG_NO_V"
+            fi
+            SOURCE="latest tag $LATEST_TAG (fallback)"
           fi
 
           TRANSLATION_BUILD=$(git -C RawData rev-list --count HEAD)
@@ -76,7 +103,7 @@ jobs:
           echo "full_version=$FULL_VERSION" >> "$GITHUB_OUTPUT"
           echo "====================================="
           echo "Dispatch ref:        ${{ github.ref }}"
-          echo "Latest tag:          $LATEST_TAG"
+          echo "Version source:      $SOURCE"
           echo "Base version:        $BASE"
           echo "Translation build:   $TRANSLATION_BUILD"
           echo "Full version:        $FULL_VERSION"
