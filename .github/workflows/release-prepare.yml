@@ -105,6 +105,23 @@ jobs:
           path: RawData
           fetch-depth: 0
 
+      - name: Compute and pin release metadata
+        id: meta
+        run: |
+          RAW_DATA_SHA=$(git -C RawData rev-parse HEAD)
+          TRANSLATION_BUILD=$(git -C RawData rev-list --count HEAD)
+          FULL_VERSION="v${{ inputs.version }}.${TRANSLATION_BUILD}"
+          PREPARED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo "raw_data_sha=$RAW_DATA_SHA" >> "$GITHUB_OUTPUT"
+          echo "translation_build=$TRANSLATION_BUILD" >> "$GITHUB_OUTPUT"
+          echo "full_version=$FULL_VERSION" >> "$GITHUB_OUTPUT"
+          echo "prepared_at=$PREPARED_AT" >> "$GITHUB_OUTPUT"
+          echo "====================================="
+          echo "RawData SHA:         $RAW_DATA_SHA"
+          echo "Translation build:   $TRANSLATION_BUILD"
+          echo "Full version:        $FULL_VERSION"
+          echo "====================================="
+
       - name: Restore and build DevTools
         run: |
           dotnet restore DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj
@@ -120,10 +137,22 @@ jobs:
             --gameClientConnectionString "${{ secrets.MONGODB_CONNECTION_STRING }}" 2>log.txt
           cat log.txt
 
+      - name: Write .release-meta.json
+        run: |
+          jq -n \
+            --arg version "${{ inputs.version }}" \
+            --arg full_version "${{ steps.meta.outputs.full_version }}" \
+            --arg raw_data_sha "${{ steps.meta.outputs.raw_data_sha }}" \
+            --argjson translation_build ${{ steps.meta.outputs.translation_build }} \
+            --arg prepared_at "${{ steps.meta.outputs.prepared_at }}" \
+            '{version: $version, full_version: $full_version, raw_data_sha: $raw_data_sha, translation_build: $translation_build, prepared_at: $prepared_at}' \
+            > .release-meta.json
+          cat .release-meta.json
+
       - name: Commit and push release branch
         run: |
           BRANCH="release/v${{ inputs.version }}"
-          git add CHANGELOG.md Database/
+          git add CHANGELOG.md Database/ .release-meta.json
           git commit -m "chore: prepare release v${{ inputs.version }}"
           git push -u origin "$BRANCH"
 
@@ -136,7 +165,7 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/package.yml/dispatches \
-            -d '{"ref":"'"$BRANCH"'","inputs":{"create_github_release":"false","publish_to_curseforge":"false","version_override":"${{ inputs.version }}"}}'
+            -d '{"ref":"'"$BRANCH"'","inputs":{"create_github_release":"false","publish_to_curseforge":"false","regenerate_database":"true"}}'
 
       - name: Open draft PR to master
         env:
@@ -172,6 +201,6 @@ jobs:
           Manually dispatch \`Build and Deploy Package\` against \`$BRANCH\` with:
           - \`publish_to_curseforge\` = \`false\`
           - \`create_github_release\` = \`false\`
-          - \`version_override\` = \`${VERSION}\`
+          - \`regenerate_database\` = \`true\` (default — pinned to RawData SHA from \`.release-meta.json\`)
           EOF
           )"

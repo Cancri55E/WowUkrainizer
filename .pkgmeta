@@ -22,6 +22,7 @@ ignore:
   - cvars.dump
   - package.json
   - package-lock.json
+  - .release-meta.json
   - release.sh
   - DevTools
   - RawData
