@@ -2,6 +2,27 @@ name: Build and Deploy Package
 
 on:
   workflow_dispatch:
+    inputs:
+      create_github_release:
+        description: "Upload addon zip to GitHub release"
+        required: false
+        default: "false"
+        type: string
+      publish_to_curseforge:
+        description: "Publish to CurseForge (false = build only, attach as artifact)"
+        required: false
+        default: "true"
+        type: string
+      version_override:
+        description: "Base version X.Y.Z to use when dispatched against a branch (no tag yet). Ignored when ref is a v* tag or .release-meta.json is present."
+        required: false
+        default: ""
+        type: string
+      regenerate_database:
+        description: "Regenerate Database/ via DevTools (false = use the Database/ already in the checked-out ref, e.g. when invoked by release-publish)"
+        required: false
+        default: "true"
+        type: string
 
 jobs:
   package:
@@ -18,12 +39,95 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Read pinned release metadata (if present)
+        id: meta
+        run: |
+          if [ -f .release-meta.json ]; then
+            FULL_VERSION=$(jq -r '.full_version' .release-meta.json)
+            RAW_DATA_SHA=$(jq -r '.raw_data_sha' .release-meta.json)
+            echo "metadata_present=true" >> "$GITHUB_OUTPUT"
+            echo "full_version=$FULL_VERSION" >> "$GITHUB_OUTPUT"
+            echo "raw_data_sha=$RAW_DATA_SHA" >> "$GITHUB_OUTPUT"
+            echo "Found .release-meta.json — full_version=$FULL_VERSION, raw_data_sha=$RAW_DATA_SHA"
+          else
+            echo "metadata_present=false" >> "$GITHUB_OUTPUT"
+            echo "No .release-meta.json — falling back to ref/override-based versioning."
+          fi
+
+      - name: Compute full version
+        id: version
+        run: |
+          if [ "${{ steps.meta.outputs.metadata_present }}" = "true" ]; then
+            FULL_VERSION="${{ steps.meta.outputs.full_version }}"
+            SOURCE=".release-meta.json"
+          else
+            REF_NAME="${GITHUB_REF_NAME}"
+            REF_TYPE="${GITHUB_REF_TYPE}"
+            OVERRIDE="${{ inputs.version_override }}"
+
+            if [ "$REF_TYPE" = "tag" ] && echo "$REF_NAME" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+'; then
+              TAG_NO_V="${REF_NAME#v}"
+              DOT_COUNT=$(echo "$TAG_NO_V" | tr -cd '.' | wc -c)
+              if [ "$DOT_COUNT" -eq 3 ]; then
+                BASE=$(echo "$TAG_NO_V" | sed 's/\.[0-9]*$//')
+              else
+                BASE="$TAG_NO_V"
+              fi
+              SOURCE="ref tag $REF_NAME"
+            elif [ -n "$OVERRIDE" ]; then
+              if ! echo "$OVERRIDE" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+                echo "::error::version_override must be X.Y.Z, got: $OVERRIDE"
+                exit 1
+              fi
+              BASE="$OVERRIDE"
+              SOURCE="version_override input"
+            else
+              LATEST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n 1)
+              if [ -z "$LATEST_TAG" ]; then
+                echo "::error::No version tags found and no version_override provided"
+                exit 1
+              fi
+              TAG_NO_V="${LATEST_TAG#v}"
+              DOT_COUNT=$(echo "$TAG_NO_V" | tr -cd '.' | wc -c)
+              if [ "$DOT_COUNT" -eq 3 ]; then
+                BASE=$(echo "$TAG_NO_V" | sed 's/\.[0-9]*$//')
+              else
+                BASE="$TAG_NO_V"
+              fi
+              SOURCE="latest tag $LATEST_TAG (fallback)"
+            fi
+
+            # No metadata: count from RawData HEAD if it has been checked out below.
+            # We can't count here (RawData isn't checked out yet in the no-metadata path),
+            # so defer count to a later step or require that the regen path runs.
+            if [ "${{ inputs.regenerate_database }}" != "true" ]; then
+              echo "::error::No .release-meta.json AND regenerate_database=false — nothing pins translation_build."
+              exit 1
+            fi
+            BASE_FOR_COUNT="$BASE"
+            echo "base_version=$BASE_FOR_COUNT" >> "$GITHUB_OUTPUT"
+            FULL_VERSION=""  # filled in after RawData checkout
+          fi
+
+          echo "full_version=$FULL_VERSION" >> "$GITHUB_OUTPUT"
+          echo "version_source=$SOURCE" >> "$GITHUB_OUTPUT"
+          echo "====================================="
+          echo "Dispatch ref:        ${{ github.ref }}"
+          echo "Version source:      $SOURCE"
+          echo "Full version:        ${FULL_VERSION:-<deferred — will be computed after RawData checkout>}"
+          echo "Regenerate Database: ${{ inputs.regenerate_database }}"
+          echo "Publish CurseForge:  ${{ inputs.publish_to_curseforge }}"
+          echo "GitHub release:      ${{ inputs.create_github_release }}"
+          echo "====================================="
+
       - name: Setup .NET
+        if: inputs.regenerate_database == 'true'
         uses: actions/setup-dotnet@v4.3.1
         with:
           dotnet-version: "8.0.x"
 
       - name: Checkout DevTools
+        if: inputs.regenerate_database == 'true'
         uses: actions/checkout@v4
         with:
           ref: main
@@ -31,39 +135,99 @@ jobs:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           path: DevTools
 
-      - name: Checkout RawData
+      - name: Checkout RawData (pinned SHA)
+        if: inputs.regenerate_database == 'true' && steps.meta.outputs.metadata_present == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.meta.outputs.raw_data_sha }}
+          repository: Cancri55E/WowUkrainizer-Data
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          path: RawData
+          fetch-depth: 0
+
+      - name: Checkout RawData (HEAD fallback)
+        if: inputs.regenerate_database == 'true' && steps.meta.outputs.metadata_present != 'true'
         uses: actions/checkout@v4
         with:
           ref: main
           repository: Cancri55E/WowUkrainizer-Data
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           path: RawData
+          fetch-depth: 0
 
-      - name: Restore DevTools NuGet packages
-        run: dotnet restore ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj
+      - name: Finalize full version (no-metadata path)
+        if: steps.meta.outputs.metadata_present != 'true'
+        id: finalize_version
+        run: |
+          BASE="${{ steps.version.outputs.base_version }}"
+          TRANSLATION_BUILD=$(git -C RawData rev-list --count HEAD)
+          FULL_VERSION="v${BASE}.${TRANSLATION_BUILD}"
+          echo "full_version=$FULL_VERSION" >> "$GITHUB_OUTPUT"
+          echo "Finalized full version: $FULL_VERSION"
 
-      - name: Build DevTools project
-        run: dotnet build ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --no-restore
+      - name: Resolve effective full version
+        id: effective
+        run: |
+          if [ "${{ steps.meta.outputs.metadata_present }}" = "true" ]; then
+            FULL_VERSION="${{ steps.version.outputs.full_version }}"
+          else
+            FULL_VERSION="${{ steps.finalize_version.outputs.full_version }}"
+          fi
+          echo "full_version=$FULL_VERSION" >> "$GITHUB_OUTPUT"
+          echo "Effective full version: $FULL_VERSION"
+
+      - name: Restore and build DevTools
+        if: inputs.regenerate_database == 'true'
+        run: |
+          dotnet restore DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj
+          dotnet build DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --no-restore
 
       - name: Run DevTools project
-        id: run_update_translation_cmd
+        if: inputs.regenerate_database == 'true'
         run: |
-          dotnet run --project ${{ github.workspace }}/DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj --configuration Release --mode "generate-lua" --connectionString "${{ secrets.MAIN_DB_CONNECTION_STRING }}" --folder "${{ github.workspace }}/Database" --gameClientConnectionString "${{ secrets.MONGODB_CONNECTION_STRING }}" 2>log.txt
-
-      - name: Display update translation log
-        run: |
+          dotnet run --project DevTools/WowUkrainizer.DevTools/WowUkrainizer.DevTools.csproj \
+            --configuration Release \
+            --mode "generate-lua" \
+            --connectionString "${{ secrets.MAIN_DB_CONNECTION_STRING }}" \
+            --folder "${{ github.workspace }}/Database" \
+            --gameClientConnectionString "${{ secrets.MONGODB_CONNECTION_STRING }}" 2>log.txt
           cat log.txt
 
-      - name: Generate CHANGELOG.md
-        uses: orhun/git-cliff-action@v4.5.1
-        with:
-          config: cliff.toml
-          args: --verbose
-        env:
-          OUTPUT: CHANGELOG.md
-          
+      - name: Substitute version in TOC files
+        run: |
+          FULL_VERSION="${{ steps.effective.outputs.full_version }}"
+          echo "Setting version to $FULL_VERSION in TOC files"
+          find . -name "*.toc" -not -path "./DevTools/*" -not -path "./RawData/*" | while read f; do
+            sed -i "s/@project-version@/$FULL_VERSION/g" "$f"
+            echo "  Updated: $f"
+          done
+
       - name: Deploy AddOn
         uses: BigWigsMods/packager@v2.4.3
+        with:
+          args: -n "{package-name}-${{ steps.effective.outputs.full_version }}{nolib}{classic}:${{ steps.effective.outputs.full_version }}{classic}{nolib}"
         env:
-          CF_API_KEY: ${{ secrets.CF_API_KEY }}
-          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          # Control uploads via env vars: empty key = skip upload
+          CF_API_KEY: ${{ inputs.publish_to_curseforge == 'true' && secrets.CF_API_KEY || '' }}
+          GITHUB_OAUTH: ${{ inputs.create_github_release == 'true' && secrets.GITHUB_TOKEN || '' }}
+
+      - name: Find addon zip
+        if: inputs.publish_to_curseforge != 'true'
+        id: find_zip
+        run: |
+          ZIP=$(find .release -name "*.zip" -type f | head -n 1)
+          if [ -z "$ZIP" ]; then
+            echo "::error::No zip file found in .release/"
+            exit 1
+          fi
+          echo "zip_path=$ZIP" >> "$GITHUB_OUTPUT"
+          echo "Found: $ZIP"
+
+      - name: Upload addon zip as artifact
+        if: inputs.publish_to_curseforge != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: WowUkrainizer-${{ steps.effective.outputs.full_version }}
+          path: ${{ steps.find_zip.outputs.zip_path }}
+          if-no-files-found: error
+          retention-days: 30

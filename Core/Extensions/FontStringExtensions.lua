@@ -7,6 +7,16 @@ local ns = select(2, ...);
 local internal = {}
 ns.FontStringUtil = internal
 
+--- Safely get text from a FontString, returning nil if the value is a secret (WoW 12.0+).
+---@param fontString FontString
+---@return string|nil
+function internal.SafeGetText(fontString)
+    if not fontString then return nil end
+    local text = fontString:GetText()
+    if text ~= nil and issecretvalue(text) then return nil end
+    return text
+end
+
 --- Set text of a font string and maintain its original text color.
 ---
 ---@param fontString FontString @The font string to set text for.
@@ -27,5 +37,7 @@ end
 --- @param fontStringObject FontString @The UI font string object to be updated
 --- @param translationFunc function @The function used for translation
 function internal.UpdateTextWithTranslation(fontStringObject, translationFunc)
-    fontStringObject:SetText(translationFunc(fontStringObject:GetText()))
+    local text = internal.SafeGetText(fontStringObject)
+    if not text then return end
+    fontStringObject:SetText(translationFunc(text))
 end

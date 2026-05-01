@@ -16,12 +16,15 @@ ignore:
   - .actrc
   - .vscode
   - .git
+  - .github
   - run_act.bat
   - screenshots
   - cvars.dump
   - package.json
   - package-lock.json
+  - .release-meta.json
   - release.sh
-  - cliff.toml
   - DevTools
   - RawData
+  - docs
+  - types

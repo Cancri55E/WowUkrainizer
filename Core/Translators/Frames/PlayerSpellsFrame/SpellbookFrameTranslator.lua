@@ -17,7 +17,8 @@ local function SpellBookItem_OnIconEnter(spellBookItem)
     if (GameTooltip:GetOwner() ~= spellBookItem.Button) then return end
     local actionBarStatusToolTip = spellBookItem.actionBarStatus and SpellSearchUtil.GetTooltipForActionBarStatus(spellBookItem.actionBarStatus);
     if (actionBarStatusToolTip) then
-        UpdateTextWithTranslation(_G["GameTooltipTextLeft" .. GameTooltip:NumLines()], GetTranslatedGlobalString)
+        local lastLineFS = ns.TooltipLineAccessor.GetLeftFontString(GameTooltip, GameTooltip:NumLines())
+        if lastLineFS then UpdateTextWithTranslation(lastLineFS, GetTranslatedGlobalString) end
         GameTooltip:Show()
     end
 end

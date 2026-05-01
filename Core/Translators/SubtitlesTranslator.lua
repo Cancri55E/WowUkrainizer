@@ -111,8 +111,8 @@ function translator:Init()
             end
         end
     end
-    MovieFrame.CloseDialog.ConfirmButton:SetText("Так")
-    MovieFrame.CloseDialog.ResumeButton:SetText("Ні")
+    MovieFrame.CloseDialog.Buttons.ConfirmButton:SetText("Так")
+    MovieFrame.CloseDialog.Buttons.ResumeButton:SetText("Ні")
 
     for _, region in ipairs({ CinematicFrame.closeDialog:GetRegions() }) do
         if region:GetObjectType() == "FontString" then
